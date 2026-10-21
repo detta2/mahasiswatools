@@ -68,9 +68,17 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 80 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 85 tool.
 
-### 🎯🖊️💾 Batch Saran Argon #1 (Tool 79–80 + Backup)
+### 📈 Batch Saran Argon #2 — 5 Tool Terakhir (Tool 81–85)
+
+- **Regresi Berganda & Uji Asumsi Klasik** — OLS matriks 1–4 variabel X: koefisien, uji t parsial, uji F simultan, R² & Adjusted R², VIF multikolinearitas, uji Glejser heteroskedastisitas, normalitas residual Jarque-Bera, narasi Bab 4 otomatis.
+- **Pembuat Daftar Singkatan Otomatis** — ekstrak akronim dari naskah, kepanjangan dari pola kurung + kamus 60+ singkatan, urut A–Z, ekspor .doc.
+- **LPJ & Kas Kegiatan UKM** — muat RAB (format sama dengan Generator Proposal), sesuaikan realisasi per item, sisa dana otomatis, ekspor LPJ resmi berkop.
+- **Konverter SKS MBKM** — jam magang/KKN → penyetaraan SKS (45 jam/SKS) + progres target 20 SKS.
+- **Lembar Bimbingan Skripsi** — kartu kendali konsultasi: catatan sesi per pembimbing, status Revisi/Lanjut/ACC, ekspor .doc berkop.
+
+## 🎯🖊️💾 Batch Saran Argon #1 (Tool 79–80 + Backup)
 
 - **Kalkulator Target Nilai Mata Kuliah** — bobot komponen dapat diedit, nilai minimal komponen terakhir untuk target akhir + tabel target lain, simpan banyak mata kuliah, unduh Kartu Target PNG.
 - **Manajer Revisi Pasca-Sidang** — checklist revisi per penguji (halaman lama/baru), progres %, ekspor Lembar Revisi resmi berkop logo dengan kolom paraf penguji.

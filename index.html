@@ -168,6 +168,11 @@ const TOOLS = [
   { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
   { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
   { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
+  { id: "singkatan", n: "Pembuat Daftar Singkatan Otomatis", c: "tulis", i: "🔤", d: "Ekstrak akronim dari naskah jadi daftar singkatan A–Z.", aktif: 1 },
+  { id: "lpj", n: "LPJ & Kas Kegiatan UKM", c: "kelompok", i: "🧾", d: "Realisasi anggaran vs RAB + sisa dana, ekspor LPJ resmi.", aktif: 1 },
+  { id: "regresi", n: "Regresi Berganda & Uji Asumsi Klasik", c: "data", i: "📈", d: "Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.", aktif: 1 },
+  { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
+  { id: "bimbingan", n: "Lembar Bimbingan Skripsi", c: "tulis", i: "📔", d: "Kartu kendali konsultasi dosen, ekspor .doc berkop logo.", aktif: 1 },
   { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
   { id: "revisi", n: "Manajer Revisi Pasca-Sidang", c: "tulis", i: "🖊️", d: "Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.", aktif: 1 },
   { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", aktif: 1 },
@@ -289,7 +294,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 function toolCard(t) {
   const fav = favs.has(t.id);
@@ -5758,4 +5763,363 @@ function unduhLembarRevisi() {
   toast("Lembar revisi resmi diunduh ⬇️");
 }
 SHARE_GETTERS.revisi = function () { return ringkasanRevisi(); };
+</script>
+
+<script>
+/* ============================================================
+   TOOL 81 — PEMBUAT DAFTAR SINGKATAN OTOMATIS
+   ============================================================ */
+const KAMUS_SINGKATAN = {
+  BPS: "Badan Pusat Statistik", UMKM: "Usaha Mikro, Kecil, dan Menengah", SPSS: "Statistical Package for the Social Sciences", ANOVA: "Analysis of Variance",
+  SKS: "Satuan Kredit Semester", KRS: "Kartu Rencana Studi", KKN: "Kuliah Kerja Nyata", UKT: "Uang Kuliah Tunggal", IPK: "Indeks Prestasi Kumulatif",
+  CPNS: "Calon Pegawai Negeri Sipil", BKN: "Badan Kepegawaian Negara", SDM: "Sumber Daya Manusia", UU: "Undang-Undang", PP: "Peraturan Pemerintah",
+  MBKM: "Merdeka Belajar Kampus Merdeka", PTK: "Penelitian Tindakan Kelas", RAB: "Rencana Anggaran Biaya", LPJ: "Laporan Pertanggungjawaban",
+  UKM: "Unit Kegiatan Mahasiswa", BEM: "Badan Eksekutif Mahasiswa", HIMA: "Himpunan Mahasiswa", NIM: "Nomor Induk Mahasiswa", KTP: "Kartu Tanda Penduduk",
+  KK: "Kartu Keluarga", NPWP: "Nomor Pokok Wajib Pajak", PNS: "Pegawai Negeri Sipil", ASN: "Aparatur Sipil Negara", DPR: "Dewan Perwakilan Rakyat",
+  APBN: "Anggaran Pendapatan dan Belanja Negara", APBD: "Anggaran Pendapatan dan Belanja Daerah", PDB: "Produk Domestik Bruto",
+  IHSG: "Indeks Harga Saham Gabungan", BI: "Bank Indonesia", OJK: "Otoritas Jasa Keuangan", BEI: "Bursa Efek Indonesia",
+  SD: "Sekolah Dasar", SMP: "Sekolah Menengah Pertama", SMA: "Sekolah Menengah Atas", SMK: "Sekolah Menengah Kejuruan",
+  PT: "Perguruan Tinggi", S1: "Strata Satu", S2: "Strata Dua", CV: "Commanditaire Vennootschap", Tbk: "Terbuka", AI: "Artificial Intelligence",
+  IT: "Information Technology", PDF: "Portable Document Format", QR: "Quick Response", DOI: "Digital Object Identifier", ISSN: "International Standard Serial Number", ISBN: "International Standard Book Number"
+};
+UI.singkatan = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Naskah Skripsi / Teks Kamu", '<textarea id="sgIn" rows="8" class="' + IN + '" placeholder="Tempel naskah (boleh sebagian bab) — semua akronim HURUF KAPITAL akan diekstrak otomatis…">Badan Pusat Statistik (BPS) merilis data pertumbuhan ekonomi. BPS mencatat UMKM menyerap tenaga kerja terbesar. Penelitian ini memakai SPSS untuk uji ANOVA terhadap data BPS dan catatan UMKM tahun 2026.</textarea>')
+    + '<button class="' + BTN + '" onclick="ekstrakSingkatan()">🔤 Ekstrak Singkatan</button>'
+    + '<div id="sgList" class="space-y-2 mb-4"></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="unduhSingkatan()">⬇️ Download Daftar Singkatan .doc</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(teksSingkatan())">📋 Copy Teks</button></div>'
+    + "</div>";
+  window._sgData = [];
+};
+function ekstrakSingkatan() {
+  const teks = $("#sgIn").value || "";
+  const freq = {};
+  (teks.match(/\b[A-Z]{2,8}\b/g) || []).forEach((a) => { freq[a] = (freq[a] || 0) + 1; });
+  const dariKurung = {};
+  const re = /([A-Z][A-Za-zÀ-ÿ&.,' ]{3,80}?)\s*\(([A-Z]{2,8})\)/g;
+  let m; while ((m = re.exec(teks)) !== null) { dariKurung[m[2]] = m[1].trim().replace(/\s+/g, " "); }
+  const daftar = Object.keys(freq).sort().map((a) => ({ akr: a, freq: freq[a], panjang: dariKurung[a] || KAMUS_SINGKATAN[a] || "" }));
+  window._sgData = daftar;
+  const box = $("#sgList");
+  if (!daftar.length) { box.innerHTML = '<p class="text-sm text-rose-500 font-semibold">Tidak ditemukan akronim HURUF KAPITAL pada teks. Coba tempel naskah yang lebih panjang.</p>'; return; }
+  box.innerHTML = '<p class="text-sm font-extrabold">' + daftar.length + ' singkatan ditemukan — lengkapi kepanjangan yang masih kosong:</p>'
+    + daftar.map((d, i) => '<div class="grid grid-cols-[92px_1fr_auto] gap-2 items-center"><span class="font-extrabold text-[14px]">' + d.akr + '</span><input class="' + IN + '" style="margin:0" value="' + esc(d.panjang) + '" placeholder="Kepanjangan…" oninput="window._sgData[' + i + '].panjang=this.value"><span class="text-xs text-slate-400 font-bold">' + d.freq + '×</span></div>').join("");
+  toast(daftar.length + " singkatan diekstrak 🔤");
+}
+function teksSingkatan() {
+  return "DAFTAR SINGKATAN\n\n" + window._sgData.map((d) => d.akr + " : " + (d.panjang || "(belum diisi)")).join("\n");
+}
+function unduhSingkatan() {
+  if (!window._sgData.length) { toast("Ekstrak dulu singkatannya 🔤"); return; }
+  const h = "<html><body style='font-family:serif;font-size:12pt'><h3 style='text-align:center'>DAFTAR SINGKATAN</h3><table style='width:100%'>"
+    + window._sgData.map((d) => "<tr><td style='width:25%'><b>" + esc(d.akr) + "</b></td><td>: " + esc(d.panjang || "") + "</td></tr>").join("") + "</table><p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools</p></body></html>";
+  download("Daftar_Singkatan.doc", h, "application/msword");
+}
+SHARE_GETTERS.singkatan = function () { return teksSingkatan(); };
+
+/* ============================================================
+   TOOL 82 — LPJ & KAS KEGIATAN UKM (terhubung format RAB proposal)
+   ============================================================ */
+UI.lpj = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Kegiatan", '<input id="lpKeg" class="' + IN + '" placeholder="cth: Seminar Nasional Kewirausahaan 2026">')
+    + field("Penyelenggara", '<input id="lpPeny" class="' + IN + '" placeholder="cth: HIMA Ekonomi">')
+    + field("Tanggal Pelaksanaan", '<input id="lpTgl" class="' + IN + '" placeholder="cth: 14 November 2026">')
+    + field("Total Dana Diterima (Rp)", '<input id="lpDana" type="number" class="' + IN + '" value="500000">')
+    + "</div>"
+    + field("Rencana Anggaran (RAB) — format sama seperti Generator Proposal: Item | Jumlah | Harga Satuan", '<textarea id="lpRab" rows="4" class="' + IN + '">Konsumsi peserta | 50 | 15000\nATK & cetak proposal | 1 | 250000\nSpanduk & backdrop | 1 | 300000</textarea>')
+    + '<button class="' + BTN2 + '" onclick="lpjMuatRab()">📥 Muat RAB ke Tabel Realisasi</button>'
+    + '<div id="lpTabel" class="my-4"></div>'
+    + field("Pengeluaran Lain di Luar RAB (format: Uraian | Jumlah)", '<textarea id="lpLain" rows="2" class="' + IN + '" placeholder="Transport narasumber | 100000"></textarea>')
+    + '<div id="lpOut"></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="unduhLpj()">⬇️ Download LPJ .doc (Resmi)</button>'
+    + '<button class="' + BTN2 + '" onclick="lpjHitung(true)">🔄 Hitung Ulang</button></div>'
+    + "</div>";
+  sisipLogoField(el, null);
+  const d = store.get("mt_lpj", null);
+  window._lpjItems = (d && d.items) || [];
+  if (window._lpjItems.length) renderLpjTabel();
+  el.addEventListener("input", () => lpjHitung(false));
+};
+function lpjMuatRab() {
+  const items = $("#lpRab").value.split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => {
+    const p = l.split("|").map((x) => x.trim());
+    const jml = parseFloat((p[1] || "1").replace(/[^\d.]/g, "")) || 1, hrg = parseFloat((p[2] || "0").replace(/[^\d.]/g, "")) || 0;
+    return { item: p[0], rencana: jml * hrg, realisasi: jml * hrg };
+  });
+  if (!items.length) { toast("⚠️ RAB masih kosong."); return; }
+  window._lpjItems = items;
+  store.set("mt_lpj", { items });
+  renderLpjTabel(); lpjHitung(false);
+  toast(items.length + " item RAB dimuat 📥 Sekarang sesuaikan kolom Realisasi.");
+}
+function renderLpjTabel() {
+  const box = $("#lpTabel"); if (!box) return;
+  box.innerHTML = '<table class="w-full text-[13px]" style="border-collapse:collapse"><tr><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-left">Item</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Rencana (Rp)</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Realisasi (Rp) — bisa diedit</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Selisih</th></tr>'
+    + window._lpjItems.map((it, i) => '<tr><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">' + esc(it.item) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-right">' + fmtRp(it.rencana) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5"><input type="number" value="' + it.realisasi + '" class="w-full border rounded px-1.5 py-1 text-right dark:bg-slate-800" onchange="window._lpjItems[' + i + '].realisasi=Number(this.value)||0; store.set(\'mt_lpj\',{items:window._lpjItems}); renderLpjTabel(); lpjHitung(false)"></td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-right font-bold">' + fmtRp(it.rencana - it.realisasi) + "</td></tr>").join("") + "</table>";
+}
+function lpjHitung(manual) {
+  const out = $("#lpOut"); if (!out) return;
+  const dana = Number(($("#lpDana") || {}).value) || 0;
+  const rencana = window._lpjItems.reduce((a, b) => a + b.rencana, 0);
+  const realisasiRab = window._lpjItems.reduce((a, b) => a + b.realisasi, 0);
+  const lain = ($("#lpLain").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean).reduce((a, l) => { const p = l.split("|"); return a + (parseFloat(((p[1] || "0") + "").replace(/[^\d.]/g, "")) || 0); }, 0);
+  const realisasi = realisasiRab + lain;
+  const sisa = dana - realisasi;
+  window._lpj = { dana, rencana, realisasi, lain, sisa };
+  if (!window._lpjItems.length && !manual) { out.innerHTML = ""; return; }
+  out.innerHTML = '<div class="' + OUT + '"><div class="grid grid-cols-2 sm:grid-cols-4 gap-2">'
+    + [["Dana Diterima", fmtRp(dana)], ["Total Rencana (RAB)", fmtRp(rencana)], ["Total Realisasi", fmtRp(realisasi)], ["Sisa Dana", fmtRp(sisa)]].map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-center"><div class="font-extrabold text-[14.5px]">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<p class="text-[13px] mt-3">' + (sisa >= 0 ? "Sisa dana sebesar <b>" + fmtRp(sisa) + "</b> wajib dikembalikan/dilaporkan ke pemberi dana sesuai ketentuan." : "⚠️ Realisasi MELEBIHI dana diterima sebesar <b>" + fmtRp(-sisa) + "</b> — periksa kembali catatan pengeluaran.") + "</p></div>";
+}
+function lpjDocHtml() {
+  const g = (id) => $("#" + id) ? $("#" + id).value.trim() : "";
+  const L = window._lpj || {};
+  return "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center")
+    + "<h3 style='text-align:center'>LAPORAN PERTANGGUNGJAWABAN (LPJ) KEGIATAN</h3>"
+    + "<p>Kegiatan: <b>" + esc(g("lpKeg")) + "</b><br>Penyelenggara: " + esc(g("lpPeny")) + "<br>Tanggal Pelaksanaan: " + esc(g("lpTgl")) + "</p>"
+    + "<p>Total dana diterima: <b>" + fmtRp(L.dana || 0) + "</b> • Total realisasi: <b>" + fmtRp(L.realisasi || 0) + "</b> • Sisa dana: <b>" + fmtRp(L.sisa || 0) + "</b></p>"
+    + "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Item</th><th>Rencana (Rp)</th><th>Realisasi (Rp)</th><th>Selisih (Rp)</th></tr>"
+    + window._lpjItems.map((it, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(it.item) + "</td><td style='text-align:right'>" + fmtRp(it.rencana) + "</td><td style='text-align:right'>" + fmtRp(it.realisasi) + "</td><td style='text-align:right'>" + fmtRp(it.rencana - it.realisasi) + "</td></tr>").join("")
+    + "<tr><td colspan='2'><b>TOTAL</b></td><td style='text-align:right'><b>" + fmtRp(L.rencana || 0) + "</b></td><td style='text-align:right'><b>" + fmtRp(L.realisasi || 0) + "</b></td><td style='text-align:right'><b>" + fmtRp((L.rencana || 0) - (L.realisasi || 0)) + "</b></td></tr></table>"
+    + "<p style='font-size:10.5pt'>Lampirkan seluruh bukti transaksi (kwitansi/nota) sebagai lampiran laporan ini.</p>"
+    + "<br><table style='width:100%'><tr><td style='width:50%'>Bendahara,<br><br><br><br>( ________________ )</td><td>Ketua Panitia/Penyelenggara,<br><br><br><br>( ________________ )</td></tr></table>"
+    + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+}
+function unduhLpj() {
+  lpjHitung(false);
+  if (!window._lpjItems.length) { toast("Muat RAB dulu 📥"); return; }
+  download("LPJ_Kegiatan.doc", lpjDocHtml(), "application/msword");
+  toast("LPJ diunduh ⬇️");
+}
+SHARE_GETTERS.lpj = function () { const L = window._lpj || {}; return "LPJ " + (($("#lpKeg") || {}).value || "kegiatan") + ": dana " + fmtRp(L.dana || 0) + ", realisasi " + fmtRp(L.realisasi || 0) + ", sisa " + fmtRp(L.sisa || 0) + "."; };
+</script>
+
+<script>
+function fmtRp(n) { return "Rp" + Math.round(Number(n) || 0).toLocaleString("id-ID"); }
+
+/* ============================================================
+   TOOL 83 — REGRESI BERGANDA & UJI ASUMSI KLASIK
+   ============================================================ */
+function matInv(A) {
+  const n = A.length;
+  const M = A.map((row, i) => row.slice().concat(Array.from({ length: n }, (_, j) => (i === j ? 1 : 0))));
+  for (let col = 0; col < n; col++) {
+    let piv = col;
+    for (let r = col + 1; r < n; r++) if (Math.abs(M[r][col]) > Math.abs(M[piv][col])) piv = r;
+    if (Math.abs(M[piv][col]) < 1e-12) throw new Error("Matriks singular — variabel X saling berkorelasi sempurna (multikolinearitas total).");
+    const tmp = M[col]; M[col] = M[piv]; M[piv] = tmp;
+    const d = M[col][col];
+    for (let j = 0; j < 2 * n; j++) M[col][j] /= d;
+    for (let r = 0; r < n; r++) {
+      if (r === col) continue;
+      const f = M[r][col];
+      if (f !== 0) for (let j = 0; j < 2 * n; j++) M[r][j] -= f * M[col][j];
+    }
+  }
+  return M.map((row) => row.slice(n));
+}
+function olsFit(Xcols, y) {
+  const n = y.length, k = Xcols.length;
+  const X = [];
+  for (let i = 0; i < n; i++) { const row = [1]; for (let j = 0; j < k; j++) row.push(Xcols[j][i]); X.push(row); }
+  const p = k + 1;
+  const XtX = Array.from({ length: p }, () => Array(p).fill(0));
+  const Xty = Array(p).fill(0);
+  for (let i = 0; i < n; i++) for (let a = 0; a < p; a++) { Xty[a] += X[i][a] * y[i]; for (let b = 0; b < p; b++) XtX[a][b] += X[i][a] * X[i][b]; }
+  const inv = matInv(XtX);
+  const beta = inv.map((row) => row.reduce((s, v, j) => s + v * Xty[j], 0));
+  const yhat = X.map((row) => row.reduce((s, v, j) => s + v * beta[j], 0));
+  const resid = y.map((v, i) => v - yhat[i]);
+  const ybar = mean(y);
+  const sse = resid.reduce((s, e) => s + e * e, 0), sst = y.reduce((s, v) => s + (v - ybar) * (v - ybar), 0), ssr = sst - sse;
+  const df = n - p;
+  const mse = df > 0 ? sse / df : NaN;
+  const se = beta.map((_, j) => Math.sqrt(Math.max(0, mse * inv[j][j])));
+  const t = beta.map((b, j) => (se[j] > 0 ? b / se[j] : 0));
+  const pv = t.map((tv) => pDariT(Math.abs(tv), df));
+  const r2 = sst > 0 ? ssr / sst : 0;
+  const adjR2 = 1 - (1 - r2) * (n - 1) / Math.max(1, df);
+  const F = k > 0 && sse > 0 ? (ssr / k) / mse : Infinity;
+  const pF = isFinite(F) ? pDariF(F, k, df) : 0;
+  return { beta, se, t, pv, resid, yhat, r2, adjR2, F, pF, sse, df, n, k };
+}
+function jbDari(arr) {
+  const n = arr.length, m = mean(arr);
+  let m2 = 0, m3 = 0, m4 = 0;
+  arr.forEach((x) => { const d = x - m; m2 += d * d; m3 += d * d * d; m4 += d * d * d * d; });
+  m2 /= n; m3 /= n; m4 /= n;
+  const sk = m3 / Math.pow(m2, 1.5), ku = m4 / (m2 * m2);
+  const jb = n / 6 * (sk * sk + Math.pow(ku - 3, 2) / 4);
+  return { jb, p: Math.exp(-jb / 2) };
+}
+UI.regresi = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Jumlah Variabel Bebas (X)", '<select id="rgK" class="' + IN + '"><option value="1">1 variabel (regresi sederhana)</option><option value="2" selected>2 variabel (X1, X2)</option><option value="3">3 variabel (X1, X2, X3)</option><option value="4">4 variabel (X1–X4)</option></select>')
+    + field("Nama Variabel — urutan: Y, X1, X2, … (pisah koma)", '<input id="rgNama" class="' + IN + '" value="Prestasi Belajar, Motivasi, Disiplin">')
+    + field("Data — satu responden per baris, urutan kolom: Y X1 X2 …", '<textarea id="rgData" rows="9" class="' + IN + '">78 80 75\n82 85 88\n85 88 90\n90 92 95\n76 78 72\n88 90 92\n92 95 98\n84 86 84\n79 82 80\n81 84 86\n87 89 91\n93 96 97</textarea>')
+    + '<button class="' + BTN + '" onclick="hitungRegresi()">📈 Hitung Regresi + Uji Asumsi Klasik</button>'
+    + outBox("rgOut") + "</div>";
+};
+function hitungRegresi() {
+  const err = (m) => { $("#rgOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ ' + m + "</div>"; };
+  const k = Number($("#rgK").value);
+  const names = $("#rgNama").value.split(",").map((s) => s.trim()).filter(Boolean);
+  const nm = (i) => names[i] || (i === 0 ? "Y" : "X" + i);
+  const rows = $("#rgData").value.split(/\n/).map((l) => parseNums(l)).filter((r) => r.length >= k + 1).map((r) => r.slice(0, k + 1));
+  if (rows.length < k + 4) return err("Data tidak cukup — butuh minimal " + (k + 4) + " baris lengkap (Y + " + k + " kolom X).");
+  const y = rows.map((r) => r[0]);
+  const Xcols = []; for (let j = 0; j < k; j++) Xcols.push(rows.map((r) => r[j + 1]));
+  let fit;
+  try { fit = olsFit(Xcols, y); } catch (e) { return err(e.message); }
+  // VIF
+  const vif = Xcols.map((xj, j) => {
+    if (k === 1) return 1;
+    const lain = Xcols.filter((_, jj) => jj !== j);
+    try { const aux = olsFit(lain, xj); return aux.r2 >= 0.9999 ? Infinity : 1 / (1 - aux.r2); } catch (e) { return Infinity; }
+  });
+  // Glejser: |residual| diregresikan ke X
+  let glejserP = 1;
+  try { const g = olsFit(Xcols, fit.resid.map(Math.abs)); glejserP = isFinite(g.pF) ? g.pF : 1; } catch (e) { glejserP = 1; }
+  const jb = jbDari(fit.resid);
+  window._regHasil = { beta: fit.beta, r2: fit.r2, adjR2: fit.adjR2, F: fit.F, pF: fit.pF, vif, glejserP, jbP: jb.p, pv: fit.pv };
+  const sigF = fit.pF < 0.05;
+  const barisKoef = fit.beta.map((b, j) => {
+    const label = j === 0 ? "Konstanta" : nm(j);
+    const sig = j > 0 ? (fit.pv[j] < 0.05 ? "Signifikan ✅" : "Tidak signifikan") : "—";
+    return '<tr><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 font-bold">' + esc(label) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center">' + fmtN(b, 3) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center">' + fmtN(fit.se[j], 3) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center">' + fmtN(fit.t[j], 3) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center">' + fmtP(fit.pv[j]) + '</td><td class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center">' + sig + "</td></tr>";
+  }).join("");
+  const asumsi = [
+    ["Normalitas Residual (Jarque-Bera)", "JB = " + fmtN(jb.jb, 3) + ", p = " + fmtP(jb.p), jb.p >= 0.05, jb.p >= 0.05 ? "Residual berdistribusi normal ✅" : "Residual TIDAK normal ❌"],
+    ["Multikolinearitas (VIF)", Xcols.map((_, j) => nm(j + 1) + " = " + (isFinite(vif[j]) ? fmtN(vif[j]) : "∞")).join("; "), vif.every((v) => v < 10), vif.every((v) => v < 10) ? "Semua VIF < 10 — tidak ada multikolinearitas ✅" : "Ada VIF ≥ 10 — multikolinearitas terdeteksi ❌"],
+    ["Heteroskedastisitas (Glejser)", "Uji F atas |residual|, p = " + fmtP(glejserP), glejserP >= 0.05, glejserP >= 0.05 ? "Tidak ada heteroskedastisitas (homoskedastis) ✅" : "Terdeteksi heteroskedastisitas ❌"]
+  ];
+  const narasi = "Berdasarkan hasil analisis regresi linear " + (k > 1 ? "berganda" : "sederhana") + ", diperoleh persamaan " + nm(0) + " = " + fmtN(fit.beta[0], 3) + fit.beta.slice(1).map((b, j) => " " + (b >= 0 ? "+" : "−") + " " + fmtN(Math.abs(b), 3) + " " + nm(j + 1)).join("") + ". Hasil uji F menunjukkan nilai F sebesar " + fmtN(fit.F, 3) + " dengan signifikansi " + fmtP(fit.pF) + ", sehingga secara simultan " + (sigF ? "variabel bebas berpengaruh signifikan terhadap " + nm(0) : "variabel bebas tidak berpengaruh signifikan terhadap " + nm(0)) + ". Secara parsial, " + fit.beta.slice(1).map((b, j) => nm(j + 1) + " " + (fit.pv[j + 1] < 0.05 ? "berpengaruh signifikan (p = " + fmtP(fit.pv[j + 1]) + ")" : "tidak berpengaruh signifikan (p = " + fmtP(fit.pv[j + 1]) + ")")).join("; ") + ". Nilai Adjusted R² sebesar " + fmtN(fit.adjR2, 3) + " menunjukkan bahwa " + fmtN(fit.adjR2 * 100, 1) + "% variasi " + nm(0) + " dapat dijelaskan oleh model, sedangkan sisanya dijelaskan oleh faktor lain di luar model. Uji asumsi klasik: normalitas residual " + (jb.p >= 0.05 ? "terpenuhi" : "tidak terpenuhi") + ", multikolinearitas " + (vif.every((v) => v < 10) ? "tidak terdeteksi (semua VIF < 10)" : "terdeteksi pada sebagian variabel") + ", dan heteroskedastisitas " + (glejserP >= 0.05 ? "tidak terdeteksi (uji Glejser p = " + fmtP(glejserP) + ")" : "terdeteksi (uji Glejser p = " + fmtP(glejserP) + ")") + ".";
+  window._regNarasi = narasi;
+  $("#rgOut").innerHTML = '<div class="' + OUT + '"><p class="font-extrabold mb-2">Persamaan Regresi</p>'
+    + '<p class="font-mono text-[13.5px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3.5 py-2.5 mb-4">' + esc(nm(0)) + " = " + fmtN(fit.beta[0], 3) + fit.beta.slice(1).map((b, j) => " " + (b >= 0 ? "+" : "−") + " " + fmtN(Math.abs(b), 3) + "·" + esc(nm(j + 1))).join("") + "</p>"
+    + '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">'
+    + [["R", fmtN(Math.sqrt(Math.max(0, fit.r2)), 3)], ["R²", fmtN(fit.r2, 3)], ["Adjusted R²", fmtN(fit.adjR2, 3)], ["F (simultan)", fmtN(fit.F, 3)], ["Sig. F", fmtP(fit.pF)], ["n", fit.n], ["Uji Simultan", sigF ? "SIGNIFIKAN ✅" : "Tidak signifikan"], ["Standar Error", fmtN(Math.sqrt(fit.sse / fit.df), 3)]].map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2 text-center"><div class="text-[15px] font-extrabold">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<p class="font-bold text-sm mb-1.5">Koefisien & Uji t Parsial</p><div class="overflow-x-auto"><table class="w-full text-[13px] mb-4" style="border-collapse:collapse"><tr><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-left">Variabel</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Koefisien (B)</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Std. Error</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">t</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Sig.</th><th class="border border-slate-300 dark:border-slate-600 px-2.5 py-1.5">Keputusan</th></tr>' + barisKoef + "</table></div>"
+    + '<p class="font-bold text-sm mb-1.5">Uji Asumsi Klasik</p><div class="space-y-2 mb-4">'
+    + asumsi.map((a) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3.5 py-2.5 text-[13.5px]"><b>' + a[0] + "</b> — " + esc(a[1]) + '<br><span class="font-bold">' + a[3] + "</span></div>").join("") + "</div>"
+    + '<p class="text-[13.5px] leading-relaxed whitespace-pre-wrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3.5">' + esc(narasi) + "</p>"
+    + '<button class="' + BTN2 + '" onclick="copyText(window._regNarasi)">📋 Copy Narasi Bab 4</button></div>';
+}
+SHARE_GETTERS.regresi = function () { return window._regNarasi || ""; };
+</script>
+
+<script>
+/* ============================================================
+   TOOL 84 — KONVERTER SKS MBKM / KAMPUS MERDEKA
+   ============================================================ */
+UI.sks = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<p class="rounded-lg bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 p-3 text-[13px] mb-4">Ketentuan umum MBKM: <b>1 SKS = 170 menit kegiatan per minggu selama 16 minggu</b> (satu semester) ≈ <b>45 jam</b>. Penyetaraan penuh satu semester di luar kampus umumnya maksimal <b>20 SKS (±900 jam)</b>. Kebijakan tiap kampus bisa berbeda — gunakan hasil ini sebagai estimasi untuk berdiskusi dengan dosen wali/prodi.</p>'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Jam Kerja per Hari", '<input id="skJamHari" type="number" class="' + IN + '" value="8">')
+    + field("Hari Kerja per Minggu", '<input id="skHariMgg" type="number" class="' + IN + '" value="5">')
+    + field("Durasi Kegiatan (minggu)", '<input id="skMinggu" type="number" class="' + IN + '" value="16">')
+    + "</div>"
+    + field("ATAU Total Jam dari Logbook (isi untuk menimpa hitungan jadwal)", '<input id="skTotal" type="number" class="' + IN + '" placeholder="cth: 720 — kosongkan bila memakai jadwal di atas">')
+    + field("Target Penyetaraan (SKS)", '<input id="skTarget" type="number" class="' + IN + '" value="20">')
+    + '<div id="skOut"></div>'
+    + "</div>";
+  el.addEventListener("input", hitungSks);
+  hitungSks();
+};
+function hitungSks() {
+  const box = $("#skOut"); if (!box) return;
+  const num = (id) => Number(($("#" + id) || {}).value) || 0;
+  const manual = ($("#skTotal").value || "").trim();
+  const totalJam = manual !== "" ? Number(manual) || 0 : num("skJamHari") * num("skHariMgg") * num("skMinggu");
+  const target = Math.max(1, num("skTarget"));
+  const sks = totalJam / 45;
+  const jamTarget = target * 45;
+  const kurang = Math.max(0, jamTarget - totalJam);
+  const pct = Math.min(100, Math.round(totalJam / jamTarget * 100));
+  const mingguSisa = kurang > 0 && num("skJamHari") * num("skHariMgg") > 0 ? Math.ceil(kurang / (num("skJamHari") * num("skHariMgg"))) : 0;
+  window._sksHasil = { totalJam, sks, kurang };
+  box.innerHTML = '<div class="' + OUT + '"><div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">'
+    + [["Total Jam Kegiatan", fmtN(totalJam, 0) + " jam"], ["Setara SKS", fmtN(sks, 2) + " SKS"], ["SKS Utuh (dibulatkan ke bawah)", Math.floor(sks) + " SKS"], ["Target", target + " SKS (" + fmtN(jamTarget, 0) + " jam)"]].map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-center"><div class="font-extrabold text-[14.5px]">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<div class="flex justify-between text-sm font-bold mb-1"><span>Progres menuju ' + target + ' SKS</span><span>' + pct + '%</span></div>'
+    + '<div class="h-4 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-3"><div class="h-full bg-emerald-500 transition-all" style="width:' + pct + '%"></div></div>'
+    + (kurang > 0 ? '<p class="text-[13.5px]">Masih kurang <b>' + fmtN(kurang, 0) + ' jam</b> untuk mencapai ' + target + ' SKS' + (mingguSisa ? " — setara ±" + mingguSisa + " minggu lagi dengan jadwal yang sama." : ".") + "</p>"
+      : '<p class="font-extrabold text-emerald-600">🎉 Jam kegiatanmu sudah memenuhi target ' + target + ' SKS!</p>')
+    + '<p class="text-xs text-slate-500 mt-2">Catatan: sebagian kampus mensyaratkan minimal ±900 jam untuk konversi penuh 20 SKS magang MBKM dan membatasi penyetaraan per mata kuliah. Selalu konfirmasi ke prodi sebelum berangkat.</p></div>';
+}
+SHARE_GETTERS.sks = function () { const s = window._sksHasil || {}; return "Kegiatan saya " + fmtN(s.totalJam || 0, 0) + " jam ≈ setara " + fmtN(s.sks || 0, 2) + " SKS (standar MBKM 45 jam/SKS)."; };
+
+/* ============================================================
+   TOOL 85 — LEMBAR BIMBINGAN SKRIPSI (KARTU KENDALI)
+   ============================================================ */
+UI.bimbingan = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Mahasiswa", '<input id="bmNama" class="' + IN + '" placeholder="Nama kamu">')
+    + field("NIM", '<input id="bmNim" class="' + IN + '" placeholder="Nomor Induk Mahasiswa">')
+    + field("Pembimbing 1", '<input id="bmP1" class="' + IN + '" placeholder="Nama + gelar">')
+    + field("Pembimbing 2", '<input id="bmP2" class="' + IN + '" placeholder="Nama + gelar (bila ada)">')
+    + "</div>"
+    + field("Judul Skripsi", '<input id="bmJudul" class="' + IN + '" placeholder="Judul skripsi">')
+    + '<div class="rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-3.5 mb-4"><p class="text-sm font-extrabold mb-2">➕ Catat Sesi Bimbingan</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-3">'
+    + field("Tanggal", '<input id="bmTgl" class="' + IN + '" placeholder="cth: 20 Oktober 2026">')
+    + field("Materi / Bab", '<input id="bmMateri" class="' + IN + '" placeholder="cth: BAB III — Metode">')
+    + field("Dengan", '<select id="bmOleh" class="' + IN + '"><option>Pembimbing 1</option><option>Pembimbing 2</option></select>')
+    + field("Status Hasil", '<select id="bmStatus" class="' + IN + '"><option>Revisi</option><option>Lanjut</option><option>ACC</option></select>')
+    + "</div>"
+    + field("Catatan Dosen", '<textarea id="bmCatatan" rows="2" class="' + IN + '" placeholder="Arahan/catatan dosen pada sesi ini"></textarea>')
+    + '<button class="' + BTN2 + '" onclick="bmTambah()">+ Simpan Sesi</button></div>'
+    + '<div id="bmStats" class="mb-3"></div>'
+    + '<div id="bmList" class="space-y-2 mb-4"></div>'
+    + '<button class="' + BTN + '" onclick="unduhBimbingan()">⬇️ Download Kartu Kendali Bimbingan .doc</button>'
+    + "</div>";
+  sisipLogoField(el, null);
+  const d = store.get("mt_bimbingan", null);
+  window._bm = d && d.entries ? d : { nama: "", nim: "", judul: "", p1: "", p2: "", entries: [] };
+  ["Nama", "Nim", "Judul", "P1", "P2"].forEach((k) => { const e = $("#bm" + k); if (e) e.value = window._bm[k.toLowerCase()] || ""; });
+  el.addEventListener("input", (ev) => {
+    if (["bmNama", "bmNim", "bmJudul", "bmP1", "bmP2"].includes(ev.target.id)) {
+      window._bm = Object.assign(window._bm, { nama: $("#bmNama").value, nim: $("#bmNim").value, judul: $("#bmJudul").value, p1: $("#bmP1").value, p2: $("#bmP2").value });
+      store.set("mt_bimbingan", window._bm);
+    }
+  });
+  renderBimbingan();
+};
+function bmTambah() {
+  const t = $("#bmTgl").value.trim(), m = $("#bmMateri").value.trim();
+  if (!t || !m) { toast("⚠️ Isi tanggal & materi bimbingan."); return; }
+  window._bm.entries.push({ tgl: t, materi: m, catatan: $("#bmCatatan").value.trim(), oleh: $("#bmOleh").value, status: $("#bmStatus").value });
+  ["bmTgl", "bmMateri", "bmCatatan"].forEach((id) => $("#" + id).value = "");
+  store.set("mt_bimbingan", window._bm); renderBimbingan();
+  toast("Sesi bimbingan tercatat 📔");
+}
+function renderBimbingan() {
+  const list = $("#bmList"), stats = $("#bmStats");
+  if (!list) return;
+  const e = window._bm.entries, acc = e.filter((x) => x.status === "ACC").length;
+  window._bimCount = e.length;
+  stats.innerHTML = e.length ? '<div class="flex flex-wrap gap-2"><span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-900 text-white dark:bg-white dark:text-slate-900">Total sesi: ' + e.length + '</span><span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-emerald-200 text-emerald-900">ACC: ' + acc + '</span><span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-amber-200 text-amber-900">Revisi: ' + e.filter((x) => x.status === "Revisi").length + "</span></div>" : "";
+  list.innerHTML = e.length ? e.map((x, i) => '<div class="flex gap-2.5 items-start rounded-lg border-2 border-slate-200 dark:border-slate-700 p-3 bg-white dark:bg-slate-900"><div class="flex-1"><p class="font-bold text-[13.5px]">' + esc(x.tgl) + " — " + esc(x.materi) + ' <span class="ml-1 px-2 py-0.5 rounded-full text-[11px] font-extrabold ' + (x.status === "ACC" ? "bg-emerald-200 text-emerald-900" : x.status === "Lanjut" ? "bg-sky-200 text-sky-900" : "bg-amber-200 text-amber-900") + '">' + esc(x.status) + '</span></p><p class="text-[13px] text-slate-600 dark:text-slate-300">' + esc(x.catatan || "—") + '</p><p class="text-[11.5px] text-slate-400 font-semibold">' + esc(x.oleh) + "</p></div>"
+    + '<button class="text-rose-500 font-extrabold" onclick="window._bm.entries.splice(' + i + ',1); store.set(\'mt_bimbingan\', window._bm); renderBimbingan()">✕</button></div>').join("")
+    : '<p class="text-sm text-slate-500">Belum ada sesi tercatat — catat setiap selesai bimbingan agar kartu kendali selalu siap.</p>';
+}
+function bimbinganDocHtml() {
+  const d = window._bm;
+  return "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center")
+    + "<h3 style='text-align:center'>KARTU KENDALI BIMBINGAN SKRIPSI</h3>"
+    + "<p>Nama: " + esc(d.nama || "—") + "<br>NIM: " + esc(d.nim || "—") + "<br>Judul: " + esc(d.judul || "—") + "<br>Pembimbing 1: " + esc(d.p1 || "—") + (d.p2 ? "<br>Pembimbing 2: " + esc(d.p2) : "") + "</p>"
+    + "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th style='width:4%'>No</th><th style='width:13%'>Tanggal</th><th style='width:16%'>Materi/Bab</th><th>Catatan Dosen</th><th style='width:13%'>Pembimbing</th><th style='width:9%'>Status</th><th style='width:10%'>Paraf</th></tr>"
+    + d.entries.map((x, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(x.tgl) + "</td><td>" + esc(x.materi) + "</td><td>" + esc(x.catatan) + "</td><td>" + esc(x.oleh) + "</td><td>" + esc(x.status) + "</td><td></td></tr>").join("") + "</table>"
+    + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+}
+function unduhBimbingan() {
+  if (!window._bm.entries.length) { toast("Belum ada sesi bimbingan 📔"); return; }
+  download("Kartu_Kendali_Bimbingan.doc", bimbinganDocHtml(), "application/msword");
+  toast("Kartu kendali diunduh ⬇️");
+}
+SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount || 0) + " kali bimbingan skripsi. Kartu kendali tercatat rapi di MahasiswaTools."; };
 </script>
