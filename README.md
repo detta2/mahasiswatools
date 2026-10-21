@@ -7,7 +7,7 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (45)
+## Fitur Aktif (55 — SEMUA)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -57,7 +57,18 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 44. Kompresor File Gambar & PDF (quality/resize slider)
 45. Wallpaper Jadwal Kuliah / KRS Maker (canvas 1080×1920, 4 tema)
 
-Plus 10 tool lain terdaftar di katalog untuk diaktifkan pada tahap berikutnya.
+46. Mind Map Cabang Skripsi Interaktif (SVG radial → PNG)
+47. Kuis Interaktif Pilihan Ganda & Flashcard (dari daftar Soal | Jawaban)
+48. Cornell Notes Maker (simpan banyak catatan + ekspor .doc)
+49. Pomodoro Timer + Suara Fokus Web Audio (white/brown noise & hujan low-pass)
+50. Motivation Letter (Beasiswa EN) & Surat Lamaran/Magang (ID)
+51. Simulasi Wawancara Kerja (10 pertanyaan + kerangka STAR + timer)
+52. Kalender Akademik & Deadline (hitung mundur H-x + ekspor .ics)
+53. CV ATS-Friendly Builder (skor ATS struktural + .doc + teks polos)
+54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
+55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
+
+**Seluruh 55 tool berstatus AKTIF dan berfungsi penuh.**
 
 ## Teknologi
 

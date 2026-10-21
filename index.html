@@ -185,16 +185,16 @@ const TOOLS = [
   { id: "k43", n: "Penggabung & Pemisah PDF Beasiswa", c: "dokumen", i: "📑", d: "Merge & split PDF berkas beasiswa tanpa upload ke server.", aktif: 1 },
   { id: "k44", n: "Kompresor Ukuran File Kampus", c: "dokumen", i: "🗜️", d: "Kompres PDF/gambar agar lolos batas upload portal kampus.", aktif: 1 },
   { id: "k45", n: "Pembuat Wallpaper Jadwal Kuliah (KRS)", c: "karir", i: "📱", d: "Jadwal kuliah mingguan menjadi wallpaper HP yang estetik.", aktif: 1 },
-  { id: "k46", n: "Generator Mind Map Catatan Kuliah", c: "karir", i: "🧠", d: "Mind map bercabang dari outline catatan kuliah." },
-  { id: "k47", n: "Pembuat Kuis Pilihan Ganda Mandiri", c: "karir", i: "📝", d: "Latihan soal PG dari materi sendiri dengan kunci & skor otomatis." },
-  { id: "k48", n: "Generator Kertas Catatan Cornell (PDF)", c: "karir", i: "🗒️", d: "Lembar catatan metode Cornell siap cetak A4." },
-  { id: "k49", n: "Pembuat Jembatan Keledai (Mnemonic)", c: "karir", i: "🌉", d: "Akronim & kalimat ajaib untuk menghafal daftar istilah." },
-  { id: "k50", n: "Pomodoro Timer + White Noise Belajar", c: "karir", i: "🍅", d: "Timer fokus 25/5 dengan white noise untuk sesi belajar dalam." },
-  { id: "k51", n: "Generator CV ATS-Friendly Fresh Graduate", c: "karir", i: "💼", d: "CV satu halaman ramah ATS untuk magang & pekerjaan pertama." },
-  { id: "k52", n: "Kalkulator Kecocokan Kata Kunci CV Magang", c: "karir", i: "🔍", d: "Bandingkan CV dengan deskripsi lowongan dan skor kecocokan kata kunci." },
-  { id: "k53", n: "Kerangka Essay & Motivation Letter Beasiswa", c: "karir", i: "🎓", d: "Kerangka essay beasiswa per paragraf dengan panduan isi." },
-  { id: "k54", n: "Checklist Syarat Sidang & Yudisium Interaktif", c: "karir", i: "✅", d: "Checklist berkas sidang & yudisium dengan progres tersimpan." },
-  { id: "k55", n: "Pembuat Kartu Flashcard Ujian (Cetak PDF)", c: "karir", i: "🃏", d: "Flashcard dua sisi dari daftar istilah–definisi, siap cetak." }
+  { id: "k46", n: "Generator Mind Map Catatan Kuliah", c: "karir", i: "🧠", d: "Mind map bercabang dari outline catatan kuliah.", aktif: 1 },
+  { id: "k47", n: "Pembuat Kuis Pilihan Ganda Mandiri", c: "karir", i: "📝", d: "Latihan soal PG dari materi sendiri dengan kunci & skor otomatis.", aktif: 1 },
+  { id: "k48", n: "Generator Kertas Catatan Cornell (PDF)", c: "karir", i: "🗒️", d: "Lembar catatan metode Cornell siap cetak A4.", aktif: 1 },
+  { id: "k49", n: "Pembuat Jembatan Keledai (Mnemonic)", c: "karir", i: "🌉", d: "Akronim & kalimat ajaib untuk menghafal daftar istilah.", aktif: 1 },
+  { id: "k50", n: "Pomodoro Timer + White Noise Belajar", c: "karir", i: "🍅", d: "Timer fokus 25/5 dengan white noise untuk sesi belajar dalam.", aktif: 1 },
+  { id: "k51", n: "Generator CV ATS-Friendly Fresh Graduate", c: "karir", i: "💼", d: "CV satu halaman ramah ATS untuk magang & pekerjaan pertama.", aktif: 1 },
+  { id: "k52", n: "Kalkulator Kecocokan Kata Kunci CV Magang", c: "karir", i: "🔍", d: "Bandingkan CV dengan deskripsi lowongan dan skor kecocokan kata kunci.", aktif: 1 },
+  { id: "k53", n: "Kerangka Essay & Motivation Letter Beasiswa", c: "karir", i: "🎓", d: "Kerangka essay beasiswa per paragraf dengan panduan isi.", aktif: 1 },
+  { id: "k54", n: "Checklist Syarat Sidang & Yudisium Interaktif", c: "karir", i: "✅", d: "Checklist berkas sidang & yudisium dengan progres tersimpan.", aktif: 1 },
+  { id: "k55", n: "Pembuat Kartu Flashcard Ujian (Cetak PDF)", c: "karir", i: "🃏", d: "Flashcard dua sisi dari daftar istilah–definisi, siap cetak.", aktif: 1 }
 ];
 
 /* ---------------- state & helper ---------------- */
@@ -2499,5 +2499,606 @@ function buatWallpaper() {
   prev.getContext("2d").drawImage(cv, 0, 0, 540, 960);
   cv.toBlob((b) => { window._wallpaperPng = b; }, "image/png");
   $("#krOut").innerHTML = '<div class="' + OUT + '"><button class="' + BTN + '" onclick="download(\'Wallpaper_Jadwal_Kuliah.png\', window._wallpaperPng)">⬇️ Download Wallpaper (1080×1920)</button></div>';
+}
+</script>
+
+<script>
+/* ============================================================
+   TOOLS 46–49 (Presentasi & Belajar lanjutan)
+   ============================================================ */
+/* ---------- 46. MIND MAP SKRIPSI ---------- */
+let mmData = store.get("mt_mindmap", null) || { pusat: "Skripsiku: Pengaruh Media Sosial", cabang: [
+  { nama: "BAB I — Masalah", sub: "Latar belakang, Rumusan masalah, Tujuan" },
+  { nama: "BAB II — Teori", sub: "Definisi, Indikator, Penelitian terdahulu" },
+  { nama: "BAB III — Metode", sub: "Populasi & sampel, Instrumen, Analisis" },
+  { nama: "BAB IV — Hasil", sub: "Uji validitas, Uji hipotesis, Pembahasan" },
+  { nama: "BAB V — Penutup", sub: "Kesimpulan, Saran" },
+  { nama: "Administrasi", sub: "Bimbingan, Revisi, Sidang" }
+] };
+UI.k46 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Topik Pusat", '<input id="mmPusat" class="' + IN + '" value="' + esc(mmData.pusat) + '" oninput="mmData.pusat=this.value">')
+    + '<div id="mmList" class="space-y-2 mb-3"></div>'
+    + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN2 + '" onclick="tambahCabang()">➕ Tambah Cabang</button>'
+    + '<button class="' + BTN + '" onclick="buatMindmap()">🧠 Gambar Mind Map</button></div>'
+    + outBox("mmOut") + "</div>";
+  renderCabangForm();
+  buatMindmap();
+};
+function renderCabangForm() {
+  $("#mmList").innerHTML = mmData.cabang.map((c, i) => '<div class="grid sm:grid-cols-2 gap-2"><input class="' + IN + '" placeholder="Nama cabang" value="' + esc(c.nama) + '" oninput="mmData.cabang[' + i + '].nama=this.value">'
+    + '<div class="flex gap-2"><input class="' + IN + '" placeholder="Sub-topik (pisahkan koma)" value="' + esc(c.sub) + '" oninput="mmData.cabang[' + i + '].sub=this.value"><button class="text-rose-500 font-bold px-2" onclick="mmData.cabang.splice(' + i + ',1);renderCabangForm()">✕</button></div></div>').join("");
+}
+function tambahCabang() { if (mmData.cabang.length >= 8) { toast("Maksimal 8 cabang agar tetap terbaca."); return; } mmData.cabang.push({ nama: "Cabang baru", sub: "" }); renderCabangForm(); }
+function buatMindmap() {
+  store.set("mt_mindmap", mmData);
+  const branches = mmData.cabang.filter((c) => c.nama.trim());
+  const W = 1020, H = 640, cx = W / 2, cy = H / 2;
+  const colors = ["#2F5FE8", "#7C3AED", "#059669", "#D97706", "#DC2626", "#0EA5E9", "#DB2777", "#65A30D"];
+  let svg = '<svg id="mmSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + " " + H + '" class="w-full bg-white rounded-xl border border-slate-200">';
+  branches.forEach((b, i) => {
+    const ang = (2 * Math.PI * i) / branches.length - Math.PI / 2;
+    const bx = cx + Math.cos(ang) * 350, by = cy + Math.sin(ang) * 215;
+    const mx = cx + Math.cos(ang) * 175, my = cy + Math.sin(ang) * 108;
+    svg += '<path d="M' + cx + "," + cy + " Q" + mx + "," + my + " " + bx + "," + by + '" fill="none" stroke="' + colors[i % colors.length] + '" stroke-width="3.5"/>';
+  });
+  branches.forEach((b, i) => {
+    const ang = (2 * Math.PI * i) / branches.length - Math.PI / 2;
+    const bx = cx + Math.cos(ang) * 350, by = cy + Math.sin(ang) * 215;
+    const subs = b.sub.split(",").map((s) => s.trim()).filter(Boolean).slice(0, 5);
+    const bw = 216, bh = 44 + subs.length * 19;
+    svg += '<rect x="' + (bx - bw / 2) + '" y="' + (by - bh / 2) + '" width="' + bw + '" height="' + bh + '" rx="13" fill="#FFF" stroke="' + colors[i % colors.length] + '" stroke-width="2.4"/>';
+    svg += '<text x="' + bx + '" y="' + (by - bh / 2 + 27) + '" text-anchor="middle" font-family="sans-serif" font-size="14.5" font-weight="800" fill="' + colors[i % colors.length] + '">' + xe(b.nama) + "</text>";
+    subs.forEach((s, si) => { svg += '<text x="' + bx + '" y="' + (by - bh / 2 + 52 + si * 19) + '" text-anchor="middle" font-family="sans-serif" font-size="12.5" fill="#334155">• ' + xe(s) + "</text>"; });
+  });
+  svg += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="128" ry="58" fill="#122B78"/>';
+  const pusat = mmData.pusat.length > 42 ? mmData.pusat.slice(0, 41) + "…" : mmData.pusat;
+  svg += '<text x="' + cx + '" y="' + (cy + 6) + '" text-anchor="middle" font-family="sans-serif" font-size="15.5" font-weight="800" fill="#FFFFFF">' + xe(pusat) + "</text>";
+  svg += "</svg>";
+  window._mmOutline = mmData.pusat + "\n" + branches.map((b) => "├─ " + b.nama + (b.sub ? "\n│   " + b.sub.split(",").map((s) => "• " + s.trim()).join("\n│   ") : "")).join("\n");
+  $("#mmOut").innerHTML = '<div class="' + OUT + '">' + svg
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'mmSvg\', \'MindMap_Skripsi.png\')">⬇️ Download Mind Map (PNG)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(window._mmOutline)">📋 Copy Outline Teks</button></div></div>';
+}
+
+/* ---------- 47. KUIS INTERAKTIF & FLASHCARD ---------- */
+let fcCards = store.get("mt_flash", []), fcIdx = 0, fcFlip = false;
+let quiz = null;
+UI.k47 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Daftar Soal & Jawaban", '<textarea id="fcIn" rows="7" class="' + IN + '" placeholder="Satu soal per baris, format: Soal | Jawaban&#10;Contoh:&#10;Ibu kota Indonesia? | Jakarta&#10;Rumus luas lingkaran? | π × r²">Ibu kota Indonesia? | Jakarta&#10;Tahun kemerdekaan Indonesia? | 1945&#10;Rumus luas lingkaran? | π × r²&#10;Lambang unsur emas? | Au&#10;Penulis novel Laskar Pelangi? | Andrea Hirata</textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN + '" onclick="muatKartu()">🃏 Mode Flashcard</button>'
+    + '<button class="' + BTN + '" style="background:#059669" onclick="mulaiKuis()">🎯 Mode Kuis Pilihan Ganda</button></div>'
+    + outBox("fcOut") + "</div>";
+};
+function parseKartu() {
+  const lines = $("#fcIn").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const cards = [];
+  lines.forEach((l) => { const parts = l.split("|"); if (parts.length >= 2) cards.push({ q: parts[0].trim(), a: parts.slice(1).join("|").trim() }); });
+  return cards;
+}
+function muatKartu() {
+  fcCards = parseKartu();
+  if (fcCards.length < 1) { $("#fcOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Tidak ada soal terbaca — pakai format "Soal | Jawaban" per baris.</div>'; return; }
+  store.set("mt_flash", fcCards); fcIdx = 0; fcFlip = false; quiz = null;
+  renderKartu();
+}
+function renderKartu() {
+  const c = fcCards[fcIdx];
+  $("#fcOut").innerHTML = '<div class="' + OUT + '"><div class="flex items-center justify-between mb-3"><span class="font-bold text-sm">Kartu ' + (fcIdx + 1) + " / " + fcCards.length + '</span><span class="text-xs text-slate-500">Klik kartu untuk membalik 🔄</span></div>'
+    + '<button onclick="fcFlip=!fcFlip;renderKartu()" class="w-full rounded-2xl p-8 min-h-[170px] text-center shadow-inner ' + (fcFlip ? "bg-emerald-600 text-white" : "bg-white dark:bg-slate-900 border-2 border-brand-200 dark:border-brand-800") + '">'
+    + '<div class="text-[11px] font-bold uppercase tracking-widest opacity-70 mb-2">' + (fcFlip ? "Jawaban" : "Pertanyaan") + '</div>'
+    + '<div class="text-xl font-extrabold leading-snug">' + esc(fcFlip ? c.a : c.q) + "</div></button>"
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN2 + '" onclick="fcIdx=(fcIdx-1+' + fcCards.length + ")%" + fcCards.length + ';fcFlip=false;renderKartu()">⬅️ Sebelumnya</button>'
+    + '<button class="' + BTN2 + '" onclick="fcAcak()">🔀 Acak Urutan</button>'
+    + '<button class="' + BTN + '" onclick="fcIdx=(fcIdx+1)%' + fcCards.length + ';fcFlip=false;renderKartu()">Berikutnya ➡️</button>'
+    + '<button class="' + BTN2 + '" onclick="download(\'Flashcard.txt\', fcCards.map((c,i)=>\'Soal \'+(i+1)+\': \'+c.q+\'\\nJawab: \'+c.a).join(\'\\n\\n\'))">⬇️ Download Daftar</button></div></div>';
+}
+function fcAcak() { for (let i = fcCards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [fcCards[i], fcCards[j]] = [fcCards[j], fcCards[i]]; } fcIdx = 0; fcFlip = false; renderKartu(); }
+function mulaiKuis() {
+  fcCards = parseKartu();
+  if (fcCards.length < 4) { $("#fcOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Mode kuis butuh minimal 4 soal agar ada 3 pengecoh. Tambahkan soal dulu ya.</div>'; return; }
+  store.set("mt_flash", fcCards);
+  const order = fcCards.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [order[i], order[j]] = [order[j], order[i]]; }
+  quiz = { order, idx: 0, score: 0, answered: false };
+  renderKuis();
+}
+function renderKuis() {
+  const total = quiz.order.length;
+  if (quiz.idx >= total) {
+    const pct = Math.round(quiz.score / total * 100);
+    window._quizResult = { score: quiz.score, total, pct };
+    $("#fcOut").innerHTML = '<div class="' + OUT + ' text-center"><div class="text-5xl mb-2">' + (pct >= 80 ? "🏆" : pct >= 60 ? "🎉" : "💪") + '</div>'
+      + '<p class="text-xl font-extrabold">Skor Akhir: ' + quiz.score + " / " + total + " (" + pct + '%)</p>'
+      + '<p class="text-sm text-slate-500 mt-1 mb-4">' + (pct >= 80 ? "Luar biasa — materi sudah menempel!" : pct >= 60 ? "Bagus! Sedikit lagi sampai tuntas." : "Tidak apa-apa — balik ke flashcard, putar lagi, pasti naik.") + "</p>"
+      + '<div class="flex flex-wrap gap-2 justify-center"><button class="' + BTN + '" onclick="mulaiKuis()">🔄 Ulangi Kuis</button>'
+      + '<button class="' + BTN2 + '" onclick="muatKartu()">🃏 Ke Flashcard</button></div></div>';
+    return;
+  }
+  const card = fcCards[quiz.order[quiz.idx]];
+  if (!quiz.opts) {
+    const others = fcCards.filter((_, i) => i !== quiz.order[quiz.idx]).map((c) => c.a);
+    for (let i = others.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [others[i], others[j]] = [others[j], others[i]]; }
+    quiz.opts = [card.a, ...others.slice(0, 3)];
+    for (let i = quiz.opts.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [quiz.opts[i], quiz.opts[j]] = [quiz.opts[j], quiz.opts[i]]; }
+  }
+  $("#fcOut").innerHTML = '<div class="' + OUT + '"><div class="flex items-center justify-between mb-3"><span class="font-bold text-sm">Soal ' + (quiz.idx + 1) + " / " + total + '</span><span class="rounded-lg bg-white dark:bg-slate-900 px-2.5 py-1 text-sm font-bold">Skor: ' + quiz.score + "</span></div>"
+    + '<p class="text-lg font-extrabold mb-4">' + esc(card.q) + "</p>"
+    + '<div class="grid gap-2">' + quiz.opts.map((o, i) => '<button id="qopt' + i + '" class="text-left rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 font-semibold hover:border-brand-400 transition" onclick="jawabKuis(' + i + ')">' + "ABCD"[i] + ". " + esc(o) + "</button>").join("") + "</div>"
+    + '<div id="qFeed" class="mt-4"></div></div>';
+}
+function jawabKuis(i) {
+  if (quiz.answered) return;
+  quiz.answered = true;
+  const card = fcCards[quiz.order[quiz.idx]];
+  const benar = quiz.opts[i] === card.a;
+  if (benar) quiz.score++;
+  quiz.opts.forEach((o, j) => {
+    const b = $("#qopt" + j); if (!b) return;
+    b.disabled = true;
+    if (o === card.a) b.className = b.className.replace("border-slate-200 dark:border-slate-700", "border-emerald-500") + " bg-emerald-50 dark:bg-emerald-900/30";
+    else if (j === i) b.className = b.className.replace("border-slate-200 dark:border-slate-700", "border-rose-500") + " bg-rose-50 dark:bg-rose-900/30";
+  });
+  $("#qFeed").innerHTML = '<div class="rounded-xl p-3.5 font-semibold ' + (benar ? "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-800 dark:text-emerald-200" : "bg-rose-100 dark:bg-rose-900/40 text-rose-800 dark:text-rose-200") + '">'
+    + (benar ? "✅ Betul! Kerja bagus." : "❌ Belum tepat — jawaban benar: <b>" + esc(card.a) + "</b>") + "</div>"
+    + '<button class="' + BTN + ' mt-3" onclick="quiz.idx++;quiz.answered=false;quiz.opts=null;renderKuis()">' + (quiz.idx + 1 >= quiz.order.length ? "🏁 Lihat Hasil" : "Soal Berikutnya ➡️") + "</button>";
+}
+
+/* ---------- 48. CORNELL NOTES ---------- */
+let cornellNotes = store.get("mt_cornell", []);
+UI.k48 = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Judul / Topik", '<input id="cnJud" class="' + IN + '" placeholder="cth: Bab 3 — Metode Penelitian Kuantitatif">')
+    + field("Tanggal", '<input id="cnTgl" type="date" class="' + IN + '" value="' + new Date().toISOString().slice(0, 10) + '">')
+    + '</div><div class="grid sm:grid-cols-[1fr_2fr] gap-x-4">'
+    + field("Kolom Isyarat (kata kunci & pertanyaan pemicu)", '<textarea id="cnCue" rows="8" class="' + IN + '" placeholder="Satu isyarat per baris:&#10;Apa itu populasi?&#10;Syarat sampel baik&#10;Rumus Slovin"></textarea>')
+    + field("Kolom Catatan Utama", '<textarea id="cnNote" rows="8" class="' + IN + '" placeholder="Catatan inti dari buku/kuliah — sejajarkan dengan isyarat di kiri."></textarea>')
+    + '</div>'
+    + field("Ringkasan (tulis dengan kata-katamu sendiri)", '<textarea id="cnSum" rows="3" class="' + IN + '" placeholder="Satu-dua kalimat simpulan seluruh catatan ini."></textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN + '" onclick="simpanCornell()">💾 Simpan Catatan</button>'
+    + '<button class="' + BTN2 + '" onclick="eksporCornell()">⬇️ Download .doc</button>'
+    + '<button class="' + BTN2 + '" onclick="pratinjauCornell()">👁 Pratinjau Tata Letak</button></div>'
+    + '<div id="cnList" class="space-y-2 mb-3"></div>'
+    + outBox("cnOut") + "</div>";
+  renderCornellList();
+};
+function cornellDoc(n) {
+  const cues = n.cue.split(/\n/).map((s) => s.trim()).filter(Boolean).map((c) => "<p>• " + esc(c) + "</p>").join("");
+  const notes = n.note.split(/\n/).map((s) => s.trim()).filter(Boolean).map((c) => "<p>" + esc(c) + "</p>").join("");
+  return "<html><body style='font-family:serif'><h3>" + esc(n.judul) + "</h3><p>Tanggal: " + esc(n.tgl) + "</p>"
+    + "<table border='1' cellspacing='0' cellpadding='8' style='border-collapse:collapse;width:100%'><tr><th style='width:30%'>Isyarat / Pertanyaan</th><th>Catatan</th></tr><tr><td valign='top'>" + cues + "</td><td valign='top'>" + notes + "</td></tr>"
+    + "<tr><td colspan='2'><b>Ringkasan:</b> " + esc(n.sum) + "</td></tr></table>"
+    + "<p style='font-size:9pt;color:#666'>Metode Cornell — dibuat dengan MahasiswaTools</p></body></html>";
+}
+function ambilCornellForm() { const g = (id) => $("#" + id).value.trim(); return { judul: g("cnJud") || "Catatan Tanpa Judul", tgl: g("cnTgl"), cue: $("#cnCue").value, note: $("#cnNote").value, sum: g("cnSum") }; }
+function simpanCornell() {
+  const n = ambilCornellForm();
+  cornellNotes.unshift(n); store.set("mt_cornell", cornellNotes);
+  renderCornellList(); toast("Catatan Cornell tersimpan 📓");
+}
+function renderCornellList() {
+  const el = $("#cnList"); if (!el) return;
+  el.innerHTML = cornellNotes.length ? '<p class="text-xs font-bold text-slate-500 mb-1">CATATAN TERSIMPAN:</p>' + cornellNotes.map((n, i) => '<div class="flex items-center gap-2 text-sm rounded-lg bg-slate-50 dark:bg-slate-800 px-3 py-2"><span class="flex-1 font-semibold truncate">📓 ' + esc(n.judul) + '</span><span class="text-xs text-slate-500">' + esc(n.tgl) + '</span><button class="font-bold text-brand-600" onclick="bukaCornell(' + i + ')">Buka</button><button class="text-rose-500 font-bold" onclick="cornellNotes.splice(' + i + ',1);store.set(\'mt_cornell\',cornellNotes);renderCornellList()">✕</button></div>').join("") : "";
+}
+function bukaCornell(i) { const n = cornellNotes[i]; $("#cnJud").value = n.judul; $("#cnTgl").value = n.tgl; $("#cnCue").value = n.cue; $("#cnNote").value = n.note; $("#cnSum").value = n.sum; pratinjauCornell(); }
+function eksporCornell() { const n = ambilCornellForm(); window._cornellDocStr = cornellDoc(n); download("Cornell_Notes.doc", window._cornellDocStr, "application/msword"); }
+function pratinjauCornell() {
+  const n = ambilCornellForm();
+  const cues = n.cue.split(/\n/).filter((s) => s.trim()).map((c) => '<p class="font-semibold text-brand-700 dark:text-brand-300 mb-2">• ' + esc(c) + "</p>").join("");
+  const notes = n.note.split(/\n/).filter((s) => s.trim()).map((c) => '<p class="mb-2 leading-relaxed">' + esc(c) + "</p>").join("");
+  $("#cnOut").innerHTML = '<div class="' + OUT + '"><div class="bg-white dark:bg-slate-900 rounded-lg border border-slate-300 dark:border-slate-600 overflow-hidden">'
+    + '<div class="px-4 py-3 border-b border-slate-300 dark:border-slate-600 flex justify-between"><b>' + esc(n.judul) + '</b><span class="text-sm text-slate-500">' + esc(n.tgl) + "</span></div>"
+    + '<div class="grid grid-cols-[1fr_2fr]"><div class="p-4 border-r border-slate-300 dark:border-slate-600 bg-brand-50/50 dark:bg-brand-900/10">' + (cues || '<p class="text-slate-400 text-sm">Kolom isyarat…</p>') + '</div><div class="p-4">' + (notes || '<p class="text-slate-400 text-sm">Kolom catatan…</p>') + "</div></div>"
+    + '<div class="px-4 py-3 border-t-2 border-slate-400 dark:border-slate-500 bg-amber-50 dark:bg-amber-900/20"><b>Ringkasan:</b> ' + esc(n.sum) + "</div></div></div>";
+}
+
+/* ---------- 49. POMODORO + SUARA FOKUS (WEB AUDIO) ---------- */
+let pomo = { remain: 25 * 60, total: 25 * 60, run: false, timer: null, endAt: 0, mode: "Fokus", sessions: store.get("mt_pomo_sessions", 0), actx: null, noiseSrc: null, noiseGain: null, noiseType: "" };
+UI.k49 = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="flex flex-wrap gap-2 justify-center mb-4">'
+    + [["Fokus", 25], ["Istirahat", 5], ["Istirahat Panjang", 15]].map(([m, mn]) => '<button class="rounded-full px-4 py-2 text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-brand-900 transition" onclick="setPomo(\'' + m + "'," + mn + ')">' + m + " " + mn + " mnt</button>").join("")
+    + '<span class="inline-flex items-center gap-2 text-sm font-bold">Kustom: <input id="pmMin" type="number" min="1" max="180" value="25" class="w-20 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-2 py-1.5"> mnt <button class="rounded-full px-3 py-1.5 bg-slate-100 dark:bg-slate-800 font-bold" onclick="setPomo(\'Kustom\', Number(document.getElementById(\'pmMin\').value)||25)">Set</button></span></div>'
+    + '<div class="flex justify-center my-2"><div class="relative w-[240px] h-[240px]">'
+    + '<svg viewBox="0 0 240 240" class="w-full h-full -rotate-90"><circle cx="120" cy="120" r="106" fill="none" stroke="#E2E8F0" stroke-width="13"/><circle id="pmRing" cx="120" cy="120" r="106" fill="none" stroke="#2F5FE8" stroke-width="13" stroke-linecap="round" stroke-dasharray="666" stroke-dashoffset="0"/></svg>'
+    + '<div class="absolute inset-0 flex flex-col items-center justify-center"><div id="pmClock" class="text-5xl font-extrabold tabular-nums">25:00</div><div id="pmMode" class="text-sm font-bold text-slate-500 mt-1">Mode Fokus</div></div></div></div>'
+    + '<div class="flex flex-wrap gap-2 justify-center mb-5"><button id="pmBtn" class="' + BTN + '" onclick="togglePomo()">▶️ Mulai Fokus</button>'
+    + '<button class="' + BTN2 + '" onclick="resetPomo()">↺ Reset</button>'
+    + '<span class="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-bold">🏆 Sesi fokus selesai: <span id="pmSess">' + pomo.sessions + "</span></span></div>"
+    + '<div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4"><h4 class="font-extrabold mb-2">🎧 Suara Latar (dibuat langsung oleh Web Audio API — tanpa file)</h4>'
+    + '<div class="flex flex-wrap gap-2 mb-3">' + [["white", "🌫 White Noise"], ["rain", "🌧 Hujan (low-pass)"], ["brown", "☕ Kafe (brown noise)"]].map(([t, l]) => '<button class="rounded-full px-4 py-2 text-sm font-bold bg-slate-100 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-brand-900 transition" onclick="putarNoise(\'' + t + "')\">" + l + "</button>").join("")
+    + '<button class="rounded-full px-4 py-2 text-sm font-bold bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-200" onclick="stopNoise()">⏹ Matikan Suara</button></div>'
+    + '<label class="text-sm font-semibold flex items-center gap-3">Volume <input id="pmVol" type="range" min="0" max="100" value="40" class="flex-1 accent-brand-600" oninput="aturVolumeNoise()"></label>'
+    + '<p id="pmNoiseStat" class="text-xs text-slate-500 mt-2">Suara mati. White/brown noise dibangkitkan dari buffer acak; hujan = white noise + filter low-pass 750 Hz.</p></div></div>';
+  gambarPomo();
+};
+function gambarPomo() {
+  const c = $("#pmClock"); if (!c) return;
+  const s = Math.max(0, pomo.remain);
+  c.textContent = String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  const ring = $("#pmRing"); if (ring) ring.style.strokeDashoffset = String(666 * (1 - (pomo.total ? s / pomo.total : 0)));
+  const m = $("#pmMode"); if (m) m.textContent = "Mode " + pomo.mode;
+  const b = $("#pmBtn"); if (b) b.textContent = pomo.run ? "⏸ Jeda" : "▶️ Mulai Fokus";
+}
+function setPomo(mode, menit) { stopPomoTimer(); pomo.mode = mode; pomo.total = pomo.remain = Math.max(1, menit) * 60; gambarPomo(); }
+function stopPomoTimer() { if (pomo.timer) clearInterval(pomo.timer); pomo.timer = null; pomo.run = false; }
+function togglePomo() {
+  if (pomo.run) { stopPomoTimer(); gambarPomo(); return; }
+  pomo.run = true; pomo.endAt = Date.now() + pomo.remain * 1000;
+  pomo.timer = setInterval(() => {
+    pomo.remain = Math.max(0, Math.round((pomo.endAt - Date.now()) / 1000));
+    gambarPomo();
+    if (pomo.remain <= 0) { stopPomoTimer(); gambarPomo(); pomoSelesai(); }
+  }, 250);
+  gambarPomo();
+}
+function resetPomo() { stopPomoTimer(); pomo.remain = pomo.total; gambarPomo(); }
+function pomoSelesai() {
+  bunyiAlarm();
+  if (pomo.mode === "Fokus" || pomo.mode === "Kustom") {
+    pomo.sessions++; store.set("mt_pomo_sessions", pomo.sessions);
+    const s = $("#pmSess"); if (s) s.textContent = pomo.sessions;
+    toast("🎉 Sesi fokus selesai! Istirahat dulu ya.");
+  } else toast("⏰ Istirahat selesai — siap gas lagi!");
+  pomo.remain = pomo.total;
+}
+function bunyiAlarm() {
+  try {
+    const ctx = pomo.actx || new (window.AudioContext || window.webkitAudioContext)();
+    pomo.actx = ctx;
+    [0, 0.35, 0.7].forEach((off) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.type = "sine"; o.frequency.value = 880;
+      g.gain.setValueAtTime(0.0001, ctx.currentTime + off);
+      g.gain.exponentialRampToValueAtTime(0.22, ctx.currentTime + off + 0.03);
+      g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + off + 0.28);
+      o.connect(g); g.connect(ctx.destination);
+      o.start(ctx.currentTime + off); o.stop(ctx.currentTime + off + 0.3);
+    });
+  } catch (e) {}
+}
+function buatNoiseBuffer(ctx, type) {
+  const len = ctx.sampleRate * 2, buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+  let last = 0;
+  for (let i = 0; i < len; i++) {
+    const w = Math.random() * 2 - 1;
+    if (type === "brown") { last = (last + 0.02 * w) / 1.02; d[i] = last * 3.2; }
+    else d[i] = w;
+  }
+  return buf;
+}
+function putarNoise(type) {
+  stopNoise(true);
+  try {
+    if (!pomo.actx) pomo.actx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = pomo.actx;
+    if (ctx.state === "suspended") ctx.resume();
+    const src = ctx.createBufferSource();
+    src.buffer = buatNoiseBuffer(ctx, type === "brown" ? "brown" : "white");
+    src.loop = true;
+    const gain = ctx.createGain(); gain.gain.value = (Number($("#pmVol") ? $("#pmVol").value : 40) / 100) * 0.5;
+    let node = src;
+    if (type === "rain") { const f = ctx.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 750; src.connect(f); node = f; }
+    node.connect(gain); gain.connect(ctx.destination);
+    src.start();
+    pomo.noiseSrc = src; pomo.noiseGain = gain; pomo.noiseType = type;
+    const st = $("#pmNoiseStat"); if (st) st.textContent = "🔊 Sedang memutar: " + type + " noise (dibangkitkan real-time oleh Web Audio API).";
+  } catch (e) { toast("Audio tidak tersedia di browser ini."); }
+}
+function aturVolumeNoise() { if (pomo.noiseGain && pomo.actx) pomo.noiseGain.gain.setTargetAtTime((Number($("#pmVol").value) / 100) * 0.5, pomo.actx.currentTime, 0.05); }
+function stopNoise(senyap) {
+  if (pomo.noiseSrc) { try { pomo.noiseSrc.stop(); } catch (e) {} pomo.noiseSrc = null; pomo.noiseType = ""; }
+  if (!senyap) { const st = $("#pmNoiseStat"); if (st) st.textContent = "Suara mati."; }
+}
+const _prevStop2 = window._teleStop;
+window._teleStop = function () { if (_prevStop2) _prevStop2(); stopPomoTimer(); stopNoise(true); };
+</script>
+
+<script>
+/* ============================================================
+   TOOLS 50–52 (Karier & Akademik)
+   ============================================================ */
+/* ---------- 50. MOTIVATION LETTER & SURAT LAMARAN ---------- */
+UI.k50 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Jenis Surat", '<select id="mlJenis" class="' + IN + '" onchange="mlToggle()"><option value="beasiswa">🎓 Motivation Letter — Beasiswa (Bahasa Inggris)</option><option value="lamaran">💼 Surat Lamaran Kerja (Bahasa Indonesia)</option><option value="magang">🧑‍🎓 Surat Pengantar Magang (Bahasa Indonesia)</option></select>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Lengkap", '<input id="mlNama" class="' + IN + '" placeholder="Nama kamu">')
+    + field("Kota & Tanggal", '<input id="mlKota" class="' + IN + '" value="Palembang, ' + new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) + '">')
+    + field("Tujuan (Program/Posisi)", '<input id="mlTujuan" class="' + IN + '" placeholder="cth: Beasiswa Unggulan 2026 / Staff Administrasi">')
+    + field("Institusi Tujuan", '<input id="mlInst" class="' + IN + '" placeholder="cth: Kemendikbudristek / PT Maju Bersama">')
+    + field("Latar Belakang Singkatmu", '<textarea id="mlLatar" rows="3" class="' + IN + '" placeholder="Jurusan, universitas, IPK/prestasi relevan — 2-3 kalimat"></textarea>')
+    + field("Alasan Memilih Program/Posisi Ini", '<textarea id="mlAlasan" rows="3" class="' + IN + '" placeholder="Kenapa program ini, kenapa kamu — hubungkan dengan tujuan masa depanmu"></textarea>')
+    + field("Keahlian & Pengalaman Andalan", '<textarea id="mlSkill" rows="3" class="' + IN + '" placeholder="Pengalaman organisasi/magang/proyek + keahlian yang paling relevan"></textarea>')
+    + field("Kontak (email • telepon • LinkedIn)", '<input id="mlKontak" class="' + IN + '" placeholder="cth: nama@email.com • 08xx • linkedin.com/in/nama">')
+    + '</div><button class="' + BTN + '" onclick="buatMotlet()">✉️ Generate Surat</button>' + outBox("mlOut") + "</div>";
+};
+function mlToggle() { toast("Jenis surat: " + $("#mlJenis").selectedOptions[0].textContent); }
+function buatMotlet() {
+  const g = (id) => $("#" + id).value.trim();
+  const jenis = $("#mlJenis").value, nama = g("mlNama") || "Nama Kamu", kota = g("mlKota"), tujuan = g("mlTujuan") || "(tujuan)", inst = g("mlInst") || "(institusi)", latar = g("mlLatar"), alasan = g("mlAlasan"), skill = g("mlSkill"), kontak = g("mlKontak");
+  let surat = "";
+  if (jenis === "beasiswa") {
+    surat = kota.replace(/,.*/, "") + ", " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) + "\n\nDear " + inst + " Scholarship Committee,\n\n"
+      + "I am writing to express my strong interest in applying for the " + tujuan + ". " + (latar || "I am an undergraduate student with a deep commitment to academic excellence and community contribution.") + "\n\n"
+      + (alasan || "I believe this program aligns strongly with my academic goals and future aspirations.") + " Through this opportunity, I hope to deepen my expertise, broaden my perspective, and return that knowledge to benefit my community and country.\n\n"
+      + (skill || "Throughout my studies, I have developed relevant skills and experiences that have prepared me well for this program.") + " These experiences have strengthened my discipline, leadership, and resilience — qualities I will carry throughout the program.\n\n"
+      + "I would be honoured to be considered for this opportunity. Thank you very much for your time and consideration. I look forward to the possibility of contributing to and learning from this program.\n\nSincerely,\n\n\n" + nama + (kontak ? "\n" + kontak : "");
+  } else if (jenis === "lamaran") {
+    surat = kota + "\n\nKepada Yth.\nHRD / Pimpinan " + inst + "\ndi tempat\n\nPerihal: Lamaran Pekerjaan — " + tujuan + "\n\nDengan hormat,\n\n"
+      + "Berdasarkan informasi lowongan yang saya peroleh, saya bermaksud melamar posisi " + tujuan + " di " + inst + ". " + (latar || "Saya adalah lulusan yang memiliki semangat belajar tinggi dan siap berkontribusi.") + "\n\n"
+      + (skill || "Selama ini saya telah mengembangkan keahlian dan pengalaman yang relevan dengan posisi tersebut.") + " Saya terbiasa bekerja dengan target, teliti, dan mampu bekerja sama dalam tim.\n\n"
+      + (alasan || "Saya tertarik bergabung dengan " + inst + " karena reputasi dan nilai-nilai perusahaan yang sejalan dengan tujuan karier saya.") + " Besar harapan saya untuk dapat mengikuti proses seleksi lebih lanjut. Terima kasih atas perhatian dan kesempatan yang diberikan.\n\nHormat saya,\n\n\n" + nama + (kontak ? "\n" + kontak : "");
+  } else {
+    surat = kota + "\n\nKepada Yth.\nPimpinan " + inst + "\ndi tempat\n\nPerihal: Permohonan Magang / Praktik Kerja Lapangan\n\nDengan hormat,\n\n"
+      + "Saya yang bertanda tangan di bawah ini, " + nama + ", bermaksud mengajukan permohonan magang pada posisi/bidang " + tujuan + " di " + inst + ". " + (latar || "Saya merupakan mahasiswa aktif yang ingin menerapkan ilmu perkuliahan ke dalam praktik kerja nyata.") + "\n\n"
+      + (skill || "Saya memiliki keahlian dasar yang relevan dan kemauan belajar yang tinggi.") + " " + (alasan || "Saya memilih " + inst + " karena lingkungan kerja dan bidangnya sesuai dengan kompetensi yang ingin saya kembangkan.") + "\n\nDemikian surat permohonan ini saya sampaikan. Besar harapan saya untuk dapat diterima dan belajar di " + inst + ". Atas perhatian Bapak/Ibu, saya ucapkan terima kasih.\n\nHormat saya,\n\n\n" + nama + (kontak ? "\n" + kontak : "");
+  }
+  window._motlet = surat;
+  $("#mlOut").innerHTML = '<div class="' + OUT + '"><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[15px]" style="font-family:Georgia,serif">' + esc(surat) + "</div>"
+    + '<p class="text-xs text-slate-500 mt-2">Kerangka surat profesional — sesuaikan kalimat berisi pengalamanmu agar terasa personal, jangan kirim mentah-mentah.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="copyText(window._motlet)">📋 Copy Surat</button>'
+    + '<button class="' + BTN2 + '" onclick="download(\'Surat.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt;white-space:pre-wrap&quot;>\' + esc(window._motlet) + \'</body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
+}
+
+/* ---------- 51. SIMULASI WAWANCARA KERJA ---------- */
+const BANK_WAWANCARA = [
+  ["Pembuka", "Ceritakan tentang diri Anda.", ["Perkenalkan nama & latar pendidikan singkat", "Sambungkan ke pengalaman paling relevan dengan posisi ini", "Tutup dengan alasan melamar di sini — rumus: Sekarang → Pengalaman → Alasan"]],
+  ["Pembuka", "Mengapa Anda tertarik melamar di perusahaan kami?", ["Sebut 1–2 hal spesifik tentang perusahaan (produk, nilai, proyek)", "Hubungkan dengan keahlian/ketertarikanmu", "Tunjukkan riset — jangan jawab generik"]],
+  ["Tentang Diri", "Apa kelebihan terbesar Anda?", ["Pilih kelebihan yang relevan dengan posisi", "Buktikan dengan contoh nyata + hasil terukur", "Hindari klise tanpa bukti ('saya pekerja keras' saja tidak cukup)"]],
+  ["Tentang Diri", "Apa kekurangan Anda, dan bagaimana Anda mengatasinya?", ["Pilih kekurangan nyata tapi tidak fatal untuk posisi ini", "Fokus 70% jawaban pada langkah perbaikan yang sedang berjalan", "Tunjukkan progres konkret, bukan sekadar pengakuan"]],
+  ["Situasional (STAR)", "Ceritakan saat Anda menghadapi konflik dalam tim.", ["S — Situasi: konteks singkat konfliknya", "T — Tugas: peran/tanggung jawabmu di situ", "A — Aksi: langkah konkret yang KAMU ambil", "R — Hasil: penyelesaian + pelajaran yang dipetik"]],
+  ["Situasional (STAR)", "Ceritakan pengalaman Anda mengejar deadline yang sangat ketat.", ["S — Situasi: proyek & batas waktunya", "T — Tugas: target yang harus dicapai", "A — Aksi: prioritisasi, pembagian kerja, komunikasi", "R — Hasil: selesai tepat waktu + angka bila ada"]],
+  ["Situasional (STAR)", "Ceritakan kegagalan terbesar Anda dan apa yang Anda pelajari.", ["S — Situasi: kegagalan yang jujur tapi aman", "T — Tugas: peranmu", "A — Aksi: bagaimana kamu menanganinya & memperbaikinya", "R — Hasil: perubahan nyata setelahnya — pewawancara menilai kedewasaan, bukan kesempurnaan"]],
+  ["Penutup", "Di mana Anda melihat diri Anda 5 tahun ke depan?", ["Tunjukkan ambisi yang realistis & searah dengan posisi ini", "Sebut keahlian yang ingin dikuasai", "Sinyalkan komitmen jangka panjang pada bidang ini"]],
+  ["Penutup", "Berapa gaji yang Anda harapkan?", ["Riset rentang pasar posisi & kotamu dulu", "Jawab dengan rentang, bukan satu angka mati", "Dasarkan pada pengalaman & tanggung jawab posisi"]],
+  ["Penutup", "Apakah ada yang ingin Anda tanyakan kepada kami?", ["SELALU siapkan 2 pertanyaan (tentang tim, target 3 bulan pertama, budaya kerja)", "Jangan tanya gaji/cuti di tahap ini", "Pertanyaan bagus = sinyal kandidat serius"]]
+];
+let wawState = { cur: null, done: store.get("mt_waw_done", 0), timer: null, remain: 0 };
+UI.k51 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Kategori Pertanyaan", '<select id="wwCat" class="' + IN + '"><option value="">🎲 Acak Semua</option>' + [...new Set(BANK_WAWANCARA.map((q) => q[0]))].map((c) => "<option>" + c + "</option>").join("") + "</select>")
+    + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN + '" onclick="tanyaWawancara()">🎤 Mulai Pertanyaan</button>'
+    + '<span class="rounded-lg bg-slate-100 dark:bg-slate-800 px-3 py-2 text-sm font-bold">Latihan selesai: <span id="wwProg">' + wawState.done + "</span> sesi</span></div>"
+    + outBox("wwOut") + "</div>";
+  $("#wwOut").innerHTML = '<div class="' + OUT + ' text-slate-500">Simulasi wawancara: pertanyaan muncul, kamu punya 90 detik untuk menjawab dengan suara lantang (seperti wawancara sungguhan), lalu periksa kerangka jawabannya. Untuk pertanyaan situasional, pakai metode STAR: Situation → Task → Action → Result.</div>';
+};
+function wwStop() { if (wawState.timer) { clearInterval(wawState.timer); wawState.timer = null; } }
+function tanyaWawancara() {
+  const cat = $("#wwCat").value;
+  const pool = BANK_WAWANCARA.filter((q) => !cat || q[0] === cat);
+  let q; do { q = pool[Math.floor(Math.random() * pool.length)]; } while (pool.length > 1 && wawState.cur && q[1] === wawState.cur[1]);
+  wawState.cur = q;
+  wwStop(); wawState.remain = 90;
+  wawState.timer = setInterval(() => { wawState.remain--; const c = $("#wwClock"); if (!c) { wwStop(); return; } if (wawState.remain <= 0) { wwStop(); c.textContent = "⏰ Waktu habis — tutup dengan kalimat penutup yang rapi!"; } else c.textContent = "⏱ Sisa waktu jawab: " + Math.floor(wawState.remain / 60) + ":" + String(wawState.remain % 60).padStart(2, "0"); }, 1000);
+  $("#wwOut").innerHTML = '<div class="' + OUT + ' fadein"><span class="text-[11px] font-bold bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-200 rounded-full px-2.5 py-1">' + esc(q[0]) + '</span>'
+    + '<p class="text-lg sm:text-xl font-extrabold leading-snug mt-3">🎤 "' + esc(q[1]) + '"</p>'
+    + '<p id="wwClock" class="text-sm font-bold text-slate-500 mt-2">⏱ Sisa waktu jawab: 1:30</p>'
+    + '<div id="wwFw" class="hidden mt-4"><h4 class="font-bold mb-1.5">🧭 Kerangka Jawaban:</h4><ol class="list-decimal list-inside space-y-1 text-sm leading-relaxed">' + q[2].map((f) => "<li>" + esc(f) + "</li>").join("") + "</ol></div>"
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN2 + '" onclick="document.getElementById(\'wwFw\').classList.remove(\'hidden\')">👁 Lihat Kerangka</button>'
+    + '<button class="' + BTN + '" onclick="wawState.done++;store.set(\'mt_waw_done\',wawState.done);document.getElementById(\'wwProg\').textContent=wawState.done;tanyaWawancara()">✅ Selesai — Pertanyaan Berikutnya</button></div></div>';
+}
+
+/* ---------- 52. KALENDER AKADEMIK & DEADLINE ---------- */
+let calEvents = store.get("mt_events", [
+  { date: new Date(Date.now() + 5 * 864e5).toISOString().slice(0, 10), title: "Batas akhir revisi Bab 3", type: "deadline" },
+  { date: new Date(Date.now() + 12 * 864e5).toISOString().slice(0, 10), title: "Seminar proposal", type: "ujian" }
+]);
+let calCursor = new Date(); calCursor.setDate(1);
+let calSelected = new Date().toISOString().slice(0, 10);
+UI.k52 = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="flex items-center justify-between mb-3">'
+    + '<button class="' + BTN2 + '" onclick="geserBulan(-1)">⬅️</button>'
+    + '<h4 id="calTitle" class="font-extrabold text-lg"></h4>'
+    + '<button class="' + BTN2 + '" onclick="geserBulan(1)">➡️</button></div>'
+    + '<div class="grid grid-cols-7 gap-1 text-center text-xs font-bold text-slate-500 mb-1">' + ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"].map((d) => "<div>" + d + "</div>").join("") + "</div>"
+    + '<div id="calGrid" class="grid grid-cols-7 gap-1 mb-4"></div>'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Tanggal Terpilih", '<input id="evTgl" type="date" class="' + IN + '">')
+    + field("Nama Kegiatan / Deadline", '<input id="evJud" class="' + IN + '" placeholder="cth: UAS Statistika / Batas kumpul laporan">')
+    + field("Jenis", '<select id="evJenis" class="' + IN + '"><option value="deadline">🔴 Deadline</option><option value="ujian">🟣 Ujian/Sidang</option><option value="kuliah">🔵 Kuliah/Kelas</option><option value="libur">🟢 Libur/Acara</option></select>')
+    + '</div><div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN + '" onclick="tambahEvent()">➕ Tambah ke Kalender</button>'
+    + '<button class="' + BTN2 + '" onclick="eksporIcs()">⬇️ Export .ics (Google Calendar)</button></div>'
+    + outBox("calOut") + "</div>";
+  renderKalender();
+};
+function geserBulan(d) { calCursor.setMonth(calCursor.getMonth() + d); renderKalender(); }
+function pilihTanggal(ds) { calSelected = ds; $("#evTgl").value = ds; renderKalender(); }
+function tambahEvent() {
+  const tgl = $("#evTgl").value || calSelected, jud = $("#evJud").value.trim();
+  if (!jud) { toast("Isi nama kegiatan dulu."); return; }
+  calEvents.push({ date: tgl, title: jud, type: $("#evJenis").value });
+  calEvents.sort((a, b) => a.date.localeCompare(b.date));
+  store.set("mt_events", calEvents);
+  $("#evJud").value = ""; renderKalender(); toast("Kegiatan ditambahkan 📅");
+}
+function hapusEvent(i) { calEvents.splice(i, 1); store.set("mt_events", calEvents); renderKalender(); }
+function renderKalender() {
+  const title = $("#calTitle"); if (!title) return;
+  const y = calCursor.getFullYear(), m = calCursor.getMonth();
+  title.textContent = calCursor.toLocaleDateString("id-ID", { month: "long", year: "numeric" });
+  const first = (new Date(y, m, 1).getDay() + 6) % 7;
+  const days = new Date(y, m + 1, 0).getDate();
+  const today = new Date().toISOString().slice(0, 10);
+  const evMap = {};
+  calEvents.forEach((e) => { (evMap[e.date] = evMap[e.date] || []).push(e); });
+  const dot = { deadline: "#DC2626", ujian: "#7C3AED", kuliah: "#2F5FE8", libur: "#059669" };
+  let cells = "";
+  for (let i = 0; i < first; i++) cells += "<div></div>";
+  for (let d = 1; d <= days; d++) {
+    const ds = y + "-" + String(m + 1).padStart(2, "0") + "-" + String(d).padStart(2, "0");
+    const evs = evMap[ds] || [];
+    cells += '<button onclick="pilihTanggal(\'' + ds + '\')" class="rounded-lg py-1.5 text-sm font-semibold relative transition ' + (ds === calSelected ? "bg-brand-600 text-white" : ds === today ? "bg-brand-100 dark:bg-brand-900 text-brand-700 dark:text-brand-200" : "bg-slate-50 dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700") + '">' + d
+      + (evs.length ? '<span class="flex justify-center gap-0.5 mt-0.5">' + evs.slice(0, 3).map((e) => '<span class="w-1.5 h-1.5 rounded-full" style="background:' + dot[e.type] + '"></span>').join("") + "</span>" : "") + "</button>";
+  }
+  $("#calGrid").innerHTML = cells;
+  const now = new Date(); now.setHours(0, 0, 0, 0);
+  const upcoming = calEvents.map((e, i) => ({ ...e, i, diff: Math.round((new Date(e.date + "T00:00:00") - now) / 864e5) })).filter((e) => e.diff >= -1).sort((a, b) => a.diff - b.diff);
+  window._icsEvents = calEvents;
+  $("#calOut").innerHTML = '<div class="' + OUT + '"><h4 class="font-bold mb-2">⏳ Deadline & Kegiatan Terdekat:</h4>'
+    + (upcoming.length ? '<div class="space-y-1.5">' + upcoming.map((e) => '<div class="flex items-center gap-2 text-sm"><span class="rounded-md px-2 py-1 text-xs font-bold text-white" style="background:' + dot[e.type] + '">' + (e.diff < 0 ? "Kemarin" : e.diff === 0 ? "HARI INI" : "H-" + e.diff) + '</span><span class="text-slate-500 whitespace-nowrap">' + new Date(e.date + "T00:00:00").toLocaleDateString("id-ID", { day: "numeric", month: "short" }) + '</span><span class="flex-1 font-semibold">' + esc(e.title) + '</span><button class="text-rose-500 font-bold" onclick="hapusEvent(' + e.i + ')">✕</button></div>').join("") + "</div>" : '<p class="text-sm text-slate-500">Tidak ada kegiatan mendatang — tambahkan deadline pertamamu.</p>')
+    + '<p class="text-xs text-slate-500 mt-3">Klik tanggal di kalender untuk memilihnya, lalu isi nama kegiatan. File .ics bisa diimpor ke Google Calendar/Outlook agar deadline muncul di HP-mu.</p></div>';
+}
+function eksporIcs() {
+  const escIcs = (s) => String(s).replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
+  const ics = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//MahasiswaTools//Kalender Akademik//ID"]
+    .concat(calEvents.map((e) => ["BEGIN:VEVENT", "UID:" + e.date + "-" + e.title.length + "@mahasiswatools", "DTSTAMP:20260101T000000Z", "DTSTART;VALUE=DATE:" + e.date.replace(/-/g, ""), "SUMMARY:" + escIcs(e.title), "END:VEVENT"].join("\r\n")))
+    .concat(["END:VCALENDAR"]).join("\r\n");
+  window._icsText = ics;
+  download("Kalender_Akademik.ics", ics, "text/calendar");
+}
+</script>
+
+<script>
+/* ============================================================
+   TOOLS 53–55 (Karier & Belajar — penutup)
+   ============================================================ */
+/* ---------- 53. CV ATS-FRIENDLY BUILDER ---------- */
+const cvSaved = store.get("mt_cv", {});
+UI.k53 = function (el) {
+  const v = (k, d) => esc(cvSaved[k] != null ? cvSaved[k] : (d || ""));
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Lengkap", '<input id="cvNama" class="' + IN + '" value="' + v("nama") + '" placeholder="Nama sesuai KTP">')
+    + field("Posisi yang Dituju", '<input id="cvPosisi" class="' + IN + '" value="' + v("posisi") + '" placeholder="cth: Staff Administrasi">')
+    + field("Email", '<input id="cvEmail" class="' + IN + '" value="' + v("email") + '" placeholder="nama@email.com">')
+    + field("Telepon / WhatsApp", '<input id="cvTelp" class="' + IN + '" value="' + v("telp") + '" placeholder="08xxxxxxxxxx">')
+    + field("Kota Domisili", '<input id="cvKota" class="' + IN + '" value="' + v("kota") + '" placeholder="cth: Palembang">')
+    + field("LinkedIn / Portofolio", '<input id="cvLink" class="' + IN + '" value="' + v("link") + '" placeholder="linkedin.com/in/nama">')
+    + '</div>'
+    + field("Ringkasan Profesional (2–4 kalimat)", '<textarea id="cvRingkas" rows="3" class="' + IN + '" placeholder="Lulusan … dengan pengalaman … Terampil dalam …">' + v("ringkas") + "</textarea>")
+    + field("Pengalaman (format per blok)", '<textarea id="cvExp" rows="8" class="' + IN + '" placeholder="Blok dipisah baris kosong. Baris pertama: Posisi | Perusahaan | Periode. Baris berikutnya diawali - untuk poin pencapaian (pakai angka!):&#10;Asisten Survey | PT Anugrah Bumi Lestari | 2023–2025&#10;- Memproses 450+ data survei lahan dengan akurasi 98%&#10;- Mengelola arsip digital 12 proyek">' + v("exp") + "</textarea>")
+    + field("Pendidikan (satu per baris: Institusi | Jurusan | Tahun)", '<textarea id="cvEdu" rows="3" class="' + IN + '" placeholder="Universitas PGRI Palembang | S1 Ekonomi | 2014–2018">' + v("edu") + "</textarea>")
+    + field("Keahlian (pisahkan koma)", '<input id="cvSkill" class="' + IN + '" value="' + v("skill") + '" placeholder="Microsoft Excel, SPSS, Survei Lapangan, Administrasi, ...">')
+    + '<button class="' + BTN + '" onclick="buatCv()">📄 Generate CV + Skor ATS</button>' + outBox("cvOut") + "</div>";
+};
+function ambilCv() {
+  const g = (id) => $("#" + id).value.trim();
+  const data = { nama: g("cvNama"), posisi: g("cvPosisi"), email: g("cvEmail"), telp: g("cvTelp"), kota: g("cvKota"), link: g("cvLink"), ringkas: g("cvRingkas"), exp: $("#cvExp").value.trim(), edu: $("#cvEdu").value.trim(), skill: g("cvSkill") };
+  store.set("mt_cv", data);
+  return data;
+}
+function parseExp(text) {
+  return text.split(/\n\s*\n/).map((b) => b.trim()).filter(Boolean).map((b) => {
+    const lines = b.split(/\n/).map((l) => l.trim()).filter(Boolean);
+    const head = (lines[0] || "").split("|").map((s) => s.trim());
+    return { posisi: head[0] || "", perusahaan: head[1] || "", periode: head[2] || "", bullets: lines.slice(1).map((l) => l.replace(/^[-•]\s*/, "")) };
+  });
+}
+function cvPlainText(d) {
+  const exps = parseExp(d.exp);
+  const L = [d.nama.toUpperCase(), d.posisi, [d.email, d.telp, d.kota, d.link].filter(Boolean).join(" | "), "", "RINGKASAN PROFESIONAL", d.ringkas, "", "PENGALAMAN"];
+  exps.forEach((e) => { L.push([e.posisi, e.perusahaan, e.periode].filter(Boolean).join(" | ")); e.bullets.forEach((b) => L.push("- " + b)); L.push(""); });
+  L.push("PENDIDIKAN"); d.edu.split(/\n/).filter((s) => s.trim()).forEach((s) => L.push(s.trim()));
+  L.push("", "KEAHLIAN", d.skill);
+  return L.join("\n");
+}
+function skorAts(d) {
+  const exps = parseExp(d.exp);
+  const bullets = exps.flatMap((e) => e.bullets);
+  const skills = d.skill.split(",").map((s) => s.trim()).filter(Boolean);
+  const verbs = ["memimpin", "membuat", "mengelola", "meningkatkan", "memproses", "menganalisis", "mengembangkan", "merancang", "mengkoordinasikan", "menyusun", "melatih", "mengurangi", "mencapai", "mengoperasikan", "membantu"];
+  const words = cvPlainText(d).split(/\s+/).filter(Boolean).length;
+  const checks = [
+    ["Nama & posisi tujuan terisi", !!d.nama && !!d.posisi],
+    ["Email valid tercantum", /^\S+@\S+\.\S+$/.test(d.email)],
+    ["Nomor telepon tercantum", d.telp.replace(/\D/g, "").length >= 9],
+    ["Ringkasan profesional ≥ 25 kata", d.ringkas.split(/\s+/).filter(Boolean).length >= 25],
+    ["Minimal 1 pengalaman terstruktur", exps.length >= 1 && !!exps[0].posisi],
+    ["Poin pencapaian memakai angka (%, jumlah, dsb)", bullets.some((b) => /\d/.test(b))],
+    ["Poin pencapaian diawali kata kerja aksi", bullets.length > 0 && bullets.some((b) => verbs.some((v) => b.toLowerCase().startsWith(v)))],
+    ["Keahlian ≥ 5 butir", skills.length >= 5],
+    ["Pendidikan tercantum", d.edu.split(/\n/).filter((s) => s.trim()).length >= 1],
+    ["Panjang CV ideal (200–900 kata)", words >= 200 && words <= 900]
+  ];
+  const passed = checks.filter((c) => c[1]).length;
+  return { checks, score: Math.round(passed / checks.length * 100) };
+}
+function buatCv() {
+  const d = ambilCv();
+  if (!d.nama) { $("#cvOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Isi minimal Nama Lengkap dulu ya.</div>'; return; }
+  const exps = parseExp(d.exp), { checks, score } = skorAts(d);
+  window._cvText = cvPlainText(d);
+  window._cvScore = score;
+  const kontak = [d.email, d.telp, d.kota, d.link].filter(Boolean).join(" | ");
+  const cvHtml = '<div style="font-family:Arial,sans-serif;color:#111"><h1 style="font-size:22pt;margin:0">' + esc(d.nama) + '</h1><p style="font-size:12.5pt;margin:2pt 0"><b>' + esc(d.posisi) + '</b></p><p style="margin:2pt 0 10pt">' + esc(kontak) + '</p>'
+    + '<h2 style="font-size:12.5pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">RINGKASAN PROFESIONAL</h2><p>' + esc(d.ringkas) + '</p>'
+    + '<h2 style="font-size:12.5pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">PENGALAMAN</h2>'
+    + exps.map((e) => '<p style="margin:6pt 0 2pt"><b>' + esc(e.posisi) + "</b>" + (e.perusahaan ? " — " + esc(e.perusahaan) : "") + (e.periode ? ' <span style="color:#444">(' + esc(e.periode) + ")</span>" : "") + "</p>" + (e.bullets.length ? "<ul style='margin:2pt 0 8pt'>" + e.bullets.map((b) => "<li>" + esc(b) + "</li>").join("") + "</ul>" : "")).join("")
+    + '<h2 style="font-size:12.5pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">PENDIDIKAN</h2>' + d.edu.split(/\n/).filter((s) => s.trim()).map((s) => '<p style="margin:2pt 0">' + esc(s.trim()) + "</p>").join("")
+    + '<h2 style="font-size:12.5pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">KEAHLIAN</h2><p>' + esc(d.skill) + "</p></div>";
+  window._cvDoc = "<html><body>" + cvHtml + "</body></html>";
+  const scoreColor = score >= 80 ? "text-emerald-600" : score >= 55 ? "text-amber-600" : "text-rose-600";
+  $("#cvOut").innerHTML = '<div class="' + OUT + '"><div class="flex flex-wrap items-center gap-3 mb-4"><div class="rounded-2xl bg-white dark:bg-slate-900 px-5 py-3 text-center"><div class="text-3xl font-extrabold ' + scoreColor + '">' + score + '</div><div class="text-xs text-slate-500">Skor ATS (cek struktur)</div></div>'
+    + '<div class="flex-1 min-w-[230px] space-y-1">' + checks.map((c) => '<div class="text-xs font-semibold">' + (c[1] ? "✅" : "❌") + " " + c[0] + "</div>").join("") + "</div></div>"
+    + '<div class="bg-white text-slate-900 rounded-lg p-5 border border-slate-300 overflow-x-auto"><div style="min-width:520px">' + cvHtml + "</div></div>"
+    + '<p class="text-xs text-slate-500 mt-2">Format ATS-aman: satu kolom, tanpa tabel/grafik, judul seksi standar, font umum — mudah dibaca mesin penyaring lamaran. Skor menilai struktur & kelengkapan, bukan jaminan diterima.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="download(\'CV_ATS.doc\', window._cvDoc, \'application/msword\')">⬇️ Download CV (.doc)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(window._cvText)">📋 Copy Versi Teks Polos</button></div></div>';
+}
+
+/* ---------- 54. CEKLIS YUDISIUM & SIDANG ---------- */
+const YUDISIUM_DEFAULT = ["Skripsi final terjilid & ditandatangani seluruh penguji", "Upload file skripsi final (PDF) ke repository perpustakaan", "Surat keterangan bebas pustaka", "Surat bebas tanggungan UKT / keuangan kampus", "Bebas peminjaman alat & laboratorium", "Transkrip nilai sementara sudah diverifikasi BAAK", "Fotokopi ijazah SMA/SMK terlegalisir", "KTP & Kartu Keluarga terbaru", "Pas foto terbaru sesuai ketentuan kampus", "Formulir pendaftaran yudisium terisi lengkap", "Bukti pembayaran biaya wisuda", "Abstrak & artikel untuk jurnal kampus (bila disyaratkan)", "Sertifikat kompetensi / TOEFL (bila disyaratkan)", "Data ijazah di PDDikti terverifikasi (nama, NIK, tempat-tanggal lahir)"];
+let yudItems = store.get("mt_yudisium", null) || YUDISIUM_DEFAULT.map((t) => ({ t, done: false }));
+UI.k54 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="rounded-2xl border border-slate-200 dark:border-slate-700 p-4 mb-4"><div class="flex items-center justify-between mb-2"><b>Progres Kelengkapan Berkas</b><span id="ydPct" class="font-extrabold text-brand-600"></span></div>'
+    + '<div class="h-3.5 rounded-full bg-slate-200 dark:bg-slate-700"><div id="ydBar" class="h-3.5 rounded-full bg-gradient-to-r from-brand-500 to-emerald-500 transition-all" style="width:0%"></div></div></div>'
+    + '<div id="ydList" class="space-y-2 mb-4"></div>'
+    + '<div class="grid sm:grid-cols-[1fr_auto] gap-2 mb-4">' + '<input id="ydBaru" class="' + IN + '" placeholder="Tambah syarat khusus kampusmu…">' + '<button class="' + BTN2 + '" onclick="tambahYud()">➕ Tambah Syarat</button></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="eksporYud()">⬇️ Download Ceklis (.txt)</button>'
+    + '<button class="' + BTN2 + '" onclick="resetYud()">↺ Reset Semua</button></div></div>';
+  renderYud();
+};
+function renderYud() {
+  const list = $("#ydList"); if (!list) return;
+  list.innerHTML = yudItems.map((it, i) => '<label class="flex items-start gap-3 rounded-xl border px-4 py-3 cursor-pointer transition ' + (it.done ? "border-emerald-300 bg-emerald-50 dark:bg-emerald-900/20 dark:border-emerald-800" : "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900") + '">'
+    + '<input type="checkbox" class="w-5 h-5 mt-0.5 accent-emerald-600" ' + (it.done ? "checked" : "") + ' onchange="yudItems[' + i + '].done=this.checked;store.set(\'mt_yudisium\',yudItems);renderYud()">'
+    + '<span class="flex-1 text-sm font-semibold ' + (it.done ? "line-through opacity-60" : "") + '">' + esc(it.t) + "</span>"
+    + '<button class="text-rose-500 font-bold" onclick="event.preventDefault();yudItems.splice(' + i + ',1);store.set(\'mt_yudisium\',yudItems);renderYud()">✕</button></label>').join("");
+  const done = yudItems.filter((i) => i.done).length;
+  const pct = yudItems.length ? Math.round(done / yudItems.length * 100) : 0;
+  window._yudPct = pct;
+  $("#ydPct").textContent = done + " / " + yudItems.length + " beres (" + pct + "%)";
+  $("#ydBar").style.width = pct + "%";
+}
+function tambahYud() { const t = $("#ydBaru").value.trim(); if (!t) return; yudItems.push({ t, done: false }); store.set("mt_yudisium", yudItems); $("#ydBaru").value = ""; renderYud(); }
+function resetYud() { yudItems.forEach((i) => i.done = false); store.set("mt_yudisium", yudItems); renderYud(); }
+function eksporYud() {
+  const txt = "CEKLIS SYARAT SIDANG & YUDISIUM — MahasiswaTools\n\n" + yudItems.map((i) => (i.done ? "[✓] " : "[ ] ") + i.t).join("\n") + "\n\nProgres: " + window._yudPct + "%";
+  download("Ceklis_Yudisium.txt", txt);
+}
+
+/* ---------- 55. FLASHCARD CETAK (DEPAN–BELAKANG) ---------- */
+UI.k55 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Daftar Istilah & Definisi", '<textarea id="fpIn" rows="8" class="' + IN + '" placeholder="Satu kartu per baris, format: Istilah | Definisi&#10;Validitas | Tingkat ketepatan instrumen mengukur apa yang seharusnya diukur">Validitas | Ketepatan instrumen mengukur apa yang seharusnya diukur&#10;Reliabilitas | Konsistensi hasil pengukuran bila diulang&#10;Populasi | Seluruh subjek yang menjadi sasaran penelitian&#10;Sampel | Bagian populasi yang diambil sebagai responden&#10;Variabel Bebas | Variabel yang memengaruhi variabel lain&#10;Variabel Terikat | Variabel yang dipengaruhi variabel bebas&#10;Hipotesis | Dugaan sementara yang diuji kebenarannya&#10;Signifikansi | Taraf kesalahan yang ditoleransi (umumnya 5%)</textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN + '" onclick="buatFlashPrint()">🖨 Buat Lembar Cetak (Depan–Belakang)</button></div>'
+    + outBox("fpOut") + "</div>";
+};
+function buatFlashPrint() {
+  const lines = $("#fpIn").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const cards = [];
+  lines.forEach((l) => { const p = l.split("|"); if (p.length >= 2) cards.push({ t: p[0].trim(), d: p.slice(1).join("|").trim() }); });
+  const out = $("#fpOut");
+  if (!cards.length) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Tidak ada kartu terbaca — pakai format "Istilah | Definisi".</div>'; return; }
+  const perPage = 8, pages = [];
+  for (let s = 0; s < cards.length; s += perPage) pages.push(cards.slice(s, s + perPage));
+  const cardCss = "border:1.6pt dashed #94A3B8;border-radius:10pt;display:flex;align-items:center;justify-content:center;text-align:center;padding:12pt;min-height:118pt;";
+  const frontPage = (pg, idx) => '<div class="page"><h3 style="font-family:sans-serif;color:#64748B">HALAMAN DEPAN — Kartu ' + (idx * perPage + 1) + "–" + (idx * perPage + pg.length) + '</h3><div class="grid">' + pg.map((c) => '<div class="card"><div><div style="font-size:10pt;color:#2F5FE8;font-weight:bold;letter-spacing:1pt">ISTILAH</div><div style="font-size:19pt;font-weight:800;font-family:sans-serif">' + esc(c.t) + "</div></div></div>").join("") + "</div></div>";
+  const backPage = (pg, idx) => { const rows = []; for (let r = 0; r < pg.length; r += 2) rows.push(pg.slice(r, r + 2).reverse()); const flat = rows.flat(); return '<div class="page"><h3 style="font-family:sans-serif;color:#64748B">HALAMAN BELAKANG (cetak di balik halaman depan, putar pada sisi panjang) — Definisi</h3><div class="grid">' + flat.map((c) => '<div class="card"><div style="font-size:12.5pt;font-family:sans-serif;line-height:1.45">' + esc(c.d) + "</div></div>").join("") + "</div></div>"; };
+  const body = pages.map((pg, i) => frontPage(pg, i) + backPage(pg, i)).join("");
+  const htmlDoc = '<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Flashcard Cetak — MahasiswaTools</title><style>@page{size:A4;margin:11mm}body{font-family:Georgia,serif;margin:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:9pt}.card{' + cardCss + '}.page{page-break-after:always}h3{font-size:10.5pt;margin:0 0 8pt}</style></head><body>' + body + '<p style="font-family:sans-serif;font-size:9pt;color:#94A3B8">Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa • Cetak halaman depan, balik kertas (sisi panjang), cetak halaman belakang, lalu gunting mengikuti garis putus-putus.</p></body></html>';
+  window._flashHtml = htmlDoc;
+  window._flashCount = cards.length;
+  out.innerHTML = '<div class="' + OUT + '"><p class="font-bold mb-2">✅ ' + cards.length + ' kartu tersusun dalam ' + pages.length + ' set lembar A4 (depan–belakang sejajar untuk cetak bolak-balik).</p>'
+    + '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">' + cards.slice(0, 8).map((c) => '<div class="rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3 text-center"><div class="text-[10px] font-bold text-brand-500 tracking-widest">ISTILAH</div><div class="font-extrabold text-sm">' + esc(c.t) + '</div><div class="text-[11px] text-slate-500 mt-1">' + esc(c.d.slice(0, 60)) + "…</div></div>").join("") + "</div>"
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="download(\'Flashcard_Cetak.html\', window._flashHtml, \'text/html\')">⬇️ Download Lembar Cetak (.html)</button>'
+    + '<button class="' + BTN2 + '" onclick="unduhFlashTeks()">⬇️ Daftar Teks</button></div>'
+    + '<p class="text-xs text-slate-500 mt-2">Buka file .html lalu cetak (Ctrl+P): halaman ganjil = depan kartu, halaman genap = belakangnya — sudah dicerminkan agar istilah & definisi bertemu tepat saat dibalik.</p></div>';
+}
+function unduhFlashTeks() {
+  const lines = $("#fpIn").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const txt = lines.map((l, i) => { const p = l.split("|"); return "Kartu " + (i + 1) + ": " + (p[0] || "").trim() + "\nJawab: " + (p.slice(1).join("|") || "").trim(); }).join("\n\n");
+  download("Flashcard_Daftar.txt", txt);
 }
 </script>
