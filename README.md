@@ -7,7 +7,7 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (15)
+## Fitur Aktif (30)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -25,7 +25,23 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 14. Konverter Terbilang Rupiah & Angka Romawi
 15. Kalkulator Budget Harian Anak Kos
 
-Plus 40 tool lain terdaftar di katalog untuk diaktifkan pada tahap berikutnya.
+16. Template Makalah & Skripsi .docx asli — Margin 4433 (JSZip/OOXML)
+17. Matriks Sintesis Jurnal Bab 2 (ekspor .doc/CSV)
+18. Kamus Kalimat Akademik (Phrasebank, 34 kalimat + koleksi pribadi)
+19. Generator Abstrak Dwibahasa (ID + kerangka EN)
+20. Kalkulator Target Kata & Deadline Skripsi
+21. Glosarium & Daftar Singkatan Sorter A–Z
+22. Generator Tabel Terbuka Standar Jurnal (booktabs)
+23. Dummy Data Kuesioner Generator (terverifikasi Cronbach's Alpha)
+24. Pembersih Transkrip Wawancara & Word Frequency
+25. Pembuat Bagan Kerangka Berpikir X → Y (+ ekspor PNG & narasi)
+26. Generator Grafik Bab 4 Arsiran Hitam-Putih (Canvas)
+27. Outline Makalah ke PPT (.pptx asli via PptxGenJS)
+28. Simulasi Pertanyaan Dosen Penguji Sidang (18 soal + kerangka jawaban + timer)
+29. Roda Undian Urutan Presentasi Kelas (Canvas)
+30. Pencari Jam Kosong Bersama (jadwal kelompok interaktif)
+
+Plus 25 tool lain terdaftar di katalog untuk diaktifkan pada tahap berikutnya.
 
 ## Teknologi
 
