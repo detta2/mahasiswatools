@@ -1758,6 +1758,7 @@ UI.k32 = function (el) {
     + field("Jumlah Uang (angka)", '<input id="kwJml" type="number" class="' + IN + '" value="250000" oninput="kwPreviewTerbilang()">')
     + field("Untuk Pembayaran", '<input id="kwUntuk" class="' + IN + '" placeholder="cth: Konsumsi kegiatan sosialisasi posyandu">')
     + field("Tempat & Tanggal", '<input id="kwTgl" class="' + IN + '" value="Sukamaju, 21 Oktober 2026">')
+    + field("Tema Kwitansi", '<select id="kwTema" class="' + IN + '"><option value="biru">🔵 Biru Klasik</option><option value="hijau">🟢 Hijau Toska</option><option value="hitam">⚫ Hitam Brutalist</option></select>')
     + field("Nama Penerima", '<input id="kwNama" class="' + IN + '" placeholder="Nama yang menerima uang">')
     + '</div><p id="kwTerb" class="text-sm font-semibold text-brand-700 dark:text-brand-200 mb-3"></p>'
     + '<button class="' + BTN + '" onclick="buatKwitansi()">🧾 Buat Kwitansi</button>'
@@ -1773,14 +1774,15 @@ function wrapText(ctx, text, x, y, maxW, lh) {
   return yy;
 }
 function buatKwitansi() {
+  const PAL = { biru: { main: "#1D49C8", dark: "#122B78", box: "#EEF4FF" }, hijau: { main: "#047857", dark: "#064E3B", box: "#ECFDF5" }, hitam: { main: "#111111", dark: "#000000", box: "#FEF9C3" } }[($("#kwTema") || {}).value || "biru"];
   const g = (id) => $("#" + id).value.trim();
   const n = Number($("#kwJml").value) || 0;
   const cv = $("#kwCv"); cv.classList.remove("hidden");
   const ctx = cv.getContext("2d");
   ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, 1000, 560);
-  ctx.strokeStyle = "#1D49C8"; ctx.lineWidth = 6; ctx.strokeRect(14, 14, 972, 532);
+  ctx.strokeStyle = PAL.main; ctx.lineWidth = 6; ctx.strokeRect(14, 14, 972, 532);
   ctx.lineWidth = 1.6; ctx.strokeRect(30, 30, 940, 500);
-  ctx.fillStyle = "#1D49C8"; ctx.font = "800 44px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
+  ctx.fillStyle = PAL.main; ctx.font = "800 44px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
   ctx.fillText("KWITANSI", 500, 100);
   ctx.font = "600 17px sans-serif"; ctx.fillStyle = "#475569";
   ctx.fillText("MahasiswaTools — Bukti Pembayaran Resmi Kelompok / KKN", 500, 132);
@@ -1792,9 +1794,9 @@ function buatKwitansi() {
   const lastY = wrapText(ctx, ": " + terbilangStr(n).replace(/\s+/g, " ").trim() + " Rupiah", 260, 274, 660, 26);
   ctx.font = "19px sans-serif";
   ctx.fillText("Untuk pembayaran", 70, lastY + 44); ctx.fillText(": " + g("kwUntuk"), 260, lastY + 44);
-  ctx.fillStyle = "#EEF4FF"; ctx.strokeStyle = "#1D49C8"; ctx.lineWidth = 2;
+  ctx.fillStyle = PAL.box; ctx.strokeStyle = PAL.main; ctx.lineWidth = 2;
   const bw = 340, bh = 64; ctx.fillRect(70, 420, bw, bh); ctx.strokeRect(70, 420, bw, bh);
-  ctx.fillStyle = "#122B78"; ctx.font = "800 30px sans-serif"; ctx.textAlign = "center";
+  ctx.fillStyle = PAL.dark; ctx.font = "800 30px sans-serif"; ctx.textAlign = "center";
   ctx.fillText("Rp " + n.toLocaleString("id-ID"), 70 + bw / 2, 462);
   ctx.textAlign = "left"; ctx.fillStyle = "#0F172A"; ctx.font = "18px sans-serif";
   ctx.fillText(g("kwTgl"), 640, 420);
@@ -1955,6 +1957,14 @@ UI.k35 = function (el) {
     + field("Nomor Sertifikat (awalan)", '<input id="srNo" class="' + IN + '" value="001/SERT/2026">')
     + '</div>'
     + field("Daftar Nama Penerima (satu per baris)", '<textarea id="srNama" rows="5" class="' + IN + '" placeholder="Satu nama per baris — sertifikat dibuat untuk SEMUA nama sekaligus">Andini Prameswari&#10;Bima Aditya Nugraha&#10;Citra Dewi Lestari</textarea>')
+    + field("Template Sertifikat", '<select id="srTpl" class="' + IN + '" onchange="srTplChange()"><option value="klasik">🏆 Klasik Emas</option><option value="biru">🔵 Biru Korporat</option><option value="hijau">🟢 Hijau Alam</option><option value="marun">🔴 Marun Elegan</option><option value="mono">⚫ Mono Brutalist</option><option value="custom">🖼️ Template Sendiri (Upload Background)</option></select>')
+    + '<div id="srCustomBox" class="hidden rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-3 mb-3">'
+    + field("Upload Gambar Background Template (landscape, mis. 1400×990)", '<input id="srBg" type="file" accept="image/*" class="' + IN + '" onchange="srBgLoad(this)">')
+    + '<div class="grid grid-cols-3 gap-3">'
+    + field("Posisi Nama (vertikal %)", '<input id="srNamaY" type="range" min="25" max="80" value="47" class="w-full">')
+    + field("Ukuran Font Nama", '<input id="srNamaSize" type="range" min="30" max="90" value="54" class="w-full">')
+    + field("Warna Nama", '<input id="srNamaColor" type="color" value="#122B78" class="w-full h-[42px]">')
+    + '</div><label class="flex items-center gap-2 text-sm font-semibold"><input id="srShowAcara" type="checkbox" checked class="w-4 h-4 accent-black"> Tampilkan juga teks peran & nama acara di bawah nama</label></div>'
     + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="gambarSertifikat(0)">👁 Pratinjau Sertifikat</button>'
     + '<button class="' + BTN + '" style="background:#059669" onclick="unduhSertifikatZip()">⬇️ Download Semua (ZIP PNG)</button>'
     + '<button class="' + BTN2 + '" onclick="unduhSertifikatPdfZip()">⬇️ Download Semua (ZIP PDF)</button></div>'
@@ -1962,29 +1972,57 @@ UI.k35 = function (el) {
     + outBox("srOut") + "</div>";
 };
 function gambarSertifikat(idx) {
-  const g = (id) => $("#" + id).value.trim();
+  const g = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
   const names = g("srNama").split(/\n/).map((s) => s.trim()).filter(Boolean);
   const nama = names[idx] || "Nama Penerima";
   const cv = $("#srCv"); cv.classList.remove("hidden");
   const ctx = cv.getContext("2d");
-  const grd = ctx.createLinearGradient(0, 0, 1400, 990); grd.addColorStop(0, "#FDFBF5"); grd.addColorStop(1, "#F5EFE0");
+  const tpl = ($("#srTpl") || {}).value || "klasik";
+  if (tpl === "custom") {
+    if (window._srBgImg) { const im = window._srBgImg; const sc = Math.max(1400 / im.width, 990 / im.height); ctx.drawImage(im, (1400 - im.width * sc) / 2, (990 - im.height * sc) / 2, im.width * sc, im.height * sc); }
+    else { ctx.fillStyle = "#F8FAFC"; ctx.fillRect(0, 0, 1400, 990); ctx.strokeStyle = "#94A3B8"; ctx.lineWidth = 4; ctx.setLineDash([18, 12]); ctx.strokeRect(30, 30, 1340, 930); ctx.setLineDash([]); ctx.fillStyle = "#64748B"; ctx.font = "600 30px sans-serif"; ctx.textAlign = "center"; ctx.fillText("Upload gambar background template kamu di atas", 700, 200); ctx.fillText("lalu klik Pratinjau — nama akan ditempatkan sesuai slider.", 700, 246); }
+    const yPct = Number(($("#srNamaY") || {}).value || 47) / 100;
+    const size = Number(($("#srNamaSize") || {}).value || 54);
+    const color = ($("#srNamaColor") || {}).value || "#122B78";
+    ctx.textAlign = "center"; ctx.fillStyle = color;
+    ctx.font = "800 " + size + "px Georgia, serif";
+    ctx.fillText(nama, 700, Math.round(990 * yPct));
+    if (($("#srShowAcara") || {}).checked) {
+      ctx.font = "23px sans-serif";
+      const kalimat2 = "Atas partisipasinya sebagai " + g("srPeran") + " dalam kegiatan \u201C" + g("srAcara") + "\u201D.";
+      ctx.fillText(kalimat2.slice(0, 110), 700, Math.round(990 * yPct) + 56);
+    }
+    ctx.font = "13px sans-serif"; ctx.fillStyle = "rgba(100,116,139,.75)";
+    ctx.fillText("Dibuat dengan MahasiswaTools • Dari Mahasiswa, Untuk Mahasiswa", 700, 950);
+    return cv;
+  }
+  const TPLS = {
+    klasik: { bg1: "#FDFBF5", bg2: "#F5EFE0", frame: "#B8860B", inner: "#122B78", title: "#8A6508", name: "#122B78", accent: "#B8860B", band: null },
+    biru: { bg1: "#F5F9FF", bg2: "#DCE9FF", frame: "#1D49C8", inner: "#1D49C8", title: "#122B78", name: "#122B78", accent: "#1D49C8", band: "#1D49C8" },
+    hijau: { bg1: "#F3FBF6", bg2: "#DFF3E6", frame: "#047857", inner: "#047857", title: "#065F46", name: "#065F46", accent: "#059669", band: null },
+    marun: { bg1: "#FBF5F5", bg2: "#F3E3E3", frame: "#7F1D1D", inner: "#7F1D1D", title: "#7F1D1D", name: "#450A0A", accent: "#991B1B", band: null },
+    mono: { bg1: "#FFFFFF", bg2: "#FFFFFF", frame: "#000000", inner: "#000000", title: "#000000", name: "#000000", accent: "#000000", band: null }
+  };
+  const P = TPLS[tpl] || TPLS.klasik;
+  const grd = ctx.createLinearGradient(0, 0, 1400, 990); grd.addColorStop(0, P.bg1); grd.addColorStop(1, P.bg2);
   ctx.fillStyle = grd; ctx.fillRect(0, 0, 1400, 990);
-  ctx.strokeStyle = "#B8860B"; ctx.lineWidth = 10; ctx.strokeRect(28, 28, 1344, 934);
+  if (P.band) { ctx.fillStyle = P.band; ctx.fillRect(0, 0, 1400, 104); ctx.fillStyle = "#FFFFFF"; ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center"; ctx.fillText("🎓 MahasiswaTools", 700, 66); }
+  ctx.strokeStyle = P.frame; ctx.lineWidth = tpl === "mono" ? 14 : 10; ctx.strokeRect(28, 28, 1344, 934);
   ctx.lineWidth = 2; ctx.strokeRect(52, 52, 1296, 886);
-  ctx.strokeStyle = "#122B78"; ctx.lineWidth = 3; ctx.strokeRect(66, 66, 1268, 858);
-  ctx.textAlign = "center"; ctx.fillStyle = "#122B78";
-  ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.fillText("🎓 MahasiswaTools", 700, 140);
-  ctx.font = "800 74px Georgia, serif"; ctx.fillStyle = "#8A6508";
-  ctx.fillText("SERTIFIKAT", 700, 250);
+  ctx.strokeStyle = P.inner; ctx.lineWidth = 3; ctx.strokeRect(66, 66, 1268, 858);
+  ctx.textAlign = "center"; ctx.fillStyle = P.inner;
+  if (!P.band) { ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.fillText("🎓 MahasiswaTools", 700, 140); }
+  ctx.font = "800 74px Georgia, serif"; ctx.fillStyle = P.title;
+  ctx.fillText("SERTIFIKAT", 700, P.band ? 268 : 250);
   ctx.font = "600 24px sans-serif"; ctx.fillStyle = "#475569";
-  ctx.fillText("Nomor: " + g("srNo") + "/" + String(idx + 1).padStart(3, "0"), 700, 300);
+  ctx.fillText("Nomor: " + g("srNo") + "/" + String(idx + 1).padStart(3, "0"), 700, P.band ? 318 : 300);
   ctx.font = "22px sans-serif"; ctx.fillText("Diberikan dengan bangga kepada:", 700, 380);
-  ctx.font = "800 54px Georgia, serif"; ctx.fillStyle = "#122B78";
+  ctx.font = "800 54px Georgia, serif"; ctx.fillStyle = P.name;
   ctx.fillText(nama, 700, 460);
-  ctx.strokeStyle = "#B8860B"; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(350, 486); ctx.lineTo(1050, 486); ctx.stroke();
+  ctx.strokeStyle = P.accent; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(350, 486); ctx.lineTo(1050, 486); ctx.stroke();
   ctx.fillStyle = "#334155";
   const kalimat = "Atas partisipasinya sebagai " + g("srPeran") + " dalam kegiatan \u201C" + g("srAcara") + "\u201D. Semoga ilmu dan pengalaman yang diperoleh bermanfaat bagi pengembangan diri dan masyarakat.";
-  (function () { const words = kalimat.split(" "); let lines = [], line = ""; ctx.font = "23px sans-serif"; for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > 1060 && line) { lines.push(line); line = w; } else line = t; } if (line) lines.push(line); lines.forEach((l, i) => ctx.fillText(l, 700, 548 + i * 34)); })();
+  (function () { const words = kalimat.split(" "); let lines = [], line = ""; ctx.font = "23px sans-serif"; for (const w of words) { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > 1060 && line) { lines.push(line); line = w; } else line = t; } if (line) lines.push(line); lines.forEach((l, li) => ctx.fillText(l, 700, 548 + li * 34)); })();
   ctx.font = "21px sans-serif"; ctx.fillStyle = "#0F172A";
   ctx.fillText(g("srTgl"), 1050, 730);
   ctx.fillText(g("srJab") + ",", 1050, 762);
@@ -3910,4 +3948,160 @@ function resetBukti() {
   openTool("buktiketik");
   toast("Bukti direset — dokumen baru dimulai 🆕");
 }
+</script>
+
+<script>
+/* ============================================================
+   PREVIEW LIVE + TEMPLATE CUSTOM
+   ============================================================ */
+/* ---------- Sertifikat: template custom ---------- */
+function srTplChange() {
+  const tpl = ($("#srTpl") || {}).value;
+  const box = $("#srCustomBox");
+  if (box) box.classList.toggle("hidden", tpl !== "custom");
+  if ($("#srCv") && !$("#srCv").classList.contains("hidden")) gambarSertifikat(0);
+}
+function srBgLoad(input) {
+  const f = input.files && input.files[0]; if (!f) return;
+  fileToImage(f).then((img) => { window._srBgImg = img; gambarSertifikat(0); toast("Template background kamu dimuat 🖼️"); });
+}
+
+/* ---------- CV ATS: preview A4 live ---------- */
+function renderCvLive() {
+  const box = $("#cvLiveInner"); if (!box || typeof ambilCv !== "function") return;
+  const d = ambilCv();
+  const exps = typeof parseExp === "function" ? parseExp(d.exp) : [];
+  const kontak = [d.email, d.telp, d.kota, d.link].filter(Boolean).join(" | ");
+  box.innerHTML = '<div style="font-family:Arial,sans-serif;color:#111"><h1 style="font-size:22pt;margin:0">' + esc(d.nama || "Nama Kamu") + '</h1><p style="font-size:12.5pt;margin:2pt 0"><b>' + esc(d.posisi || "Posisi yang Dituju") + '</b></p><p style="margin:2pt 0 10pt;color:#444">' + esc(kontak || "email • telepon • kota • LinkedIn") + "</p>"
+    + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">RINGKASAN PROFESIONAL</h2><p style="font-size:11pt">' + esc(d.ringkas || "Ringkasan profesionalmu akan muncul di sini…") + "</p>"
+    + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">PENGALAMAN</h2>'
+    + (exps.length ? exps.map((e) => '<p style="margin:6pt 0 2pt;font-size:11pt"><b>' + esc(e.posisi) + "</b>" + (e.perusahaan ? " — " + esc(e.perusahaan) : "") + (e.periode ? ' <span style="color:#444">(' + esc(e.periode) + ")</span>" : "") + "</p>" + (e.bullets.length ? "<ul style='margin:2pt 0 8pt;font-size:11pt'>" + e.bullets.map((b) => "<li>" + esc(b) + "</li>").join("") + "</ul>" : "")).join("") : '<p style="font-size:11pt;color:#666">Pengalaman kerja/magang/organisasimu tampil di sini…</p>')
+    + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">PENDIDIKAN</h2>' + (d.edu.trim() ? d.edu.split(/\n/).filter((s) => s.trim()).map((s) => '<p style="margin:2pt 0;font-size:11pt">' + esc(s.trim()) + "</p>").join("") : '<p style="font-size:11pt;color:#666">Riwayat pendidikanmu tampil di sini…</p>')
+    + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">KEAHLIAN</h2><p style="font-size:11pt">' + esc(d.skill || "Daftar keahlianmu tampil di sini…") + "</p></div>";
+}
+(function () {
+  const _ui = UI.k53;
+  UI.k53 = function (el) {
+    _ui(el);
+    const btn = el.querySelector('button[onclick="buatCv()"]');
+    if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW LANGSUNG — berubah saat kamu mengetik</p><div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] overflow-x-auto bshadow-sm"><div style="min-width:520px" id="cvLiveInner"></div></div></div>');
+    el.addEventListener("input", renderCvLive);
+    renderCvLive();
+  };
+})();
+
+/* ---------- Template .docx: preview struktur ---------- */
+function renderDocPreview() {
+  const box = $("#docPrev"); if (!box) return;
+  const gv = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
+  const bab = [["BAB I", "PENDAHULUAN", "Latar Belakang • Rumusan Masalah • Tujuan • Manfaat • Definisi Operasional"], ["BAB II", "TINJAUAN PUSTAKA", "Kajian Teori • Penelitian Terdahulu • Kerangka Berpikir • Hipotesis"], ["BAB III", "METODE PENELITIAN", "Jenis Penelitian • Populasi & Sampel • Instrumen • Teknik Analisis Data"], ["BAB IV", "HASIL DAN PEMBAHASAN", "Deskripsi Data • Hasil Uji • Pembahasan"], ["BAB V", "PENUTUP", "Kesimpulan • Saran"]];
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+    + '<p class="text-center font-bold text-sm tracking-wide">' + esc((gv("xUniv") || "UNIVERSITAS").toUpperCase()) + '</p>'
+    + '<p class="text-center text-xs">' + esc(gv("xFak") || "Fakultas") + " — Program Studi " + esc(gv("xProdi") || "…") + "</p>"
+    + '<h3 class="text-center font-extrabold text-base mt-5 leading-snug">' + esc((gv("xJud") || "JUDUL SKRIPSI").toUpperCase()) + "</h3>"
+    + '<p class="text-center text-sm mt-4">Oleh:<br><b>' + esc(gv("xNama") || "Nama Mahasiswa") + "</b><br>NIM. " + esc(gv("xNim") || "__________") + "</p>"
+    + '<p class="text-center text-sm mt-4">' + esc(gv("xKota") || "Kota, Tahun") + "</p>"
+    + '<hr class="my-4 border-slate-300"><p class="text-xs font-bold tracking-widest text-slate-500 mb-2">STRUKTUR DOKUMEN YANG AKAN DIBUAT:</p>'
+    + '<p class="text-sm leading-relaxed">Cover • Kata Pengantar • Daftar Isi • Daftar Tabel/Gambar</p>'
+    + bab.map((b) => '<p class="text-sm mt-2"><b>' + b[0] + " — " + b[1] + '</b><br><span class="text-slate-600">' + b[2] + "</span></p>").join("")
+    + '<p class="text-sm mt-2"><b>DAFTAR PUSTAKA</b> (contoh format)</p>'
+    + '<p class="text-[11px] text-slate-500 mt-4">Kertas A4 • Margin 4-4-3-3 • Times New Roman 12 • Spasi 1,5 • Pembimbing: ' + esc(gv("xDospem") || "—") + "</p></div>";
+}
+(function () {
+  const _ui = UI.k16;
+  UI.k16 = function (el) {
+    _ui(el);
+    const btn = el.querySelector('button[onclick="buatDocx()"]');
+    if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW STRUKTUR DOKUMEN</p><div id="docPrev"></div></div>');
+    el.addEventListener("input", renderDocPreview);
+    renderDocPreview();
+  };
+})();
+
+/* ---------- PPTX: preview daftar slide ---------- */
+function parseOutlineSlides(text) {
+  const lines = text.split(/\r?\n/);
+  const slides = []; let cur = null;
+  const pushCur = () => { if (cur) slides.push(cur); cur = null; };
+  lines.forEach((raw) => {
+    const l = raw.trim(); if (!l) return;
+    if (l.startsWith("# ") || /^BAB\s/i.test(l) && !l.startsWith("-")) { pushCur(); cur = { type: "section", title: l.replace(/^#\s*/, "") }; pushCur(); }
+    else if (l.startsWith("## ")) { pushCur(); cur = { type: "content", title: l.replace(/^##\s*/, ""), bullets: [] }; }
+    else { if (!cur || cur.type !== "content") { pushCur(); cur = { type: "content", title: "Pembahasan", bullets: [] }; } cur.bullets.push(l.replace(/^[-•*]\s*/, "")); }
+  });
+  pushCur();
+  const finalSlides = [];
+  slides.forEach((s) => {
+    if (s.type === "section") finalSlides.push(s);
+    else { let b = s.bullets.slice(); let part = 1; while (b.length) { finalSlides.push({ type: "content", title: s.title + (part > 1 ? " (lanjutan)" : ""), bullets: b.splice(0, 6) }); part++; } if (!s.bullets.length) finalSlides.push(s); }
+  });
+  return finalSlides;
+}
+function renderSlidePreview() {
+  const box = $("#ppPrev"); if (!box) return;
+  const slides = parseOutlineSlides($("#ppIn").value);
+  window._slidePreview = slides;
+  const card = (inner, dark) => '<div class="rounded-lg overflow-hidden border-[2.5px] ' + (dark ? "bg-[#122B78] text-white border-[#122B78]" : "bg-white text-slate-800 border-black dark:border-[#FDE047]") + '" style="aspect-ratio:16/9"><div class="p-2.5 h-full overflow-hidden">' + inner + "</div></div>";
+  box.innerHTML = '<p class="text-sm font-extrabold mb-2">👁 PREVIEW ' + (slides.length + 1) + ' SLIDE</p><div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">'
+    + card('<div class="font-extrabold text-[13px] leading-snug mt-3">' + esc($("#ppJud").value.trim() || "Judul Presentasi") + '</div><div class="text-[10px] opacity-80 mt-1">' + esc($("#ppNama").value.trim() || "Nama Presenter") + " — COVER</div>", true)
+    + slides.map((s) => s.type === "section"
+      ? card('<div class="font-extrabold text-[12px] mt-6 text-center">' + esc(s.title) + '</div><div class="text-[9px] text-center opacity-75">SLIDE PEMISAH BAB</div>', true)
+      : card('<div class="font-extrabold text-[11.5px] leading-tight border-b border-slate-200 pb-1 mb-1">' + esc(s.title) + "</div>" + s.bullets.slice(0, 5).map((b) => '<div class="text-[10px] leading-snug">• ' + esc(b) + "</div>").join(""), false)).join("")
+    + "</div>";
+}
+(function () {
+  const _ui = UI.k27;
+  UI.k27 = function (el) {
+    _ui(el);
+    const btn = el.querySelector('button[onclick="buatPptx()"]');
+    if (btn) btn.insertAdjacentHTML("beforebegin", '<div id="ppPrev" class="mb-4"></div>');
+    el.addEventListener("input", renderSlidePreview);
+    renderSlidePreview();
+  };
+})();
+
+/* ---------- Motlet: preview live ---------- */
+(function () {
+  const _ui = UI.k50;
+  UI.k50 = function (el) {
+    _ui(el);
+    let t = null;
+    el.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { try { buatMotlet(); } catch (e) {} }, 400); });
+    el.addEventListener("change", () => { try { buatMotlet(); } catch (e) {} });
+  };
+})();
+
+/* ---------- Flashcard: preview pasangan depan–belakang live ---------- */
+function renderFlashPreview() {
+  const box = $("#fcPrev"); if (!box) return;
+  const lines = $("#fpIn").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  const cards = [];
+  lines.forEach((l) => { const p = l.split("|"); if (p.length >= 2) cards.push({ t: p[0].trim(), d: p.slice(1).join("|").trim() }); });
+  window._fcPreviewCount = cards.length;
+  box.innerHTML = '<p class="text-sm font-extrabold mb-2">👁 PREVIEW ' + cards.length + ' KARTU (DEPAN ↔ BELAKANG)</p>'
+    + (cards.length ? '<div class="space-y-2">' + cards.map((c, i) => '<div class="grid grid-cols-2 gap-2"><div class="rounded-lg border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-900 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">DEPAN ' + (i + 1) + '</div><div class="font-extrabold text-sm">' + esc(c.t) + '</div></div><div class="rounded-lg border-2 border-black dark:border-[#FDE047] bg-[#FEFCE8] dark:bg-slate-800 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">BELAKANG ' + (i + 1) + '</div><div class="text-[12.5px] leading-snug">' + esc(c.d) + "</div></div></div>").join("") + "</div>"
+    : '<p class="text-sm text-slate-500">Format: Istilah | Definisi (satu kartu per baris).</p>');
+}
+(function () {
+  const _ui = UI.k55;
+  UI.k55 = function (el) {
+    _ui(el);
+    const btn = el.querySelector('button[onclick="buatFlashPrint()"]');
+    if (btn) btn.insertAdjacentHTML("beforebegin", '<div id="fcPrev" class="mb-4"></div>');
+    el.addEventListener("input", renderFlashPreview);
+    renderFlashPreview();
+  };
+})();
+
+/* ---------- Deklarasi AI: preview live ---------- */
+(function () {
+  const _ui = UI.deklarasi;
+  UI.deklarasi = function (el) {
+    _ui(el);
+    const run = () => { if ($("#dkNama")) { try { buatDeklarasi(); } catch (e) {} } };
+    el.addEventListener("input", run);
+    el.addEventListener("change", run);
+    run();
+  };
+})();
 </script>
