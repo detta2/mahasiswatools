@@ -7,7 +7,7 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (30)
+## Fitur Aktif (45)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -41,7 +41,23 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 29. Roda Undian Urutan Presentasi Kelas (Canvas)
 30. Pencari Jam Kosong Bersama (jadwal kelompok interaktif)
 
-Plus 25 tool lain terdaftar di katalog untuk diaktifkan pada tahap berikutnya.
+31. Logbook Harian Magang/KKN (ekspor .doc resmi + CSV)
+32. Kwitansi & Nota LPJ (canvas, terbilang otomatis, PNG)
+33. Matriks Program Kerja / Gantt Chart KKN (SVG → PNG)
+34. Bagan Struktur Organisasi Posko KKN (SVG → PNG)
+35. Generator Sertifikat Massal (canvas + unduh ZIP semua nama)
+36. Desain Plang Jalan & Edukasi Desa (canvas, 4 tema)
+37. Pas Foto & Ganti Background Merah/Biru/Putih (deteksi latar otomatis + toleransi)
+38. Tanda Tangan Transparan PNG (buang kertas via canvas)
+39. Penyusun Grid Foto Dokumentasi Lampiran (multi-upload + keterangan)
+40. Timestamp & Geotag Teks pada Foto (strip/overlay)
+41. Generator QR Code (modul digambar sendiri, ECC H, PNG s.d. 2048px)
+42. OCR Gambar ke Teks (Tesseract.js, Indonesia/Inggris)
+43. Penggabung & Pemisah PDF (pdf-lib, rentang halaman fleksibel)
+44. Kompresor File Gambar & PDF (quality/resize slider)
+45. Wallpaper Jadwal Kuliah / KRS Maker (canvas 1080×1920, 4 tema)
+
+Plus 10 tool lain terdaftar di katalog untuk diaktifkan pada tahap berikutnya.
 
 ## Teknologi
 
