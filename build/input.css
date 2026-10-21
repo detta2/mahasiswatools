@@ -11,6 +11,12 @@
   .dark .mono-box{background:#1E293B;color:#CBD5E1}
   .mono-box.mono-sm{width:34px;height:34px;border-radius:10px;font-size:12px}
   .mono-box.mono-xs{width:24px;height:24px;border-radius:7px;font-size:10px}
+  .tic{width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:13px;flex-shrink:0}
+  .tic svg{width:25px;height:25px}
+  .tic-sm{width:34px;height:34px;border-radius:10px}.tic-sm svg{width:19px;height:19px}
+  .tic-xs{width:24px;height:24px;border-radius:7px}.tic-xs svg{width:14px;height:14px}
+  .tic-anti{background:#FFF1F2;color:#E11D48}.tic-tulis{background:#EFF6FF;color:#2563EB}.tic-data{background:#ECFDF5;color:#059669}.tic-present{background:#FFFBEB;color:#D97706}.tic-kelompok{background:#F5F3FF;color:#7C3AED}.tic-dokumen{background:#F0F9FF;color:#0284C7}.tic-karir{background:#EEF2FF;color:#4F46E5}
+  .dark .tic-anti{background:rgba(225,29,72,.16);color:#FDA4AF}.dark .tic-tulis{background:rgba(37,99,235,.20);color:#93C5FD}.dark .tic-data{background:rgba(5,150,105,.20);color:#6EE7B7}.dark .tic-present{background:rgba(217,119,6,.20);color:#FCD34D}.dark .tic-kelompok{background:rgba(124,58,237,.22);color:#C4B5FD}.dark .tic-dokumen{background:rgba(2,132,199,.20);color:#7DD3FC}.dark .tic-karir{background:rgba(79,70,229,.22);color:#A5B4FC}
   .card-hover{transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease}
   .card-hover:hover{transform:translateY(-3px)}
   mark.sim{background:#E0E7FF;color:#3730A3;border-radius:3px;padding:0 1px}

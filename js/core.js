@@ -177,6 +177,124 @@ function renderTabs() {
 function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); if (typeof loadCat === "function" && CATNAME[k]) loadCat(k); }
 const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB", tanyajawab: "PS", ceksitasi: "CS", masastudi: "DO", transkrip: "TR" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
+/* ---------- ikon SVG per tool (Opsi 1: tile lembut warna kategori, pilihan detta 2026-10-21) ---------- */
+const ICONS = {
+/* data */
+validitas: '<path d="M4 20V11M10 20V5M16 20v-6"/><path d="M2.5 20h19"/><path d="M14.8 5.2l2 2 3.7-3.7"/>',
+sampel: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.1" fill="currentColor"/>',
+kuesioner: '<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4a3 3 0 0 1 6 0M9 11h6M9 15.5h4"/>',
+regresi: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+inferens: '<path d="M12 3.5c2.8 0 3.3 6.5 5.7 9.7 1.2 1.6 2 2.8 3.3 2.8H3c1.3 0 2.1-1.2 3.3-2.8C8.7 10 9.2 3.5 12 3.5z"/><path d="M12 9v11.5"/>',
+deskriptif: '<path d="M5 20v-6M11 20V6M17 20v-9"/><path d="M2.5 20h19"/>',
+nonpar: '<path d="M6.5 4v12.5M6.5 16.5L4 13.5M6.5 16.5L9 13.5M17.5 20V7.5M17.5 7.5L15 10.5M17.5 7.5L20 10.5"/>',
+likert: '<path d="M4 8h9.5M19.5 8H21M4 16h3.5M13.5 16H21"/><circle cx="16.5" cy="8" r="2.3"/><circle cx="10.5" cy="16" r="2.3"/>',
+tabelstat: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 9.3h18M3 14.6h18M9 4v16M15 4v16"/>',
+mediasi: '<circle cx="5" cy="6" r="2.4"/><circle cx="19" cy="6" r="2.4"/><circle cx="12" cy="18" r="2.4"/><path d="M7.4 6h9.2M6.2 8.1l4.1 7.5M17.8 8.1l-4.1 7.5"/>',
+k25: '<rect x="2.5" y="5" width="7" height="6" rx="1"/><rect x="14.5" y="5" width="7" height="6" rx="1"/><rect x="8.5" y="15" width="7" height="6" rx="1"/><path d="M9.5 8h5M12 11v4"/>',
+k26: '<path d="M4 20v-7M8.5 20V6"/><path d="M2.5 20h19"/><circle cx="16.5" cy="8.5" r="4.6"/><path d="M16.5 3.9v4.6l3.4 2.2"/>',
+k23: '<ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/>',
+k24: '<rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
+koding: '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
+consent: '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 15.5l2 2 4-4.2"/>',
+federer: '<path d="M10 2.5h4M10.6 2.5v5.3L5.2 17.7A2.3 2.3 0 0 0 7.3 21h9.4a2.3 2.3 0 0 0 2.1-3.3L13.4 7.8V2.5"/><path d="M7.6 14h8.8"/>',
+/* tulis */
+dapus: '<path d="M12 6.5C10.6 4.8 8 4.3 4 4.3v13.9c4 0 6.6.5 8 2.2 1.4-1.7 4-2.2 8-2.2V4.3c-4 0-6.6.5-8 2.2v13.7"/>',
+k16: '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9.5 12h5M9.5 16h5"/>',
+proposal: '<rect x="8" y="8" width="12.5" height="13" rx="1.5"/><path d="M5 15.5H4.3A1.8 1.8 0 0 1 2.5 13.7V4.8A1.8 1.8 0 0 1 4.3 3h10.2"/>',
+similarity: '<path d="M17 4.5L7 19.5"/><circle cx="7.2" cy="7.2" r="2.4"/><circle cx="16.8" cy="16.8" r="2.4"/>',
+jurnal: '<path d="M4 4.5h13.5V19H4z"/><path d="M17.5 9H20v8.5a2 2 0 0 1-2 2"/><path d="M7 8.5h7M7 12h7M7 15.5h4"/>',
+kisikisi: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 9.5h18M9.5 4v16M15 9.5V20"/>',
+imrad: '<rect x="4" y="3" width="16" height="18" rx="1.5"/><path d="M7 7h10M7 11h4.5M7 15h4.5M13.5 11H18M13.5 15H18M7 19h11"/>',
+judul: '<path d="M9.6 18h4.8M10.6 21h2.8"/><path d="M12 3a6 6 0 0 1 3.4 10.9c-.6.5-.9 1-1 2.1H9.6c-.1-1.1-.4-1.6-1-2.1A6 6 0 0 1 12 3z"/>',
+singkatan: '<path d="M3.5 17.5L8 5.5l4.5 12M5.2 13.8h5.6"/><path d="M14 17.5h6.8L14 9h6.3"/>',
+k17: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+pengesahan: '<path d="M9.7 10.3a2.4 2.4 0 1 1 4.6 0c.3 1.9 1.6 2.6 1.6 4.2H8.1c0-1.6 1.3-2.3 1.6-4.2z"/><path d="M4.5 21h15M4.5 17.3h15V21h-15z"/>',
+ojskit: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 7.2L12 13l8.5-5.8"/>',
+bimbingan: '<rect x="4" y="5" width="16" height="16" rx="2"/><path d="M4 10h16M8.5 3v4M15.5 3v4"/><path d="M8.6 16.4l2.2 2.2 4.3-4.3"/>',
+revisi: '<path d="M9.5 6H20M9.5 12H20M9.5 18H20"/><path d="M3.4 6l1.1 1.1L6.2 5.2M3.4 12l1.1 1.1 1.7-1.9M3.4 18l1.1 1.1 1.7-1.9"/>',
+pdffix: '<path d="M4 6h13M4 11h9.5"/><path d="M14.5 16.8H20M17.2 14l2.8 2.8-2.8 2.8"/><path d="M4 17.5c2-1 4 1 6 0"/>',
+italic: '<path d="M11 4.5h7.5M5.5 19.5H13M14.8 4.5l-4.8 15"/>',
+eydcase: '<path d="M3.5 17.5L8.2 5.8l4.7 11.7M5.2 13.8h6"/><path d="M13.8 17.5l3.4-7.6 3.4 7.6M14.9 14.9h4.6"/>',
+wordfreq: '<path d="M4 20V9.5M9.3 20V4M14.6 20v-7.5M19.9 20V7"/><path d="M2 20h20"/>',
+k21: '<path d="M12 6.5C10.6 4.8 8 4.3 4 4.3v13.9c4 0 6.6.5 8 2.2 1.4-1.7 4-2.2 8-2.2V4.3c-4 0-6.6.5-8 2.2"/><path d="M17.8 20.5l2.4 2.4M20.4 15.8a3.3 3.3 0 1 0 .1 0z"/>',
+k18: '<path d="M20.5 11.8a8 8 0 0 1-11.7 7.1L3.5 20.5l1.6-5.3A8 8 0 1 1 20.5 11.8z"/><path d="M8.2 8h2.6v2.8c0 2-1 3.3-2.4 3.9M13.9 8h2.6v2.8c0 2-1 3.3-2.4 3.9"/>',
+k19: '<path d="M4 5.5h8.5M8.2 3.5v2c0 3.6-1.8 6.4-4.7 8M5.8 9c1.3 2.3 3.6 4.2 6.2 5.2"/><path d="M13 20.5l4.3-9.7 4.3 9.7M14.6 16.8h5.4"/>',
+k22: '<path d="M3 4.5h18M3 19.5h18"/><path d="M3 9.3h18M3 14.7h18" opacity=".5"/><path d="M6 11.8h4M14 11.8h4"/>',
+kerangkabab: '<path d="M10 5.5h10.5M10 12h10.5M10 18.5h10.5"/><circle cx="5" cy="5.5" r="1.6"/><circle cx="5" cy="12" r="1.6"/><circle cx="5" cy="18.5" r="1.6"/><path d="M5 7.1v3.3"/>',
+k20: '<path d="M5.5 21.5v-17"/><path d="M5.5 4.8H18l-2.6 3.7L18 12.2H5.5"/>',
+bacawaktu: '<circle cx="12" cy="12" r="8.8"/><path d="M12 7v5.2l3.4 2"/>',
+/* anti */
+aidetect: '<path d="M12 2.8l7 2.8v5.2c0 4.8-3.4 8-7 9.4-3.6-1.4-7-4.6-7-9.4V5.6z"/><path d="M8.8 11.8l2.2 2.2 4.2-4.4"/>',
+humanizer: '<path d="M20.2 3.8C14.5 3.4 8.6 6.9 6.7 13.4L4 20l1.4.6z"/><path d="M20.2 3.8c.7 5.6-2.1 11-7.4 13.4M7.2 16.8c2-4.4 5.4-7.4 9.8-8.9"/>',
+scrubber: '<path d="M5.5 15.2L14.7 6a2 2 0 0 1 2.8 0l1.9 1.9a2 2 0 0 1 0 2.8L13 17H7.8z"/><path d="M9 21h11.5M5.5 15.2L3.8 17a1.8 1.8 0 0 0 1.3 3h4.4"/>',
+sitasi: '<circle cx="12" cy="12" r="9"/><path d="M8.4 12.3l2.5 2.5 4.7-5"/>',
+ceksitasi: '<circle cx="10.8" cy="10.8" r="6.8"/><path d="M20.3 20.3l-4.9-4.9"/><path d="M8.2 10.8l1.9 1.9 3.4-3.4"/>',
+deklarasi: '<path d="M3.8 18.8c2.4-5.6 4.3 1.4 6.8-2.6 1.3-2 3-.9 3 .9 0 1.6 2 1.6 3.1.2"/><path d="M3 21.3h18"/>',
+buktiketik: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M18 14h.01M9.2 14h5.6" stroke-linecap="round"/>',
+/* karir */
+k53: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10.8" r="2.4"/><path d="M5.7 17.3c.6-1.8 1.8-2.7 3.3-2.7s2.7.9 3.3 2.7M15 9.3h4M15 12.8h4M15 16.3h2.6"/>',
+k50: '<path d="M6 2.8h9L19.5 7v13.7H6z"/><path d="M14.8 2.8V7h4.7"/><circle cx="15.3" cy="15.8" r="2.2"/><path d="M14.2 17.6l-.7 2.7 1.9-1.1 1.8 1.1-.7-2.7"/>',
+chatdosen: '<path d="M20.8 11.3a8.6 8.6 0 0 1-12.5 7.6L3 20.8l1.9-5.3a8.6 8.6 0 1 1 15.9-4.2z"/><path d="M8.3 10.3h7.4M8.3 13.6h4.2"/>',
+ipk: '<path d="M4.5 15a7.8 7.8 0 1 1 15 0"/><path d="M12 15l4.3-4.3"/><path d="M2.8 19h18.4"/>',
+transkrip: '<path d="M2.5 9.3L12 4.8l9.5 4.5L12 13.8z"/><path d="M6.2 11.3v4.5c0 1.6 2.6 3 5.8 3s5.8-1.4 5.8-3v-4.5M21.5 9.3v5.2"/>',
+targetnilai: '<circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="4.6"/><path d="M12 2.6v3M12 18.4v3M2.6 12h3M18.4 12h3"/>',
+k45: '<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M10.4 5h3.2M9.8 10h4.4M9.8 13.5h4.4M9.8 17h2.8"/>',
+k54: '<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4a3 3 0 0 1 6 0"/><path d="M8.8 15.8l2.2 2.2 4.2-4.5"/>',
+k52: '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7.2 14.6h.01M11 14.6h.01M14.8 14.6h.01M7.2 17.9h.01M11 17.9h.01" stroke-linecap="round"/>',
+masastudi: '<path d="M6 2.8h12M6 21.2h12"/><path d="M7.6 2.8v3.4c0 2.1 1.9 2.9 3.1 4.1-1.2 1.2-3.1 2-3.1 4.1v3.4M16.4 2.8v3.4c0 2.1-1.9 2.9-3.1 4.1 1.2 1.2 3.1 2 3.1 4.1v3.4"/>',
+sks: '<path d="M3.5 8h13.5M13.8 4.3L17.5 8l-3.7 3.7M20.5 16H7M10.2 12.3L6.5 16l3.7 3.7"/>',
+biaya: '<rect x="3" y="6" width="18" height="13" rx="3"/><path d="M3 10h18M16.5 15h.01" stroke-linecap="round"/>',
+combo55: '<rect x="5" y="2.8" width="14" height="18.4" rx="2"/><path d="M8.5 6.8h7"/><path d="M8.5 11.8h.01M12 11.8h.01M15.5 11.8h.01M8.5 15.3h.01M12 15.3h.01M15.5 15.3h.01" stroke-linecap="round"/>',
+k51: '<circle cx="10" cy="7.8" r="3.4"/><path d="M3.8 20c.8-3.3 3.1-5.1 6.2-5.1 1.4 0 2.7.4 3.7 1.2"/><rect x="14" y="13" width="7" height="6.2" rx="1.4"/><path d="M15.7 13v-1.1a1.8 1.8 0 0 1 1.8-1.8 1.8 1.8 0 0 1 1.8 1.8V13"/>',
+/* dokumen */
+bibtex: '<path d="M6.8 3.5V17M6.8 17L3.5 13.7M6.8 17l3.3-3.3M17.2 20.5V7M17.2 7l-3.3 3.3M17.2 7l3.3 3.3"/>',
+poster: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M21 16.5l-5-5-9 9"/>',
+k37: '<rect x="4" y="3" width="16" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M6.4 19.2c1-2.9 3-4.2 5.6-4.2s4.6 1.3 5.6 4.2"/>',
+k43: '<circle cx="6" cy="5" r="2.3"/><circle cx="6" cy="19" r="2.3"/><circle cx="18" cy="12" r="2.3"/><path d="M6 7.3v9.4M7.9 6.3c3 1.7 5.1 3.2 7.9 4.6"/>',
+splitpdf: '<circle cx="6" cy="6" r="2.3"/><circle cx="6" cy="18" r="2.3"/><path d="M7.9 7.9L20 19M7.9 16.1L20 5"/>',
+imgpdf: '<rect x="3" y="4" width="13.5" height="12" rx="2"/><circle cx="7.6" cy="8.6" r="1.5"/><path d="M16.5 13.5L13 10l-6.5 6.5"/><path d="M18 15.5v5.5M15.2 18.2l2.8 2.8 2.8-2.8"/>',
+k44: '<path d="M9.8 3.8L3.8 9.8M3.8 3.8v6h6M14.2 20.2l6-6M20.2 14.2v6h-6"/>',
+pdfstamp: '<path d="M9.2 3L7.2 21M16.8 3l-2 18M4 8.2h17M3 15.8h17"/>',
+k41: '<rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><path d="M13.5 13.5h3v3h-3zM20.5 13.5h.01M13.5 20.5h.01M17.2 17.2h3.3v3.3h-3.3z" stroke-linecap="round"/>',
+k42: '<path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20 16v2.5a1.5 1.5 0 0 1-1.5 1.5H16M8 20H5.5A1.5 1.5 0 0 1 4 18.5V16"/><path d="M7.5 9.8h9M7.5 13.4h6"/>',
+k39: '<rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M12 3.5V12M3.5 12H12M12 12h8.5M12 12v8.5M3.5 12v8.5"/>',
+k40: '<path d="M4 7.5h2.8l2-2.5h6.4l2 2.5H20a1.5 1.5 0 0 1 1.5 1.5v9.5A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5z"/><circle cx="12" cy="13.8" r="3.4"/>',
+k38: '<path d="M4 20l1.2-4.2L16.6 4.4a2.1 2.1 0 0 1 3 3L8.2 18.8z"/><path d="M14.6 6.4l3 3M3 21.5h18"/>',
+/* present */
+k27: '<rect x="3" y="3.8" width="18" height="12.2" rx="1.5"/><path d="M12 16v2.8M8 21.2l4-2.4 4 2.4"/><path d="M7 12.2l3.2-3.2 2.4 2L16 7.8"/>',
+teleprompter: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M10.4 8.4l4.6 2.8-4.6 2.8z"/><path d="M9.5 20.8h5M12 17v3.8"/>',
+k28: '<circle cx="12" cy="12" r="9"/><path d="M9.4 9.4a2.7 2.7 0 1 1 2.6 3v1"/><path d="M12 17.2h.01" stroke-width="2.8" stroke-linecap="round"/>',
+tanyajawab: '<path d="M20.8 11.3a8.6 8.6 0 0 1-12.5 7.6L3 20.8l1.9-5.3a8.6 8.6 0 1 1 15.9-4.2z"/><path d="M9.7 9.3a2.4 2.4 0 1 1 2.3 2.8v.8"/><path d="M12 16.4h.01" stroke-width="2.8" stroke-linecap="round"/>',
+k46: '<circle cx="12" cy="12" r="2.6"/><circle cx="5" cy="5.5" r="1.9"/><circle cx="19" cy="5.5" r="1.9"/><circle cx="5" cy="18.5" r="1.9"/><circle cx="19" cy="18.5" r="1.9"/><path d="M10.3 10.3L6.7 7.1M13.7 10.3l3.6-3.2M10.3 13.7l-3.6 3.2M13.7 13.7l3.6 3.2"/>',
+k47: '<rect x="3.5" y="6" width="15" height="13.5" rx="2"/><path d="M7.5 6V5A2 2 0 0 1 9.5 3h9A2 2 0 0 1 20.5 5v9.5a2 2 0 0 1-2 2h-.5"/><path d="M7.8 11h6.5M7.8 14.8h4"/>',
+k48: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M10.5 3v13.5M5 16.5h14"/>',
+k49: '<circle cx="12" cy="13" r="7.6"/><path d="M12 9.4V13l2.6 1.9M9.6 2.8h4.8M12 2.8v2.6"/>',
+k29: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.7"/><path d="M12 3v7.3M12 13.7V21M3 12h7.3M13.7 12H21"/>',
+k55: '<path d="M7 8V3.5h10V8"/><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M7 13.5h10V21H7z"/>',
+cloze: '<path d="M5 6h14M5 12h5.5M16.8 12H19M5 18h14"/><rect x="11.6" y="9.6" width="4.2" height="4.8" rx="1"/>',
+/* kelompok */
+k35: '<circle cx="12" cy="9" r="5.5"/><path d="M8.8 13.4L7 21l5-2.6L17 21l-1.8-7.6"/><path d="M9.8 9l1.6 1.6L14.6 7.4"/>',
+k31: '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7 14h4.5M7 17.5h7"/>',
+kelompok: '<circle cx="9" cy="8" r="3.5"/><path d="M2.8 20c.5-3.4 3-5.4 6.2-5.4s5.7 2 6.2 5.4M15.7 5a3.5 3.5 0 0 1 0 6M17.8 14.9c2 .7 3.2 2.4 3.5 5.1"/>',
+splitter: '<circle cx="12" cy="12" r="9"/><path d="M12 3v9l6.6 5.6M12 12L5.2 17.2"/>',
+lpj: '<path d="M5 3h14v18l-2.3-1.5L14.3 21l-2.3-1.5L9.7 21 7.4 19.5 5 21z"/><path d="M8.5 8h7M8.5 12h7"/>',
+k32: '<rect x="2.5" y="6" width="19" height="12" rx="2"/><circle cx="12" cy="12" r="2.9"/><path d="M6 9.6h.01M18 14.4h.01" stroke-linecap="round"/>',
+k30: '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><circle cx="12" cy="15.2" r="2.7"/><path d="M12 13.7v1.5l1.1 1"/>',
+peerassess: '<circle cx="9" cy="8" r="3.5"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5 1.2 0 2.3.3 3.2.8"/><path d="M14.3 17.6l2 2 3.9-3.9"/>',
+prorata: '<path d="M12 3.5V21M8 21h8"/><path d="M12 3.5L5.8 5.9M12 3.5l6.2 2.4"/><path d="M3.3 13.2l2.5-6 2.5 6a3 3 0 0 1-5 0zM15.7 13.2l2.5-6 2.5 6a3 3 0 0 1-5 0z"/>',
+hadir: '<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4a3 3 0 0 1 6 0"/><circle cx="12" cy="12.3" r="2"/><path d="M8.7 18.4c.7-1.5 1.9-2.2 3.3-2.2s2.6.7 3.3 2.2"/>',
+k33: '<path d="M4 3.5V20.5h16.5"/><path d="M7.5 7.5h6.5M10.5 11.8h8M8 16.2h5"/>',
+k34: '<rect x="9" y="2.8" width="6" height="4.6" rx="1"/><rect x="2.8" y="16.6" width="6" height="4.6" rx="1"/><rect x="9" y="16.6" width="6" height="4.6" rx="1"/><rect x="15.2" y="16.6" width="6" height="4.6" rx="1"/><path d="M12 7.4v3.1M5.8 10.5h12.4M5.8 10.5v6.1M12 10.5v6.1M18.2 10.5v6.1"/>',
+k36: '<path d="M12 21V9.5"/><path d="M5 3.8h13.2L15.6 6.4l2.6 2.6H5z"/><path d="M3.8 21h16.4"/>'
+};
+console.log(Object.keys(ICONS).length);
+function iconOf(t) { const p = ICONS[t.id]; if (!p) return '<span style="font-weight:800;font-size:13px">' + monoOf(t) + "</span>"; return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; }
+function paintTic(el, t) { if (el && t) el.classList.add("tic-" + t.c); }
+function paintTics() { document.querySelectorAll(".tic").forEach((el) => { if (/tic-(anti|tulis|data|present|kelompok|dokumen|karir)/.test(el.className)) return; const host = el.closest("[onclick]"); if (!host) return; const m = /openTool\('([^']+)'\)/.exec(host.getAttribute("onclick") || ""); if (!m) return; const t = TOOLS.find((x) => x.id === m[1]); if (t) el.classList.add("tic-" + t.c); }); }
+/* pewarnaan tile ikon setelah render daftar */
+if (typeof renderGrid === "function") { const _rgI = renderGrid; renderGrid = function () { _rgI(); paintTics(); }; }
+if (typeof renderRecent === "function") { const _rrI = renderRecent; renderRecent = function () { _rrI(); paintTics(); }; }
+if (typeof showRoadmap === "function") { const _srI = showRoadmap; showRoadmap = function () { _srI(); paintTics(); }; }
 
 /* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */
 let viewMode = store.get("mt_view", "grid");
@@ -184,7 +302,7 @@ let roadmapOn = false;
 function toolRow(t) {
   const fav = favs.has(t.id);
   return '<article class="relative flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 cursor-pointer transition hover:border-slate-300 dark:hover:border-slate-600" onclick="openTool(\'' + t.id + '\')">'
-    + '<div class="mono-box mono-sm shrink-0">' + monoOf(t) + "</div>"
+    + '<div class="tic tic-sm shrink-0">' + iconOf(t) + "</div>"
     + '<div class="flex-1 min-w-0"><h3 class="font-bold text-[13.5px] leading-tight truncate text-slate-900 dark:text-white">' + esc(t.n) + "</h3>"
     + '<p class="text-[12px] text-slate-500 dark:text-slate-400 truncate mt-0.5">' + esc(t.d) + "</p></div>"
     + '<span class="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 hidden md:block shrink-0">' + CATNAME[t.c] + "</span>"
@@ -212,7 +330,7 @@ function renderRecent() {
   const items = r.map((id) => TOOLS.find((t) => t.id === id)).filter(Boolean);
   if (!items.length) { sec.classList.add("hidden"); return; }
   sec.classList.remove("hidden");
-  row.innerHTML = items.map((t) => '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 flex items-center gap-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-2 pr-3.5 py-2 text-left hover:border-slate-300 dark:hover:border-slate-600 transition"><span class="mono-box mono-sm">' + monoOf(t) + '</span><span class="min-w-0"><span class="block text-[12.5px] font-bold leading-tight max-w-[160px] truncate text-slate-800 dark:text-slate-100">' + esc(t.n) + '</span><span class="block text-[10.5px] text-slate-400 mt-0.5">' + CATNAME[t.c] + "</span></span></button>").join("");
+  row.innerHTML = items.map((t) => '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 flex items-center gap-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-2 pr-3.5 py-2 text-left hover:border-slate-300 dark:hover:border-slate-600 transition"><span class="tic tic-sm">' + iconOf(t) + '</span><span class="min-w-0"><span class="block text-[12.5px] font-bold leading-tight max-w-[160px] truncate text-slate-800 dark:text-slate-100">' + esc(t.n) + '</span><span class="block text-[10.5px] text-slate-400 mt-0.5">' + CATNAME[t.c] + "</span></span></button>").join("");
 }
 const ROADMAP = [
   { t: "Tahap 1 — Cari Ide & Proposal (Bab 1–3)", d: "Tentukan judul, kumpulkan jurnal, susun matriks & kerangka berpikir, hitung sampel, dan buat proposalnya.", ids: ["judul", "jurnal", "k17", "k25", "sampel", "kuesioner", "proposal"] },
@@ -224,7 +342,7 @@ function showRoadmap() {
   const v = $("#roadmapView"); if (!v) return;
   roadmapOn = true;
   v.innerHTML = '<div class="flex items-center gap-3 mb-4"><span class="text-[22px]">🧭</span><div><h2 class="font-extrabold text-lg leading-tight">Peta Jalan Skripsi</h2><p class="text-[12.5px] text-slate-500 dark:text-slate-400">Empat tahap dari Bab 1 sampai sidang — klik tool untuk langsung membukanya.</p></div><button onclick="hideRoadmap();renderGrid()" class="ml-auto text-[12px] font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">✕ Tutup</button></div>'
-    + ROADMAP.map((s, idx) => '<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-3.5"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-indigo-600 text-white grid place-items-center font-extrabold text-sm shrink-0">' + (idx + 1) + '</span><h3 class="font-bold text-[15px]">' + s.t + '</h3></div><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">' + s.d + '</p><div class="flex flex-wrap gap-2 mt-3.5">' + s.ids.map((id) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return '<button onclick="openTool(\'' + id + '\')" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition"><span class="mono-box mono-xs">' + monoOf(t) + "</span>" + esc(t.n) + "</button>"; }).join("") + "</div></div>").join("");
+    + ROADMAP.map((s, idx) => '<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-3.5"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-indigo-600 text-white grid place-items-center font-extrabold text-sm shrink-0">' + (idx + 1) + '</span><h3 class="font-bold text-[15px]">' + s.t + '</h3></div><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">' + s.d + '</p><div class="flex flex-wrap gap-2 mt-3.5">' + s.ids.map((id) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return '<button onclick="openTool(\'' + id + '\')" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition"><span class="tic tic-xs">' + iconOf(t) + "</span>" + esc(t.n) + "</button>"; }).join("") + "</div></div>").join("");
   v.classList.remove("hidden");
   const g = $("#grid"); if (g) g.classList.add("hidden");
   const gi = $("#gridInfo"); if (gi) gi.classList.add("hidden");
@@ -243,7 +361,7 @@ function toolCard(t) {
   const fav = favs.has(t.id);
   return '<article class="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer transition duration-200 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-[0_12px_28px_-8px_rgba(79,70,229,0.12)] hover:-translate-y-0.5" onclick="openTool(\'' + t.id + '\')">'
     + '<button onclick="event.stopPropagation();toggleFav(\'' + t.id + '\')" title="Pin ke Favorit" class="absolute top-3 right-3 w-8 h-8 grid place-items-center text-lg ' + (fav ? "text-amber-500" : "text-slate-300 dark:text-slate-600 hover:text-amber-500") + ' transition">' + (fav ? "★" : "☆") + "</button>"
-    + '<div class="mono-box mb-3.5">' + monoOf(t) + "</div>"
+    + '<div class="tic mb-3.5">' + iconOf(t) + "</div>"
     + '<h3 class="font-bold text-[15px] leading-snug pr-5 text-slate-900 dark:text-white">' + esc(t.n) + "</h3>"
     + '<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">' + esc(t.d) + "</p>"
     + '<div class="mt-4 flex items-center gap-2">'
@@ -288,7 +406,7 @@ function openTool(id) {
   const t = TOOLS.find((x) => x.id === id); if (!t) return;
   curTool = id;
   pushRecent(id);
-  $("#wsIcon").textContent = monoOf(t); $("#wsTitle").textContent = t.n; $("#wsDesc").textContent = t.d;
+  $("#wsIcon").innerHTML = iconOf(t); paintTic($("#wsIcon"), t); $("#wsTitle").textContent = t.n; $("#wsDesc").textContent = t.d;
   syncWsFav();
   const showPanel = () => {
     $("#wsWrap").classList.remove("hidden");
