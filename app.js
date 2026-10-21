@@ -136,10 +136,10 @@ function download(name, content, mime) {
 function field(label, inner, hint) {
   return '<label class="block mb-4"><span class="block text-sm font-bold mb-1.5">' + label + '</span>' + inner + (hint ? '<span class="block text-xs text-slate-500 dark:text-slate-400 mt-1">' + hint + "</span>" : "") + "</label>";
 }
-const IN = "w-full rounded-none border-[2.5px] border-black dark:border-[#FDE047] bg-white dark:bg-[#262626] dark:text-white px-3 py-2.5 text-sm outline-none focus:ring-4 ring-[#FDE047]/50";
-const BTN = "inline-flex items-center gap-1.5 rounded-none bg-black hover:bg-[#262626] text-[#FDE047] border-[3px] border-black dark:border-[#FDE047] text-[13px] font-extrabold uppercase tracking-wide px-4 py-2.5 transition bshadow-sm";
-const BTN2 = "inline-flex items-center gap-1.5 rounded-none bg-white hover:bg-[#FEF9C3] dark:bg-[#262626] dark:hover:bg-[#333] dark:text-white border-[3px] border-black dark:border-[#FDE047] text-[13px] font-extrabold uppercase tracking-wide px-4 py-2.5 transition";
-const OUT = "mt-4 rounded-none border-[2.5px] border-black dark:border-[#FDE047] bg-[#FEFCE8] dark:bg-[#262626] dark:text-slate-100 p-4 text-sm";
+const IN = "w-full rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 dark:text-slate-100 px-3 py-2.5 text-sm outline-none focus:ring-4 ring-indigo-500/15 focus:border-indigo-500 transition";
+const BTN = "inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white text-[13px] font-semibold px-4 py-2.5 transition shadow-sm";
+const BTN2 = "inline-flex items-center gap-1.5 rounded-lg bg-white hover:bg-slate-50 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-100 border border-slate-300 dark:border-slate-600 text-[13px] font-semibold px-4 py-2.5 transition";
+const OUT = "mt-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 dark:text-slate-100 p-4 text-sm";
 function outBox(id) { return '<div id="' + id + '"></div>'; }
 
 /* ---------------- tema ---------------- */
@@ -154,22 +154,84 @@ function renderTabs() {
   $("#catTabs").innerHTML = CATS.map((c) => {
     const count = c.k === "fav" ? favs.size : c.k === "all" ? TOOLS.length : TOOLS.filter((t) => t.c === c.k).length;
     const on = curCat === c.k;
-    return '<button onclick="setCat(\'' + c.k + '\')" class="shrink-0 rounded-full px-4 py-2 text-sm font-bold transition ' + (on ? "bg-black text-[#FDE047] border-[2.5px] border-black dark:border-[#FDE047]" : "bg-white dark:bg-[#1E1E1E] dark:text-white border-[2.5px] border-black dark:border-[#FDE047] hover:bg-[#FEF9C3] dark:hover:bg-[#2A2A2A]") + '">' + c.n + ' <span class="opacity-70 font-semibold">' + count + "</span></button>";
+    return '<button onclick="setCat(\'' + c.k + '\')" class="shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition border ' + (on ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" : "bg-white dark:bg-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600") + '">' + c.n + ' <span class="opacity-70 font-semibold">' + count + "</span></button>";
   }).join("");
 }
-function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
+function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); }
 const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
+
+/* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */
+let viewMode = store.get("mt_view", "grid");
+let roadmapOn = false;
+function toolRow(t) {
+  const fav = favs.has(t.id);
+  return '<article class="relative flex items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-3 cursor-pointer transition hover:border-slate-300 dark:hover:border-slate-600" onclick="openTool(\'' + t.id + '\')">'
+    + '<div class="mono-box mono-sm shrink-0">' + monoOf(t) + "</div>"
+    + '<div class="flex-1 min-w-0"><h3 class="font-bold text-[13.5px] leading-tight truncate text-slate-900 dark:text-white">' + esc(t.n) + "</h3>"
+    + '<p class="text-[12px] text-slate-500 dark:text-slate-400 truncate mt-0.5">' + esc(t.d) + "</p></div>"
+    + '<span class="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 hidden md:block shrink-0">' + CATNAME[t.c] + "</span>"
+    + '<button onclick="event.stopPropagation();toggleFav(\'' + t.id + '\')" title="Pin ke Favorit" class="shrink-0 w-7 h-7 grid place-items-center ' + (fav ? "text-amber-500" : "text-slate-300 dark:text-slate-600 hover:text-amber-500") + ' transition">' + (fav ? "★" : "☆") + "</button></article>";
+}
+function setView(v) { viewMode = v; store.set("mt_view", v); syncViewBtns(); renderGrid(); }
+function syncViewBtns() {
+  const g = $("#viewGridBtn"), l = $("#viewListBtn"); if (!g || !l) return;
+  const base = "text-[11.5px] font-semibold px-2.5 py-1.5 rounded-lg border transition ";
+  const on = "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white";
+  const off = "bg-white text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700";
+  g.className = base + (viewMode === "grid" ? on : off);
+  l.className = base + (viewMode === "list" ? on : off);
+}
+function scrollToGrid() { const el = $("#catTabs"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
+function quickSearch(q) { const inp = $("#searchInput"); if (inp) inp.value = q; curQuery = q; hideRoadmap(); renderGrid(); scrollToGrid(); }
+function pushRecent(id) {
+  let r = store.get("mt_recent", []); if (!Array.isArray(r)) r = [];
+  r = [id].concat(r.filter((x) => x !== id)).slice(0, 6);
+  store.set("mt_recent", r); renderRecent();
+}
+function renderRecent() {
+  const sec = $("#recentSec"), row = $("#recentRow"); if (!sec || !row) return;
+  const r = store.get("mt_recent", []); if (!Array.isArray(r)) return;
+  const items = r.map((id) => TOOLS.find((t) => t.id === id)).filter(Boolean);
+  if (!items.length) { sec.classList.add("hidden"); return; }
+  sec.classList.remove("hidden");
+  row.innerHTML = items.map((t) => '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 flex items-center gap-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl pl-2 pr-3.5 py-2 text-left hover:border-slate-300 dark:hover:border-slate-600 transition"><span class="mono-box mono-sm">' + monoOf(t) + '</span><span class="min-w-0"><span class="block text-[12.5px] font-bold leading-tight max-w-[160px] truncate text-slate-800 dark:text-slate-100">' + esc(t.n) + '</span><span class="block text-[10.5px] text-slate-400 mt-0.5">' + CATNAME[t.c] + "</span></span></button>").join("");
+}
+const ROADMAP = [
+  { t: "Tahap 1 — Cari Ide & Proposal (Bab 1–3)", d: "Tentukan judul, kumpulkan jurnal, susun matriks & kerangka berpikir, hitung sampel, dan buat proposalnya.", ids: ["judul", "jurnal", "k17", "k25", "sampel", "kuesioner", "proposal"] },
+  { t: "Tahap 2 — Olah Data & Pembahasan (Bab 4–5)", d: "Konversi data mentah, uji instrumen, jalankan analisis utama, dan buat grafik untuk Bab 4.", ids: ["likert", "deskriptif", "validitas", "regresi", "nonpar", "k26"] },
+  { t: "Tahap 3 — Cek Keaslian & Rapikan Format", d: "Pastikan naskah orisinal, sitasi asli, dan format dokumen rapi sebelum dikumpulkan ke pembimbing.", ids: ["aidetect", "humanizer", "sitasi", "dapus", "singkatan", "pdfstamp"] },
+  { t: "Tahap 4 — Persiapan Sidang & Pasca-Sidang", d: "Siapkan slide dan latihan menjawab penguji; setelah sidang urus revisi, yudisium, sampai CV untuk melamar kerja.", ids: ["k27", "k28", "teleprompter", "bimbingan", "revisi", "k54", "k37", "k53"] }
+];
+function showRoadmap() {
+  const v = $("#roadmapView"); if (!v) return;
+  roadmapOn = true;
+  v.innerHTML = '<div class="flex items-center gap-3 mb-4"><span class="text-[22px]">🧭</span><div><h2 class="font-extrabold text-lg leading-tight">Peta Jalan Skripsi</h2><p class="text-[12.5px] text-slate-500 dark:text-slate-400">Empat tahap dari Bab 1 sampai sidang — klik tool untuk langsung membukanya.</p></div><button onclick="hideRoadmap();renderGrid()" class="ml-auto text-[12px] font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">✕ Tutup</button></div>'
+    + ROADMAP.map((s, idx) => '<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-3.5"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-indigo-600 text-white grid place-items-center font-extrabold text-sm shrink-0">' + (idx + 1) + '</span><h3 class="font-bold text-[15px]">' + s.t + '</h3></div><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">' + s.d + '</p><div class="flex flex-wrap gap-2 mt-3.5">' + s.ids.map((id) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return '<button onclick="openTool(\'' + id + '\')" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition"><span class="mono-box mono-xs">' + monoOf(t) + "</span>" + esc(t.n) + "</button>"; }).join("") + "</div></div>").join("");
+  v.classList.remove("hidden");
+  const g = $("#grid"); if (g) g.classList.add("hidden");
+  const gi = $("#gridInfo"); if (gi) gi.classList.add("hidden");
+  const ge = $("#gridEmpty"); if (ge) ge.classList.add("hidden");
+  v.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function hideRoadmap() {
+  if (!roadmapOn) return;
+  roadmapOn = false;
+  const v = $("#roadmapView"); if (v) v.classList.add("hidden");
+  const g = $("#grid"); if (g) g.classList.remove("hidden");
+  const gi = $("#gridInfo"); if (gi) gi.classList.remove("hidden");
+}
+
 function toolCard(t) {
   const fav = favs.has(t.id);
-  return '<article class="relative bg-white dark:bg-[#1E1E1E] border-[3px] border-black dark:border-[#FDE047] p-5 cursor-pointer bshadow" onclick="openTool(\'' + t.id + '\')">'
+  return '<article class="group relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 cursor-pointer transition duration-200 hover:border-slate-300 dark:hover:border-slate-600 hover:shadow-[0_12px_28px_-8px_rgba(79,70,229,0.12)] hover:-translate-y-0.5" onclick="openTool(\'' + t.id + '\')">'
     + '<button onclick="event.stopPropagation();toggleFav(\'' + t.id + '\')" title="Pin ke Favorit" class="absolute top-3 right-3 w-8 h-8 grid place-items-center text-lg ' + (fav ? "text-amber-500" : "text-slate-300 dark:text-slate-600 hover:text-amber-500") + ' transition">' + (fav ? "★" : "☆") + "</button>"
-    + '<div class="mono-box mb-3">' + monoOf(t) + "</div>"
-    + '<h3 class="display-font uppercase text-[13px] leading-snug pr-5">' + esc(t.n) + "</h3>"
-    + '<p class="text-sm text-slate-600 dark:text-slate-300 mt-1.5 leading-relaxed">' + esc(t.d) + "</p>"
+    + '<div class="mono-box mb-3.5">' + monoOf(t) + "</div>"
+    + '<h3 class="font-bold text-[15px] leading-snug pr-5 text-slate-900 dark:text-white">' + esc(t.n) + "</h3>"
+    + '<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">' + esc(t.d) + "</p>"
     + '<div class="mt-4 flex items-center gap-2">'
-    + '<span class="text-[10.5px] font-extrabold tracking-wider bg-black text-[#FDE047] dark:bg-[#FDE047] dark:text-black rounded-full px-2.5 py-1">AKTIF</span>'
-    + '<span class="text-[11px] font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">' + CATNAME[t.c] + "</span></div></article>";
+    + '<span class="text-[10px] font-bold tracking-wide text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 rounded-full px-2 py-0.5">● AKTIF</span>'
+    + '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' + CATNAME[t.c] + "</span></div></article>";
 }
 function renderGrid() {
   if (!$("#grid")) return;
@@ -178,7 +240,17 @@ function renderGrid() {
   else if (curCat !== "all") list = list.filter((t) => t.c === curCat);
   if (curQuery) { const q = curQuery.toLowerCase(); list = list.filter((t) => (t.n + " " + t.d + " " + CATNAME[t.c]).toLowerCase().includes(q)); }
   list.sort((a, b) => (favs.has(b.id) - favs.has(a.id)) || ((b.aktif || 0) - (a.aktif || 0)));
-  $("#grid").innerHTML = list.map(toolCard).join("");
+  const cardFn = viewMode === "list" ? toolRow : toolCard;
+  const wrapCls = viewMode === "list" ? "flex flex-col gap-2" : "grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5";
+  if (curCat === "all" && !curQuery) {
+    $("#grid").innerHTML = CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => {
+      const items = list.filter((t) => t.c === c.k);
+      if (!items.length) return "";
+      return '<div class="mb-9"><div class="flex items-center gap-3 mb-3"><h2 class="text-[13px] font-bold tracking-wide text-slate-700 dark:text-slate-200">' + c.n + '</h2><span class="text-[11px] font-bold text-slate-400">' + items.length + ' tool</span><span class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></span></div><div class="' + wrapCls + '">' + items.map(cardFn).join("") + "</div></div>";
+    }).join("");
+  } else {
+    $("#grid").innerHTML = '<div class="' + wrapCls + '">' + list.map(cardFn).join("") + "</div>";
+  }
   $("#gridEmpty").classList.toggle("hidden", list.length > 0);
   $("#gridInfo").textContent = curCat === "fav" && !favs.size ? "Belum ada favorit — klik ikon ☆ pada kartu tool untuk mem-pin di sini." : "Menampilkan " + list.length + " dari " + TOOLS.length + " tools" + (curQuery ? ' untuk pencarian "' + curQuery + '"' : "") + ". Semua tool berstatus AKTIF dan siap dipakai.";
 }
@@ -188,7 +260,7 @@ function toggleFav(id) {
   if (curTool === id) syncWsFav();
 }
 function focusSearch() { const i = $("#searchInput"); i.focus(); i.scrollIntoView({ behavior: "smooth", block: "center" }); }
-const _si = $("#searchInput"); if (_si) _si.addEventListener("input", (e) => { curQuery = e.target.value.trim(); renderGrid(); });
+const _si = $("#searchInput"); if (_si) _si.addEventListener("input", (e) => { curQuery = e.target.value.trim(); hideRoadmap(); renderGrid(); });
 document.addEventListener("keydown", (e) => {
   if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") { e.preventDefault(); focusSearch(); }
   if (e.key === "Escape") closeWS();
@@ -198,6 +270,7 @@ document.addEventListener("keydown", (e) => {
 function openTool(id) {
   const t = TOOLS.find((x) => x.id === id); if (!t) return;
   curTool = id;
+  pushRecent(id);
   $("#wsIcon").textContent = monoOf(t); $("#wsTitle").textContent = t.n; $("#wsDesc").textContent = t.d;
   syncWsFav();
   const body = $("#wsBody");
@@ -3462,7 +3535,7 @@ function analisisAI() {
     + '<div class="rounded-lg bg-white dark:bg-slate-900 p-4"><div class="text-3xl font-extrabold">' + kliseHits.length + '</div><div class="text-[11px] text-slate-500">FRASA KLISE AI<br>ditemukan dalam teks</div></div></div>'
     + '<div class="text-sm space-y-1 mb-4">' + alasan.map((a) => "<p>• " + esc(a) + "</p>").join("") + "</div>"
     + '<h4 class="font-extrabold text-sm mb-1.5">📊 Grafik Panjang Kalimat (kata per kalimat)</h4>'
-    + '<div class="flex items-end gap-1 h-24 mb-4" id="aiBars">' + lens.map((l) => '<div title="' + l + ' kata" style="height:' + Math.max(8, Math.round(l / Math.max(...lens) * 100)) + '%;flex:1;background:#000" class="dark:bg-[#FDE047] min-w-[3px]"></div>').join("") + "</div>"
+    + '<div class="flex items-end gap-1 h-24 mb-4" id="aiBars">' + lens.map((l) => '<div title="' + l + ' kata" style="height:' + Math.max(8, Math.round(l / Math.max(...lens) * 100)) + '%;flex:1;background:#4F46E5" class="dark:bg-indigo-400 min-w-[3px]"></div>').join("") + "</div>"
     + '<h4 class="font-extrabold text-sm mb-1.5">🌡️ Sentence Heatmap</h4>'
     + '<p class="text-xs text-slate-500 mb-2"><span class="px-1.5 py-0.5 rounded" style="background:#BBF7D0;color:#000">Hijau: variatif</span> <span class="px-1.5 py-0.5 rounded" style="background:#FDE68A;color:#000">Kuning: monoton</span> <span class="px-1.5 py-0.5 rounded" style="background:#FECACA;color:#000">Merah: klise AI / robotik</span></p>'
     + '<p class="leading-loose text-[15px] bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">' + sentInfo.map((x) => '<span style="background:' + bgMap[x.cls] + ';color:#000" class="rounded px-1" title="' + x.len + ' kata">' + esc(x.s) + "</span>").join(" ") + "</p>"
@@ -3526,7 +3599,7 @@ function renderBarisKalimat(s, i) {
   const kws = [...new Set(kataKunciDi(s))].slice(0, 4);
   const chips = kws.map((k) => '<button class="rounded-full bg-amber-200 dark:bg-amber-800 text-amber-900 dark:text-amber-100 px-2 py-0.5 text-[11px] font-bold" onclick="gantiSinonim(this,' + i + ',\'' + k.replace(/'/g, "") + '\')" title="Klik untuk mengganti dengan sinonim natural">🔁 ' + esc(k) + " → " + esc(SINONIM[k][0]) + "</button>").join(" ");
   return '<div class="rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 p-3">'
-    + '<div class="flex items-center gap-2 mb-1.5"><span class="text-[11px] font-extrabold bg-black text-[#FDE047] dark:bg-[#FDE047] dark:text-black rounded px-1.5 py-0.5">K' + (i + 1) + '</span>'
+    + '<div class="flex items-center gap-2 mb-1.5"><span class="text-[11px] font-extrabold bg-slate-900 text-white dark:bg-indigo-600 dark:text-white rounded px-1.5 py-0.5">K' + (i + 1) + '</span>'
     + '<span class="text-[11px] font-bold text-slate-500" data-count="' + i + '">' + n + ' kata</span>'
     + '<span class="flex flex-wrap gap-1 ml-auto">' + chips + "</span></div>"
     + '<textarea data-row="' + i + '" rows="2" class="w-full bg-transparent outline-none text-[15px] leading-relaxed resize-y">' + esc(s) + "</textarea></div>";
@@ -3872,7 +3945,7 @@ function renderCvLive() {
   UI.k53 = function (el) {
     _ui(el);
     const btn = el.querySelector('button[onclick="buatCv()"]');
-    if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW LANGSUNG — berubah saat kamu mengetik</p><div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] overflow-x-auto bshadow-sm"><div style="min-width:520px" id="cvLiveInner"></div></div></div>');
+    if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW LANGSUNG — berubah saat kamu mengetik</p><div class="bg-white text-slate-900 p-5 border border-slate-200 dark:border-slate-700 overflow-x-auto bshadow-sm"><div style="min-width:520px" id="cvLiveInner"></div></div></div>');
     el.addEventListener("input", renderCvLive);
     renderCvLive();
   };
@@ -3883,7 +3956,7 @@ function renderDocPreview() {
   const box = $("#docPrev"); if (!box) return;
   const gv = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
   const bab = [["BAB I", "PENDAHULUAN", "Latar Belakang • Rumusan Masalah • Tujuan • Manfaat • Definisi Operasional"], ["BAB II", "TINJAUAN PUSTAKA", "Kajian Teori • Penelitian Terdahulu • Kerangka Berpikir • Hipotesis"], ["BAB III", "METODE PENELITIAN", "Jenis Penelitian • Populasi & Sampel • Instrumen • Teknik Analisis Data"], ["BAB IV", "HASIL DAN PEMBAHASAN", "Deskripsi Data • Hasil Uji • Pembahasan"], ["BAB V", "PENUTUP", "Kesimpulan • Saran"]];
-  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border border-slate-200 dark:border-slate-700 bshadow-sm" style="font-family:Georgia,serif">'
     + '<p class="text-center font-bold text-sm tracking-wide">' + esc((gv("xUniv") || "UNIVERSITAS").toUpperCase()) + '</p>'
     + '<p class="text-center text-xs">' + esc(gv("xFak") || "Fakultas") + " — Program Studi " + esc(gv("xProdi") || "…") + "</p>"
     + '<h3 class="text-center font-extrabold text-base mt-5 leading-snug">' + esc((gv("xJud") || "JUDUL SKRIPSI").toUpperCase()) + "</h3>"
@@ -3929,7 +4002,7 @@ function renderSlidePreview() {
   const box = $("#ppPrev"); if (!box) return;
   const slides = parseOutlineSlides($("#ppIn").value);
   window._slidePreview = slides;
-  const card = (inner, dark) => '<div class="rounded-lg overflow-hidden border-[2.5px] ' + (dark ? "bg-[#122B78] text-white border-[#122B78]" : "bg-white text-slate-800 border-black dark:border-[#FDE047]") + '" style="aspect-ratio:16/9"><div class="p-2.5 h-full overflow-hidden">' + inner + "</div></div>";
+  const card = (inner, dark) => '<div class="rounded-lg overflow-hidden border-[2.5px] ' + (dark ? "bg-[#122B78] text-white border-[#122B78]" : "bg-white text-slate-800 border-slate-300 dark:border-slate-600") + '" style="aspect-ratio:16/9"><div class="p-2.5 h-full overflow-hidden">' + inner + "</div></div>";
   box.innerHTML = '<p class="text-sm font-extrabold mb-2">👁 PREVIEW ' + (slides.length + 1) + ' SLIDE</p><div class="grid grid-cols-2 sm:grid-cols-3 gap-2.5">'
     + card('<div class="font-extrabold text-[13px] leading-snug mt-3">' + esc($("#ppJud").value.trim() || "Judul Presentasi") + '</div><div class="text-[10px] opacity-80 mt-1">' + esc($("#ppNama").value.trim() || "Nama Presenter") + " — COVER</div>", true)
     + slides.map((s) => s.type === "section"
@@ -3967,7 +4040,7 @@ function renderFlashPreview() {
   lines.forEach((l) => { const p = l.split("|"); if (p.length >= 2) cards.push({ t: p[0].trim(), d: p.slice(1).join("|").trim() }); });
   window._fcPreviewCount = cards.length;
   box.innerHTML = '<p class="text-sm font-extrabold mb-2">👁 PREVIEW ' + cards.length + ' KARTU (DEPAN ↔ BELAKANG)</p>'
-    + (cards.length ? '<div class="space-y-2">' + cards.map((c, i) => '<div class="grid grid-cols-2 gap-2"><div class="rounded-lg border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-900 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">DEPAN ' + (i + 1) + '</div><div class="font-extrabold text-sm">' + esc(c.t) + '</div></div><div class="rounded-lg border-2 border-black dark:border-[#FDE047] bg-[#FEFCE8] dark:bg-slate-800 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">BELAKANG ' + (i + 1) + '</div><div class="text-[12.5px] leading-snug">' + esc(c.d) + "</div></div></div>").join("") + "</div>"
+    + (cards.length ? '<div class="space-y-2">' + cards.map((c, i) => '<div class="grid grid-cols-2 gap-2"><div class="rounded-lg border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-900 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">DEPAN ' + (i + 1) + '</div><div class="font-extrabold text-sm">' + esc(c.t) + '</div></div><div class="rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">BELAKANG ' + (i + 1) + '</div><div class="text-[12.5px] leading-snug">' + esc(c.d) + "</div></div></div>").join("") + "</div>"
     : '<p class="text-sm text-slate-500">Format: Istilah | Definisi (satu kartu per baris).</p>');
 }
 (function () {
@@ -4274,7 +4347,7 @@ function renderProposalPreview() {
   const elTotal = $("#prRabTotal");
   if (elTotal) elTotal.innerHTML = rab && rab.items.length ? "💰 Total RAB terhitung: <b>" + rp(rab.total) + "</b> dari " + rab.items.length + " item" : "";
   window._proposalText = proposalTeksPolos();
-  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border border-slate-200 dark:border-slate-700 bshadow-sm" style="font-family:Georgia,serif">'
     + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:70px;margin:0 auto"></p>' : "")
     + '<p class="text-center font-bold text-sm tracking-wide">' + esc((gvPr("prKampus") || "UNIVERSITAS").toUpperCase()) + '</p>'
     + '<p class="text-center text-xs">' + esc(gvPr("prProdi") || "Program Studi / Organisasi") + '</p>'
@@ -4621,7 +4694,7 @@ function renderKuPreview() {
   window._kuCount = items.length;
   const d = getLogoData();
   const resp = $("#kuResp").value.split(",").map((s) => s.trim()).filter(Boolean);
-  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border border-slate-200 dark:border-slate-700 bshadow-sm" style="font-family:Georgia,serif">'
     + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:64px;margin:0 auto"></p>' : "")
     + '<h3 class="text-center font-extrabold text-[15px] leading-snug">KUESIONER PENELITIAN</h3>'
     + '<p class="text-center font-bold text-sm mt-1">' + esc(($("#kuJudul").value.trim() || "Judul Penelitian").toUpperCase()) + "</p>"
@@ -4678,7 +4751,7 @@ UI.jurnal = function (el) {
     + '<p id="juStat" class="text-sm text-slate-500 mb-2">Sumber: OpenAlex (ratusan juta publikasi, gratis). Butuh internet.</p>'
     + '<div id="juHasil" class="space-y-2.5 mb-5"></div>'
     + field("Buat Sitasi dari DOI", '<div class="flex gap-2"><input id="juDoi" class="flex-1 ' + IN + '" placeholder="cth: 10.1234/jurnal.2024.001"><button class="' + BTN2 + '" style="width:auto" onclick="sitasiDariDoi()">Ambil Sitasi</button></div>')
-    + '<div class="rounded-lg border-[3px] border-black dark:border-[#FDE047] p-4 bshadow-sm"><p class="font-extrabold mb-2">📚 Rak Referensi Saya <span id="juRakInfo" class="text-xs font-semibold text-slate-500"></span></p>'
+    + '<div class="rounded-lg border border-slate-200 dark:border-slate-700 p-4 bshadow-sm"><p class="font-extrabold mb-2">📚 Rak Referensi Saya <span id="juRakInfo" class="text-xs font-semibold text-slate-500"></span></p>'
     + '<div id="juRak" class="space-y-2 mb-3"></div>'
     + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="eksporRak(\'apa\')">⬇️ Daftar Pustaka APA 7 (.doc)</button>'
     + '<button class="' + BTN2 + '" onclick="eksporRak(\'bib\')">⬇️ BibTeX (.bib)</button>'
@@ -4945,7 +5018,7 @@ function renderConsent() {
   const t = consentTeks();
   window._consentText = t;
   const d = getLogoData();
-  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border border-slate-200 dark:border-slate-700 bshadow-sm" style="font-family:Georgia,serif">'
     + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:64px;margin:0 auto"></p>' : "")
     + '<div class="whitespace-pre-wrap text-[13.5px] leading-relaxed">' + esc(t) + "</div></div>";
 }
@@ -5004,12 +5077,12 @@ function tandaiSegmen(i) {
 function warnaKode(k) { const i = window._kodCodes.indexOf(k); return KOD_WARNA[Math.max(0, i) % KOD_WARNA.length]; }
 function renderKoding() {
   const kl = $("#kdKodeList"); if (!kl) return;
-  kl.innerHTML = window._kodCodes.length ? window._kodCodes.map((k) => '<button onclick="pilihKode(\'' + esc(k).replace(/'/g, "\\'") + '\')" class="px-3 py-1.5 rounded-full text-[13px] font-bold border-2 ' + (window._kodAktif === k ? "border-black dark:border-[#FDE047]" : "border-transparent") + '" style="background:' + warnaKode(k) + ';color:#111">' + esc(k) + "</button>").join("") : '<span class="text-sm text-slate-500">Belum ada kode — tambahkan tema pertama di atas.</span>';
+  kl.innerHTML = window._kodCodes.length ? window._kodCodes.map((k) => '<button onclick="pilihKode(\'' + esc(k).replace(/'/g, "\\'") + '\')" class="px-3 py-1.5 rounded-full text-[13px] font-bold border-2 ' + (window._kodAktif === k ? "border-slate-300 dark:border-slate-600" : "border-transparent") + '" style="background:' + warnaKode(k) + ';color:#111">' + esc(k) + "</button>").join("") : '<span class="text-sm text-slate-500">Belum ada kode — tambahkan tema pertama di atas.</span>';
   const total = window._kodSegs.length, terkode = window._kodSegs.filter((s) => s.kode).length;
   const stats = $("#kdStats");
   if (stats) stats.innerHTML = total ? '<div class="flex flex-wrap gap-2">' + window._kodCodes.map((k) => { const c = window._kodSegs.filter((s) => s.kode === k).length; return '<span class="px-2.5 py-1 rounded-lg text-xs font-extrabold border-2 border-black/10" style="background:' + warnaKode(k) + ';color:#111">' + esc(k) + ": " + c + " segmen (" + (total ? Math.round(c / total * 100) : 0) + "%)</span>"; }).join("") + '<span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-900 text-white dark:bg-white dark:text-slate-900">Terkode: ' + terkode + "/" + total + "</span></div>" : "";
   const box = $("#kdSegs");
-  if (box) box.innerHTML = total ? window._kodSegs.map((s, i) => '<div onclick="tandaiSegmen(' + i + ')" class="cursor-pointer rounded-lg border-2 p-3 text-[13.5px] leading-relaxed bg-white dark:bg-slate-900 ' + (s.kode ? "border-black dark:border-[#FDE047]" : "border-slate-200 dark:border-slate-700") + '"><span class="text-[11px] font-extrabold text-slate-400 mr-1.5">#' + (i + 1) + "</span>" + esc(s.teks) + (s.kode ? ' <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] font-extrabold" style="background:' + warnaKode(s.kode) + ';color:#111">' + esc(s.kode) + "</span>" : "") + "</div>").join("") : '<p class="text-sm text-slate-500">Belum ada segmen — tempel transkrip lalu klik “Pecah Jadi Segmen”.</p>';
+  if (box) box.innerHTML = total ? window._kodSegs.map((s, i) => '<div onclick="tandaiSegmen(' + i + ')" class="cursor-pointer rounded-lg border-2 p-3 text-[13.5px] leading-relaxed bg-white dark:bg-slate-900 ' + (s.kode ? "border-slate-300 dark:border-slate-600" : "border-slate-200 dark:border-slate-700") + '"><span class="text-[11px] font-extrabold text-slate-400 mr-1.5">#' + (i + 1) + "</span>" + esc(s.teks) + (s.kode ? ' <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] font-extrabold" style="background:' + warnaKode(s.kode) + ';color:#111">' + esc(s.kode) + "</span>" : "") + "</div>").join("") : '<p class="text-sm text-slate-500">Belum ada segmen — tempel transkrip lalu klik “Pecah Jadi Segmen”.</p>';
 }
 function ringkasanKoding() {
   const total = window._kodSegs.length;
@@ -5087,14 +5160,14 @@ function renderHadir() {
   $("#hdBoxBerita").classList.toggle("hidden", d.mode !== "berita");
   window._hdCount = d.peserta.length;
   if (d.mode === "hadir") {
-    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border border-slate-200 dark:border-slate-700 bshadow-sm" style="font-family:Georgia,serif">'
       + (getLogoData() ? '<p style="text-align:center;margin:0"><img src="' + getLogoData() + '" style="height:52px;margin:0 auto"></p>' : "")
       + '<p class="text-center font-extrabold text-sm">DAFTAR HADIR</p><p class="text-center font-bold text-[13px]">' + esc(d.keg || "Nama Kegiatan") + '</p><p class="text-center text-xs">' + esc(d.tgl) + (d.waktu ? " • " + esc(d.waktu) : "") + "</p>"
       + '<table class="w-full text-[12.5px] mt-3" style="border-collapse:collapse"><tr><th class="border border-slate-400 px-2 py-1">No</th><th class="border border-slate-400 px-2 py-1 text-left">Nama</th><th class="border border-slate-400 px-2 py-1 text-left">Instansi</th><th class="border border-slate-400 px-2 py-1">TTD</th></tr>'
       + d.peserta.map((p, i) => '<tr><td class="border border-slate-300 px-2 py-1 text-center">' + (i + 1) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(p.nama) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(p.inst) + '</td><td class="border border-slate-300 px-2 py-1 text-slate-400">' + (i + 1) + ".</td></tr>").join("") + "</table>"
       + '<p class="text-[11.5px] mt-2">Jumlah peserta: ' + d.peserta.length + " orang (di .doc, kolom tanda tangan dibuat zig-zag dua kolom seperti format resmi).</p></div>";
   } else {
-    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] bshadow-sm whitespace-pre-wrap text-[13.5px] leading-relaxed" style="font-family:Georgia,serif">'
+    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border border-slate-200 dark:border-slate-700 bshadow-sm whitespace-pre-wrap text-[13.5px] leading-relaxed" style="font-family:Georgia,serif">'
       + (getLogoData() ? '<p style="text-align:center;margin:0"><img src="' + getLogoData() + '" style="height:52px;margin:0 auto"></p>' : "")
       + "<b>BERITA ACARA KEGIATAN</b>\n\n" + esc(d.keg || "Nama Kegiatan") + "\n" + esc(d.tgl) + " • " + esc(d.waktu) + "\n\nHasil/Kesimpulan:\n" + d.hasil.map((h, i) => (i + 1) + ". " + h).join("\n") + "\n\nNotulis: " + esc(d.notulis || "—") + " • Pimpinan: " + esc(d.pimpin || "—") + "</div>";
   }
@@ -5155,7 +5228,7 @@ function buatIdeJudul() {
   if (!X) { toast("⚠️ Isi minimal Variabel/Topik X."); return; }
   const pola = polaJudul(m, X, Y || "(variabel terikat)", Z);
   window._judulList = pola;
-  $("#jdHasil").innerHTML = pola.map((j) => '<button onclick="copyText(this.dataset.j)" data-j="' + esc(j) + '" class="w-full text-left rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 font-bold text-[14.5px] hover:border-black dark:hover:border-[#FDE047] transition-colors">' + esc(j) + "</button>").join("");
+  $("#jdHasil").innerHTML = pola.map((j) => '<button onclick="copyText(this.dataset.j)" data-j="' + esc(j) + '" class="w-full text-left rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 font-bold text-[14.5px] hover:border-slate-400 dark:hover:border-indigo-400 transition-colors">' + esc(j) + "</button>").join("");
   toast(pola.length + " ide judul dibuat 💡");
 }
 
@@ -5195,7 +5268,7 @@ function renderBiaya() {
     + [["Total Kebutuhan", rpF(total)], ["UKT (" + num("bySisa") + " semester)", rpF(uktTotal)], ["Biaya Lain", rpF(lainTotal)], ["Masih Kurang", rpF(kurang)]].map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-center"><div class="text-[15px] font-extrabold">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
     + '<div class="mb-1.5 flex justify-between text-sm font-bold"><span>Tabungan terkumpul</span><span>' + persen + "%</span></div>"
     + '<div class="h-4 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-4"><div class="h-full bg-emerald-500 transition-all" style="width:' + persen + '%"></div></div>'
-    + (kurang > 0 ? '<div class="grid grid-cols-3 gap-2 text-center">' + [["Target Nabung / Bulan", rpF(perBulan)], ["Per Minggu", rpF(perMinggu)], ["Per Hari", rpF(perHari)]].map((b) => '<div class="rounded-lg bg-[#FEFCE8] dark:bg-slate-800 border-2 border-black dark:border-[#FDE047] px-2 py-2.5"><div class="font-extrabold text-[14.5px]">' + b[1] + '</div><div class="text-[11px] font-semibold text-slate-500">' + b[0] + "</div></div>").join("") + "</div>"
+    + (kurang > 0 ? '<div class="grid grid-cols-3 gap-2 text-center">' + [["Target Nabung / Bulan", rpF(perBulan)], ["Per Minggu", rpF(perMinggu)], ["Per Hari", rpF(perHari)]].map((b) => '<div class="rounded-lg bg-slate-50 dark:bg-slate-800 border-2 border-slate-300 dark:border-slate-600 px-2 py-2.5"><div class="font-extrabold text-[14.5px]">' + b[1] + '</div><div class="text-[11px] font-semibold text-slate-500">' + b[0] + "</div></div>").join("") + "</div>"
       + '<p class="text-[13px] mt-3">Dengan menabung <b>' + rpF(perBulan) + "/bulan</b> selama " + bulan + " bulan, target " + rpF(total) + " akan tercapai tepat waktu. Kurangi jajan harian sebesar " + rpF(perHari) + " saja sudah cukup menutupnya.</p>"
       : '<p class="font-extrabold text-emerald-600">🎉 Target biaya sudah terpenuhi dari tabunganmu saat ini!</p>')
     + "</div>";
@@ -5535,7 +5608,7 @@ function kartuTargetNilai() {
   if (!h || h.perlu === null || h.perlu === undefined) { toast("Hitung dulu dengan tepat satu komponen kosong 🎯"); return; }
   const cv = document.createElement("canvas"); cv.width = 900; cv.height = 560;
   const x = cv.getContext("2d");
-  x.fillStyle = "#FDE047"; x.fillRect(0, 0, 900, 560);
+  x.fillStyle = "#EEF2FF"; x.fillRect(0, 0, 900, 560);
   x.strokeStyle = "#111"; x.lineWidth = 10; x.strokeRect(14, 14, 872, 532);
   x.fillStyle = "#111"; x.font = "900 40px 'Archivo Black', sans-serif"; x.fillText("TARGET NILAI", 52, 92);
   x.font = "700 30px 'Plus Jakarta Sans', sans-serif";
@@ -5990,7 +6063,7 @@ SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount
    ============================================================ */
 (function () {
   const chip = document.querySelector("[data-tools-count]");
-  if (chip) chip.textContent = "\uD83E\uDDF0 " + TOOLS.length + " Tools Akademik";
+  if (chip) chip.textContent = TOOLS.length + " Tool Gratis";
   if (window.__MT_TOOL_ID__) {
     const t = TOOLS.find((x) => x.id === window.__MT_TOOL_ID__);
     const root = document.getElementById("toolRoot");
@@ -6001,6 +6074,7 @@ SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount
     }
     return;
   }
+  renderRecent(); syncViewBtns();
   if (location.hash && location.hash.length > 1) {
     const id = location.hash.slice(1);
     if (TOOLS.some((x) => x.id === id)) { try { openTool(id); } catch (e) {} }
