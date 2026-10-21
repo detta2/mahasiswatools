@@ -62,7 +62,7 @@ tailwind.config = { darkMode: "class", theme: { extend: {
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 text-center">
     <span class="inline-flex items-center gap-1.5 bg-white/15 border border-white/25 rounded-full px-3.5 py-1.5 text-xs sm:text-sm font-semibold fadein">🎓 Dari Mahasiswa, Untuk Mahasiswa</span>
     <h1 class="mt-4 text-3xl sm:text-5xl font-extrabold tracking-tight fadein">Satu Portal, Sejuta Solusi Kuliah</h1>
-    <p class="mt-3 text-brand-100 text-sm sm:text-lg max-w-2xl mx-auto fadein">55+ Tools Akademik • 100% Gratis • Tanpa Login • Privasi Aman — semua proses berjalan 100% di browser kamu, 0 biaya server.</p>
+    <p class="mt-3 text-brand-100 text-sm sm:text-lg max-w-2xl mx-auto fadein"><span id="statTools">55+ Tools Akademik</span> • 100% Gratis • Tanpa Login • Privasi Aman — semua proses berjalan 100% di browser kamu, 0 biaya server.</p>
     <div class="mt-6 max-w-xl mx-auto relative fadein">
       <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
       <input id="searchInput" type="text" placeholder="Cari tools… (Ctrl + K) — mis. validitas, daftar pustaka, terbilang" class="w-full rounded-xl pl-11 pr-4 py-3.5 text-slate-800 dark:text-slate-100 dark:bg-slate-900 shadow-lg shadow-brand-900/30 outline-none focus:ring-4 ring-white/40 text-sm sm:text-base">
@@ -137,64 +137,65 @@ const CATS = [
 const CATNAME = { tulis: "Penulisan & Skripsi", data: "Olah Data & Penelitian", present: "Presentasi & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Dokumen, PDF & Gambar", karir: "Akademik, Karir & Harian" };
 
 const TOOLS = [
-  /* ---- 15 FITUR AKTIF ---- */
-  { id: "validitas", n: "Uji Validitas & Reliabilitas + Auto-Narasi", c: "data", i: "📐", d: "Pearson item-total & Cronbach's Alpha dari data kuesioner, lengkap dengan narasi Bab 4 siap copy.", aktif: 1 },
-  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Ubah jawaban SS/S/RG/TS/STS menjadi skor angka favorable / unfavorable dalam sekali paste.", aktif: 1 },
-  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac-Michael, Lemeshow)", c: "data", i: "🎯", d: "Hitung ukuran sampel dari populasi & margin error, lengkap dengan langkah rumus siap copy.", aktif: 1 },
-  { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Perbaiki teks hasil copy dari PDF yang berantakan: baris terpotong menyatu jadi paragraf rapi.", aktif: 1 },
-  { id: "dapus", n: "Generator Daftar Pustaka Otomatis", c: "tulis", i: "📚", d: "Sitasi APA 7th, MLA, Harvard & Vancouver dengan italic yang benar, terurut A–Z otomatis.", aktif: 1 },
-  { id: "italic", n: "Auto-Italic Kata Asing & Kata Berulang", c: "tulis", i: "🔤", d: "Miringkan istilah asing otomatis dan temukan kata yang terlalu sering diulang dalam paragraf.", aktif: 1 },
-  { id: "eydcase", n: "Case Converter EYD Judul Indonesia", c: "tulis", i: "✒️", d: "Title Case sesuai EYD: kata hubung & kata depan otomatis tetap huruf kecil.", aktif: 1 },
-  { id: "similarity", n: "Pre-Turnitin Similarity Checker (Lokal)", c: "tulis", i: "🛡️", d: "Bandingkan teks asli vs parafrase: skor kemiripan + highlight frasa 3+ kata yang masih sama persis.", aktif: 1 },
-  { id: "teleprompter", n: "Teleprompter & Timer Latihan Sidang", c: "present", i: "🎙️", d: "Teks berjalan otomatis untuk latihan presentasi, timer hitung mundur & estimasi waktu bicara.", aktif: 1 },
-  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "📈", d: "Hitung IP minimal yang wajib diraih di sisa SKS demi target cumlaude / IPK kelulusan.", aktif: 1 },
-  { id: "kelompok", n: "Pengacak Kelompok Adil", c: "kelompok", i: "🎲", d: "Bagi daftar nama kelas menjadi N kelompok secara acak, merata, dan siap copy.", aktif: 1 },
-  { id: "splitter", n: "Splitter Kas & Patungan Kelompok/KKN", c: "kelompok", i: "💸", d: "Hitung siapa transfer berapa ke siapa agar patungan kelompok lunas dan adil.", aktif: 1 },
-  { id: "chatdosen", n: "Generator Chat Dosen & Surat Kampus", c: "karir", i: "✉️", d: "Pesan WA/email super sopan ke dosen + draf surat izin resmi, terisi otomatis sesuai tujuan.", aktif: 1 },
-  { id: "terbilang", n: "Konverter Terbilang Rupiah & Romawi", c: "dokumen", i: "🔟", d: "Angka menjadi teks terbilang rupiah untuk LPJ/kwitansi, plus konversi angka Romawi.", aktif: 1 },
-  { id: "budgetkos", n: "Kalkulator Budget Harian Anak Kos", c: "karir", i: "🍜", d: "Dari uang bulanan & biaya tetap, hitung batas aman jajan per hari dan per minggu.", aktif: 1 },
-
-  /* ---- 40 KATALOG TAHAP BERIKUTNYA ---- */
-  { id: "k16", n: "Template Makalah & Skripsi .docx Margin 4433", c: "tulis", i: "📄", d: "Template dokumen siap pakai dengan margin 4-4-3-3 dan format bab standar kampus.", aktif: 1 },
-  { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧩", d: "Tabel sintesis penelitian terdahulu: persamaan, perbedaan, dan celah penelitian.", aktif: 1 },
-  { id: "k18", n: "Kamus Kalimat Akademik (Phrasebank)", c: "tulis", i: "🗣️", d: "Bank frasa akademik formal untuk pendahuluan, metode, hasil, dan kesimpulan.", aktif: 1 },
-  { id: "k19", n: "Generator Abstrak Dwibahasa", c: "tulis", i: "🌐", d: "Kerangka abstrak Indonesia–Inggris dengan struktur latar, metode, hasil, simpulan.", aktif: 1 },
-  { id: "k20", n: "Kalkulator Target Kata & Deadline Skripsi", c: "tulis", i: "⏱️", d: "Pecah target total kata skripsi menjadi target harian realistis sampai deadline.", aktif: 1 },
-  { id: "k21", n: "Glosarium & Daftar Singkatan Sorter A–Z", c: "tulis", i: "🔠", d: "Rapikan daftar istilah & singkatan dan urutkan alfabetis otomatis.", aktif: 1 },
-  { id: "k22", n: "Generator Tabel Terbuka Standar Jurnal", c: "tulis", i: "📋", d: "Tabel gaya jurnal (garis atas-bawah saja) siap tempel ke Word.", aktif: 1 },
-  { id: "k23", n: "Dummy Data Kuesioner Generator (Auto-Valid)", c: "data", i: "🧪", d: "Data latihan kuesioner yang dijamin lolos uji validitas untuk simulasi olah data.", aktif: 1 },
-  { id: "k24", n: "Pembersih Transkrip Wawancara & Word Frequency", c: "data", i: "🎧", d: "Bersihkan filler transkrip dan hitung frekuensi kata untuk analisis kualitatif.", aktif: 1 },
-  { id: "k25", n: "Pembuat Bagan Kerangka Berpikir (X → Y)", c: "data", i: "🗺️", d: "Diagram kerangka pemikiran variabel X ke Y lengkap dengan hipotesis.", aktif: 1 },
-  { id: "k26", n: "Generator Grafik Bab 4 Arsiran Hitam-Putih", c: "data", i: "📊", d: "Grafik batang aman cetak hitam-putih dengan pola arsiran berbeda per kategori.", aktif: 1 },
-  { id: "k27", n: "Outline Makalah ke PPT (.pptx)", c: "present", i: "🖥️", d: "Ubah outline makalah menjadi file presentasi .pptx otomatis per sub-bab.", aktif: 1 },
-  { id: "k28", n: "Simulasi Pertanyaan Dosen Penguji Sidang", c: "present", i: "❓", d: "Bank pertanyaan jebakan penguji + kerangka jawaban untuk latihan sidang.", aktif: 1 },
-  { id: "k29", n: "Roda Undian Urutan Presentasi Kelas", c: "present", i: "🎡", d: "Roda putar adil untuk menentukan urutan presentasi kelompok di kelas.", aktif: 1 },
-  { id: "k30", n: "Pencari Jam Kosong Bersama", c: "kelompok", i: "🕐", d: "Irisan jadwal kosong semua anggota untuk menentukan waktu kerja kelompok.", aktif: 1 },
-  { id: "k31", n: "Generator Logbook Harian Magang/KKN", c: "kelompok", i: "📓", d: "Format logbook kegiatan harian rapi siap tanda tangan pembimbing.", aktif: 1 },
-  { id: "k32", n: "Pembuat Kwitansi & Nota LPJ Otomatis", c: "kelompok", i: "🧾", d: "Kwitansi pembayaran resmi dengan terbilang, siap cetak untuk LPJ.", aktif: 1 },
-  { id: "k33", n: "Matriks Program Kerja (Gantt) KKN", c: "kelompok", i: "📅", d: "Gantt chart program kerja KKN per minggu beserta penanggung jawab.", aktif: 1 },
-  { id: "k34", n: "Bagan Struktur Organisasi Posko KKN/Desa", c: "kelompok", i: "🏛️", d: "Bagan struktur organisasi posko atau perangkat desa yang rapi.", aktif: 1 },
-  { id: "k35", n: "Generator Sertifikat Seminar/Panitia Massal", c: "kelompok", i: "🏅", d: "Sertifikat massal dari daftar nama peserta/panitia dalam sekali proses.", aktif: 1 },
-  { id: "k36", n: "Desain Plang Jalan & Edukasi Desa KKN", c: "kelompok", i: "🪧", d: "Template plang penunjuk jalan & papan edukasi untuk program fisik KKN.", aktif: 1 },
-  { id: "k37", n: "Pas Foto Almamater & Ganti Background", c: "dokumen", i: "🖼️", d: "Pas foto formal dengan jas almamater dan background merah/biru.", aktif: 1 },
-  { id: "k38", n: "Pembuat Tanda Tangan Transparan PNG", c: "dokumen", i: "✍️", d: "Ubah foto tanda tangan menjadi PNG transparan siap tempel dokumen.", aktif: 1 },
-  { id: "k39", n: "Penyusun Grid Foto Dokumentasi Lampiran", c: "dokumen", i: "🧱", d: "Susun banyak foto dokumentasi menjadi grid lampiran yang rapi.", aktif: 1 },
-  { id: "k40", n: "Penambah Timestamp & Geotagging Foto", c: "dokumen", i: "📍", d: "Cap waktu & lokasi pada foto bukti kegiatan tugas/KKN.", aktif: 1 },
-  { id: "k41", n: "Generator QR Code Kuesioner Permanen", c: "dokumen", i: "🔳", d: "QR code resolusi tinggi untuk link Google Form kuesioner penelitian.", aktif: 1 },
-  { id: "k42", n: "OCR Gambar Catatan/Buku ke Teks", c: "dokumen", i: "👁️", d: "Ekstrak teks dari foto catatan atau halaman buku langsung di browser.", aktif: 1 },
-  { id: "k43", n: "Penggabung & Pemisah PDF Beasiswa", c: "dokumen", i: "📑", d: "Merge & split PDF berkas beasiswa tanpa upload ke server.", aktif: 1 },
-  { id: "k44", n: "Kompresor Ukuran File Kampus", c: "dokumen", i: "🗜️", d: "Kompres PDF/gambar agar lolos batas upload portal kampus.", aktif: 1 },
-  { id: "k45", n: "Pembuat Wallpaper Jadwal Kuliah (KRS)", c: "karir", i: "📱", d: "Jadwal kuliah mingguan menjadi wallpaper HP yang estetik.", aktif: 1 },
-  { id: "k46", n: "Generator Mind Map Catatan Kuliah", c: "karir", i: "🧠", d: "Mind map bercabang dari outline catatan kuliah.", aktif: 1 },
-  { id: "k47", n: "Pembuat Kuis Pilihan Ganda Mandiri", c: "karir", i: "📝", d: "Latihan soal PG dari materi sendiri dengan kunci & skor otomatis.", aktif: 1 },
-  { id: "k48", n: "Generator Kertas Catatan Cornell (PDF)", c: "karir", i: "🗒️", d: "Lembar catatan metode Cornell siap cetak A4.", aktif: 1 },
-  { id: "k49", n: "Pembuat Jembatan Keledai (Mnemonic)", c: "karir", i: "🌉", d: "Akronim & kalimat ajaib untuk menghafal daftar istilah.", aktif: 1 },
-  { id: "k50", n: "Pomodoro Timer + White Noise Belajar", c: "karir", i: "🍅", d: "Timer fokus 25/5 dengan white noise untuk sesi belajar dalam.", aktif: 1 },
-  { id: "k51", n: "Generator CV ATS-Friendly Fresh Graduate", c: "karir", i: "💼", d: "CV satu halaman ramah ATS untuk magang & pekerjaan pertama.", aktif: 1 },
-  { id: "k52", n: "Kalkulator Kecocokan Kata Kunci CV Magang", c: "karir", i: "🔍", d: "Bandingkan CV dengan deskripsi lowongan dan skor kecocokan kata kunci.", aktif: 1 },
-  { id: "k53", n: "Kerangka Essay & Motivation Letter Beasiswa", c: "karir", i: "🎓", d: "Kerangka essay beasiswa per paragraf dengan panduan isi.", aktif: 1 },
-  { id: "k54", n: "Checklist Syarat Sidang & Yudisium Interaktif", c: "karir", i: "✅", d: "Checklist berkas sidang & yudisium dengan progres tersimpan.", aktif: 1 },
-  { id: "k55", n: "Pembuat Kartu Flashcard Ujian (Cetak PDF)", c: "karir", i: "🃏", d: "Flashcard dua sisi dari daftar istilah–definisi, siap cetak.", aktif: 1 }
+  { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
+  { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
+  { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
+  { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
+  { id: "k19", n: "Generator Abstrak Dwibahasa", c: "tulis", i: "🌐", d: "Rakit abstrak ID + kerangka EN dari latar, tujuan, metode, hasil.", aktif: 1 },
+  { id: "k20", n: "Kalkulator Target Kata & Deadline Skripsi", c: "tulis", i: "🎯", d: "Target kata per hari realistis + milestone tanggal per bab.", aktif: 1 },
+  { id: "k21", n: "Glosarium & Singkatan Sorter (A–Z)", c: "tulis", i: "🔤", d: "Urutkan istilah A–Z, deteksi duplikat & entri tanpa definisi.", aktif: 1 },
+  { id: "k22", n: "Generator Tabel Jurnal (Booktabs)", c: "tulis", i: "📋", d: "Tabel bersih standar jurnal tanpa garis vertikal, siap paste Word.", aktif: 1 },
+  { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
+  { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
+  { id: "eydcase", n: "Case Converter EYD Judul", c: "tulis", i: "🔠", d: "Title Case Bahasa Indonesia: kata hubung tetap huruf kecil.", aktif: 1 },
+  { id: "similarity", n: "Pre-Turnitin Similarity Checker (Lokal)", c: "tulis", i: "🔍", d: "Jaccard 3-gram: bandingkan teks asli vs parafrase + highlight.", aktif: 1 },
+  { id: "wordfreq", n: "Pengecek Kata Berulang (Word Frequency)", c: "tulis", i: "🔁", d: "Hitung kata yang terlalu sering diulang dalam naskahmu.", aktif: 1 },
+  { id: "bacawaktu", n: "Kalkulator Waktu Baca Presentasi", c: "tulis", i: "⏱️", d: "Jumlah kata naskah → estimasi durasi bicara + saran potong kata.", aktif: 1 },
+  { id: "kerangkabab", n: "Generator Kerangka Bab & Sub-Bab Skripsi", c: "tulis", i: "🗂️", d: "Kerangka Bab I–V sesuai metode penelitianmu + panduan isi.", aktif: 1 },
+  { id: "validitas", n: "Uji Validitas Pearson & Reliabilitas Alpha", c: "data", i: "📊", d: "Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.", aktif: 1 },
+  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac & Lemeshow)", c: "data", i: "🧮", d: "Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.", aktif: 1 },
+  { id: "k23", n: "Dummy Data Kuesioner Generator (Auto-Valid)", c: "data", i: "🧪", d: "Data simulasi latihan yang diverifikasi lolos Alpha target.", aktif: 1 },
+  { id: "k24", n: "Pembersih Transkrip Wawancara & Analisis Teks", c: "data", i: "🎧", d: "Rapikan transkrip kualitatif + frekuensi kata narasumber.", aktif: 1 },
+  { id: "k26", n: "Generator Grafik Bab 4 Arsiran (Batang & Pie)", c: "data", i: "📈", d: "Diagram arsiran hitam-putih, tetap jelas saat difotokopi.", aktif: 1 },
+  { id: "k25", n: "Pembuat Bagan Kerangka Berpikir (X → Y)", c: "data", i: "🗺️", d: "Kotak variabel + panah hubungan + narasi, ekspor PNG.", aktif: 1 },
+  { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
+  { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
+  { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
+  { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
+  { id: "k47", n: "Kuis Pilihan Ganda & Flashcard Otomatis", c: "present", i: "🎯", d: "Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.", aktif: 1 },
+  { id: "k48", n: "Cornell Notes Generator", c: "present", i: "📓", d: "Catatan metode Cornell: isyarat, catatan, ringkasan.", aktif: 1 },
+  { id: "k49", n: "Pomodoro Timer + Suara Fokus Web Audio", c: "present", i: "🍅", d: "Timer 25/5 + white/brown noise & hujan prosedural.", aktif: 1 },
+  { id: "k29", n: "Roda Undian Urutan Presentasi", c: "present", i: "🎡", d: "Spin wheel pengundi giliran kelompok presentasi.", aktif: 1 },
+  { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
+  { id: "kelompok", n: "Smart Group Generator (Pengacak Adil)", c: "kelompok", i: "👥", d: "Bagi nama ke kelompok merata, seimbang gender bila ditandai.", aktif: 1 },
+  { id: "splitter", n: "Splitter Kas & Patungan Kelompok", c: "kelompok", i: "💸", d: "Hitung patungan + siapa transfer ke siapa agar impas.", aktif: 1 },
+  { id: "k30", n: "Pencari Jadwal Kosong Bersama", c: "kelompok", i: "🗓️", d: "Irisan jam kosong seluruh anggota tanpa login.", aktif: 1 },
+  { id: "k31", n: "Logbook Harian Magang / KKN", c: "kelompok", i: "📓", d: "Catatan harian formal, ekspor .doc berkop paraf & DPL.", aktif: 1 },
+  { id: "k32", n: "Kwitansi & Nota LPJ Ber-Terbilang", c: "kelompok", i: "🧾", d: "Kwitansi canvas resmi, angka otomatis jadi terbilang.", aktif: 1 },
+  { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
+  { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
+  { id: "k35", n: "Generator Sertifikat Massal (ZIP)", c: "kelompok", i: "🏆", d: "Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.", aktif: 1 },
+  { id: "k36", n: "Desain Plang Jalan & Edukasi Desa (Bonus)", c: "kelompok", i: "🪧", d: "Desain plang canvas 4 tema untuk program fisik KKN.", aktif: 1 },
+  { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
+  { id: "k38", n: "Pembuat Tanda Tangan Transparan PNG", c: "dokumen", i: "✍️", d: "Buang latar kertas via luminansi → PNG transparan.", aktif: 1 },
+  { id: "k39", n: "Grid Foto Dokumentasi Lampiran", c: "dokumen", i: "🧩", d: "Banyak foto + caption → satu gambar lampiran rapi.", aktif: 1 },
+  { id: "k40", n: "Timestamp & Geotagging Foto", c: "dokumen", i: "🕒", d: "Tempel waktu & lokasi ala kamera lapangan ke foto tugas.", aktif: 1 },
+  { id: "k41", n: "Generator QR Code Permanen (+ Logo)", c: "dokumen", i: "🔳", d: "QR link kuesioner ECC-H, bisa sisip logo di tengah.", aktif: 1 },
+  { id: "k42", n: "OCR Gambar Buku / Catatan ke Teks", c: "dokumen", i: "🔍", d: "Foto halaman → teks bisa copy (Tesseract.js, ID/EN).", aktif: 1 },
+  { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
+  { id: "k44", n: "Kompresor File (Gambar / PDF / DOCX)", c: "dokumen", i: "🗜️", d: "Perkecil gambar, PDF, dan .docx langsung di browser.", aktif: 1 },
+  { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", aktif: 1 },
+  { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
+  { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
+  { id: "k50", n: "Motivation Letter & Surat Lamaran", c: "karir", i: "✉️", d: "Kerangka beasiswa (EN), lamaran kerja & magang (ID).", aktif: 1 },
+  { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 },
+  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
+  { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
+  { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
+  { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
+  { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
+  { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 }
 ];
 
 /* ---------------- state & helper ---------------- */
@@ -1374,6 +1375,7 @@ UI.k26 = function (el) {
   el.innerHTML = '<div class="fadein">'
     + field("Judul Grafik", '<input id="grT" class="' + IN + '" value="Gambar 1. Hasil Belajar Siswa per Kategori">')
     + field("Data (Label, Nilai — satu baris per batang)", '<textarea id="grIn" rows="6" class="' + IN + ' font-mono">Sangat Baik, 12&#10;Baik, 28&#10;Cukup, 20&#10;Kurang, 6</textarea>')
+    + field("Jenis Grafik", '<select id="grMode" class="' + IN + '"><option value="batang">📊 Diagram Batang</option><option value="pie">🥧 Diagram Pie</option></select>')
     + '<button class="' + BTN + '" onclick="buatGrafik()">📊 Buat Grafik Arsiran</button>'
     + '<div class="mt-4"><canvas id="grCv" width="880" height="520" class="w-full bg-white rounded-xl border border-slate-200 hidden"></canvas></div>'
     + outBox("grOut") + "</div>";
@@ -1395,6 +1397,7 @@ function buatGrafik() {
   lines.forEach((l) => { const parts = l.includes("\t") ? l.split("\t") : l.split(","); if (parts.length >= 2) { const v = Number(String(parts[parts.length - 1]).replace(",", ".")); if (!isNaN(v)) data.push({ label: parts.slice(0, -1).join(",").trim(), v }); } });
   const out = $("#grOut");
   if (data.length < 2) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Minimal 2 baris data valid (Label, Nilai).</div>'; return; }
+  if ($("#grMode") && $("#grMode").value === "pie") { gambarPie(data); return; }
   const cv = $("#grCv"); cv.classList.remove("hidden");
   const ctx = cv.getContext("2d");
   ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, 880, 520);
@@ -1928,7 +1931,8 @@ UI.k35 = function (el) {
     + '</div>'
     + field("Daftar Nama Penerima (satu per baris)", '<textarea id="srNama" rows="5" class="' + IN + '" placeholder="Satu nama per baris — sertifikat dibuat untuk SEMUA nama sekaligus">Andini Prameswari&#10;Bima Aditya Nugraha&#10;Citra Dewi Lestari</textarea>')
     + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="gambarSertifikat(0)">👁 Pratinjau Sertifikat</button>'
-    + '<button class="' + BTN + '" style="background:#059669" onclick="unduhSertifikatZip()">⬇️ Download Semua (ZIP)</button></div>'
+    + '<button class="' + BTN + '" style="background:#059669" onclick="unduhSertifikatZip()">⬇️ Download Semua (ZIP PNG)</button>'
+    + '<button class="' + BTN2 + '" onclick="unduhSertifikatPdfZip()">⬇️ Download Semua (ZIP PDF)</button></div>'
     + '<div class="mt-4 overflow-x-auto"><canvas id="srCv" width="1400" height="990" class="hidden w-full rounded-lg shadow border border-slate-200"></canvas></div>'
     + outBox("srOut") + "</div>";
 };
@@ -2041,7 +2045,7 @@ UI.k37 = function (el) {
     + field("Upload Foto Wajah", '<input id="pfFile" type="file" accept="image/*" class="' + IN + '" onchange="pfLoad(this)">')
     + '<div class="grid sm:grid-cols-2 gap-x-4">'
     + field("Ukuran Pas Foto (300 DPI)", '<select id="pfSize" class="' + IN + '"><option value="354x472">3 × 4 cm (354×472 px)</option><option value="472x709">4 × 6 cm (472×709 px)</option><option value="236x354">2 × 3 cm (236×354 px)</option></select>')
-    + field("Warna Background Baru", '<select id="pfBg" class="' + IN + '"><option value="#DB1514">🔴 Merah (standar ijazah/CPNS)</option><option value="#0B5FA5">🔵 Biru (standar umum)</option><option value="#FFFFFF">⚪ Putih</option><option value="">Biarkan Asli</option></select>')
+    + field("Warna Background Baru", '<select id="pfBg" class="' + IN + '"><option value="#DB1514">🔴 Merah (standar ijazah/CPNS)</option><option value="#0054A6">🔵 Biru #0054A6 (standar berkas kampus)</option><option value="#FFFFFF">⚪ Putih</option><option value="">Biarkan Asli</option></select>')
     + field("Zoom Foto", '<input id="pfZoom" type="range" min="80" max="220" value="100" class="w-full accent-brand-600">')
     + field("Geser Vertikal", '<input id="pfOff" type="range" min="-40" max="40" value="0" class="w-full accent-brand-600">')
     + field("Toleransi Ganti Background", '<input id="pfTol" type="range" min="8" max="90" value="34" class="w-full accent-brand-600">', "Geser bila tepi rambut/bahu ikut berubah atau latar belum bersih. Warna latar dideteksi otomatis dari sudut foto.")
@@ -2241,6 +2245,7 @@ UI.k41 = function (el) {
     + field("Warna Modul", '<input id="qrWarna" type="color" value="#122B78" class="w-full h-[46px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-1">')
     + '</div>'
     + field("Label di Bawah QR (opsional)", '<input id="qrLabel" class="' + IN + '" placeholder="cth: Scan untuk isi kuesioner penelitian saya 🙏">')
+    + field("Logo di Tengah QR (opsional, khusus ECC Q/H)", '<input id="qrLogo" type="file" accept="image/*" class="' + IN + '" onchange="qrLogoLoad(this)">')
     + '<button class="' + BTN + '" onclick="buatQr()">🔳 Generate QR Code</button>'
     + '<div class="mt-4 flex justify-center"><canvas id="qrCv" class="hidden rounded-lg shadow border border-slate-200 max-w-[320px] w-full bg-white"></canvas></div>'
     + outBox("qrOut") + "</div>";
@@ -2265,6 +2270,7 @@ async function buatQr() {
     ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, cv.width, cv.height);
     ctx.fillStyle = $("#qrWarna").value;
     for (let r = 0; r < count; r++) for (let c = 0; c < count; c++) if (qr.isDark(r, c)) ctx.fillRect((c + quiet) * cell, (r + quiet) * cell, cell, cell);
+    if (window._qrLogoImg) { const ls = Math.round(qrPx * 0.22); const lx = (qrPx - ls) / 2; ctx.fillStyle = "#FFFFFF"; roundRect(ctx, lx - 8, lx - 8, ls + 16, ls + 16, 14); ctx.fill(); const li = window._qrLogoImg; const sc = Math.max(ls / li.width, ls / li.height); ctx.save(); ctx.beginPath(); ctx.rect(lx, lx, ls, ls); ctx.clip(); ctx.drawImage(li, lx + (ls - li.width * sc) / 2, lx + (ls - li.height * sc) / 2, li.width * sc, li.height * sc); ctx.restore(); }
     if (label) { ctx.fillStyle = "#0F172A"; ctx.font = "700 " + Math.round(size * 0.042) + "px sans-serif"; ctx.textAlign = "center"; ctx.fillText(label, qrPx / 2, qrPx + labelH * 0.62); }
     cv.toBlob((b) => { window._qrPng = b; }, "image/png");
     out.innerHTML = '<div class="' + OUT + '"><p class="text-sm mb-3">QR ' + count + "×" + count + ' modul, level koreksi ' + $("#qrEcc").value + ' — permanen selama link tujuan tidak berubah. Cetak besar untuk poster/banner kuesioner.</p>'
@@ -2384,7 +2390,7 @@ async function pisahPdf() {
 let kompFile = null;
 UI.k44 = function (el) {
   el.innerHTML = '<div class="fadein">'
-    + field("Upload Gambar (JPG/PNG) atau PDF", '<input id="kfFile" type="file" accept="image/*,application/pdf" class="' + IN + '" onchange="kfLoad(this)">')
+    + field("Upload Gambar, PDF, atau DOCX", '<input id="kfFile" type="file" accept="image/*,application/pdf,.docx" class="' + IN + '" onchange="kfLoad(this)">')
     + '<p id="kfInfo" class="text-sm font-semibold text-slate-500 mb-3"></p>'
     + '<div class="grid sm:grid-cols-2 gap-x-4">'
     + field("Kualitas Gambar", '<input id="kfQ" type="range" min="30" max="92" value="68" class="w-full accent-brand-600">', "Lebih rendah = file lebih kecil (untuk foto biasanya 60–75 sudah cukup tajam).")
@@ -2420,6 +2426,14 @@ async function kompresFile() {
       const bytes = await doc.save({ useCompression: true });
       resultRow(bytes.length, new Blob([bytes], { type: "application/pdf" }), "PDF_Terkompres.pdf");
     } catch (e) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ PDF gagal diproses: ' + esc(e.message) + "</div>"; }
+  } else if (kompFile.name.toLowerCase().endsWith(".docx")) {
+    const okZ = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+    if (!okZ) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library ZIP gagal dimuat.</div>'; return; }
+    try {
+      const zip = await JSZip.loadAsync(await kompFile.arrayBuffer());
+      const bytes = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 9 } });
+      resultRow(bytes.length, new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), "File_Terkompres.docx");
+    } catch (e) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ DOCX gagal diproses: ' + esc(e.message) + "</div>"; }
   } else out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Format belum didukung — pakai gambar JPG/PNG atau PDF ya.</div>';
 }
 
@@ -3100,5 +3114,329 @@ function unduhFlashTeks() {
   const lines = $("#fpIn").value.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
   const txt = lines.map((l, i) => { const p = l.split("|"); return "Kartu " + (i + 1) + ": " + (p[0] || "").trim() + "\nJawab: " + (p.slice(1).join("|") || "").trim(); }).join("\n\n");
   download("Flashcard_Daftar.txt", txt);
+}
+</script>
+
+<style>
+#wsPanel { max-height: 92dvh !important; }
+</style>
+<script>
+/* ============================================================
+   ARSITEKTUR BRIEF: statistik dinamis, Web Share API,
+   Back-Button Trap untuk modal, tombol bagikan di modal
+   ============================================================ */
+(function () {
+  const st = document.getElementById("statTools");
+  if (st) st.textContent = TOOLS.length + " Tools Akademik";
+})();
+async function shareText(title, text) {
+  if (navigator.share) { try { await navigator.share({ title: title, text: text }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
+  copyText(text, "Hasil disalin — tempel ke WhatsApp/tujuanmu 📋");
+}
+const SHARE_GETTERS = {
+  kelompok: () => window._kelompok,
+  splitter: () => window._split,
+  k30: () => "Jam kosong bersama kelompok kami:\n" + ((window._jamKosong || []).join("\n")),
+  k31: () => "Logbook harian (" + logbook.length + " entri) dibuat dengan MahasiswaTools.",
+  k50: () => window._motlet,
+  kerangkabab: () => window._kerangkaBabTxt,
+  k33: () => window._ganttTxt,
+  k52: () => "Kalender akademik saya:\n" + calEvents.map((e) => e.date + " — " + e.title).join("\n")
+};
+let wsOpenState = false, wsHistPushed = false;
+const _openToolReal = openTool;
+openTool = function (id) {
+  window._curTool = id;
+  _openToolReal(id);
+  wsOpenState = true;
+  if (!wsHistPushed) { try { history.pushState({ mtws: 1 }, ""); wsHistPushed = true; } catch (e) {} }
+  const sb = document.getElementById("wsShareBtn");
+  if (sb) sb.style.display = SHARE_GETTERS[id] ? "" : "none";
+};
+const _closeWSReal = closeWS;
+closeWS = function () {
+  if (wsHistPushed) { wsHistPushed = false; try { history.back(); } catch (e) { _closeWSReal(); wsOpenState = false; } }
+  else { _closeWSReal(); wsOpenState = false; }
+};
+window.addEventListener("popstate", function () {
+  if (wsOpenState) { wsOpenState = false; wsHistPushed = false; _closeWSReal(); }
+});
+(function () {
+  const closeBtn = document.querySelector('#wsPanel button[onclick="closeWS()"]');
+  if (!closeBtn || document.getElementById("wsShareBtn")) return;
+  const b = document.createElement("button");
+  b.id = "wsShareBtn";
+  b.className = closeBtn.className;
+  b.title = "Bagikan hasil (WhatsApp / lainnya)";
+  b.textContent = "📤";
+  b.style.display = "none";
+  b.onclick = function () {
+    const id = window._curTool;
+    const get = SHARE_GETTERS[id];
+    const text = get ? get() : "";
+    shareText("MahasiswaTools", text || ("Saya memakai tool ini di MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa: " + location.href));
+  };
+  closeBtn.parentNode.insertBefore(b, closeBtn);
+})();
+</script>
+
+<script>
+/* ============================================================
+   TOOL BARU MANDIRI: Word Frequency, Waktu Baca, Kerangka Bab
+   ============================================================ */
+/* ---------- 13. WORD FREQUENCY ---------- */
+const STOPWORDS_ID = new Set("yang dan di ke dari untuk dengan pada adalah ini itu atau juga dalam tidak akan oleh sebagai telah dapat telah bagi para karena antara lebih sudah ada saat telah menjadi tahun tersebut setelah seperti ketika hanya baik secara menggunakan melalui antara hingga sejak selama sebelum sesudah tentang terhadap tanpa atas bawah antara lain sebagainya".split(" "));
+UI.wordfreq = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Teks Naskah", '<textarea id="wfIn" rows="9" class="' + IN + '" placeholder="Tempel paragraf/bab skripsimu di sini…"></textarea>')
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Jumlah Kata Ditampilkan", '<select id="wfN" class="' + IN + '"><option value="15">15 teratas</option><option value="25" selected>25 teratas</option><option value="40">40 teratas</option></select>')
+    + field("Panjang Kata Minimum", '<select id="wfMin" class="' + IN + '"><option value="3">3 huruf</option><option value="4" selected>4 huruf</option><option value="5">5 huruf</option></select>')
+    + field("Abaikan Kata Umum (yang, dan, di…)", '<label class="flex items-center gap-2 text-sm font-semibold pt-2"><input id="wfStop" type="checkbox" checked class="w-4 h-4 accent-brand-600"> Ya, saring kata sambung umum</label>')
+    + '</div><button class="' + BTN + '" onclick="hitungFrekuensi()">🔁 Analisis Frekuensi Kata</button>' + outBox("wfOut") + "</div>";
+};
+function hitungFrekuensi() {
+  const raw = $("#wfIn").value.toLowerCase();
+  const words = raw.match(/[a-zà-ÿ']+/g) || [];
+  const minL = Number($("#wfMin").value), useStop = $("#wfStop").checked, topN = Number($("#wfN").value);
+  const freq = {};
+  words.forEach((w) => { if (w.length >= minL && !(useStop && STOPWORDS_ID.has(w))) freq[w] = (freq[w] || 0) + 1; });
+  const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]);
+  const out = $("#wfOut");
+  if (!sorted.length) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Tidak ada kata yang memenuhi kriteria — turunkan panjang minimum atau matikan saringan.</div>'; return; }
+  const top = sorted.slice(0, topN), max = top[0][1];
+  const ulangan = sorted.filter(([, c]) => c >= 5).length;
+  window._freqCsv = "Kata;Jumlah;Persentase\n" + sorted.map(([w, c]) => w + ";" + c + ";" + (c / words.length * 100).toFixed(2) + "%").join("\n");
+  out.innerHTML = '<div class="' + OUT + '"><div class="flex flex-wrap gap-2 mb-4"><span class="rounded-lg bg-white dark:bg-slate-900 px-3 py-1.5 font-bold">Total kata: ' + words.length.toLocaleString("id-ID") + '</span><span class="rounded-lg bg-white dark:bg-slate-900 px-3 py-1.5 font-bold">Kata unik: ' + sorted.length.toLocaleString("id-ID") + '</span><span class="rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 px-3 py-1.5 font-bold">⚠️ ' + ulangan + ' kata muncul ≥5× — pertimbangkan sinonim agar naskah tidak monoton</span></div>'
+    + '<div class="space-y-1.5">' + top.map(([w, c]) => '<div class="flex items-center gap-3 text-sm"><span class="w-32 font-bold truncate">' + esc(w) + '</span><div class="flex-1 h-4 rounded bg-slate-200 dark:bg-slate-700 overflow-hidden"><div class="h-full bg-gradient-to-r from-brand-500 to-violet-500" style="width:' + Math.round(c / max * 100) + '%"></div></div><span class="w-20 text-right font-semibold">' + c + "× (" + (c / words.length * 100).toFixed(1) + '%)</span></div>').join("") + "</div>"
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="download(\'Frekuensi_Kata.csv\', window._freqCsv, \'text/csv\')">⬇️ Download CSV Lengkap</button></div></div>';
+}
+
+/* ---------- 14. KALKULATOR WAKTU BACA ---------- */
+UI.bacawaktu = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Naskah Presentasi / Pidato", '<textarea id="bwIn" rows="9" class="' + IN + '" placeholder="Tempel naskah yang akan kamu bacakan…"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Kecepatan Bicara", '<select id="bwSpeed" class="' + IN + '"><option value="110">🐢 110 kata/menit — sangat tenang (sidang tegang)</option><option value="130" selected>🎤 130 kata/menit — presentasi normal</option><option value="150">💬 150 kata/menit — bicara mengalir</option><option value="170">⚡ 170 kata/menit — cepat (latihan MC)</option></select>')
+    + field("Target Durasi (menit, opsional)", '<input id="bwTarget" type="number" min="0" placeholder="cth: 10" class="' + IN + '">')
+    + '</div><button class="' + BTN + '" onclick="hitungWaktuBaca()">⏱️ Hitung Durasi Bicara</button>' + outBox("bwOut") + "</div>";
+};
+function hitungWaktuBaca() {
+  const words = ($("#bwIn").value.match(/\S+/g) || []).length;
+  const speed = Number($("#bwSpeed").value), target = Number($("#bwTarget").value) || 0;
+  const out = $("#bwOut");
+  if (!words) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Tempel naskah dulu ya.</div>'; return; }
+  const secs = Math.round(words / speed * 60);
+  const fmt = (s) => Math.floor(s / 60) + " menit " + String(s % 60).padStart(2, "0") + " detik";
+  let saran = "";
+  if (target > 0) {
+    const ideal = target * speed, diff = words - ideal;
+    saran = '<div class="rounded-xl p-4 mt-4 ' + (Math.abs(diff) <= ideal * 0.07 ? "bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800" : "bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800") + ' text-sm">'
+      + (Math.abs(diff) <= ideal * 0.07 ? "✅ Pas! Naskahmu sudah sesuai target " + target + " menit (±7%)." : diff > 0 ? "✂️ Naskah kelebihan <b>" + diff.toLocaleString("id-ID") + " kata</b> dari target " + target + " menit — potong sekitar " + Math.ceil(diff / 25) + " kalimat rata-rata (25 kata) atau naikkan tempo bicara." : "➕ Naskah kurang <b>" + Math.abs(diff).toLocaleString("id-ID") + " kata</b> dari target " + target + " menit — tambahkan contoh, data pendukung, atau penjelasan transisi.") + "</div>";
+  }
+  window._bacaInfo = { words, secs };
+  out.innerHTML = '<div class="' + OUT + '"><div class="grid sm:grid-cols-3 gap-3 text-center">'
+    + '<div class="rounded-lg bg-white dark:bg-slate-900 p-4"><div class="text-3xl font-extrabold text-brand-600 dark:text-brand-300">' + fmt(secs) + '</div><div class="text-xs text-slate-500">estimasi durasi bicara</div></div>'
+    + '<div class="rounded-lg bg-white dark:bg-slate-900 p-4"><div class="text-3xl font-extrabold">' + words.toLocaleString("id-ID") + '</div><div class="text-xs text-slate-500">total kata naskah</div></div>'
+    + '<div class="rounded-lg bg-white dark:bg-slate-900 p-4"><div class="text-3xl font-extrabold">' + speed + '</div><div class="text-xs text-slate-500">kata per menit</div></div></div>' + saran
+    + '<p class="text-xs text-slate-500 mt-3">Tips sidang: sisihkan ±15% waktu untuk jeda, ganti slide, dan pertanyaan sela — jadi targetkan naskah selesai di 85% batas waktu.</p></div>';
+}
+
+/* ---------- 15. GENERATOR KERANGKA BAB ---------- */
+UI.kerangkabab = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Judul / Topik Penelitian", '<input id="kbabJud" class="' + IN + '" placeholder="cth: Pengaruh Media Sosial terhadap Prestasi Belajar">')
+    + field("Metode Penelitian", '<select id="kbabMet" class="' + IN + '"><option value="kuantitatif">Kuantitatif (survei/eksperimen/korelasi)</option><option value="kualitatif">Kualitatif (studi kasus/fenomenologi/wawancara)</option><option value="rnd">Penelitian & Pengembangan (R&D)</option><option value="ptk">Penelitian Tindakan Kelas (PTK)</option></select>')
+    + field("Jenis Dokumen", '<select id="kbabJenis" class="' + IN + '"><option>Skripsi</option><option>Proposal Skripsi</option><option>Makalah</option></select>')
+    + '</div><button class="' + BTN + '" onclick="buatKerangkaBab()">🗂️ Generate Kerangka Bab I–V</button>' + outBox("kbabOut") + "</div>";
+};
+const KERANGKA_BAB = {
+  kuantitatif: [
+    ["BAB I — PENDAHULUAN", ["Latar Belakang Masalah", "Rumusan Masalah", "Tujuan Penelitian", "Manfaat Penelitian", "Definisi Operasional"], "Bangun urgensi dari data & fenomena, tutup dengan kesenjangan yang akan kamu jawab."],
+    ["BAB II — TINJAUAN PUSTAKA", ["Kajian Teori (per variabel)", "Penelitian Terdahulu yang Relevan", "Kerangka Berpikir", "Hipotesis Penelitian"], "Akhiri tiap teori dengan simpulan definisi versimu; hipotesis harus bisa diuji statistik."],
+    ["BAB III — METODE PENELITIAN", ["Jenis & Pendekatan Penelitian", "Waktu dan Tempat", "Populasi dan Sampel", "Variabel Penelitian", "Teknik & Instrumen Pengumpulan Data", "Uji Validitas & Reliabilitas", "Teknik Analisis Data"], "Tulis operasional: rumus sampel, skala instrumen, dan uji statistik yang dipakai."],
+    ["BAB IV — HASIL DAN PEMBAHASAN", ["Gambaran Umum Objek", "Deskripsi Data per Variabel", "Hasil Uji Instrumen", "Hasil Uji Prasyarat & Hipotesis", "Pembahasan (kaitkan teori + penelitian terdahulu)"], "Sajikan angka dulu secara netral, baru tafsirkan di pembahasan."],
+    ["BAB V — PENUTUP", ["Kesimpulan", "Saran"], "Kesimpulan menjawab rumusan masalah satu per satu, tanpa data baru."]
+  ],
+  kualitatif: [
+    ["BAB I — PENDAHULUAN", ["Latar Belakang / Konteks Penelitian", "Fokus & Subfokus Penelitian", "Rumusan Masalah", "Tujuan Penelitian", "Manfaat Penelitian"], "Ceritakan fenomena lapangan secara hidup; fokus adalah lensa pengamatamu."],
+    ["BAB II — KAJIAN PUSTAKA", ["Deskripsi Teoretis", "Penelitian Terdahulu yang Relevan", "Kerangka Berpikir Kualitatif"], "Teori berfungsi sebagai pisau analisis, bukan untuk dibuktikan."],
+    ["BAB III — METODE PENELITIAN", ["Pendekatan & Jenis Penelitian", "Kehadiran Peneliti", "Lokasi & Subjek/Informan", "Teknik Pengumpulan Data (observasi, wawancara, dokumentasi)", "Teknik Analisis Data (reduksi, penyajian, verifikasi)", "Pemeriksaan Keabsahan Data (triangulasi)"], "Jelaskan cara memilih informan dan teknik triangulasi yang kamu pakai."],
+    ["BAB IV — TEMUAN & PEMBAHASAN", ["Gambaran Umum Lokasi", "Paparan Data & Temuan per Fokus", "Pembahasan Temuan (dialog dengan teori)"], "Sisipkan kutipan wawancara sebagai bukti, bukan hiasan."],
+    ["BAB V — PENUTUP", ["Kesimpulan", "Saran"], "Angkat esensi temuan, bukan mengulang paparan data."]
+  ],
+  rnd: [
+    ["BAB I — PENDAHULUAN", ["Latar Belakang", "Rumusan Masalah", "Tujuan Pengembangan", "Spesifikasi Produk yang Diharapkan", "Manfaat Pengembangan"], "Tunjukkan kebutuhan nyata di lapangan yang dijawab produkmu."],
+    ["BAB II — TINJAUAN PUSTAKA", ["Kajian Teori Produk/Media", "Penelitian Pengembangan Terdahulu", "Kerangka Berpikir Pengembangan"], "Kumpulkan prinsip desain dari teori dan produk sejenis."],
+    ["BAB III — METODE PENGEMBANGAN", ["Model Pengembangan (ADDIE/4D/Borg & Gall)", "Prosedur Pengembangan", "Subjek Uji Coba", "Instrumen Pengumpulan Data", "Teknik Analisis Data (validasi ahli & respon pengguna)"], "Tulis tahapan modelmu persis seperti yang kamu jalankan."],
+    ["BAB IV — HASIL PENGEMBANGAN", ["Hasil per Tahap Model", "Hasil Validasi Ahli", "Hasil Uji Coba & Revisi Produk", "Pembahasan Kelayakan Produk"], "Dokumentasikan setiap revisi: masukan ahli → perubahan produk."],
+    ["BAB V — PENUTUP", ["Kesimpulan", "Saran Pemanfaatan & Pengembangan Lanjutan"], "Nyatakan kelayakan produk berdasarkan data validasi & uji coba."]
+  ],
+  ptk: [
+    ["BAB I — PENDAHULUAN", ["Latar Belakang (kondisi kelas nyata)", "Identifikasi Masalah", "Rumusan Masalah", "Tujuan Penelitian", "Manfaat Penelitian"], "Berangkat dari masalah konkret di kelasmu sendiri, lengkap dengan data awal."],
+    ["BAB II — TINJAUAN PUSTAKA", ["Kajian Teori Tindakan/Model Pembelajaran", "Penelitian Terdahulu", "Kerangka Berpikir", "Hipotesis Tindakan"], "Hipotesis tindakan berupa keyakinan perbaikan, bukan uji statistik."],
+    ["BAB III — METODE PENELITIAN", ["Setting & Subjek Penelitian", "Desain Siklus (perencanaan, tindakan, observasi, refleksi)", "Instrumen Penelitian", "Indikator Keberhasilan", "Teknik Analisis Data"], "Tetapkan indikator keberhasilan yang terukur sejak awal."],
+    ["BAB IV — HASIL & PEMBAHASAN", ["Deskripsi Kondisi Awal (Pra-Siklus)", "Hasil Siklus I + Refleksi", "Hasil Siklus II + Refleksi", "Pembahasan Antar-Siklus"], "Bandingkan capaian antar siklus dengan tabel/grafik yang sama."],
+    ["BAB V — PENUTUP", ["Kesimpulan", "Saran"], "Simpulkan apakah indikator keberhasilan tercapai dan di siklus ke berapa."]
+  ]
+};
+function buatKerangkaBab() {
+  const jud = $("#kbabJud").value.trim(), met = $("#kbabMet").value, jenis = $("#kbabJenis").value;
+  const babs = KERANGKA_BAB[met];
+  const lines = [], html = [];
+  lines.push("KERANGKA " + jenis.toUpperCase() + (jud ? " — " + jud : "") + " (Metode: " + $("#kbabMet").selectedOptions[0].textContent + ")");
+  babs.forEach(([bab, subs, tip]) => {
+    lines.push("", bab);
+    subs.forEach((s, si) => lines.push(bab.split("—")[0].trim().replace("BAB ", "") + "." + (si + 1) + " " + s));
+    lines.push("   Panduan: " + tip);
+    html.push('<div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-4 mb-3"><h4 class="font-extrabold text-brand-700 dark:text-brand-300">' + bab + '</h4><ol class="list-decimal list-inside text-sm mt-1.5 space-y-1">' + subs.map((s) => "<li>" + esc(s) + "</li>").join("") + '</ol><p class="text-xs text-slate-500 mt-2">💡 ' + esc(tip) + "</p></div>");
+  });
+  window._kerangkaBabTxt = lines.join("\n");
+  window._kerangkaBabDoc = "<html><body style='font-family:serif'><h3>" + esc(lines[0]) + "</h3>" + babs.map(([bab, subs, tip]) => "<h4>" + esc(bab) + "</h4><ol>" + subs.map((s) => "<li>" + esc(s) + "</li>").join("") + "</ol><p><i>Panduan: " + esc(tip) + "</i></p>").join("") + "<p style='font-size:9pt;color:#666'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+  $("#kbabOut").innerHTML = '<div class="' + OUT + '">' + html.join("")
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="copyText(window._kerangkaBabTxt)">📋 Copy Kerangka</button>'
+    + '<button class="' + BTN2 + '" onclick="download(\'Kerangka_Bab.doc\', window._kerangkaBabDoc, \'application/msword\')">⬇️ Download .doc</button>'
+    + '<button class="' + BTN2 + '" onclick="shareText(\'Kerangka Bab Skripsi\', window._kerangkaBabTxt)">📤 Bagikan</button></div></div>';
+}
+</script>
+
+<script>
+/* ============================================================
+   TOOL BARU: Gambar→PDF, Ekstrak PDF (UI mandiri),
+   Budget+Terbilang gabungan (#55 brief)
+   ============================================================ */
+/* ---------- 48. KONVERTER GAMBAR KE PDF ---------- */
+let imgPdfFiles = [];
+UI.imgpdf = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Dokumen (bisa banyak, urutan = urutan halaman)", '<input id="ipFile" type="file" accept="image/*" multiple class="' + IN + '" onchange="ipLoad(this)">')
+    + '<div id="ipList" class="text-sm space-y-1 mb-3"></div>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Ukuran Halaman", '<select id="ipSize" class="' + IN + '"><option value="a4">A4 (210×297 mm)</option><option value="f4">F4/Folio (210×330 mm)</option><option value="asli">Ikuti ukuran gambar</option></select>')
+    + field("Margin Halaman", '<select id="ipMargin" class="' + IN + '"><option value="36">Normal (12,7 mm)</option><option value="18">Tipis (6,4 mm)</option><option value="0">Tanpa margin (penuh)</option></select>')
+    + '</div><button class="' + BTN + '" onclick="buatImgPdf()">🖨️ Buat PDF dari Gambar</button> <span id="ipStat" class="text-sm text-slate-500"></span></div>';
+};
+async function ipLoad(input) {
+  imgPdfFiles = [];
+  for (const f of [...(input.files || [])]) imgPdfFiles.push(f);
+  $("#ipList").innerHTML = imgPdfFiles.map((f, i) => "<div>🖼️ " + (i + 1) + ". " + esc(f.name) + " (" + (f.size / 1024).toFixed(0) + " KB)</div>").join("");
+}
+async function buatImgPdf() {
+  const stat = $("#ipStat");
+  if (!imgPdfFiles.length) { stat.textContent = "⚠️ Pilih gambar dulu ya."; return; }
+  if (!await loadPdfLib()) { stat.textContent = "❌ Library PDF gagal dimuat."; return; }
+  stat.textContent = "⏳ Menyusun PDF…";
+  try {
+    const doc = await PDFLib.PDFDocument.create();
+    const sizes = { a4: [595.28, 841.89], f4: [595.28, 935.43] };
+    for (const f of imgPdfFiles) {
+      const img = await fileToImage(f);
+      const cv = document.createElement("canvas");
+      cv.width = img.width; cv.height = img.height;
+      cv.getContext("2d").drawImage(img, 0, 0);
+      const pngBlob = await canvasBlob(cv);
+      const pngBytes = await pngBlob.arrayBuffer();
+      const embedded = await doc.embedPng(pngBytes);
+      const mode = $("#ipSize").value, margin = Number($("#ipMargin").value);
+      let pw, ph;
+      if (mode === "asli") { const s = Math.min(1, 595.28 / img.width); pw = img.width * s; ph = img.height * s; }
+      else [pw, ph] = sizes[mode];
+      const page = doc.addPage([pw, ph]);
+      const availW = pw - margin * 2, availH = ph - margin * 2;
+      const scale = Math.min(availW / img.width, availH / img.height);
+      const w = img.width * scale, h = img.height * scale;
+      page.drawImage(embedded, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
+    }
+    const bytes = await doc.save();
+    window._imgPdf = new Blob([bytes], { type: "application/pdf" });
+    window._imgPdfPages = doc.getPageCount();
+    stat.textContent = "✅ PDF jadi: " + doc.getPageCount() + " halaman, " + (bytes.length / 1024).toFixed(0) + " KB.";
+    download("Gambar_ke_PDF.pdf", window._imgPdf);
+  } catch (e) { stat.textContent = "❌ Gagal: " + e.message; }
+}
+
+/* ---------- 49. EKSTRAK HALAMAN PDF (UI mandiri, mesin sama dengan k43) ---------- */
+UI.splitpdf = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Ambil hanya halaman yang kamu butuhkan dari PDF besar — misalnya lembar pengesahan saja dari file skripsi utuh.</p>'
+    + field("Pilih Satu File PDF", '<input id="psFile" type="file" accept="application/pdf" class="' + IN + '" onchange="psLoad(this)">')
+    + '<p id="psInfo" class="text-sm font-semibold text-slate-500 mb-2"></p>'
+    + field("Rentang Halaman", '<input id="psRange" class="' + IN + '" placeholder="cth: 1-3,5,8">', "Format: halaman tunggal (5), rentang (1-3), atau gabungan dipisah koma (1-3,5).")
+    + '<button class="' + BTN + '" onclick="pisahPdf()">✂️ Ekstrak Halaman</button> <span id="psStat" class="text-sm text-slate-500"></span></div>';
+};
+
+/* ---------- 55. BUDGET + TERBILANG (gabungan sesuai brief) ---------- */
+UI.combo55 = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="flex gap-2 mb-4">'
+    + '<button id="cbTabB" class="rounded-full px-4 py-2 text-sm font-bold bg-brand-600 text-white" onclick="pindahCombo(\'b\')">💰 Budget Anak Kos</button>'
+    + '<button id="cbTabT" class="rounded-full px-4 py-2 text-sm font-bold bg-slate-100 dark:bg-slate-800" onclick="pindahCombo(\'t\')">🔢 Terbilang & Romawi</button></div>'
+    + '<div id="cbBudget"></div><div id="cbTerbilang" class="hidden"></div></div>';
+  UI.budgetkos(document.getElementById("cbBudget"));
+  UI.terbilang(document.getElementById("cbTerbilang"));
+};
+function pindahCombo(which) {
+  const b = which === "b";
+  document.getElementById("cbBudget").classList.toggle("hidden", !b);
+  document.getElementById("cbTerbilang").classList.toggle("hidden", b);
+  document.getElementById("cbTabB").className = "rounded-full px-4 py-2 text-sm font-bold " + (b ? "bg-brand-600 text-white" : "bg-slate-100 dark:bg-slate-800");
+  document.getElementById("cbTabT").className = "rounded-full px-4 py-2 text-sm font-bold " + (!b ? "bg-brand-600 text-white" : "bg-slate-100 dark:bg-slate-800");
+}
+</script>
+
+<script>
+/* Fungsi pendukung upgrade: logo QR, pie chart, sertifikat PDF */
+function qrLogoLoad(input) { const f = input.files && input.files[0]; if (!f) return; fileToImage(f).then((img) => { window._qrLogoImg = img; toast("Logo QR dimuat — generate ulang QR-nya 🔳"); }); }
+function gambarPie(data) {
+  const cv = $("#grCv"); cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, 880, 520);
+  ctx.fillStyle = "#000"; ctx.font = "bold 21px Georgia, serif"; ctx.textAlign = "center";
+  ctx.fillText($("#grT").value.trim(), 440, 40);
+  const total = data.reduce((a, d) => a + d.v, 0) || 1;
+  const cx = 290, cy = 285, R = 185;
+  let ang = -Math.PI / 2;
+  data.forEach((d, i) => {
+    const sweep = (d.v / total) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, ang, ang + sweep); ctx.closePath();
+    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat"); ctx.fill();
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke();
+    ang += sweep;
+  });
+  ctx.textAlign = "left";
+  data.forEach((d, i) => {
+    const y = 130 + i * 44;
+    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat");
+    ctx.fillRect(545, y - 15, 30, 22);
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 1.4; ctx.strokeRect(545, y - 15, 30, 22);
+    ctx.fillStyle = "#000"; ctx.font = "15px Georgia, serif";
+    ctx.fillText((d.label.length > 20 ? d.label.slice(0, 19) + "…" : d.label) + " — " + d.v + " (" + (d.v / total * 100).toFixed(1) + "%)", 588, y + 2);
+  });
+  cv.toBlob((b) => { window._grafikPng = b; }, "image/png");
+  $("#grOut").innerHTML = '<div class="' + OUT + '"><p class="text-sm">Diagram pie hitam-putih dengan ' + data.length + ' pola arsiran berbeda — aman difotokopi untuk Bab 4.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="download(\'Grafik_Bab4.png\', window._grafikPng)">⬇️ Download PNG</button>'
+    + '<button class="' + BTN2 + '" onclick="buatGrafik()">🔄 Gambar Ulang</button></div></div>';
+}
+async function unduhSertifikatPdfZip() {
+  const out = $("#srOut");
+  const okZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+  const okPdf = await loadPdfLib();
+  if (!okZip || !okPdf) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library gagal dimuat — cek koneksi lalu coba lagi.</div>'; return; }
+  const names = $("#srNama").value.split(/\n/).map((s) => s.trim()).filter(Boolean);
+  if (!names.length) { toast("Isi minimal satu nama penerima."); return; }
+  out.innerHTML = '<div class="' + OUT + '">⏳ Membuat ' + names.length + " sertifikat PDF…</div>";
+  const zip = new JSZip();
+  for (let i = 0; i < names.length; i++) {
+    const cv = gambarSertifikat(i);
+    const pngBlob = await canvasBlob(cv);
+    const doc = await PDFLib.PDFDocument.create();
+    const page = doc.addPage([841.89, 595.28]);
+    const emb = await doc.embedPng(await pngBlob.arrayBuffer());
+    page.drawImage(emb, { x: 0, y: 0, width: 841.89, height: 595.28 });
+    const pdfBytes = await doc.save();
+    zip.file("Sertifikat_" + String(i + 1).padStart(2, "0") + "_" + names[i].replace(/[^\w]+/g, "_") + ".pdf", pdfBytes);
+  }
+  const zipBlob = await zip.generateAsync({ type: "blob" });
+  window._sertifikatPdfZip = zipBlob;
+  out.innerHTML = '<div class="' + OUT + '">✅ ' + names.length + ' sertifikat PDF (A4 landscape) selesai dalam satu ZIP.</div>';
+  download("Sertifikat_Massal_PDF.zip", zipBlob);
 }
 </script>

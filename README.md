@@ -7,7 +7,7 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (55 — SEMUA)
+## Fitur Aktif (59 — 55 sesuai brief + 4 bonus)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -68,7 +68,8 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool berstatus AKTIF dan berfungsi penuh.**
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) — total 59 tool.
+Arsitektur sesuai brief: lazy-load library (JSZip/PptxGenJS/pdf-lib/QR/Tesseract), Web Share API (tombol bagikan di tool kelompok/teks), back-button trap (tombol back HP menutup modal), panel modal bottom-sheet dengan dvh, statistik hero dinamis dari katalog.
 
 ## Teknologi
 
