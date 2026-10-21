@@ -990,12 +990,14 @@ async function buatDocx() {
   if (!ok) { stat.textContent = "❌ Gagal memuat JSZip (butuh internet sekali untuk library). Coba lagi ya."; return; }
   const g = (id) => $("#" + id).value.trim();
   const judul = g("xJud") || "Judul Skripsi", nama = g("xNama") || "Nama Mahasiswa", nim = g("xNim") || "NIM", prodi = g("xProdi") || "Program Studi", fak = g("xFak") || "Fakultas", univ = g("xUniv") || "Universitas", kota = g("xKota") || "2026", dospem = g("xDospem") || "…………………………";
+  const _lgD = getLogoData(); const _lmD = getLogoMeta();
+  if (_lgD) { const cxE = 1260000; const cyE = Math.min(1440000, Math.round(cxE * ((_lmD.h || 1) / (_lmD.w || 1)))); window._docxLogoPara = '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="300"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="' + cxE + '" cy="' + cyE + '"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="1" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cxE + '" cy="' + cyE + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>'; } else window._docxLogoPara = null;
   const B = [];
   for (let i = 0; i < 4; i++) B.push(pDoc(""));
   B.push(pDoc(judul.toUpperCase(), { center: 1, b: 1, sz: 28, after: 300 }));
   B.push(pDoc("SKRIPSI", { center: 1, b: 1, sz: 26, after: 200 }));
   B.push(pDoc("Diajukan untuk memenuhi salah satu syarat memperoleh gelar Sarjana pada " + prodi + ", " + fak + ", " + univ + ".", { center: 1, after: 300 }));
-  B.push(pDoc("[ LOGO UNIVERSITAS ]", { center: 1, after: 300 }));
+  if (window._docxLogoPara) B.push(window._docxLogoPara); else B.push(pDoc("[ LOGO UNIVERSITAS ]", { center: 1, after: 300 }));
   B.push(pDoc("Disusun oleh:", { center: 1, after: 60 }));
   B.push(pDoc(nama, { center: 1, b: 1, after: 40 }));
   B.push(pDoc("NIM. " + nim, { center: 1, after: 300 }));
@@ -1035,11 +1037,13 @@ async function buatDocx() {
   B.push(pDoc("Anderson, L. W., & Krathwohl, D. R. (2001). A Taxonomy for Learning, Teaching, and Assessing: A Revision of Bloom's Taxonomy of Educational Objectives. New York: Longman.", { after: 80 }));
   B.push(pDoc("Sugiyono. (2019). Metode Penelitian Kuantitatif, Kualitatif, dan R&D. Bandung: Alfabeta.", { after: 80 }));
   const sect = '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="2268" w:right="1701" w:bottom="1701" w:left="2268" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
-  const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' + B.join("") + sect + "</w:body></w:document>";
-  const ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  const _logoData = getLogoData(); const _lm = getLogoMeta();
+  if (_logoData) { const cxL = 1260000; const cyL = Math.min(1440000, Math.round(cxL * ((_lm.h || 1) / (_lm.w || 1)))); window._docxLogoPara = '<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="300"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="' + cxL + '" cy="' + cyL + '"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="1" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cxL + '" cy="' + cyL + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>'; } else window._docxLogoPara = null;
+  const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>' + B.join("") + sect + "</w:body></w:document>";
+  const ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
   const rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
   const zip = new JSZip();
-  zip.file("[Content_Types].xml", ct); zip.folder("_rels").file(".rels", rels); zip.folder("word").file("document.xml", doc);
+  zip.file("[Content_Types].xml", ct); zip.folder("_rels").file(".rels", rels); const _wf = zip.folder("word"); _wf.file("document.xml", doc); if (_logoData) { _wf.folder("_rels").file("document.xml.rels", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/></Relationships>'); _wf.folder("media").file("logo.png", _logoData.split(",")[1], { base64: true }); }
   const blob = await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
   window._lastDocx = blob;
   stat.textContent = "✅ Berhasil dibuat!";
@@ -1487,6 +1491,7 @@ async function buatPptx() {
   const pptx = new PptxGenJS();
   pptx.defineLayout({ name: "W", width: 13.333, height: 7.5 }); pptx.layout = "W";
   const cover = pptx.addSlide(); cover.background = { color: "1D49C8" };
+  const _lgPptx = getLogoData(); if (_lgPptx) { try { cover.addImage({ data: _lgPptx, x: 0.55, y: 0.4, w: 1.2, h: 1.2 }); } catch (e) {} }
   cover.addText($("#ppJud").value.trim() || "Judul Presentasi", { x: 0.8, y: 2.1, w: 11.7, h: 1.9, fontSize: 40, bold: true, color: "FFFFFF", fontFace: "Calibri" });
   cover.addText(($("#ppNama").value.trim() || "Nama Presenter") + ( $("#ppInst").value.trim() ? " — " + $("#ppInst").value.trim() : ""), { x: 0.8, y: 4.3, w: 11.7, h: 0.6, fontSize: 20, color: "BFD3FF", fontFace: "Calibri" });
   cover.addText("Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa", { x: 0.8, y: 6.7, w: 11.7, h: 0.4, fontSize: 12, color: "93B4FF", fontFace: "Calibri" });
@@ -1742,7 +1747,7 @@ function renderLogbook() {
   const rows = logbook.map((e, i) => "<tr class='border-b border-slate-200 dark:border-slate-700'><td class='py-2 pr-2 font-semibold'>" + (i + 1) + "</td><td class='py-2 pr-2 whitespace-nowrap'>" + fmt(e.tgl) + "</td><td class='py-2 pr-2'>" + esc(e.keg) + "</td><td class='py-2 pr-2'>" + esc(e.has) + "</td><td class='py-2 pr-2'>" + esc(e.ken) + "</td><td class='py-2'><button class='text-rose-500 font-bold' onclick='hapusLog(" + i + ")'>✕</button></td></tr>").join("");
   window._logCsv = "No;Tanggal;Kegiatan;Hasil;Kendala\n" + logbook.map((e, i) => [i + 1, e.tgl, e.keg, e.has, e.ken].map((v) => '"' + String(v).replace(/"/g, '""') + '"').join(";")).join("\n");
   const nama = $("#lbNama") ? $("#lbNama").value : "", prog = $("#lbProg") ? $("#lbProg").value : "", lok = $("#lbLok") ? $("#lbLok").value : "";
-  window._logDoc = "<html><body style='font-family:serif'><h3 style='text-align:center'>LOGBOOK HARIAN " + esc(prog.toUpperCase()) + "</h3><p>Nama: " + esc(nama) + "<br>Lokasi: " + esc(lok) + "</p><table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Hari/Tanggal</th><th>Kegiatan</th><th>Hasil</th><th>Kendala & Solusi</th><th>Paraf</th></tr>"
+  window._logDoc = "<html><body style='font-family:serif'>" + kopLogoHtml("center") + "<h3 style='text-align:center'>LOGBOOK HARIAN " + esc(prog.toUpperCase()) + "</h3><p>Nama: " + esc(nama) + "<br>Lokasi: " + esc(lok) + "</p><table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Hari/Tanggal</th><th>Kegiatan</th><th>Hasil</th><th>Kendala & Solusi</th><th>Paraf</th></tr>"
     + logbook.map((e, i) => "<tr><td>" + (i + 1) + "</td><td>" + fmt(e.tgl) + "</td><td>" + esc(e.keg) + "</td><td>" + esc(e.has) + "</td><td>" + esc(e.ken) + "</td><td></td></tr>").join("")
     + "</table><p style='margin-top:24px'>Mengetahui,<br>Dosen Pembimbing Lapangan / Pembimbing Instansi<br><br><br>( ........................................ )</p><p style='font-size:9pt;color:#666'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
   out.innerHTML = '<div class="' + OUT + '"><div class="overflow-x-auto"><table class="w-full text-left text-[13px] min-w-[680px]"><thead><tr class="border-b-2 border-slate-300 dark:border-slate-600"><th class="py-2 pr-2">No</th><th class="py-2 pr-2">Tanggal</th><th class="py-2 pr-2">Kegiatan</th><th class="py-2 pr-2">Hasil</th><th class="py-2 pr-2">Kendala</th><th></th></tr></thead><tbody>' + rows + "</tbody></table></div>"
@@ -3847,7 +3852,7 @@ function buatDeklarasi() {
   const daftarEn = dipilih.length ? dipilih.map(([, l], i) => (i + 1) + ". " + l).join("\n") : "(no AI use declared)";
   window._deklarasiId = "PERNYATAAN PENGGUNAAN KECERDASAN BUATAN (AI)\n\nSaya yang bertanda tangan di bawah ini:\nNama\t: " + nama + "\nNIM\t: " + nim + "\nInstitusi\t: " + kampus + "\nJudul Karya\t: " + judul + "\n\nDengan ini menyatakan secara jujur bahwa dalam penyusunan karya tersebut saya menggunakan bantuan alat kecerdasan buatan (" + alat + ") sebatas untuk keperluan berikut:\n" + daftarId + "\n\nSeluruh gagasan, analisis, argumen, dan kesimpulan dalam karya ini adalah hasil pemikiran saya sendiri. Setiap keluaran AI telah saya telaah, verifikasi, dan tulis ulang dengan bahasa saya. Saya bertanggung jawab penuh atas keaslian, keakuratan, dan integritas karya ini, serta bersedia menerima konsekuensi akademik apabila pernyataan ini tidak benar.\n\nDibuat pada: " + tgl + "\n\nYang menyatakan,\n\n\n(" + nama + ")\nNIM. " + nim;
   window._deklarasiEn = "DECLARATION OF AI USE\n\nI, the undersigned:\nName\t: " + nama + "\nStudent ID\t: " + nim + "\nInstitution\t: " + kampus + "\nManuscript\t: " + judul + "\n\nI hereby honestly declare that, in preparing this work, I used generative AI tools (" + alat + ") solely for the following purposes:\n" + daftarEn + "\n\nAll ideas, analyses, arguments, and conclusions in this work are my own. Every AI output was critically reviewed, verified, and rewritten in my own words. I take full responsibility for the originality, accuracy, and integrity of this work, in line with the AI disclosure policies of international publishers (e.g., Scopus-indexed journals and IEEE).\n\nDeclared on: " + new Date().toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" }) + "\n\nSigned,\n\n\n(" + nama + ")\nID. " + nim;
-  window._deklarasiDoc = "<html><body style='font-family:serif'><pre style='white-space:pre-wrap;font-family:serif'>" + esc(window._deklarasiId) + "</pre><hr><pre style='white-space:pre-wrap;font-family:serif'>" + esc(window._deklarasiEn) + "</pre><p style='font-size:9pt;color:#666'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+  window._deklarasiDoc = "<html><body style='font-family:serif'>" + kopLogoHtml("center") + "<pre style='white-space:pre-wrap;font-family:serif'>" + esc(window._deklarasiId) + "</pre><hr><pre style='white-space:pre-wrap;font-family:serif'>" + esc(window._deklarasiEn) + "</pre><p style='font-size:9pt;color:#666'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
   $("#dkOut").innerHTML = '<div class="' + OUT + '"><h4 class="font-extrabold text-sm mb-2">🇮🇩 Versi Skripsi Kampus (Indonesia)</h4>'
     + '<div class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700 text-sm whitespace-pre-wrap leading-relaxed">' + esc(window._deklarasiId) + "</div>"
     + '<h4 class="font-extrabold text-sm mt-5 mb-2">🌍 International Journal Version (English — Scopus/IEEE style)</h4>'
@@ -4103,5 +4108,118 @@ function renderFlashPreview() {
     el.addEventListener("change", run);
     run();
   };
+})();
+</script>
+
+<script>
+/* ============================================================
+   LOGO INSTITUSI — upload sekali, terpasang di semua dokumen
+   ============================================================ */
+function getLogoData() { try { return localStorage.getItem("mt_logo") || ""; } catch (e) { return ""; } }
+function getLogoMeta() { try { return JSON.parse(localStorage.getItem("mt_logo_meta") || "{}"); } catch (e) { return {}; } }
+function muatLogoImg() {
+  const d = getLogoData();
+  if (!d) { window._logoImg = null; return Promise.resolve(null); }
+  if (window._logoImg && window._logoImg.src === d) return Promise.resolve(window._logoImg);
+  return new Promise((res) => { const im = new Image(); im.onload = () => { window._logoImg = im; res(im); }; im.onerror = () => res(null); im.src = d; });
+}
+function logoUpload(input) {
+  const f = input.files && input.files[0]; if (!f) return;
+  const url = URL.createObjectURL(f);
+  const im = new Image();
+  im.onload = () => {
+    const sc = Math.min(1, 360 / Math.max(im.width, im.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(im.width * sc)); cv.height = Math.max(1, Math.round(im.height * sc));
+    cv.getContext("2d").drawImage(im, 0, 0, cv.width, cv.height);
+    URL.revokeObjectURL(url);
+    try {
+      localStorage.setItem("mt_logo", cv.toDataURL("image/png"));
+      localStorage.setItem("mt_logo_meta", JSON.stringify({ w: cv.width, h: cv.height }));
+      toast("Logo institusi tersimpan — otomatis terpasang di dokumen 🎓");
+    } catch (e) { toast("Logo terlalu besar untuk disimpan di browser 😢"); }
+    window._logoImg = null; muatLogoImg(); segarkanLogoUI();
+  };
+  im.src = url;
+}
+function logoHapus() { try { localStorage.removeItem("mt_logo"); localStorage.removeItem("mt_logo_meta"); } catch (e) {} window._logoImg = null; segarkanLogoUI(); toast("Logo institusi dihapus"); }
+function logoFieldHtml() {
+  return '<div class="rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-3 mb-4"><div class="flex items-center gap-3">'
+    + '<img class="logoThumb w-14 h-14 object-contain rounded bg-white border border-slate-200 shrink-0" alt="Logo institusi">'
+    + '<div class="flex-1 min-w-0"><p class="text-sm font-extrabold">🎓 Logo Universitas / Institusi</p>'
+    + '<p class="text-xs text-slate-500 logoState"></p>'
+    + '<div class="flex flex-wrap gap-2 mt-1.5"><label class="' + BTN2 + ' cursor-pointer">📤 Upload / Ganti Logo<input type="file" accept="image/*" class="hidden" onchange="logoUpload(this)"></label>'
+    + '<button class="' + BTN2 + '" onclick="logoHapus()">🗑️ Hapus</button></div></div></div></div>';
+}
+function segarkanLogoUI() {
+  const d = getLogoData();
+  document.querySelectorAll(".logoThumb").forEach((im) => { im.src = d || ""; im.style.visibility = d ? "visible" : "hidden"; });
+  document.querySelectorAll(".logoState").forEach((p) => { p.textContent = d ? "Logo terpasang ✓ — muncul otomatis di dokumen yang kamu buat dari tool ini." : "Belum ada logo — upload sekali di tool mana pun, otomatis terpasang di cover skripsi, sertifikat, kwitansi, cover PPTX, kop surat, logbook & deklarasi."; });
+}
+function kopLogoHtml(align) {
+  const d = getLogoData(); if (!d) return "";
+  return '<p style="text-align:' + (align || "center") + ';margin:0 0 6pt"><img src="' + d + '" style="height:78px"></p>';
+}
+function sisipLogoField(el, btnOnclick) {
+  const anchor = btnOnclick ? el.querySelector('button[onclick="' + btnOnclick + '"]') : null;
+  if (anchor) anchor.insertAdjacentHTML("beforebegin", logoFieldHtml());
+  else if (el.firstElementChild) el.firstElementChild.insertAdjacentHTML("afterbegin", logoFieldHtml());
+  segarkanLogoUI(); muatLogoImg();
+}
+(function () {
+  const wraps = [["k16", "buatDocx()"], ["k27", "buatPptx()"], ["k32", "buatKwitansi()"], ["k35", "gambarSertifikat(0)"], ["k50", "buatMotlet()"], ["deklarasi", "buatDeklarasi()"]];
+  wraps.forEach(([id, btn]) => {
+    const _ui = UI[id];
+    if (!_ui) return;
+    UI[id] = function (el) { _ui(el); sisipLogoField(el, btn); };
+  });
+  const _k31 = UI.k31;
+  if (_k31) UI.k31 = function (el) { _k31(el); sisipLogoField(el, "tambahLog()"); };
+  // Preview struktur docx ikut menampilkan logo
+  const _rdp = renderDocPreview;
+  renderDocPreview = function () {
+    _rdp();
+    const d = getLogoData(); const box = $("#docPrev");
+    if (d && box && box.firstElementChild) box.firstElementChild.insertAdjacentHTML("afterbegin", '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:72px;margin:0 auto"></p>');
+  };
+  // Surat: unduhan .doc berkop logo
+  const _bm = buatMotlet;
+  buatMotlet = function () {
+    _bm();
+    window._suratDoc = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(window._motlet || "") + "</div></body></html>";
+    const btn = [...document.querySelectorAll("#mlOut button")].find((b) => (b.getAttribute("onclick") || "").includes("Surat.doc"));
+    if (btn) btn.setAttribute("onclick", "download('Surat.doc', window._suratDoc, 'application/msword')");
+  };
+})();
+/* Sertifikat & kwitansi: gambar logo di canvas */
+(function () {
+  const _gs = gambarSertifikat;
+  gambarSertifikat = function (idx) {
+    const cv = _gs(idx);
+    const tpl = ($("#srTpl") || {}).value || "klasik";
+    const im = window._logoImg;
+    if (im && tpl !== "custom") {
+      const ctx = cv.getContext("2d");
+      if (tpl === "biru") { const h = 72, w = Math.round(h * im.width / im.height); ctx.fillStyle = "#FFFFFF"; roundRect(ctx, 30, 14, w + 16, h + 4, 8); ctx.fill(); ctx.drawImage(im, 38, 16, w, h); }
+      else { const h = 104, w = Math.round(h * im.width / im.height); ctx.drawImage(im, 88, 84, w, h); }
+    }
+    return cv;
+  };
+  const _bk = buatKwitansi;
+  buatKwitansi = function () {
+    _bk();
+    const im = window._logoImg;
+    if (im) {
+      const cv = $("#kwCv"); if (!cv) return;
+      const ctx = cv.getContext("2d");
+      const h = 74, w = Math.round(h * im.width / im.height);
+      ctx.drawImage(im, 46, 42, w, h);
+    }
+  };
+  const _uz = unduhSertifikatZip;
+  unduhSertifikatZip = async function () { await muatLogoImg(); return _uz(); };
+  const _up = unduhSertifikatPdfZip;
+  unduhSertifikatPdfZip = async function () { await muatLogoImg(); return _up(); };
+  muatLogoImg();
 })();
 </script>
