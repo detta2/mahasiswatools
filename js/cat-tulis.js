@@ -449,13 +449,14 @@ function sortirGlosarium() {
   const seen = {}, dups = [];
   entries.forEach((e) => { const k = e.term.toLowerCase(); if (seen[k]) dups.push(e.term); seen[k] = 1; });
   window._glos = entries.map((e) => e.term + " : " + e.def).join("\n");
+  window._glosDoc = '<html><body style="font-family:serif;font-size:12pt">' + entries.map((e) => "<p><b>" + esc(e.term) + ":</b> " + esc(e.def) + "</p>").join("") + "</body></html>";
   out.innerHTML = '<div class="' + OUT + '"><div class="flex flex-wrap gap-2 mb-3"><span class="rounded-lg bg-white dark:bg-slate-900 px-3 py-1.5 font-bold">' + entries.length + ' entri terurut A–Z</span>'
     + (dups.length ? '<span class="rounded-lg bg-rose-100 dark:bg-rose-900/50 text-rose-700 dark:text-rose-300 px-3 py-1.5 font-bold">⚠️ Duplikat: ' + esc([...new Set(dups)].join(", ")) + "</span>" : "")
     + (bad.length ? '<span class="rounded-lg bg-amber-100 dark:bg-amber-900/50 text-amber-700 dark:text-amber-300 px-3 py-1.5 font-bold">⚠️ ' + bad.length + " baris tanpa definisi: " + esc(bad.slice(0, 4).join(", ")) + "</span>" : "") + "</div>"
     + '<div class="bg-white dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">' + entries.map((e) => '<p class="mb-1.5" style="padding-left:2em;text-indent:-2em"><b>' + esc(e.term) + ":</b> " + esc(e.def) + "</p>").join("") + "</div>"
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="copyText(window._glos)">📋 Copy Hasil</button>'
     + '<button class="' + BTN2 + '" onclick="download(\'Glosarium_AZ.txt\', window._glos)">⬇️ Download .txt</button>'
-    + '<button class="' + BTN2 + '" onclick="download(\'Glosarium_AZ.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt&quot;>\' + entries.map((e) => \'<p><b>\' + esc(e.term) + \':</b> \' + esc(e.def) + \'</p>\').join(\'\') + \'</body></html>\', \'application/msword\')">⬇️ .doc</button></div></div>';
+    + '<button class="' + BTN2 + '" onclick="download(\'Glosarium_AZ.doc\', window._glosDoc, \'application/msword\')">⬇️ .doc</button></div></div>';
 }
 
 ;
@@ -1077,7 +1078,7 @@ UI.revisi = function (el) {
   const d = store.get("mt_revisi", null);
   window._rv = d && d.items ? d : { nama: "", judul: "", tgl: "", items: [] };
   $("#rvNama").value = window._rv.nama || ""; $("#rvJudul").value = window._rv.judul || ""; $("#rvTgl").value = window._rv.tgl || "";
-  el.addEventListener("input", () => { window._rv.nama = $("#rvNama").value; window._rv.judul = $("#rvJudul").value; window._rv.tgl = $("#rvTgl").value; store.set("mt_revisi", window._rv); });
+  el.addEventListener("input", () => { const a = $("#rvNama"), b = $("#rvJudul"), c = $("#rvTgl"); if (!a || !b || !c) return; window._rv.nama = a.value; window._rv.judul = b.value; window._rv.tgl = c.value; store.set("mt_revisi", window._rv); });
   renderRevisi();
 };
 function rvTambah() {
