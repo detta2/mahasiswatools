@@ -68,9 +68,15 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 66 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 69 tool.
 
-### 📑 Generator Proposal (Tool 66)
+### 📈📝📚 Tiga Tool Baru (Tool 67–69)
+
+- **Uji Statistik Inferensial** — normalitas Jarque-Bera, uji-t independen & berpasangan, ANOVA satu arah, regresi linear + korelasi, lengkap dengan **narasi interpretasi otomatis gaya Bab 4** (nilai p dihitung via fungsi beta inkomplet, terverifikasi terhadap hitung manual).
+- **Pembuat Kuesioner Penelitian** — item Likert 4/5, pilihan ganda, dan terbuka; preview berkop logo; ekspor .doc bertabel skala dan teks siap tempel ke Google Form.
+- **Pencari & Rak Jurnal** — cari publikasi via **OpenAlex**, buat sitasi otomatis dari **DOI (Crossref)**, simpan ke rak referensi lokal, ekspor **Daftar Pustaka APA 7** (.doc) dan **BibTeX** untuk Zotero/Mendeley.
+
+## 📑 Generator Proposal (Tool 66)
 
 Tiga jenis proposal dalam satu tool — **Penelitian/Skripsi** (BAB I–III lengkap), **Kegiatan Mahasiswa** (susunan acara, kepanitiaan, **RAB terhitung otomatis**), dan **Magang/PKL** — cover berlogo institusi, preview kertas live, lembar pengesahan, ekspor **.docx asli** margin 4-4-3-3.
 

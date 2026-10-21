@@ -162,6 +162,9 @@ const TOOLS = [
   { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
   { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
   { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", aktif: 1 },
+  { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
+  { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
   { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
   { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
   { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
@@ -274,7 +277,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 function toolCard(t) {
   const fav = favs.has(t.id);
@@ -4585,4 +4588,335 @@ function suratBaru(jenis, f) {
   const hint = $("#mlHint");
   if (hint) hint.textContent = "Pilih jenis surat — ada 15 jenis sekarang, termasuk izin penelitian, keringanan UKT, sponsorship, dan surat pernyataan. Surat ter-generate live saat kamu mengetik.";
 })();
+</script>
+
+<script>
+/* ============================================================
+   TOOL 67 — UJI STATISTIK INFERENSIAL + NARASI BAB 4
+   ============================================================ */
+function parseNums(t) { return (t || "").split(/[\s,;]+/).map((s) => parseFloat(String(s).replace(",", "."))).filter((n) => !isNaN(n)); }
+function _lgamma(x) { const c = [676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]; if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - _lgamma(1 - x); x -= 1; let a = 0.99999999999980993; const t = x + 7.5; for (let i = 0; i < 8; i++) a += c[i] / (x + i + 1); return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a); }
+function _betacf(x, a, b) { const qab = a + b, qap = a + 1, qam = a - 1; let c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < 1e-300) d = 1e-300; d = 1 / d; let h = d; for (let m = 1; m <= 200; m++) { const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; h *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-7) break; } return h; }
+function betainc(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(_lgamma(a + b) - _lgamma(a) - _lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); if (x < (a + 1) / (a + b + 2)) return bt * _betacf(x, a, b) / a; return 1 - bt * _betacf(1 - x, b, a) / b; }
+function pDariT(t, df) { return betainc(df / (df + t * t), df / 2, 0.5); }
+function pDariF(f, d1, d2) { return 1 - betainc((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2); }
+function fmtP(p) { return p < 0.001 ? "< 0,001" : p.toFixed(3).replace(".", ","); }
+function fmtN(x, d) { return Number(x).toFixed(d == null ? 2 : d).replace(".", ","); }
+
+UI.inferens = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Pilih Uji Statistik", '<select id="infJenis" class="' + IN + '" onchange="infGanti()"><option value="normalitas">Uji Normalitas (Jarque-Bera) — 1 kelompok data</option><option value="tindep">Uji-t Independen — 2 kelompok berbeda</option><option value="tpaired">Uji-t Berpasangan — sebelum vs sesudah</option><option value="anova">ANOVA Satu Arah — 3+ kelompok</option><option value="regresi">Regresi Linear Sederhana + Korelasi (X → Y)</option></select>')
+    + '<p id="infHint" class="rounded-lg bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 p-3 text-[13px] mb-4"></p>'
+    + '<div id="infBox1">' + field("Data Kelompok 1 / Variabel X", '<textarea id="infA" rows="5" class="' + IN + '" placeholder="Tulis/paste angka dipisah spasi, koma, atau baris baru. Contoh: 80 82 84 86 88"></textarea>') + "</div>"
+    + '<div id="infBox2">' + field("Data Kelompok 2 / Variabel Y", '<textarea id="infB" rows="5" class="' + IN + '" placeholder="Kelompok pembanding / data sesudah / variabel Y (jumlah harus sama dgn X untuk uji berpasangan & regresi)"></textarea>') + "</div>"
+    + '<div id="infBoxG" class="hidden">' + field("Data Semua Kelompok (satu kelompok per baris)", '<textarea id="infG" rows="6" class="' + IN + '" placeholder="Kelompok A: 80, 82, 84, 86&#10;Kelompok B: 70, 72, 74, 78&#10;Kelompok C: 90, 91, 93, 95"></textarea>') + "</div>"
+    + field("Nama Variabel / Kelompok (untuk narasi hasil)", '<input id="infNama" class="' + IN + '" placeholder="cth: Kelompok eksperimen vs kontrol / Skor pretest-posttest / Pengaruh X terhadap Y">')
+    + '<button class="' + BTN + '" onclick="hitungInferens()">📈 Hitung Uji Statistik</button>'
+    + outBox("infOut") + "</div>";
+  infGanti();
+};
+function infGanti() {
+  const j = $("#infJenis").value;
+  const hints = {
+    normalitas: "Menguji apakah satu kelompok data berdistribusi normal (syarat uji parametrik). Isi <b>Data Kelompok 1</b> saja. Kriteria: nilai p &gt; 0,05 → data berdistribusi normal.",
+    tindep: "Membandingkan rata-rata <b>dua kelompok yang berbeda</b> (mis. kelas eksperimen vs kontrol). Isi kedua kotak data.",
+    tpaired: "Membandingkan rata-rata <b>pasangan data yang sama</b> (mis. pretest vs posttest siswa yang sama). Jumlah data kedua kotak harus sama, urutan = orang yang sama.",
+    anova: "Membandingkan rata-rata <b>3 kelompok atau lebih</b> sekaligus. Tulis satu kelompok per baris pada kotak kelompok.",
+    regresi: "Menguji pengaruh variabel X terhadap Y sekaligus korelasinya. Kotak 1 = X, kotak 2 = Y, jumlah & urutan data harus sama (berpasangan per responden)."
+  };
+  $("#infHint").innerHTML = hints[j];
+  $("#infBox1").classList.toggle("hidden", j === "anova");
+  $("#infBox2").classList.toggle("hidden", j === "normalitas" || j === "anova");
+  $("#infBoxG").classList.toggle("hidden", j !== "anova");
+}
+function infHasilKartu(judul, baris, narasi) {
+  window._infNarasi = narasi;
+  $("#infOut").innerHTML = '<div class="' + OUT + '"><p class="font-extrabold mb-3">' + judul + '</p>'
+    + '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">' + baris.map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2 text-center"><div class="text-lg font-extrabold">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<p class="text-[13.5px] leading-relaxed whitespace-pre-wrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3.5">' + esc(narasi) + "</p>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN2 + '" onclick="copyText(window._infNarasi)">📋 Copy Narasi Bab 4</button></div>'
+    + '<p class="text-xs text-slate-500 mt-2">Perhitungan dilakukan lokal dengan rumus statistik standar (setara perhitungan manual/SPSS untuk uji yang sama). Tetap cantumkan perangkat lunak yang kamu pakai sesuai pedoman kampusmu.</p></div>';
+}
+function hitungInferens() {
+  const j = $("#infJenis").value, nama = $("#infNama").value.trim() || "variabel penelitian";
+  const A = parseNums($("#infA").value), B = parseNums($("#infB").value);
+  const outErr = (m) => { $("#infOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ ' + m + "</div>"; };
+  if (j === "normalitas") {
+    if (A.length < 8) return outErr("Uji normalitas butuh minimal 8 data.");
+    const n = A.length, m = mean(A), s = sdS(A);
+    const m2 = A.reduce((a, x) => a + Math.pow(x - m, 2), 0) / n, m3 = A.reduce((a, x) => a + Math.pow(x - m, 3), 0) / n, m4 = A.reduce((a, x) => a + Math.pow(x - m, 4), 0) / n;
+    const skew = m3 / Math.pow(m2, 1.5), kurt = m4 / (m2 * m2);
+    const JB = n / 6 * (skew * skew + Math.pow(kurt - 3, 2) / 4);
+    const p = Math.exp(-JB / 2);
+    const normal = p > 0.05;
+    window._infHasil = { uji: "Jarque-Bera", JB, p };
+    infHasilKartu("Hasil Uji Normalitas (Jarque-Bera)",
+      [["Jumlah Data (n)", n], ["Rata-rata", fmtN(m)], ["Simpangan Baku", fmtN(s)], ["Statistik JB", fmtN(JB, 3)], ["Nilai p", fmtP(p)], ["Kesimpulan", normal ? "NORMAL ✅" : "TIDAK NORMAL ❌"]],
+      "Berdasarkan hasil uji normalitas Jarque-Bera terhadap data " + nama + ", diperoleh nilai statistik JB sebesar " + fmtN(JB, 3) + " dengan nilai signifikansi (p) sebesar " + fmtP(p) + ". Karena nilai p " + (normal ? "lebih besar dari 0,05, dapat disimpulkan bahwa data berdistribusi normal sehingga memenuhi syarat untuk dianalisis menggunakan statistik parametrik." : "lebih kecil dari 0,05, dapat disimpulkan bahwa data tidak berdistribusi normal sehingga analisis lanjutan disarankan menggunakan statistik non-parametrik atau dilakukan transformasi data terlebih dahulu."));
+  }
+  else if (j === "tindep") {
+    if (A.length < 2 || B.length < 2) return outErr("Masing-masing kelompok butuh minimal 2 data.");
+    const n1 = A.length, n2 = B.length, m1 = mean(A), m2 = mean(B), s1 = sdS(A), s2 = sdS(B);
+    const sp = Math.sqrt(((n1 - 1) * s1 * s1 + (n2 - 1) * s2 * s2) / (n1 + n2 - 2));
+    const t = (m1 - m2) / (sp * Math.sqrt(1 / n1 + 1 / n2)), df = n1 + n2 - 2, p = pDariT(Math.abs(t), df);
+    const sig = p < 0.05;
+    window._infHasil = { uji: "t-independen", t, df, p };
+    infHasilKartu("Hasil Uji-t Independen",
+      [["Rata-rata Kel. 1", fmtN(m1)], ["Rata-rata Kel. 2", fmtN(m2)], ["t hitung", fmtN(t, 3)], ["df", df], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "BERBEDA SIGNIFIKAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil uji-t independen terhadap " + nama + ", diperoleh nilai t hitung sebesar " + fmtN(t, 3) + " dengan df = " + df + " dan nilai signifikansi (p) sebesar " + fmtP(p) + ". Rata-rata kelompok pertama adalah " + fmtN(m1) + ", sedangkan kelompok kedua " + fmtN(m2) + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan yang signifikan antara kedua kelompok." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan yang signifikan antara kedua kelompok."));
+  }
+  else if (j === "tpaired") {
+    if (A.length !== B.length || A.length < 2) return outErr("Uji berpasangan butuh jumlah data yang sama di kedua kotak (minimal 2 pasang).");
+    const D = A.map((x, i) => B[i] - x), n = D.length, md = mean(D), sdd = sdS(D);
+    const t = md / (sdd / Math.sqrt(n)), df = n - 1, p = pDariT(Math.abs(t), df);
+    const sig = p < 0.05;
+    window._infHasil = { uji: "t-berpasangan", t, df, p };
+    infHasilKartu("Hasil Uji-t Berpasangan",
+      [["Jumlah Pasangan", n], ["Rata-rata Awal", fmtN(mean(A))], ["Rata-rata Akhir", fmtN(mean(B))], ["t hitung", fmtN(t, 3)], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "BERBEDA SIGNIFIKAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil uji-t berpasangan terhadap " + nama + ", diperoleh nilai t hitung sebesar " + fmtN(t, 3) + " dengan df = " + df + " dan nilai signifikansi (p) sebesar " + fmtP(p) + ". Rata-rata data awal adalah " + fmtN(mean(A)) + " dan meningkat/menjadi " + fmtN(mean(B)) + " pada data akhir, dengan rata-rata selisih sebesar " + fmtN(md) + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan yang signifikan antara data awal dan data akhir." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan yang signifikan antara data awal dan data akhir."));
+  }
+  else if (j === "anova") {
+    const groups = $("#infG").value.split(/\n/).map((l) => parseNums(l.replace(/^[^:]*:/, ""))).filter((g) => g.length >= 2);
+    if (groups.length < 3) return outErr("ANOVA butuh minimal 3 kelompok (satu per baris, masing-masing ≥2 data).");
+    const k = groups.length, all = groups.flat(), N = all.length, gm = mean(all);
+    let ssb = 0, ssw = 0;
+    groups.forEach((g) => { const mg = mean(g); ssb += g.length * Math.pow(mg - gm, 2); g.forEach((x) => ssw += Math.pow(x - mg, 2)); });
+    const dfb = k - 1, dfw = N - k, F = (ssb / dfb) / (ssw / dfw), p = pDariF(F, dfb, dfw);
+    const sig = p < 0.05;
+    window._infHasil = { uji: "ANOVA", F, dfb, dfw, p };
+    infHasilKartu("Hasil ANOVA Satu Arah",
+      [["Jumlah Kelompok", k], ["Total Data", N], ["F hitung", fmtN(F, 3)], ["df", dfb + "; " + dfw], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "ADA PERBEDAAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil ANOVA satu arah terhadap " + nama + ", diperoleh nilai F hitung sebesar " + fmtN(F, 3) + " dengan df (" + dfb + "; " + dfw + ") dan nilai signifikansi (p) sebesar " + fmtP(p) + ". Rata-rata tiap kelompok adalah " + groups.map((g, i) => "kelompok " + (i + 1) + " = " + fmtN(mean(g))).join(", ") + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan rata-rata yang signifikan di antara kelompok-kelompok tersebut; analisis dapat dilanjutkan dengan uji lanjut (post-hoc) untuk mengetahui pasangan kelompok yang berbeda." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan rata-rata yang signifikan di antara kelompok-kelompok tersebut."));
+  }
+  else if (j === "regresi") {
+    if (A.length !== B.length || A.length < 3) return outErr("Regresi butuh jumlah data X dan Y yang sama (minimal 3 pasang).");
+    const n = A.length, mx = mean(A), my = mean(B);
+    let sxy = 0, sxx = 0, syy = 0;
+    A.forEach((x, i) => { sxy += (x - mx) * (B[i] - my); sxx += Math.pow(x - mx, 2); syy += Math.pow(B[i] - my, 2); });
+    const b = sxy / sxx, a = my - b * mx, r = sxy / Math.sqrt(sxx * syy), r2 = r * r;
+    const t = r * Math.sqrt(n - 2) / Math.sqrt(1 - r2), p = pDariT(Math.abs(t), n - 2);
+    const sig = p < 0.05;
+    const arah = b >= 0 ? "positif" : "negatif";
+    window._infHasil = { uji: "regresi", a, b, r, r2, t, p };
+    infHasilKartu("Hasil Regresi Linear Sederhana",
+      [["Persamaan", "Y = " + fmtN(a) + " + " + fmtN(b) + "X"], ["Korelasi (r)", fmtN(r, 3)], ["R² (kontribusi)", fmtN(r2 * 100, 1) + "%"], ["t hitung", fmtN(t, 3)], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "SIGNIFIKAN ✅" : "Tidak Signifikan ❌"]],
+      "Berdasarkan hasil analisis regresi linear sederhana, diperoleh persamaan regresi Y = " + fmtN(a) + " + " + fmtN(b) + "X dengan nilai koefisien korelasi (r) sebesar " + fmtN(r, 3) + " yang menunjukkan hubungan yang bersifat " + arah + ". Nilai koefisien determinasi (R²) sebesar " + fmtN(r2, 3) + " menunjukkan bahwa variabel X memberikan kontribusi pengaruh sebesar " + fmtN(r2 * 100, 1) + "% terhadap variabel Y, sedangkan sisanya sebesar " + fmtN(100 - r2 * 100, 1) + "% dipengaruhi oleh faktor lain di luar penelitian ini. Nilai t hitung sebesar " + fmtN(t, 3) + " dengan signifikansi (p) sebesar " + fmtP(p) + ", sehingga " + (sig ? "dapat disimpulkan bahwa terdapat pengaruh yang signifikan antara " + nama + "." : "dapat disimpulkan bahwa tidak terdapat pengaruh yang signifikan antara " + nama + "."));
+  }
+}
+
+/* ============================================================
+   TOOL 68 — PEMBUAT KUESIONER PENELITIAN
+   ============================================================ */
+UI.kuesioner = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Judul Penelitian", '<input id="kuJudul" class="' + IN + '" placeholder="Judul skripsi/penelitianmu">')
+    + field("Nama Peneliti & NIM", '<input id="kuNama" class="' + IN + '" placeholder="cth: Detta Pranata — 2018141001">')
+    + "</div>"
+    + field("Petunjuk Pengisian (boleh diedit)", '<textarea id="kuPetunjuk" rows="2" class="' + IN + '">Berilah tanda centang (✓) pada kolom jawaban yang paling sesuai dengan pendapat/keadaan Anda. Tidak ada jawaban benar atau salah; kejujuran Anda sangat membantu keberhasilan penelitian ini. Identitas dan jawaban Anda dijamin kerahasiaannya.</textarea>')
+    + field("Data Responden yang Diminta", '<input id="kuResp" class="' + IN + '" value="Nama/Inisial, Jenis Kelamin, Usia, Kelas/Semester" placeholder="Pisahkan koma — akan jadi kolom isian identitas">')
+    + field("Daftar Pertanyaan (satu per baris)", '<textarea id="kuItems" rows="9" class="' + IN + '" placeholder="Format baris:&#10;Pernyataan biasa = skala Likert 5 (SS/S/R/TS/STS)&#10;[L4] = Likert 4 (SS/S/TS/STS)&#10;[PG: opsi1; opsi2; opsi3] = pilihan ganda&#10;[TB] = jawaban terbuka/uraian">Saya merasa terbantu dengan adanya bantuan sosial.\n[L4] Bantuan yang diterima sesuai dengan kebutuhan keluarga saya.\nMenurut Anda, apa manfaat terbesar bantuan sosial? [PG: Membantu biaya pendidikan; Membantu kebutuhan pangan; Membantu modal usaha; Lainnya]\nSaran Anda untuk perbaikan program bantuan sosial: [TB]</textarea>')
+    + '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW KUESIONER</p><div id="kuPrev"></div></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="unduhKuesionerDoc()">⬇️ Download Kuesioner .doc</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(teksGoogleForm())">📋 Copy Teks untuk Google Form</button></div>'
+    + '<p class="text-xs text-slate-500 mt-2">Teks Google Form: tempel pertanyaan satu per satu saat membuat form — format skala & pilihan sudah disiapkan per baris.</p>'
+    + "</div>";
+  sisipLogoField(el, null);
+  el.addEventListener("input", renderKuPreview);
+  renderKuPreview();
+};
+function parseKuItems() {
+  return $("#kuItems").value.split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => {
+    const pg = l.match(/\[PG:\s*([^\]]+)\]\s*$/);
+    if (pg) return { q: l.replace(/\[PG:[^\]]+\]\s*$/, "").trim(), tipe: "pg", opsi: pg[1].split(";").map((s) => s.trim()).filter(Boolean) };
+    if (/\[TB\]\s*$/.test(l)) return { q: l.replace(/\[TB\]\s*$/, "").trim(), tipe: "tb" };
+    if (/^\[L4\]\s*/.test(l)) return { q: l.replace(/^\[L4\]\s*/, ""), tipe: "l4" };
+    if (/^\[L5\]\s*/.test(l)) return { q: l.replace(/^\[L5\]\s*/, ""), tipe: "l5" };
+    return { q: l, tipe: "l5" };
+  });
+}
+function skalaLabel(tipe) { return tipe === "l4" ? ["SS", "S", "TS", "STS"] : ["SS", "S", "R", "TS", "STS"]; }
+function renderKuPreview() {
+  const box = $("#kuPrev"); if (!box) return;
+  const items = parseKuItems();
+  window._kuCount = items.length;
+  const d = getLogoData();
+  const resp = $("#kuResp").value.split(",").map((s) => s.trim()).filter(Boolean);
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+    + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:64px;margin:0 auto"></p>' : "")
+    + '<h3 class="text-center font-extrabold text-[15px] leading-snug">KUESIONER PENELITIAN</h3>'
+    + '<p class="text-center font-bold text-sm mt-1">' + esc(($("#kuJudul").value.trim() || "Judul Penelitian").toUpperCase()) + "</p>"
+    + '<p class="text-center text-xs">' + esc($("#kuNama").value.trim()) + "</p>"
+    + '<p class="text-[13px] leading-relaxed mt-4"><b>Petunjuk Pengisian:</b> ' + esc($("#kuPetunjuk").value.trim()) + "</p>"
+    + (resp.length ? '<div class="mt-3 text-[13.5px] space-y-1">' + resp.map((r) => '<p>' + esc(r) + ': <span class="inline-block border-b border-dotted border-slate-400 w-48">&nbsp;</span></p>').join("") + "</div>" : "")
+    + '<div class="mt-4 space-y-2.5">' + items.map((it, i) => {
+      if (it.tipe === "pg") return '<div class="text-[13.5px]"><p><b>' + (i + 1) + ".</b> " + esc(it.q) + "</p>" + it.opsi.map((o) => '<p class="ml-5">○ ' + esc(o) + "</p>").join("") + "</div>";
+      if (it.tipe === "tb") return '<div class="text-[13.5px]"><p><b>' + (i + 1) + ".</b> " + esc(it.q) + '</p><p class="border-b border-dotted border-slate-400 h-5"></p><p class="border-b border-dotted border-slate-400 h-5"></p></div>';
+      const sk = skalaLabel(it.tipe);
+      return '<div class="text-[13.5px] flex items-start justify-between gap-2"><p class="flex-1"><b>' + (i + 1) + ".</b> " + esc(it.q) + '</p><p class="shrink-0 flex gap-1.5">' + sk.map((s) => '<span class="text-center"><span class="block text-[10px] font-bold">' + s + '</span>○</span>').join("") + "</p></div>";
+    }).join("") + "</div>"
+    + '<p class="text-[11px] text-slate-500 mt-4">Keterangan: SS = Sangat Setuju, S = Setuju, R = Ragu-ragu, TS = Tidak Setuju, STS = Sangat Tidak Setuju. • ' + items.length + " pertanyaan • Dibuat dengan MahasiswaTools</p></div>";
+}
+function kuesionerDocHtml() {
+  const items = parseKuItems();
+  const d = getLogoData();
+  const resp = $("#kuResp").value.split(",").map((s) => s.trim()).filter(Boolean);
+  let h = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center")
+    + "<h3 style='text-align:center'>KUESIONER PENELITIAN</h3><p style='text-align:center'><b>" + esc(($("#kuJudul").value.trim() || "Judul Penelitian").toUpperCase()) + "</b><br>" + esc($("#kuNama").value.trim()) + "</p>"
+    + "<p><b>Petunjuk Pengisian:</b> " + esc($("#kuPetunjuk").value.trim()) + "</p>"
+    + resp.map((r) => "<p>" + esc(r) + ": ______________________</p>").join("");
+  const likert = items.map((it, i) => ({ it, i })).filter((x) => x.it.tipe === "l5" || x.it.tipe === "l4");
+  if (likert.length) {
+    h += "<table border='1' cellspacing='0' cellpadding='5' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Pernyataan</th><th>SS</th><th>S</th><th>R</th><th>TS</th><th>STS</th></tr>"
+      + likert.map((x) => "<tr><td>" + (x.i + 1) + "</td><td>" + esc(x.it.q) + "</td><td></td><td></td><td>" + (x.it.tipe === "l4" ? "—" : "") + "</td><td></td><td></td></tr>").join("") + "</table>"
+      + "<p style='font-size:10pt'>Kolom R (Ragu-ragu) hanya untuk skala 5 poin. Keterangan: SS = Sangat Setuju, S = Setuju, R = Ragu-ragu, TS = Tidak Setuju, STS = Sangat Tidak Setuju.</p>";
+  }
+  items.forEach((it, i) => {
+    if (it.tipe === "pg") h += "<p><b>" + (i + 1) + ".</b> " + esc(it.q) + "<br>" + it.opsi.map((o) => "&nbsp;&nbsp;○ " + esc(o)).join("<br>") + "</p>";
+    if (it.tipe === "tb") h += "<p><b>" + (i + 1) + ".</b> " + esc(it.q) + "<br>___________________________________________________________________________<br>___________________________________________________________________________</p>";
+  });
+  return h + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+}
+function unduhKuesionerDoc() { download("Kuesioner_Penelitian.doc", kuesionerDocHtml(), "application/msword"); toast("Kuesioner .doc diunduh 📝"); }
+function teksGoogleForm() {
+  const items = parseKuItems();
+  return items.map((it, i) => {
+    if (it.tipe === "pg") return (i + 1) + ". " + it.q + " [Pilihan Ganda]\n" + it.opsi.map((o) => "   - " + o).join("\n");
+    if (it.tipe === "tb") return (i + 1) + ". " + it.q + " [Jawaban Panjang]";
+    return (i + 1) + ". " + it.q + " [Skala Linear " + (it.tipe === "l4" ? "1–4: STS–SS" : "1–5: STS–SS") + "]";
+  }).join("\n\n");
+}
+SHARE_GETTERS.kuesioner = function () { return teksGoogleForm(); };
+</script>
+
+<script>
+/* ============================================================
+   TOOL 69 — PENCARI & RAK JURNAL (OpenAlex + Crossref)
+   ============================================================ */
+UI.jurnal = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Cari Jurnal (kata kunci topik / judul / penulis)", '<div class="flex gap-2"><input id="juQ" class="flex-1 ' + IN + '" placeholder="cth: media sosial prestasi belajar"><button class="' + BTN + '" style="width:auto" onclick="cariJurnal()">🔎 Cari</button></div>')
+    + '<p id="juStat" class="text-sm text-slate-500 mb-2">Sumber: OpenAlex (ratusan juta publikasi, gratis). Butuh internet.</p>'
+    + '<div id="juHasil" class="space-y-2.5 mb-5"></div>'
+    + field("Buat Sitasi dari DOI", '<div class="flex gap-2"><input id="juDoi" class="flex-1 ' + IN + '" placeholder="cth: 10.1234/jurnal.2024.001"><button class="' + BTN2 + '" style="width:auto" onclick="sitasiDariDoi()">Ambil Sitasi</button></div>')
+    + '<div class="rounded-lg border-[3px] border-black dark:border-[#FDE047] p-4 bshadow-sm"><p class="font-extrabold mb-2">📚 Rak Referensi Saya <span id="juRakInfo" class="text-xs font-semibold text-slate-500"></span></p>'
+    + '<div id="juRak" class="space-y-2 mb-3"></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="eksporRak(\'apa\')">⬇️ Daftar Pustaka APA 7 (.doc)</button>'
+    + '<button class="' + BTN2 + '" onclick="eksporRak(\'bib\')">⬇️ BibTeX (.bib)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(rakSebagaiAPA())">📋 Copy APA</button></div>'
+    + '<p class="text-xs text-slate-500 mt-2">Rak tersimpan di browser ini. Format APA dibuat otomatis dari metadata — selalu periksa kembali ejaan nama & judul sebelum dipakai.</p></div>'
+    + "</div>";
+  renderRak();
+};
+function rakGet() { return store.get("mt_rak", []); }
+function rakSet(a) { store.set("mt_rak", a); }
+function namaAPA(nama) {
+  const t = String(nama || "").trim().split(/\s+/);
+  if (t.length === 1) return t[0];
+  const fam = t[t.length - 1];
+  const inisial = t.slice(0, -1).map((w) => w.charAt(0).toUpperCase() + ".").join(" ");
+  return fam + ", " + inisial;
+}
+function penulisAPA(arr) {
+  if (!arr || !arr.length) return "Anonim";
+  const f = arr.map(namaAPA);
+  if (f.length === 1) return f[0];
+  if (f.length === 2) return f[0] + ", & " + f[1];
+  return f.slice(0, -1).join(", ") + ", & " + f[f.length - 1];
+}
+function formatAPA(w) {
+  return penulisAPA(w.penulis) + " (" + (w.tahun || "t.t.") + "). " + (w.judul || "") + ". " + (w.jurnal ? "<i>" + w.jurnal + "</i>. " : "") + (w.doi ? "https://doi.org/" + String(w.doi).replace(/^https?:\/\/doi.org\//, "") : "");
+}
+function formatAPAteks(w) { const s = formatAPA(w); const tmp = document.createElement("div"); tmp.innerHTML = s; return tmp.textContent; }
+function formatBib(w, i) {
+  const fam = (w.penulis && w.penulis[0] ? String(w.penulis[0]).trim().split(/\s+/).pop() : "anon").toLowerCase().replace(/[^a-z]/g, "");
+  const kata = (w.judul || "").split(/\s+/).filter((x) => x.length > 3)[0] || "work";
+  return "@article{" + fam + (w.tahun || "") + kata.toLowerCase().replace(/[^a-z]/g, "") + (i || "") + ",\n  author = {" + (w.penulis || []).join(" and ") + "},\n  title = {" + (w.judul || "") + "},\n  journal = {" + (w.jurnal || "") + "},\n  year = {" + (w.tahun || "") + "},\n  doi = {" + String(w.doi || "").replace(/^https?:\/\/doi.org\//, "") + "}\n}";
+}
+async function cariJurnal() {
+  const q = $("#juQ").value.trim();
+  const stat = $("#juStat"), box = $("#juHasil");
+  if (!q) { stat.textContent = "⚠️ Isi kata kunci dulu."; return; }
+  stat.textContent = "⏳ Mencari di OpenAlex…";
+  box.innerHTML = "";
+  try {
+    const r = await fetch("https://api.openalex.org/works?search=" + encodeURIComponent(q) + "&per-page=10&mailto=mahasiswatools@detta2.github.io");
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const data = await r.json();
+    const hasil = (data.results || []).map((w) => ({
+      judul: w.display_name || w.title || "",
+      penulis: (w.authorships || []).map((a) => a.author && a.author.display_name).filter(Boolean),
+      tahun: w.publication_year || "",
+      jurnal: (w.primary_location && w.primary_location.source && w.primary_location.source.display_name) || "",
+      doi: w.doi || "",
+      sitasi: w.cited_by_count || 0
+    })).filter((w) => w.judul);
+    window._hasilJurnal = hasil;
+    if (!hasil.length) { stat.textContent = "Tidak ada hasil untuk kata kunci itu. Coba kata kunci Inggris yang lebih umum."; return; }
+    stat.innerHTML = "✅ Ditemukan " + hasil.length + " publikasi. Klik <b>+ Rak</b> untuk menyimpan ke rak referensi.";
+    box.innerHTML = hasil.map((w, i) => '<div class="rounded-lg border-2 border-slate-200 dark:border-slate-700 p-3.5 bg-white dark:bg-slate-900">'
+      + '<p class="font-extrabold text-[14.5px] leading-snug">' + esc(w.judul) + "</p>"
+      + '<p class="text-[12.5px] text-slate-500 mt-1">' + esc(w.penulis.slice(0, 3).join(", ") + (w.penulis.length > 3 ? ", dkk." : "")) + " • " + w.tahun + (w.jurnal ? " • " + esc(w.jurnal) : "") + "</p>"
+      + '<p class="text-[12.5px] mt-0.5">📈 Disitasi ' + w.sitasi + " kali" + (w.doi ? ' • <span class="font-semibold">DOI: ' + esc(String(w.doi).replace("https://doi.org/", "")) + "</span>" : "") + "</p>"
+      + '<div class="flex gap-2 mt-2"><button class="' + BTN2 + '" onclick="simpanJurnal(' + i + ')">➕ Rak</button>'
+      + (w.doi ? '<button class="' + BTN2 + '" onclick="copyText(\'' + esc(formatAPAteks(w)).replace(/'/g, "\\'") + '\')">📋 Copy Sitasi APA</button>' : "") + "</div></div>").join("");
+  } catch (e) {
+    stat.textContent = "❌ Gagal terhubung ke OpenAlex (butuh internet). Periksa koneksi lalu coba lagi.";
+    window._hasilJurnal = [];
+  }
+}
+function simpanJurnal(i) {
+  const w = (window._hasilJurnal || [])[i]; if (!w) return;
+  const rak = rakGet();
+  if (rak.some((x) => x.judul === w.judul)) { toast("Sudah ada di rak 📚"); return; }
+  rak.push(w); rakSet(rak); renderRak();
+  toast("Tersimpan ke Rak Referensi 📚");
+}
+async function sitasiDariDoi() {
+  const doi = $("#juDoi").value.trim().replace(/^https?:\/\/doi.org\//, "");
+  const stat = $("#juStat");
+  if (!doi) { stat.textContent = "⚠️ Isi DOI dulu."; return; }
+  stat.textContent = "⏳ Mengambil metadata dari Crossref…";
+  try {
+    const r = await fetch("https://api.crossref.org/works/" + encodeURIComponent(doi));
+    if (!r.ok) throw new Error("404");
+    const m = (await r.json()).message;
+    const w = {
+      judul: (m.title || [""])[0],
+      penulis: (m.author || []).map((a) => ((a.given || "") + " " + (a.family || "")).trim()),
+      tahun: (m.issued && m.issued["date-parts"] && m.issued["date-parts"][0][0]) || "",
+      jurnal: (m["container-title"] || [""])[0],
+      doi: "https://doi.org/" + doi, sitasi: m["is-referenced-by-count"] || 0
+    };
+    const rak = rakGet();
+    if (!rak.some((x) => x.judul === w.judul)) { rak.push(w); rakSet(rak); }
+    renderRak();
+    stat.innerHTML = "✅ Sitasi ditemukan & disimpan ke rak: <b>" + esc(formatAPAteks(w)) + "</b>";
+  } catch (e) {
+    stat.textContent = "❌ DOI tidak ditemukan di Crossref. Periksa kembali DOI-nya.";
+  }
+}
+function renderRak() {
+  const box = $("#juRak"); if (!box) return;
+  const rak = rakGet();
+  const info = $("#juRakInfo"); if (info) info.textContent = "(" + rak.length + " referensi)";
+  if (!rak.length) { box.innerHTML = '<p class="text-sm text-slate-500">Rak masih kosong — cari jurnal di atas lalu klik + Rak, atau ambil sitasi dari DOI.</p>'; return; }
+  box.innerHTML = rak.map((w, i) => '<div class="flex items-start gap-2 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 p-3"><p class="flex-1 text-[13px] leading-relaxed">' + formatAPA(w) + '</p><button class="shrink-0 text-rose-500 font-bold px-2" title="Hapus" onclick="hapusJurnal(' + i + ')">✕</button></div>').join("");
+}
+function hapusJurnal(i) { const rak = rakGet(); rak.splice(i, 1); rakSet(rak); renderRak(); }
+function rakSebagaiAPA() {
+  return rakGet().slice().sort((a, b) => formatAPAteks(a).localeCompare(formatAPAteks(b))).map(formatAPAteks).join("\n\n");
+}
+function eksporRak(mode) {
+  const rak = rakGet();
+  if (!rak.length) { toast("Rak masih kosong 📚"); return; }
+  if (mode === "apa") {
+    const isi = rak.slice().sort((a, b) => formatAPAteks(a).localeCompare(formatAPAteks(b))).map((w) => "<p style='margin:0 0 10pt'>" + formatAPA(w) + "</p>").join("");
+    download("Daftar_Pustaka_APA.doc", "<html><body style='font-family:serif;font-size:12pt'><h3>DAFTAR PUSTAKA</h3>" + isi + "</body></html>", "application/msword");
+  } else {
+    download("Referensi.bib", rak.map((w, i) => formatBib(w, i)).join("\n\n"), "text/plain");
+  }
+  toast("Referensi diunduh ⬇️");
+}
+SHARE_GETTERS.jurnal = function () { return rakSebagaiAPA(); };
 </script>
