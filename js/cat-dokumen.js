@@ -1,0 +1,542 @@
+/* FILE HASIL GENERATE dari app.js oleh build/split.js — jangan edit langsung. */
+/* ---------- 37. PAS FOTO GANTI BACKGROUND ---------- */
+let pasfoto = { img: null, bgColor: [240, 240, 240] };
+UI.k37 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Wajah", '<input id="pfFile" type="file" accept="image/*" class="' + IN + '" onchange="pfLoad(this)">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Ukuran Pas Foto (300 DPI)", '<select id="pfSize" class="' + IN + '"><option value="354x472">3 × 4 cm (354×472 px)</option><option value="472x709">4 × 6 cm (472×709 px)</option><option value="236x354">2 × 3 cm (236×354 px)</option></select>')
+    + field("Warna Background Baru", '<select id="pfBg" class="' + IN + '"><option value="#DB1514">🔴 Merah (standar ijazah/CPNS)</option><option value="#0054A6">🔵 Biru #0054A6 (standar berkas kampus)</option><option value="#FFFFFF">⚪ Putih</option><option value="">Biarkan Asli</option></select>')
+    + field("Zoom Foto", '<input id="pfZoom" type="range" min="80" max="220" value="100" class="w-full accent-brand-600">')
+    + field("Geser Vertikal", '<input id="pfOff" type="range" min="-40" max="40" value="0" class="w-full accent-brand-600">')
+    + field("Toleransi Ganti Background", '<input id="pfTol" type="range" min="8" max="90" value="34" class="w-full accent-brand-600">', "Geser bila tepi rambut/bahu ikut berubah atau latar belum bersih. Warna latar dideteksi otomatis dari sudut foto.")
+    + '</div><button class="' + BTN + '" onclick="prosesPasfoto()">🖼 Proses Pas Foto</button>'
+    + '<div class="mt-4 flex justify-center"><canvas id="pfCv" width="354" height="472" class="hidden rounded-lg shadow border border-slate-300 max-w-[280px] w-full"></canvas></div>'
+    + outBox("pfOut") + "</div>";
+};
+function pfLoad(input) {
+  const f = input.files && input.files[0]; if (!f) return;
+  fileToImage(f).then((img) => { pasfoto.img = img; toast("Foto dimuat — klik Proses Pas Foto 📸"); });
+}
+function prosesPasfoto() {
+  const out = $("#pfOut");
+  if (!pasfoto.img) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload foto dulu ya.</div>'; return; }
+  const [W, H] = $("#pfSize").value.split("x").map(Number);
+  const cv = $("#pfCv"); cv.width = W; cv.height = H; cv.classList.remove("hidden");
+  const zoom = Number($("#pfZoom").value) / 100, offY = Number($("#pfOff").value) / 100;
+  const img = pasfoto.img;
+  const base = Math.max(W / img.width, H / img.height) * zoom;
+  const dw = img.width * base, dh = img.height * base;
+  const dx = (W - dw) / 2, dy = (H - dh) / 2 + offY * H;
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#EEE"; ctx.fillRect(0, 0, W, H);
+  ctx.drawImage(img, dx, dy, dw, dh);
+  const target = $("#pfBg").value;
+  if (target) {
+    const data = ctx.getImageData(0, 0, W, H), d = data.data;
+    const corners = [[2, 2], [W - 3, 2], [2, H - 3], [W - 3, H - 3]].map(([x, y]) => { const i = (y * W + x) * 4; return [d[i], d[i + 1], d[i + 2]]; });
+    const bg = [0, 1, 2].map((c) => Math.round(corners.reduce((a, p) => a + p[c], 0) / 4));
+    pasfoto.bgColor = bg;
+    const tol = Number($("#pfTol").value);
+    const tc = [parseInt(target.slice(1, 3), 16), parseInt(target.slice(3, 5), 16), parseInt(target.slice(5, 7), 16)];
+    for (let i = 0; i < d.length; i += 4) {
+      const dist = Math.sqrt((d[i] - bg[0]) ** 2 + (d[i + 1] - bg[1]) ** 2 + (d[i + 2] - bg[2]) ** 2);
+      if (dist < tol) { d[i] = tc[0]; d[i + 1] = tc[1]; d[i + 2] = tc[2]; }
+      else if (dist < tol * 1.7) { const f = (dist - tol) / (tol * 0.7); d[i] = Math.round(tc[0] + (d[i] - tc[0]) * f); d[i + 1] = Math.round(tc[1] + (d[i + 1] - tc[1]) * f); d[i + 2] = Math.round(tc[2] + (d[i + 2] - tc[2]) * f); }
+    }
+    ctx.putImageData(data, 0, 0);
+  }
+  cv.toBlob((b) => { window._pasfotoPng = b; }, "image/png");
+  out.innerHTML = '<div class="' + OUT + '"><p class="text-sm mb-3">Pas foto ' + $("#pfSize").value.replace("x", "×") + ' px (setara cetakan 300 DPI) selesai. Warna latar terdeteksi: rgb(' + pasfoto.bgColor.join(", ") + '). Bila hasil belum bersih, sesuaikan Toleransi lalu proses ulang.</p>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="download(\'PasFoto.png\', window._pasfotoPng)">⬇️ Download PNG</button></div></div>';
+}
+
+;
+/* ---------- 38. TANDA TANGAN TRANSPARAN ---------- */
+let ttdImg = null;
+UI.k38 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Tanda Tangan di Kertas Putih", '<input id="ttFile" type="file" accept="image/*" class="' + IN + '" onchange="ttLoad(this)">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Warna Tinta", '<select id="ttWarna" class="' + IN + '"><option value="asli">Asli dari foto</option><option value="#0F172A">Hitam pekat</option><option value="#1E3A8A">Biru bolpoin</option></select>')
+    + field("Sensitivitas Penghapus Kertas", '<input id="ttSens" type="range" min="120" max="245" value="205" class="w-full accent-brand-600">', "Naikkan bila kertas masih terlihat abu-abu; turunkan bila goresan tipis ikut hilang.")
+    + '</div><button class="' + BTN + '" onclick="prosesTtd()">✍️ Buang Background Kertas</button>'
+    + '<div class="mt-4 rounded-xl border border-slate-300 overflow-hidden hidden" id="ttWrap" style="background:repeating-conic-gradient(#E2E8F0 0% 25%, #FFFFFF 0% 50%) 0 0/24px 24px"><canvas id="ttCv" class="w-full"></canvas></div>'
+    + outBox("ttOut") + "</div>";
+};
+function ttLoad(input) { const f = input.files && input.files[0]; if (!f) return; fileToImage(f).then((img) => { ttdImg = img; toast("Foto tanda tangan dimuat ✍️"); }); }
+function prosesTtd() {
+  const out = $("#ttOut");
+  if (!ttdImg) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload foto tanda tangan dulu ya.</div>'; return; }
+  const maxW = 1200, scale = Math.min(1, maxW / ttdImg.width);
+  const W = Math.round(ttdImg.width * scale), H = Math.round(ttdImg.height * scale);
+  const cv = $("#ttCv"); cv.width = W; cv.height = H;
+  $("#ttWrap").classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  ctx.drawImage(ttdImg, 0, 0, W, H);
+  const sens = Number($("#ttSens").value), mode = $("#ttWarna").value;
+  const data = ctx.getImageData(0, 0, W, H), d = data.data;
+  const ink = mode !== "asli" ? [parseInt(mode.slice(1, 3), 16), parseInt(mode.slice(3, 5), 16), parseInt(mode.slice(5, 7), 16)] : null;
+  for (let i = 0; i < d.length; i += 4) {
+    const lum = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+    let a = 0;
+    if (lum < sens - 70) a = 255;
+    else if (lum < sens) a = Math.round(255 * (sens - lum) / 70);
+    d[i + 3] = a;
+    if (ink && a > 0) { d[i] = ink[0]; d[i + 1] = ink[1]; d[i + 2] = ink[2]; }
+  }
+  ctx.putImageData(data, 0, 0);
+  cv.toBlob((b) => { window._ttdPng = b; }, "image/png");
+  out.innerHTML = '<div class="' + OUT + '"><p class="text-sm mb-3">Background kertas dibuang — hasilnya PNG transparan, siap ditempel di dokumen Word/PDF apa pun.</p>'
+    + '<button class="' + BTN + '" onclick="download(\'TandaTangan_Transparan.png\', window._ttdPng)">⬇️ Download PNG Transparan</button></div>';
+}
+
+;
+/* ---------- 39. GRID FOTO LAMPIRAN ---------- */
+let gridImgs = [];
+UI.k39 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Dokumentasi (bisa banyak)", '<input id="gfFile" type="file" accept="image/*" multiple class="' + IN + '" onchange="gfLoad(this)">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Judul Lampiran", '<input id="gfJud" class="' + IN + '" value="Lampiran Dokumentasi Kegiatan">')
+    + field("Jumlah Kolom", '<select id="gfKol" class="' + IN + '"><option value="2">2 kolom</option><option value="3" selected>3 kolom</option><option value="4">4 kolom</option></select>')
+    + '</div><div id="gfCaps" class="space-y-2 mb-3"></div>'
+    + '<button class="' + BTN + '" onclick="buatGrid()">🧩 Susun Grid Lampiran</button>'
+    + '<div class="mt-4 overflow-x-auto"><canvas id="gfCv" class="hidden w-full rounded-lg shadow border border-slate-200"></canvas></div>'
+    + outBox("gfOut") + "</div>";
+};
+function gfLoad(input) {
+  const files = [...(input.files || [])];
+  if (!files.length) return;
+  Promise.all(files.map(fileToImage)).then((imgs) => {
+    gridImgs = gridImgs.concat(imgs);
+    $("#gfCaps").innerHTML = gridImgs.map((_, i) => '<input class="' + IN + '" id="gfCap' + i + '" value="Dokumentasi ' + (i + 1) + '" placeholder="Keterangan foto ' + (i + 1) + '">').join("");
+    toast(gridImgs.length + " foto dimuat 🧩");
+  });
+}
+function buatGrid() {
+  const out = $("#gfOut");
+  if (gridImgs.length < 1) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload minimal 1 foto dulu ya.</div>'; return; }
+  const kol = Number($("#gfKol").value), W = 1260, pad = 24, gap = 16;
+  const cellW = (W - pad * 2 - gap * (kol - 1)) / kol, cellH = Math.round(cellW * 0.72), capH = 40;
+  const rows = Math.ceil(gridImgs.length / kol);
+  const H = 84 + rows * (cellH + capH + gap) + 46;
+  const cv = $("#gfCv"); cv.width = W; cv.height = H; cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#122B78"; ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
+  ctx.fillText($("#gfJud").value.trim(), W / 2, 52);
+  gridImgs.forEach((img, i) => {
+    const cx = pad + (i % kol) * (cellW + gap), cy = 84 + Math.floor(i / kol) * (cellH + capH + gap);
+    const s = Math.max(cellW / img.width, cellH / img.height);
+    ctx.save(); ctx.beginPath(); ctx.rect(cx, cy, cellW, cellH); ctx.clip();
+    ctx.drawImage(img, cx + (cellW - img.width * s) / 2, cy + (cellH - img.height * s) / 2, img.width * s, img.height * s);
+    ctx.restore();
+    ctx.strokeStyle = "#CBD5E1"; ctx.lineWidth = 1.5; ctx.strokeRect(cx, cy, cellW, cellH);
+    ctx.fillStyle = "#F1F5F9"; ctx.fillRect(cx, cy + cellH, cellW, capH);
+    ctx.fillStyle = "#334155"; ctx.font = "600 16px sans-serif";
+    const cap = ($("#gfCap" + i) ? $("#gfCap" + i).value : "Dokumentasi " + (i + 1));
+    ctx.fillText(cap, cx + cellW / 2, cy + cellH + 26);
+  });
+  ctx.font = "13px sans-serif"; ctx.fillStyle = "#94A3B8";
+  ctx.fillText("Lampiran disusun dengan MahasiswaTools • Dari Mahasiswa, Untuk Mahasiswa", W / 2, H - 14);
+  cv.toBlob((b) => { window._gridJpg = b; download("Grid_Lampiran_Dokumentasi.png", b); }, "image/png");
+  out.innerHTML = '<div class="' + OUT + '">' + gridImgs.length + ' foto tersusun dalam grid ' + kol + ' kolom — file otomatis terunduh. Klik "Susun Grid" lagi bila mengubah keterangan.</div>';
+}
+
+;
+/* ---------- 40. TIMESTAMP & GEOTAG FOTO ---------- */
+let tsImg = null;
+UI.k40 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Tugas Lapangan", '<input id="tsFile" type="file" accept="image/*" class="' + IN + '" onchange="tsLoad(this)">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Tanggal & Jam", '<input id="tsWaktu" type="datetime-local" class="' + IN + '">')
+    + field("Lokasi / Koordinat", '<input id="tsLok" class="' + IN + '" placeholder="cth: Balai Desa Sukamaju, Kec. Ilir Timur (-2.97, 104.77)">')
+    + field("Posisi Tulisan", '<select id="tsPos" class="' + IN + '"><option value="strip">Strip hitam di bawah foto</option><option value="kiri">Teks kiri bawah</option><option value="kanan">Teks kanan bawah</option></select>')
+    + field("Ukuran Teks", '<input id="tsUk" type="range" min="14" max="54" value="30" class="w-full accent-brand-600">')
+    + '</div><button class="' + BTN + '" onclick="buatTimestamp()">🕒 Tempel Timestamp</button>'
+    + '<div class="mt-4 overflow-x-auto"><canvas id="tsCv" class="hidden w-full rounded-lg shadow border border-slate-200"></canvas></div>'
+    + outBox("tsOut") + "</div>";
+  const now = new Date(); now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+  $("#tsWaktu").value = now.toISOString().slice(0, 16);
+};
+function tsLoad(input) { const f = input.files && input.files[0]; if (!f) return; fileToImage(f).then((img) => { tsImg = img; toast("Foto dimuat 🕒"); }); }
+function buatTimestamp() {
+  const out = $("#tsOut");
+  if (!tsImg) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload foto dulu ya.</div>'; return; }
+  const W = Math.min(1400, tsImg.width), H = Math.round(tsImg.height * W / tsImg.width);
+  const fs = Number($("#tsUk").value), pos = $("#tsPos").value;
+  const stripH = pos === "strip" ? fs * 2.7 : 0;
+  const cv = $("#tsCv"); cv.width = W; cv.height = H + stripH; cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  ctx.drawImage(tsImg, 0, 0, W, H);
+  const dt = new Date($("#tsWaktu").value);
+  const tgl = dt.toLocaleDateString("id-ID", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) + " • " + dt.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }).replace(".", ":") + " WIB";
+  const lines = ["🕒 " + tgl]; if ($("#tsLok").value.trim()) lines.push("📍 " + $("#tsLok").value.trim());
+  ctx.font = "600 " + fs + "px sans-serif";
+  if (pos === "strip") {
+    ctx.fillStyle = "rgba(10,10,10,0.92)"; ctx.fillRect(0, H, W, stripH);
+    ctx.fillStyle = "#FACC15"; ctx.textAlign = "left";
+    lines.forEach((l, i) => ctx.fillText(l, 18, H + fs * 1.25 + i * fs * 1.35));
+    ctx.fillStyle = "#94A3B8"; ctx.font = "500 " + Math.round(fs * 0.52) + "px sans-serif"; ctx.textAlign = "right";
+    ctx.fillText("via MahasiswaTools", W - 16, H + stripH - 12);
+  } else {
+    ctx.textAlign = pos === "kiri" ? "left" : "right";
+    const tx = pos === "kiri" ? 16 : W - 16;
+    lines.forEach((l, i) => {
+      const y = H - (lines.length - i) * fs * 1.35 - 10;
+      ctx.lineWidth = fs / 6; ctx.strokeStyle = "rgba(0,0,0,0.75)"; ctx.strokeText(l, tx, y);
+      ctx.fillStyle = "#FACC15"; ctx.fillText(l, tx, y);
+    });
+  }
+  cv.toBlob((b) => { window._tsJpg = b; }, "image/jpeg", 0.92);
+  out.innerHTML = '<div class="' + OUT + '"><button class="' + BTN + '" onclick="download(\'Foto_Timestamp.jpg\', window._tsJpg)">⬇️ Download Foto Ber-timestamp (JPG)</button></div>';
+}
+
+;
+
+/* ============================================================
+   TOOLS 41–45 (Dokumen lanjutan & Karier)
+   ============================================================ */
+;
+/* ---------- 41. QR CODE GENERATOR ---------- */
+UI.k41 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Link / Teks Tujuan", '<input id="qrTxt" class="' + IN + '" value="https://forms.gle/contoh-kuesioner" placeholder="cth: link Google Form kuesionermu">')
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Ukuran Unduhan", '<select id="qrSize" class="' + IN + '"><option value="512">512 px</option><option value="1024" selected>1024 px</option><option value="2048">2048 px</option></select>')
+    + field("Ketahanan Rusak (ECC)", '<select id="qrEcc" class="' + IN + '"><option value="M">M — 15%</option><option value="Q">Q — 25%</option><option value="H" selected>H — 30% (paling awet)</option></select>')
+    + field("Warna Modul", '<input id="qrWarna" type="color" value="#122B78" class="w-full h-[46px] rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 px-1">')
+    + '</div>'
+    + field("Label di Bawah QR (opsional)", '<input id="qrLabel" class="' + IN + '" placeholder="cth: Scan untuk isi kuesioner penelitian saya 🙏">')
+    + field("Logo di Tengah QR (opsional, khusus ECC Q/H)", '<input id="qrLogo" type="file" accept="image/*" class="' + IN + '" onchange="qrLogoLoad(this)">')
+    + '<button class="' + BTN + '" onclick="buatQr()">🔳 Generate QR Code</button>'
+    + '<div class="mt-4 flex justify-center"><canvas id="qrCv" class="hidden rounded-lg shadow border border-slate-200 max-w-[320px] w-full bg-white"></canvas></div>'
+    + outBox("qrOut") + "</div>";
+};
+async function buatQr() {
+  const out = $("#qrOut");
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js", "qrcode");
+  if (!ok || typeof qrcode !== "function") { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library QR gagal dimuat — butuh internet sekali, coba lagi.</div>'; return; }
+  const txt = $("#qrTxt").value.trim();
+  if (!txt) { toast("Isi link/teks tujuan dulu."); return; }
+  try {
+    const qr = qrcode(0, $("#qrEcc").value);
+    qr.addData(txt); qr.make();
+    window._qrModules = qr.getModuleCount();
+    const size = Number($("#qrSize").value), label = $("#qrLabel").value.trim();
+    const quiet = 4, count = qr.getModuleCount();
+    const cell = Math.floor(size / (count + quiet * 2));
+    const qrPx = cell * (count + quiet * 2);
+    const labelH = label ? Math.round(size * 0.11) : 0;
+    const cv = $("#qrCv"); cv.width = qrPx; cv.height = qrPx + labelH; cv.classList.remove("hidden");
+    const ctx = cv.getContext("2d");
+    ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, cv.width, cv.height);
+    ctx.fillStyle = $("#qrWarna").value;
+    for (let r = 0; r < count; r++) for (let c = 0; c < count; c++) if (qr.isDark(r, c)) ctx.fillRect((c + quiet) * cell, (r + quiet) * cell, cell, cell);
+    if (window._qrLogoImg) { const ls = Math.round(qrPx * 0.22); const lx = (qrPx - ls) / 2; ctx.fillStyle = "#FFFFFF"; roundRect(ctx, lx - 8, lx - 8, ls + 16, ls + 16, 14); ctx.fill(); const li = window._qrLogoImg; const sc = Math.max(ls / li.width, ls / li.height); ctx.save(); ctx.beginPath(); ctx.rect(lx, lx, ls, ls); ctx.clip(); ctx.drawImage(li, lx + (ls - li.width * sc) / 2, lx + (ls - li.height * sc) / 2, li.width * sc, li.height * sc); ctx.restore(); }
+    if (label) { ctx.fillStyle = "#0F172A"; ctx.font = "700 " + Math.round(size * 0.042) + "px sans-serif"; ctx.textAlign = "center"; ctx.fillText(label, qrPx / 2, qrPx + labelH * 0.62); }
+    cv.toBlob((b) => { window._qrPng = b; }, "image/png");
+    out.innerHTML = '<div class="' + OUT + '"><p class="text-sm mb-3">QR ' + count + "×" + count + ' modul, level koreksi ' + $("#qrEcc").value + ' — permanen selama link tujuan tidak berubah. Cetak besar untuk poster/banner kuesioner.</p>'
+      + '<button class="' + BTN + '" onclick="download(\'QR_Code_Kuesioner.png\', window._qrPng)">⬇️ Download QR (PNG)</button></div>';
+  } catch (e) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Teks terlalu panjang untuk satu QR. Singkat link-nya (pakai pemendek URL) lalu coba lagi.</div>'; }
+}
+
+;
+/* ---------- 42. OCR GAMBAR KE TEKS ---------- */
+let ocrImg = null;
+UI.k42 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto/Scan Catatan atau Halaman Buku", '<input id="ocFile" type="file" accept="image/*" class="' + IN + '" onchange="ocLoad(this)">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Bahasa Dokumen", '<select id="ocLang" class="' + IN + '"><option value="ind">🇮🇩 Bahasa Indonesia</option><option value="eng">🇬🇧 English</option></select>')
+    + '<div class="flex items-end pb-4"><button class="' + BTN + '" onclick="prosesOcr()">🔍 Jalankan OCR</button></div></div>'
+    + '<p id="ocStat" class="text-sm font-semibold text-slate-500 mb-2"></p>'
+    + '<div class="w-full h-2.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-4 hidden" id="ocBarWrap"><div id="ocBar" class="h-full bg-brand-600 transition-all" style="width:0%"></div></div>'
+    + outBox("ocOut") + "</div>";
+};
+function ocLoad(input) { const f = input.files && input.files[0]; if (!f) return; ocrImg = f; toast("Gambar dimuat — klik Jalankan OCR 🔍"); }
+async function prosesOcr() {
+  const stat = $("#ocStat"), out = $("#ocOut");
+  if (!ocrImg) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload gambar dulu ya.</div>'; return; }
+  stat.textContent = "⏳ Memuat mesin OCR (Tesseract)…";
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js", "Tesseract");
+  if (!ok) { stat.textContent = "❌ Mesin OCR gagal dimuat (butuh internet untuk unduh pertama)."; return; }
+  $("#ocBarWrap").classList.remove("hidden");
+  const opts = Object.assign({ logger: (m) => { if (m.status === "recognizing text") { $("#ocBar").style.width = Math.round(m.progress * 100) + "%"; stat.textContent = "🔍 Membaca teks… " + Math.round(m.progress * 100) + "%"; } else stat.textContent = "⚙️ " + m.status + "…"; } }, window.__MT_TESS_OPTS || {});
+  let worker = null;
+  try {
+    worker = await Tesseract.createWorker($("#ocLang").value, 1, opts);
+    const { data } = await worker.recognize(ocrImg);
+    window._ocrText = data.text.trim();
+    stat.textContent = "✅ OCR selesai — " + (window._ocrText ? window._ocrText.split(/\s+/).length : 0) + " kata terbaca (keyakinan mesin ±" + Math.round(data.confidence) + "%). Periksa ejaan sebelum dipakai ya.";
+    out.innerHTML = '<div class="' + OUT + '">' + field("Hasil Teks (bisa diedit)", '<textarea id="ocHasil" rows="11" class="' + IN + '">' + esc(window._ocrText) + "</textarea>")
+      + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="copyText(document.getElementById(\'ocHasil\').value)">📋 Copy Teks</button>'
+      + '<button class="' + BTN2 + '" onclick="download(\'Hasil_OCR.txt\', document.getElementById(\'ocHasil\').value)">⬇️ Download .txt</button></div></div>';
+  } catch (e) { stat.textContent = "❌ OCR gagal: " + e.message; }
+  finally { if (worker) try { await worker.terminate(); } catch (e) {} }
+}
+
+;
+/* ---------- 43. PENGGABUNG & PEMISAH PDF ---------- */
+let pdfMergeFiles = [], pdfSplitFile = null;
+UI.k43 = function (el) {
+  el.innerHTML = '<div class="fadein"><h4 class="font-extrabold text-base mb-2">🔗 Gabung Beberapa PDF Jadi Satu</h4>'
+    + field("Pilih File PDF (bisa banyak, urutan sesuai pilihan)", '<input id="pmFile" type="file" accept="application/pdf" multiple class="' + IN + '" onchange="pmLoad(this)">')
+    + '<div id="pmList" class="text-sm space-y-1 mb-3"></div>'
+    + '<button class="' + BTN + '" onclick="gabungPdf()">Gabungkan PDF</button> <span id="pmStat" class="text-sm text-slate-500"></span>'
+    + '<hr class="my-6 border-slate-200 dark:border-slate-700">'
+    + '<h4 class="font-extrabold text-base mb-2">✂️ Ambil Halaman Tertentu dari PDF</h4>'
+    + field("Pilih Satu File PDF", '<input id="psFile" type="file" accept="application/pdf" class="' + IN + '" onchange="psLoad(this)">')
+    + '<p id="psInfo" class="text-sm font-semibold text-slate-500 mb-2"></p>'
+    + field("Rentang Halaman", '<input id="psRange" class="' + IN + '" placeholder="cth: 1-3,5,8">', "Format: halaman tunggal (5), rentang (1-3), atau gabungan dipisah koma (1-3,5).")
+    + '<button class="' + BTN + '" onclick="pisahPdf()">Pisahkan Halaman</button> <span id="psStat" class="text-sm text-slate-500"></span></div>';
+};
+async function pmLoad(input) {
+  pdfMergeFiles = [];
+  for (const f of [...(input.files || [])]) pdfMergeFiles.push({ name: f.name, bytes: await f.arrayBuffer() });
+  $("#pmList").innerHTML = pdfMergeFiles.map((f, i) => "<div>📄 " + (i + 1) + ". " + esc(f.name) + " (" + (f.bytes.byteLength / 1024).toFixed(0) + " KB)</div>").join("");
+}
+async function gabungPdf() {
+  const stat = $("#pmStat");
+  if (pdfMergeFiles.length < 2) { stat.textContent = "⚠️ Pilih minimal 2 file PDF."; return; }
+  if (!await loadPdfLib()) { stat.textContent = "❌ Library PDF gagal dimuat."; return; }
+  stat.textContent = "⏳ Menggabungkan…";
+  try {
+    const merged = await PDFLib.PDFDocument.create();
+    let total = 0;
+    for (const f of pdfMergeFiles) {
+      const src = await PDFLib.PDFDocument.load(f.bytes.slice(0));
+      const pages = await merged.copyPages(src, src.getPageIndices());
+      pages.forEach((p) => merged.addPage(p));
+      total += src.getPageCount();
+    }
+    const bytes = await merged.save();
+    window._pdfMerged = new Blob([bytes], { type: "application/pdf" });
+    window._pdfMergedPages = total;
+    stat.textContent = "✅ " + pdfMergeFiles.length + " file → " + total + " halaman (" + (bytes.length / 1024).toFixed(0) + " KB).";
+    download("PDF_Tergabung.pdf", window._pdfMerged);
+  } catch (e) { stat.textContent = "❌ Gagal: " + e.message + " (pastikan file benar-benar PDF & tidak terproteksi password)."; }
+}
+async function psLoad(input) {
+  const f = input.files && input.files[0]; if (!f) return;
+  pdfSplitFile = { name: f.name, bytes: await f.arrayBuffer() };
+  if (!await loadPdfLib()) { $("#psInfo").textContent = "❌ Library PDF gagal dimuat."; return; }
+  try { const doc = await PDFLib.PDFDocument.load(pdfSplitFile.bytes.slice(0)); pdfSplitFile.pages = doc.getPageCount(); $("#psInfo").textContent = "📄 " + f.name + " — total " + pdfSplitFile.pages + " halaman."; }
+  catch (e) { $("#psInfo").textContent = "❌ File tidak bisa dibaca: " + e.message; }
+}
+async function pisahPdf() {
+  const stat = $("#psStat");
+  if (!pdfSplitFile || !pdfSplitFile.pages) { stat.textContent = "⚠️ Pilih file PDF dulu."; return; }
+  const spec = $("#psRange").value.trim();
+  const idx = [];
+  try {
+    spec.split(",").map((s) => s.trim()).filter(Boolean).forEach((part) => {
+      if (part.includes("-")) { const [a, b] = part.split("-").map(Number); for (let p = a; p <= b; p++) idx.push(p - 1); }
+      else idx.push(Number(part) - 1);
+    });
+  } catch (e) {}
+  const valid = [...new Set(idx)].filter((i) => i >= 0 && i < pdfSplitFile.pages).sort((a, b) => a - b);
+  if (!valid.length) { stat.textContent = "⚠️ Rentang tidak valid untuk PDF " + pdfSplitFile.pages + " halaman."; return; }
+  try {
+    const src = await PDFLib.PDFDocument.load(pdfSplitFile.bytes.slice(0));
+    const out = await PDFLib.PDFDocument.create();
+    const pages = await out.copyPages(src, valid);
+    pages.forEach((p) => out.addPage(p));
+    const bytes = await out.save();
+    window._pdfSplit = new Blob([bytes], { type: "application/pdf" });
+    window._pdfSplitPages = valid.length;
+    stat.textContent = "✅ " + valid.length + " halaman diambil (" + (bytes.length / 1024).toFixed(0) + " KB).";
+    download("PDF_Halaman_Terpilih.pdf", window._pdfSplit);
+  } catch (e) { stat.textContent = "❌ Gagal: " + e.message; }
+}
+
+;
+/* ---------- 44. KOMPRESOR FILE KAMPUS ---------- */
+let kompFile = null;
+UI.k44 = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Gambar, PDF, atau DOCX", '<input id="kfFile" type="file" accept="image/*,application/pdf,.docx" class="' + IN + '" onchange="kfLoad(this)">')
+    + '<p id="kfInfo" class="text-sm font-semibold text-slate-500 mb-3"></p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Kualitas Gambar", '<input id="kfQ" type="range" min="30" max="92" value="68" class="w-full accent-brand-600">', "Lebih rendah = file lebih kecil (untuk foto biasanya 60–75 sudah cukup tajam).")
+    + field("Lebar Maksimum (px)", '<select id="kfW" class="' + IN + '"><option value="0">Asli</option><option value="1920">1920</option><option value="1280" selected>1280</option><option value="800">800</option></select>')
+    + '</div><button class="' + BTN + '" onclick="kompresFile()">🗜 Kompres Sekarang</button>' + outBox("kfOut") + "</div>";
+};
+function kfLoad(input) { const f = input.files && input.files[0]; if (!f) return; kompFile = f; $("#kfInfo").textContent = "📁 " + f.name + " — ukuran awal " + (f.size / 1024).toFixed(0) + " KB (" + (f.type || "file") + ")."; }
+async function kompresFile() {
+  const out = $("#kfOut");
+  if (!kompFile) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Upload file dulu ya.</div>'; return; }
+  const before = kompFile.size;
+  const resultRow = (after, blob, name) => {
+    const pct = Math.max(0, Math.round((1 - after / before) * 100));
+    window._kompresBlob = blob;
+    out.innerHTML = '<div class="' + OUT + '"><div class="grid grid-cols-3 gap-3 text-center mb-3">'
+      + '<div class="rounded-lg bg-white dark:bg-slate-900 p-3"><div class="font-extrabold">' + (before / 1024).toFixed(0) + ' KB</div><div class="text-xs text-slate-500">Sebelum</div></div>'
+      + '<div class="rounded-lg bg-white dark:bg-slate-900 p-3"><div class="font-extrabold text-emerald-600">' + (after / 1024).toFixed(0) + ' KB</div><div class="text-xs text-slate-500">Sesudah</div></div>'
+      + '<div class="rounded-lg bg-white dark:bg-slate-900 p-3"><div class="font-extrabold text-brand-600">' + pct + '%</div><div class="text-xs text-slate-500">Lebih kecil</div></div></div>'
+      + '<button class="' + BTN + '" onclick="download(\'' + name + '\', window._kompresBlob)">⬇️ Download Hasil Kompresi</button></div>';
+  };
+  if (kompFile.type.startsWith("image/")) {
+    const img = await fileToImage(kompFile);
+    const maxW = Number($("#kfW").value);
+    const scale = maxW && img.width > maxW ? maxW / img.width : 1;
+    const cv = document.createElement("canvas");
+    cv.width = Math.round(img.width * scale); cv.height = Math.round(img.height * scale);
+    const ctx = cv.getContext("2d"); ctx.fillStyle = "#FFF"; ctx.fillRect(0, 0, cv.width, cv.height); ctx.drawImage(img, 0, 0, cv.width, cv.height);
+    cv.toBlob((b) => resultRow(b.size, b, "Foto_Terkompres.jpg"), "image/jpeg", Number($("#kfQ").value) / 100);
+  } else if (kompFile.type === "application/pdf" || kompFile.name.toLowerCase().endsWith(".pdf")) {
+    if (!await loadPdfLib()) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library PDF gagal dimuat.</div>'; return; }
+    try {
+      const doc = await PDFLib.PDFDocument.load(await kompFile.arrayBuffer());
+      const bytes = await doc.save({ useCompression: true });
+      resultRow(bytes.length, new Blob([bytes], { type: "application/pdf" }), "PDF_Terkompres.pdf");
+    } catch (e) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ PDF gagal diproses: ' + esc(e.message) + "</div>"; }
+  } else if (kompFile.name.toLowerCase().endsWith(".docx")) {
+    const okZ = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+    if (!okZ) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library ZIP gagal dimuat.</div>'; return; }
+    try {
+      const zip = await JSZip.loadAsync(await kompFile.arrayBuffer());
+      const bytes = await zip.generateAsync({ type: "uint8array", compression: "DEFLATE", compressionOptions: { level: 9 } });
+      resultRow(bytes.length, new Blob([bytes], { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" }), "File_Terkompres.docx");
+    } catch (e) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ DOCX gagal diproses: ' + esc(e.message) + "</div>"; }
+  } else out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Format belum didukung — pakai gambar JPG/PNG atau PDF ya.</div>';
+}
+
+;
+/* ---------- 48. KONVERTER GAMBAR KE PDF ---------- */
+let imgPdfFiles = [];
+UI.imgpdf = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload Foto Dokumen (bisa banyak, urutan = urutan halaman)", '<input id="ipFile" type="file" accept="image/*" multiple class="' + IN + '" onchange="ipLoad(this)">')
+    + '<div id="ipList" class="text-sm space-y-1 mb-3"></div>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Ukuran Halaman", '<select id="ipSize" class="' + IN + '"><option value="a4">A4 (210×297 mm)</option><option value="f4">F4/Folio (210×330 mm)</option><option value="asli">Ikuti ukuran gambar</option></select>')
+    + field("Margin Halaman", '<select id="ipMargin" class="' + IN + '"><option value="36">Normal (12,7 mm)</option><option value="18">Tipis (6,4 mm)</option><option value="0">Tanpa margin (penuh)</option></select>')
+    + '</div><button class="' + BTN + '" onclick="buatImgPdf()">🖨️ Buat PDF dari Gambar</button> <span id="ipStat" class="text-sm text-slate-500"></span></div>';
+};
+async function ipLoad(input) {
+  imgPdfFiles = [];
+  for (const f of [...(input.files || [])]) imgPdfFiles.push(f);
+  $("#ipList").innerHTML = imgPdfFiles.map((f, i) => "<div>🖼️ " + (i + 1) + ". " + esc(f.name) + " (" + (f.size / 1024).toFixed(0) + " KB)</div>").join("");
+}
+async function buatImgPdf() {
+  const stat = $("#ipStat");
+  if (!imgPdfFiles.length) { stat.textContent = "⚠️ Pilih gambar dulu ya."; return; }
+  if (!await loadPdfLib()) { stat.textContent = "❌ Library PDF gagal dimuat."; return; }
+  stat.textContent = "⏳ Menyusun PDF…";
+  try {
+    const doc = await PDFLib.PDFDocument.create();
+    const sizes = { a4: [595.28, 841.89], f4: [595.28, 935.43] };
+    for (const f of imgPdfFiles) {
+      const img = await fileToImage(f);
+      const cv = document.createElement("canvas");
+      cv.width = img.width; cv.height = img.height;
+      cv.getContext("2d").drawImage(img, 0, 0);
+      const pngBlob = await canvasBlob(cv);
+      const pngBytes = await pngBlob.arrayBuffer();
+      const embedded = await doc.embedPng(pngBytes);
+      const mode = $("#ipSize").value, margin = Number($("#ipMargin").value);
+      let pw, ph;
+      if (mode === "asli") { const s = Math.min(1, 595.28 / img.width); pw = img.width * s; ph = img.height * s; }
+      else [pw, ph] = sizes[mode];
+      const page = doc.addPage([pw, ph]);
+      const availW = pw - margin * 2, availH = ph - margin * 2;
+      const scale = Math.min(availW / img.width, availH / img.height);
+      const w = img.width * scale, h = img.height * scale;
+      page.drawImage(embedded, { x: (pw - w) / 2, y: (ph - h) / 2, width: w, height: h });
+    }
+    const bytes = await doc.save();
+    window._imgPdf = new Blob([bytes], { type: "application/pdf" });
+    window._imgPdfPages = doc.getPageCount();
+    stat.textContent = "✅ PDF jadi: " + doc.getPageCount() + " halaman, " + (bytes.length / 1024).toFixed(0) + " KB.";
+    download("Gambar_ke_PDF.pdf", window._imgPdf);
+  } catch (e) { stat.textContent = "❌ Gagal: " + e.message; }
+}
+
+;
+/* ---------- 49. EKSTRAK HALAMAN PDF (UI mandiri, mesin sama dengan k43) ---------- */
+UI.splitpdf = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Ambil hanya halaman yang kamu butuhkan dari PDF besar — misalnya lembar pengesahan saja dari file skripsi utuh.</p>'
+    + field("Pilih Satu File PDF", '<input id="psFile" type="file" accept="application/pdf" class="' + IN + '" onchange="psLoad(this)">')
+    + '<p id="psInfo" class="text-sm font-semibold text-slate-500 mb-2"></p>'
+    + field("Rentang Halaman", '<input id="psRange" class="' + IN + '" placeholder="cth: 1-3,5,8">', "Format: halaman tunggal (5), rentang (1-3), atau gabungan dipisah koma (1-3,5).")
+    + '<button class="' + BTN + '" onclick="pisahPdf()">✂️ Ekstrak Halaman</button> <span id="psStat" class="text-sm text-slate-500"></span></div>';
+};
+
+;
+UI.pdfstamp = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Upload PDF", '<input id="psFile" type="file" accept="application/pdf" class="' + IN + '">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Posisi Nomor Halaman", '<select id="psPos" class="' + IN + '"><option value="bc">Bawah — Tengah</option><option value="br">Bawah — Kanan</option><option value="bl">Bawah — Kiri</option><option value="tr">Atas — Kanan</option><option value="tc">Atas — Tengah</option></select>')
+    + field("Format Nomor", '<select id="psFmt" class="' + IN + '"><option value="n">1, 2, 3 …</option><option value="hal">Halaman 1</option><option value="dari">1 dari N</option><option value="strip">— 1 —</option></select>')
+    + field("Mulai dari Nomor", '<input id="psMulai" type="number" class="' + IN + '" value="1">')
+    + field("Lewati Halaman Pertama (cover tanpa nomor)", '<select id="psSkip" class="' + IN + '"><option value="1">Ya, lewati halaman 1</option><option value="0">Tidak, beri nomor semua</option></select>')
+    + field("Teks Watermark (kosongkan bila tidak perlu)", '<input id="psWm" class="' + IN + '" placeholder="cth: DRAFT / Nama Kamu / RAHASIA">')
+    + field("Ukuran Watermark", '<input id="psWmSize" type="range" min="30" max="120" value="64" class="w-full">')
+    + field("Kepekatan Watermark (opacity)", '<input id="psWmOp" type="range" min="5" max="40" value="14" class="w-full">')
+    + "</div>"
+    + '<button class="' + BTN + '" onclick="prosesStamp()">🔢 Proses & Download PDF</button> <span id="psStat" class="text-sm text-slate-500"></span>'
+    + '<p class="text-xs text-slate-500 mt-2">Seluruh proses berjalan lokal di browser — file PDF-mu tidak diunggah ke server mana pun.</p>'
+    + "</div>";
+};
+function labelHalaman(i, total, fmt, mulai) {
+  const n = mulai + i;
+  switch (fmt) { case "hal": return "Halaman " + n; case "dari": return n + " dari " + (mulai + total - 1); case "strip": return "— " + n + " —"; default: return String(n); }
+}
+async function stampPdfBytes(bytes, opts) {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok || typeof PDFLib === "undefined") throw new Error("Library PDF gagal dimuat (butuh internet sekali).");
+  const doc = await PDFLib.PDFDocument.load(bytes);
+  const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+  const pages = doc.getPages();
+  const total = pages.length;
+  pages.forEach((page, i) => {
+    const { width, height } = page.getSize();
+    if (opts.wm) {
+      const tw = font.widthOfTextAtSize(opts.wm, opts.wmSize);
+      page.drawText(opts.wm, { x: (width - tw) / 2, y: height / 2 - opts.wmSize / 3, size: opts.wmSize, font, color: PDFLib.rgb(0.55, 0.55, 0.55), opacity: opts.wmOp, rotate: PDFLib.degrees(-38) });
+    }
+    const skip = opts.skipFirst && i === 0;
+    if (!skip) {
+      const label = labelHalaman(opts.skipFirst ? i - 1 : i, opts.skipFirst ? total - 1 : total, opts.fmt, opts.mulai);
+      const tw = font.widthOfTextAtSize(label, 10.5);
+      let x = (width - tw) / 2, y = 26;
+      if (opts.pos === "br") { x = width - 48 - tw; }
+      if (opts.pos === "bl") { x = 48; }
+      if (opts.pos === "tr") { x = width - 48 - tw; y = height - 30; }
+      if (opts.pos === "tc") { y = height - 30; }
+      page.drawText(label, { x, y, size: 10.5, font, color: PDFLib.rgb(0.25, 0.25, 0.25) });
+    }
+  });
+  return await doc.save();
+}
+async function prosesStamp() {
+  const stat = $("#psStat");
+  const f = $("#psFile").files && $("#psFile").files[0];
+  if (!f) { stat.textContent = "⚠️ Pilih file PDF dulu."; return; }
+  stat.textContent = "⏳ Memproses…";
+  try {
+    const bytes = await f.arrayBuffer();
+    const out = await stampPdfBytes(bytes, {
+      pos: $("#psPos").value, fmt: $("#psFmt").value, mulai: Number($("#psMulai").value) || 1,
+      skipFirst: $("#psSkip").value === "1",
+      wm: $("#psWm").value.trim(), wmSize: Number($("#psWmSize").value) || 64, wmOp: (Number($("#psWmOp").value) || 14) / 100
+    });
+    window._lastStamp = out;
+    const blob = new Blob([out], { type: "application/pdf" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob); a.download = "MahasiswaTools_" + f.name.replace(/\.pdf$/i, "") + "_bernomor.pdf";
+    document.body.appendChild(a); a.click(); a.remove();
+    stat.textContent = "✅ Selesai! PDF bernomor" + ($("#psWm").value.trim() ? " + watermark" : "") + " terunduh.";
+  } catch (e) { stat.textContent = "❌ " + e.message; }
+}
+
+;
+
+
+/* ============================================================
+   TOOL 79 — KALKULATOR TARGET NILAI MATA KULIAH
+   ============================================================ */

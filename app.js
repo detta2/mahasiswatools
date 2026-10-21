@@ -157,7 +157,7 @@ function renderTabs() {
     return '<button onclick="setCat(\'' + c.k + '\')" class="shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition border ' + (on ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" : "bg-white dark:bg-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600") + '">' + c.n + ' <span class="opacity-70 font-semibold">' + count + "</span></button>";
   }).join("");
 }
-function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); }
+function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); if (typeof loadCat === "function" && CATNAME[k]) loadCat(k); }
 const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 
@@ -273,7 +273,30 @@ function openTool(id) {
   pushRecent(id);
   $("#wsIcon").textContent = monoOf(t); $("#wsTitle").textContent = t.n; $("#wsDesc").textContent = t.d;
   syncWsFav();
-  const body = $("#wsBody");
+  const showPanel = () => {
+    $("#wsWrap").classList.remove("hidden");
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    document.body.style.overflow = "hidden";
+    const p = $("#wsPanel"); p.style.opacity = "0"; p.style.transform = "translateY(14px)";
+    requestAnimationFrame(() => { p.style.opacity = "1"; p.style.transform = "none"; });
+  };
+  if (t.aktif && !UI[id] && typeof loadCat === "function") {
+    const body = $("#wsBody");
+    body.innerHTML = '<div class="text-center py-10 fadein"><div class="text-4xl mb-3 animate-pulse">⏳</div><p class="font-bold text-sm">Memuat tool…</p><p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">Partisi kategori ini dimuat sekali saja — berikutnya instan.</p></div>';
+    showPanel();
+    loadCat(t.c).then((ok) => {
+      if (curTool !== id) return;
+      if (ok) fillToolBody(id);
+      else body.innerHTML = '<div class="text-center py-8 fadein"><p class="font-bold">⚠️ Gagal memuat tool.</p><p class="text-sm text-slate-500 dark:text-slate-400 mt-2">Periksa koneksi internetmu, lalu tutup dan buka lagi tool ini.</p></div>';
+    });
+    return;
+  }
+  fillToolBody(id);
+  showPanel();
+}
+function fillToolBody(id) {
+  const t = TOOLS.find((x) => x.id === id); if (!t) return;
+  const body = $("#wsBody"); if (!body) return;
   if (t.aktif && UI[id]) UI[id](body);
   else {
     body.innerHTML = '<div class="text-center py-8 fadein"><div class="text-6xl mb-4">' + t.i + '</div>'
@@ -282,11 +305,6 @@ function openTool(id) {
       + '<p class="mt-3 text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Tool ini sudah terdaftar resmi di katalog MahasiswaTools dan akan diaktifkan pada tahap pengembangan berikutnya. Pin ke favorit agar tidak ketinggalan saat rilis.</p>'
       + '<button class="mt-6 ' + BTN + '" onclick="toggleFav(\'' + t.id + '\')">' + (favs.has(t.id) ? "★ Sudah di Favorit" : "⭐ Pin ke Favorit Saya") + "</button></div>";
   }
-  $("#wsWrap").classList.remove("hidden");
-  try { history.replaceState(null, "", "#" + id); } catch (e) {}
-  document.body.style.overflow = "hidden";
-  const p = $("#wsPanel"); p.style.opacity = "0"; p.style.transform = "translateY(14px)";
-  requestAnimationFrame(() => { p.style.opacity = "1"; p.style.transform = "none"; });
 }
 function syncWsFav() { $("#wsFav").textContent = favs.has(curTool) ? "★" : "☆"; $("#wsFav").style.color = favs.has(curTool) ? "#F59E0B" : ""; }
 const _wf = $("#wsFav"); if (_wf) _wf.addEventListener("click", () => { if (curTool) toggleFav(curTool); });
@@ -327,6 +345,221 @@ function pearson(x, y) {
 function tCrit975(df) { const z = 1.959964; return z + (z ** 3 + z) / (4 * df) + (5 * z ** 5 + 16 * z ** 3 + 3 * z) / (96 * df * df); }
 function rCrit(n) { const df = n - 2; if (df < 1) return 1; const t = tCrit975(df); return t / Math.sqrt(t * t + df); }
 const f3 = (x) => (Math.round(x * 1000) / 1000).toFixed(3).replace(".", ",");
+
+/* ============================================================
+   HELPER BERSAMA LINTAS KATEGORI (wajib di core, bukan partisi)
+   ============================================================ */
+const _libs = {};
+function loadLib(url, globalName) {
+  if (window[globalName]) return Promise.resolve(true);
+  if (_libs[url]) return _libs[url];
+  _libs[url] = new Promise((res) => {
+    const s = document.createElement("script"); s.src = url;
+    s.onload = () => res(!!window[globalName]);
+    s.onerror = () => res(false);
+    document.head.appendChild(s);
+  });
+  return _libs[url];
+}
+const xe = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+function alphaOf(data) {
+  const n = data.length, k = data[0].length;
+  const totals = data.map((r) => r.reduce((a, b) => a + b, 0));
+  let sumItemVar = 0;
+  for (let j = 0; j < k; j++) { const col = data.map((r) => r[j]); const m = mean(col); sumItemVar += col.reduce((a, v) => a + (v - m) ** 2, 0) / (n - 1); }
+  const mt = mean(totals); const totVar = totals.reduce((a, v) => a + (v - mt) ** 2, 0) / (n - 1);
+  return totVar > 0 ? (k / (k - 1)) * (1 - sumItemVar / totVar) : 0;
+}
+function randn() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
+
+function fileToImage(file) {
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = URL.createObjectURL(file);
+  });
+}
+function canvasBlob(cv) { return new Promise((res) => cv.toBlob(res, "image/png")); }
+
+function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+
+function parseNums(t) { return (t || "").split(/[\s,;]+/).map((s) => parseFloat(String(s).replace(",", "."))).filter((n) => !isNaN(n)); }
+function _lgamma(x) { const c = [676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]; if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - _lgamma(1 - x); x -= 1; let a = 0.99999999999980993; const t = x + 7.5; for (let i = 0; i < 8; i++) a += c[i] / (x + i + 1); return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a); }
+function _betacf(x, a, b) { const qab = a + b, qap = a + 1, qam = a - 1; let c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < 1e-300) d = 1e-300; d = 1 / d; let h = d; for (let m = 1; m <= 200; m++) { const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; h *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-7) break; } return h; }
+function betainc(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(_lgamma(a + b) - _lgamma(a) - _lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); if (x < (a + 1) / (a + b + 2)) return bt * _betacf(x, a, b) / a; return 1 - bt * _betacf(1 - x, b, a) / b; }
+function pDariT(t, df) { return betainc(df / (df + t * t), df / 2, 0.5); }
+function pDariF(f, d1, d2) { return 1 - betainc((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2); }
+function fmtP(p) { return p < 0.001 ? "< 0,001" : p.toFixed(3).replace(".", ","); }
+function fmtN(x, d) { return Number(x).toFixed(d == null ? 2 : d).replace(".", ","); }
+
+function fmtRp(n) { return "Rp" + Math.round(Number(n) || 0).toLocaleString("id-ID"); }
+
+/* ============================================================
+   SISTEM — BACKUP & RESTORE DATA (localStorage mt_*)
+   ============================================================ */
+function kumpulkanBackup() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf("mt_") === 0) data[k] = localStorage.getItem(k); }
+  return { app: "MahasiswaTools", kind: "backup-data", version: 1, exportedAt: new Date().toISOString(), data };
+}
+function backupData() {
+  const b = kumpulkanBackup();
+  const n = Object.keys(b.data).length;
+  if (!n) { toast("Belum ada data tersimpan untuk di-backup."); return; }
+  download("Backup_Data.json", JSON.stringify(b, null, 1), "application/json");
+  toast("Backup berisi " + n + " data diunduh 💾 Simpan baik-baik.");
+}
+function terapkanBackup(obj) {
+  if (!obj || obj.app !== "MahasiswaTools" || !obj.data || typeof obj.data !== "object") throw new Error("File bukan backup MahasiswaTools yang valid.");
+  let n = 0;
+  Object.keys(obj.data).forEach((k) => { if (k.indexOf("mt_") === 0) { try { localStorage.setItem(k, String(obj.data[k])); n++; } catch (e) {} } });
+  return n;
+}
+function restoreData(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = function () {
+    try {
+      const obj = JSON.parse(rd.result);
+      if (!confirm("Restore backup ini? Data MahasiswaTools saat ini di browser ini akan DIGABUNGKAN/ditimpa oleh isi backup.")) return;
+      const n = terapkanBackup(obj);
+      toast("Restore berhasil: " + n + " data dimuat ulang ✅ Halaman akan dimuat ulang…");
+      setTimeout(() => location.reload(), 900);
+    } catch (e) { toast("❌ " + e.message); }
+    input.value = "";
+  };
+  rd.readAsText(f);
+}
+window._kumpulkanBackup = kumpulkanBackup; window._terapkanBackup = terapkanBackup;
+
+/* ---------- pemuat partisi kategori (script klasik lazy-load) ---------- */
+const MT_CAT_LOADED = {};
+const MT_CAT_LOADING = {};
+function mtBasePath() { return window.__MT_BASE__ || ""; }
+function loadCat(cat) {
+  if (MT_CAT_LOADED[cat]) return Promise.resolve(true);
+  if (MT_CAT_LOADING[cat]) return MT_CAT_LOADING[cat];
+  MT_CAT_LOADING[cat] = new Promise((res) => {
+    const s = document.createElement("script");
+    s.src = mtBasePath() + "js/cat-" + cat + ".js";
+    s.onload = () => { MT_CAT_LOADED[cat] = true; try { applyToolEnhancers(); } catch (e) {} res(true); };
+    s.onerror = () => { delete MT_CAT_LOADING[cat]; res(false); };
+    document.head.appendChild(s);
+  });
+  return MT_CAT_LOADING[cat];
+}
+/* ---------- registry enhancer (preview live & logo institusi) ---------- */
+const MT_ENHANCERS = [];
+const MT_ENHANCED = new Set();
+function mtEnhanceUI(id, wrap) { MT_ENHANCERS.push({ kind: "ui", key: "ui:" + id + ":" + MT_ENHANCERS.length, id: id, wrap: wrap }); }
+function mtEnhanceFn(name, wrap) { MT_ENHANCERS.push({ kind: "fn", key: "fn:" + name + ":" + MT_ENHANCERS.length, name: name, wrap: wrap }); }
+function applyToolEnhancers() {
+  MT_ENHANCERS.forEach((e) => {
+    if (MT_ENHANCED.has(e.key)) return;
+    if (e.kind === "ui" && typeof UI[e.id] === "function") { UI[e.id] = e.wrap(UI[e.id]); MT_ENHANCED.add(e.key); }
+    else if (e.kind === "fn" && typeof window[e.name] === "function") { window[e.name] = e.wrap(window[e.name]); MT_ENHANCED.add(e.key); }
+  });
+}
+
+
+
+/* ---------- helper bersama tambahan (dipakai lintas kategori) ---------- */
+async function unduhSertifikatPdfZip() {
+  const out = $("#srOut");
+  const okZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+  const okPdf = await loadPdfLib();
+  if (!okZip || !okPdf) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library gagal dimuat — cek koneksi lalu coba lagi.</div>'; return; }
+  const names = $("#srNama").value.split(/\n/).map((s) => s.trim()).filter(Boolean);
+  if (!names.length) { toast("Isi minimal satu nama penerima."); return; }
+  out.innerHTML = '<div class="' + OUT + '">⏳ Membuat ' + names.length + " sertifikat PDF…</div>";
+  const zip = new JSZip();
+  for (let i = 0; i < names.length; i++) {
+    const cv = gambarSertifikat(i);
+    const pngBlob = await canvasBlob(cv);
+    const doc = await PDFLib.PDFDocument.create();
+    const page = doc.addPage([841.89, 595.28]);
+    const emb = await doc.embedPng(await pngBlob.arrayBuffer());
+    page.drawImage(emb, { x: 0, y: 0, width: 841.89, height: 595.28 });
+    const pdfBytes = await doc.save();
+    zip.file("Sertifikat_" + String(i + 1).padStart(2, "0") + "_" + names[i].replace(/[^\w]+/g, "_") + ".pdf", pdfBytes);
+  }
+  const zipBlob = await zip.generateAsync({ type: "blob" });
+  window._sertifikatPdfZip = zipBlob;
+  out.innerHTML = '<div class="' + OUT + '">✅ ' + names.length + ' sertifikat PDF (A4 landscape) selesai dalam satu ZIP.</div>';
+  download("Sertifikat_Massal_PDF.zip", zipBlob);
+}
+
+async function loadPdfLib() { return loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib"); }
+
+function rp(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+
+function gambarPie(data) {
+  const cv = $("#grCv"); cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, 880, 520);
+  ctx.fillStyle = "#000"; ctx.font = "bold 21px Georgia, serif"; ctx.textAlign = "center";
+  ctx.fillText($("#grT").value.trim(), 440, 40);
+  const total = data.reduce((a, d) => a + d.v, 0) || 1;
+  const cx = 290, cy = 285, R = 185;
+  let ang = -Math.PI / 2;
+  data.forEach((d, i) => {
+    const sweep = (d.v / total) * Math.PI * 2;
+    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, ang, ang + sweep); ctx.closePath();
+    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat"); ctx.fill();
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke();
+    ang += sweep;
+  });
+  ctx.textAlign = "left";
+  data.forEach((d, i) => {
+    const y = 130 + i * 44;
+    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat");
+    ctx.fillRect(545, y - 15, 30, 22);
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 1.4; ctx.strokeRect(545, y - 15, 30, 22);
+    ctx.fillStyle = "#000"; ctx.font = "15px Georgia, serif";
+    ctx.fillText((d.label.length > 20 ? d.label.slice(0, 19) + "…" : d.label) + " — " + d.v + " (" + (d.v / total * 100).toFixed(1) + "%)", 588, y + 2);
+  });
+  cv.toBlob((b) => { window._grafikPng = b; }, "image/png");
+  $("#grOut").innerHTML = '<div class="' + OUT + '"><p class="text-sm">Diagram pie hitam-putih dengan ' + data.length + ' pola arsiran berbeda — aman difotokopi untuk Bab 4.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="download(\'Grafik_Bab4.png\', window._grafikPng)">⬇️ Download PNG</button>'
+    + '<button class="' + BTN2 + '" onclick="buatGrafik()">🔄 Gambar Ulang</button></div></div>';
+}
+
+function qrLogoLoad(input) { const f = input.files && input.files[0]; if (!f) return; fileToImage(f).then((img) => { window._qrLogoImg = img; toast("Logo QR dimuat — generate ulang QR-nya 🔳"); }); }
+
+function unduhSvgPng(svgId, name) {
+  const svgEl = document.getElementById(svgId); if (!svgEl) return;
+  const xml = new XMLSerializer().serializeToString(svgEl);
+  const vb = svgEl.viewBox.baseVal;
+  const url = URL.createObjectURL(new Blob([xml], { type: "image/svg+xml;charset=utf-8" }));
+  const img = new Image();
+  img.onload = function () {
+    const scale = 2, c = document.createElement("canvas");
+    c.width = (vb.width || 800) * scale; c.height = (vb.height || 400) * scale;
+    const ctx = c.getContext("2d"); ctx.fillStyle = "#FFF"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    c.toBlob((b) => { window._lastSvgPng = b; download(name, b); }, "image/png");
+  };
+  img.src = url;
+}
+
+/* ---------- TERBILANG & ROMAWI (helper bersama) ---------- */
+const SATUAN = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
+function terbilangStr(n) {
+  n = Math.floor(Math.abs(n));
+  if (n < 12) return SATUAN[n];
+  if (n < 20) return terbilangStr(n - 10) + " Belas";
+  if (n < 100) return terbilangStr(n / 10) + " Puluh " + terbilangStr(n % 10);
+  if (n < 200) return "Seratus " + terbilangStr(n - 100);
+  if (n < 1000) return terbilangStr(n / 100) + " Ratus " + terbilangStr(n % 100);
+  if (n < 2000) return "Seribu " + terbilangStr(n - 1000);
+  if (n < 1000000) return terbilangStr(n / 1000) + " Ribu " + terbilangStr(n % 1000);
+  if (n < 1000000000) return terbilangStr(n / 1000000) + " Juta " + terbilangStr(n % 1000000);
+  if (n < 1000000000000) return terbilangStr(n / 1000000000) + " Miliar " + terbilangStr(n % 1000000000);
+  return terbilangStr(n / 1000000000000) + " Triliun " + terbilangStr(n % 1000000000000);
+}
 
 /* ---------- 1. VALIDITAS & RELIABILITAS ---------- */
 UI.validitas = function (el) {
@@ -673,7 +906,7 @@ function teleTimer() {
   const upd = () => { const c = $("#tClock"); if (!c) { clearInterval(tele.timerInt); return; } const mm = String(Math.floor(tele.remain / 60)).padStart(2, "0"), ss = String(tele.remain % 60).padStart(2, "0"); c.textContent = "⏱ Sisa waktu: " + mm + ":" + ss; if (tele.remain <= 0) { clearInterval(tele.timerInt); toast("⏰ Waktu latihan habis!"); c.textContent = "⏱ Waktu habis!"; } tele.remain--; };
   upd(); tele.timerInt = setInterval(upd, 1000);
 }
-window._teleStop = function () { tele.playing = false; if (tele.raf) cancelAnimationFrame(tele.raf); clearInterval(tele.timerInt); };
+window._teleStop = (function (prev) { return function () { if (prev) prev(); tele.playing = false; if (tele.raf) cancelAnimationFrame(tele.raf); clearInterval(tele.timerInt); }; })(window._teleStop);
 
 /* ---------- 10. SIMULATOR TARGET IPK ---------- */
 UI.ipk = function (el) {
@@ -816,21 +1049,6 @@ function buatChatDosen() {
     + "</div>";
 }
 
-/* ---------- 14. TERBILANG & ROMawi ---------- */
-const SATUAN = ["", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"];
-function terbilangStr(n) {
-  n = Math.floor(Math.abs(n));
-  if (n < 12) return SATUAN[n];
-  if (n < 20) return terbilangStr(n - 10) + " Belas";
-  if (n < 100) return terbilangStr(n / 10) + " Puluh " + terbilangStr(n % 10);
-  if (n < 200) return "Seratus " + terbilangStr(n - 100);
-  if (n < 1000) return terbilangStr(n / 100) + " Ratus " + terbilangStr(n % 100);
-  if (n < 2000) return "Seribu " + terbilangStr(n - 1000);
-  if (n < 1000000) return terbilangStr(n / 1000) + " Ribu " + terbilangStr(n % 1000);
-  if (n < 1000000000) return terbilangStr(n / 1000000) + " Juta " + terbilangStr(n % 1000000);
-  if (n < 1000000000000) return terbilangStr(n / 1000000000) + " Miliar " + terbilangStr(n % 1000000000);
-  return terbilangStr(n / 1000000000000) + " Triliun " + terbilangStr(n % 1000000000000);
-}
 function toRoman(num) {
   if (num < 1 || num > 3999) return null;
   const T = [[1000, "M"], [900, "CM"], [500, "D"], [400, "CD"], [100, "C"], [90, "XC"], [50, "L"], [40, "XL"], [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]];
@@ -903,19 +1121,6 @@ renderTabs(); renderGrid();
 /* ============================================================
    TOOLS 16–22 (+ pemuat library eksternal)
    ============================================================ */
-const _libs = {};
-function loadLib(url, globalName) {
-  if (window[globalName]) return Promise.resolve(true);
-  if (_libs[url]) return _libs[url];
-  _libs[url] = new Promise((res) => {
-    const s = document.createElement("script"); s.src = url;
-    s.onload = () => res(!!window[globalName]);
-    s.onerror = () => res(false);
-    document.head.appendChild(s);
-  });
-  return _libs[url];
-}
-const xe = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 /* ---------- 16. TEMPLATE SKRIPSI .DOCX MARGIN 4433 ---------- */
 UI.k16 = function (el) {
@@ -1213,15 +1418,6 @@ async function copyTabelJurnal() {
 /* ============================================================
    TOOLS 23–27
    ============================================================ */
-function alphaOf(data) {
-  const n = data.length, k = data[0].length;
-  const totals = data.map((r) => r.reduce((a, b) => a + b, 0));
-  let sumItemVar = 0;
-  for (let j = 0; j < k; j++) { const col = data.map((r) => r[j]); const m = mean(col); sumItemVar += col.reduce((a, v) => a + (v - m) ** 2, 0) / (n - 1); }
-  const mt = mean(totals); const totVar = totals.reduce((a, v) => a + (v - mt) ** 2, 0) / (n - 1);
-  return totVar > 0 ? (k / (k - 1)) * (1 - sumItemVar / totVar) : 0;
-}
-function randn() { let u = 0, v = 0; while (!u) u = Math.random(); while (!v) v = Math.random(); return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v); }
 
 /* ---------- 23. DUMMY DATA KUESIONER (AUTO-VALID) ---------- */
 UI.k23 = function (el) {
@@ -1656,22 +1852,13 @@ function renderJadwal() {
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="copyText(\'Jam kosong bersama:\\n\' + (window._jamKosong || []).join(\'\\n\'))">📋 Copy Jam Kosong</button></div></div>';
 }
 const _prevStop = window._teleStop;
-window._teleStop = function () { if (_prevStop) _prevStop(); simStop(); };
+window._teleStop = function () { if (_prevStop) _prevStop(); if (typeof simStop === "function") simStop(); };
 
 ;
 
 /* ============================================================
    TOOLS 31–36 (Kelompok & KKN)
    ============================================================ */
-function fileToImage(file) {
-  return new Promise((res, rej) => {
-    const img = new Image();
-    img.onload = () => res(img);
-    img.onerror = rej;
-    img.src = URL.createObjectURL(file);
-  });
-}
-function canvasBlob(cv) { return new Promise((res) => cv.toBlob(res, "image/png")); }
 
 /* ---------- 31. LOGBOOK HARIAN MAGANG/KKN ---------- */
 let logbook = store.get("mt_logbook", []);
@@ -1819,21 +2006,6 @@ function renderGantt() {
     + '<div class="mt-3 space-y-1">' + gantt.rows.map((r, i) => '<div class="flex items-center gap-2 text-xs"><span class="flex-1 truncate">' + (i + 1) + ". " + esc(r.nama) + " (Mg " + r.mulai + "–" + (r.mulai + r.durasi - 1) + ", " + esc(r.pic) + ')</span><button class="text-rose-500 font-bold" onclick="hapusGantt(' + i + ')">Hapus</button></div>').join("") + "</div>"
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'gtSvg\', \'Gantt_Proker_KKN.png\')">⬇️ Download Gantt (PNG)</button>'
     + '<button class="' + BTN2 + '" onclick="copyText(window._ganttTxt)">📋 Copy Matriks Teks</button></div></div>';
-}
-function unduhSvgPng(svgId, name) {
-  const svgEl = document.getElementById(svgId); if (!svgEl) return;
-  const xml = new XMLSerializer().serializeToString(svgEl);
-  const vb = svgEl.viewBox.baseVal;
-  const url = URL.createObjectURL(new Blob([xml], { type: "image/svg+xml;charset=utf-8" }));
-  const img = new Image();
-  img.onload = function () {
-    const scale = 2, c = document.createElement("canvas");
-    c.width = (vb.width || 800) * scale; c.height = (vb.height || 400) * scale;
-    const ctx = c.getContext("2d"); ctx.fillStyle = "#FFF"; ctx.fillRect(0, 0, c.width, c.height); ctx.drawImage(img, 0, 0, c.width, c.height);
-    URL.revokeObjectURL(url);
-    c.toBlob((b) => { window._lastSvgPng = b; download(name, b); }, "image/png");
-  };
-  img.src = url;
 }
 
 /* ---------- 34. STRUKTUR ORGANISASI POSKO ---------- */
@@ -2057,7 +2229,6 @@ function buatPlang() {
   cv.toBlob((b) => { window._plangPng = b; }, "image/png");
   $("#plOut").innerHTML = '<div class="' + OUT + '"><button class="' + BTN + '" onclick="download(\'Desain_Plang_Desa.png\', window._plangPng)">⬇️ Download Desain Plang (PNG)</button></div>';
 }
-function roundRect(ctx, x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
 
 ;
 
@@ -2352,7 +2523,6 @@ UI.k43 = function (el) {
     + field("Rentang Halaman", '<input id="psRange" class="' + IN + '" placeholder="cth: 1-3,5,8">', "Format: halaman tunggal (5), rentang (1-3), atau gabungan dipisah koma (1-3,5).")
     + '<button class="' + BTN + '" onclick="pisahPdf()">Pisahkan Halaman</button> <span id="psStat" class="text-sm text-slate-500"></span></div>';
 };
-async function loadPdfLib() { return loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib"); }
 async function pmLoad(input) {
   pdfMergeFiles = [];
   for (const f of [...(input.files || [])]) pdfMergeFiles.push({ name: f.name, bytes: await f.arrayBuffer() });
@@ -2831,7 +3001,7 @@ function stopNoise(senyap) {
   if (!senyap) { const st = $("#pmNoiseStat"); if (st) st.textContent = "Suara mati."; }
 }
 const _prevStop2 = window._teleStop;
-window._teleStop = function () { if (_prevStop2) _prevStop2(); stopPomoTimer(); stopNoise(true); };
+window._teleStop = function () { if (_prevStop2) _prevStop2(); if (typeof stopPomoTimer === "function") stopPomoTimer(); if (typeof stopNoise === "function") stopNoise(true); };
 
 ;
 
@@ -2880,6 +3050,128 @@ function buatMotlet() {
     + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="copyText(window._motlet)">📋 Copy Surat</button>'
     + '<button class="' + BTN2 + '" onclick="download(\'Surat.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt;white-space:pre-wrap&quot;>\' + esc(window._motlet) + \'</body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
 }
+
+const ML_HINT = {
+  penelitian: "🔬 Izin Penelitian — isi: Institusi Tujuan (pimpinan lokasi penelitian), Judul Penelitian, Waktu, Tempat. Latar/Alasan boleh diisi data pendukung yang diminta.",
+  ukt: "💸 Keringanan UKT — isi: Tujuan = semester (cth: Semester 5), Institusi Tujuan = kampusmu, Latar Belakang = kondisi ekonomi keluarga, Alasan = bentuk keringanan yang dimohon (cicilan/penundaan/pengurangan).",
+  cuti: "⏸️ Cuti Akademik — isi: Tujuan = semester cuti (cth: Semester Ganjil 2026/2027), Waktu = lama cuti (cth: 1 semester), Alasan = alasan pengajuan cuti.",
+  beasiswasurat: "🏅 Permohonan Beasiswa — isi: Tujuan = nama program beasiswa, Institusi Tujuan = pemberi beasiswa, Latar = prestasi/IPK, Keahlian = pendukung keunggulanmu.",
+  sponsor: "🤝 Sponsorship — isi: Institusi Tujuan = perusahaan, Judul = nama kegiatan, Waktu & Tempat acara, Keahlian & Pengalaman = paket sponsor dan benefit bagi perusahaan.",
+  undangan: "✉️ Undangan Resmi — isi: Tujuan = nama & jabatan tamu yang diundang, Institusi Tujuan = instansi tamu, Judul = nama acara, Waktu & Tempat acara, Kontak = narahubung konfirmasi.",
+  pinjam: "🏛️ Peminjaman — isi: Judul = ruangan/alat yang dipinjam (cth: Aula Kampus & Sound System), Waktu = jadwal pinjam, Latar = untuk kegiatan apa, Institusi Tujuan = kampus/pengelola gedung.",
+  narasumber: "🎤 Narasumber — isi: Tujuan = nama narasumber, Institusi Tujuan = instansi narasumber, Judul = nama acara, Keahlian = tema/materi yang diharapkan, Waktu & Tempat acara.",
+  rekomendasi: "⭐ Rekomendasi — surat ini ditulis dari sudut pandang DOSEN: Tujuan = nama dosen pemberi rekomendasi, Nama Lengkap = namamu, Latar = prestasimu menurut dosen, Institusi Tujuan = program/instansi yang dituju.",
+  pernyataan: "📜 Pernyataan Bermaterai — isi: Alasan Memilih = isi pernyataanmu (satu poin per baris). Akan ditutup komitmen bersedia menerima sanksi bila tidak benar.",
+  kuasa: "✍️ Surat Kuasa — isi: Nama Lengkap = pemberi kuasa, Tujuan = nama penerima kuasa, Alasan = keperluan kuasa (cth: mengambil ijazah & transkrip), Institusi Tujuan = tempat pengurusan.",
+  resign: "🚪 Pengunduran Diri — isi: Tujuan = jabatanmu, Institusi Tujuan = organisasi, Waktu = tanggal efektif, Alasan = alasan pengunduran diri (opsional)."
+};
+(function () {
+  const _mt = mlToggle;
+  mlToggle = function () {
+    _mt();
+    const h = $("#mlHint");
+    if (h) h.innerHTML = ML_HINT[$("#mlJenis").value] || "Pilih jenis surat — field yang dipakai menyesuaikan. Surat ter-generate live di bawah saat kamu mengetik; unduhan .doc otomatis berkop logo institusi bila logo sudah di-upload.";
+    if (typeof buatMotlet === "function") { try { buatMotlet(); } catch (e) {} }
+  };
+  const h0 = $("#mlHint");
+})();
+function suratBaru(jenis, f) {
+  const kepala = (penerima, perihal) => f.kota + "\n\nKepada Yth.\n" + penerima + "\ndi tempat\n\nPerihal: " + perihal + "\n\nDengan hormat,\n\n";
+  const ttd = (salam) => "\n\n" + (salam || "Hormat saya,") + "\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+  const idSaya = "Saya yang bertanda tangan di bawah ini:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi/Organisasi: " + f.prodi : "") + "\n\n";
+  switch (jenis) {
+    case "penelitian":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Izin Penelitian")
+        + idSaya + "Bermaksud mengajukan permohonan izin untuk melaksanakan penelitian dalam rangka penyusunan skripsi dengan judul:\n\n\"" + (f.judul || "(judul penelitian)") + "\"\n\n"
+        + "Penelitian direncanakan pada " + (f.waktu || "(waktu penelitian)") + " bertempat di " + (f.tempat || f.inst) + ". " + (f.alasan || "Data dan informasi yang diperoleh dari penelitian ini semata-mata digunakan untuk kepentingan akademik dan penyusunan skripsi.")
+        + "\n\nDemikian permohonan ini saya sampaikan. Atas perhatian, izin, dan bantuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "ukt":
+      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Keringanan Biaya Pendidikan (UKT)")
+        + idSaya + "Dengan ini saya mengajukan permohonan keringanan pembayaran Uang Kuliah Tunggal (UKT) untuk " + (f.tujuan || "semester ini") + ". "
+        + (f.latar || "Permohonan ini saya ajukan mengingat kondisi ekonomi keluarga kami yang saat ini mengalami kesulitan.") + "\n\n"
+        + (f.alasan || "Bentuk keringanan yang saya mohon adalah penundaan/pencicilan pembayaran sampai batas waktu yang Bapak/Ibu tentukan. Saya berkomitmen melunasi kewajiban tersebut sesuai kesepakatan.")
+        + "\n\nDemikian permohonan ini saya sampaikan dengan sebenar-benarnya. Atas perhatian dan kebijaksanaan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "cuti":
+      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Cuti Akademik")
+        + idSaya + "Dengan ini saya mengajukan permohonan cuti akademik pada " + (f.tujuan || "(semester)") + " selama " + (f.waktu || "1 (satu) semester") + ". "
+        + (f.alasan || "Pengajuan cuti ini dikarenakan hal yang tidak dapat saya hindari pada semester tersebut.") + "\n\n"
+        + "Saya bersedia memenuhi segala ketentuan administrasi yang berlaku dan akan aktif kembali pada semester berikutnya sesuai jadwal akademik.\n\nDemikian permohonan ini saya sampaikan. Atas perhatian dan persetujuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "beasiswasurat":
+      return kepala("Bapak/Ibu Pimpinan / Pengelola " + f.inst, "Permohonan Beasiswa — " + f.tujuan)
+        + idSaya + "Dengan ini saya mengajukan permohonan untuk mengikuti seleksi " + (f.tujuan || "program beasiswa") + " yang diselenggarakan oleh " + f.inst + ". "
+        + (f.latar || "Selama menempuh studi, saya berusaha menjaga prestasi akademik dan aktif dalam kegiatan kemahasiswaan.") + "\n\n"
+        + (f.skill || "Saya memiliki kemampuan dan pengalaman yang mendukung kelayakan saya sebagai penerima beasiswa.") + " " + (f.alasan || "Beasiswa ini akan sangat membantu keberlangsungan studi saya dan memotivasi saya untuk terus berprestasi.") + "\n\n"
+        + "Sebagai bahan pertimbangan, bersama surat ini saya lampirkan berkas persyaratan yang telah ditentukan. Demikian permohonan ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "sponsor":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Kerja Sama Sponsorship — " + (f.judul || "Kegiatan"))
+        + "Kami dari " + (f.prodi || "panitia kegiatan") + " bermaksud menyelenggarakan kegiatan:\n\nNama Kegiatan: " + (f.judul || "(nama kegiatan)") + "\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kegiatan ini bertujuan memberikan manfaat bagi mahasiswa dan masyarakat serta menjadi sarana positif bagi citra perusahaan Bapak/Ibu.") + "\n\n"
+        + (f.skill || "Adapun bentuk kerja sama yang kami tawarkan antara lain penempatan logo perusahaan pada media publikasi, penyebutan oleh MC, dan booth promosi selama kegiatan berlangsung.") + "\n\n"
+        + "Sebagai bahan pertimbangan, bersama surat ini kami lampirkan proposal kegiatan beserta rincian anggaran dan paket sponsorship. Demikian permohonan ini kami sampaikan. Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "undangan":
+      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Undangan " + (f.judul || "Kegiatan") + "\n\nDengan hormat,\n\n"
+        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " dengan hormat mengundang Bapak/Ibu untuk hadir pada:\n\nHari/Tanggal: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kehadiran Bapak/Ibu sangat kami harapkan demi kelancaran dan kesuksesan acara tersebut.") + "\n\n"
+        + "Untuk konfirmasi kehadiran, Bapak/Ibu dapat menghubungi narahubung kami" + (f.kontak ? " (" + f.kontak + ")" : "") + ". Demikian undangan ini kami sampaikan. Atas perhatian dan kehadiran Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
+    case "pinjam":
+      return kepala("Bapak/Ibu Kepala Bagian Umum / Pengelola Sarana " + f.inst, "Permohonan Peminjaman " + (f.judul || "Ruangan/Alat"))
+        + idSaya + "Bermaksud mengajukan permohonan peminjaman " + (f.judul || "(ruangan/alat)") + " untuk keperluan " + (f.latar || "kegiatan kemahasiswaan") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + (f.tempat ? "\nTempat Kegiatan: " + f.tempat : "") + "\n\n"
+        + "Kami berkomitmen menjaga kebersihan, keamanan, dan ketertiban selama penggunaan, serta mengembalikan fasilitas dalam keadaan seperti semula.\n\nDemikian permohonan ini kami sampaikan. Atas perhatian dan izin Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "narasumber":
+      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Permohonan Menjadi Narasumber\n\nDengan hormat,\n\n"
+        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " bermaksud memohon kesediaan Bapak/Ibu menjadi narasumber dengan tema/materi " + (f.skill || "(tema materi)") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kami menilai Bapak/Ibu memiliki kompetensi dan pengalaman yang sangat relevan dengan tema tersebut.") + "\n\n"
+        + "Demikian permohonan ini kami sampaikan. Besar harapan kami Bapak/Ibu berkenan memenuhi permohonan ini. Atas perhatian dan kesediaan Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
+    case "rekomendasi":
+      return f.kota + "\n\nSURAT REKOMENDASI\n\nYang bertanda tangan di bawah ini:\nNama: " + f.tujuan + "\nJabatan: Dosen " + (f.prodi || "") + "\n\nMenerangkan dengan sebenarnya bahwa:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi: " + f.prodi : "") + "\n\n"
+        + "adalah mahasiswa yang saya kenal selama menempuh studi. " + (f.latar || "Yang bersangkutan menunjukkan prestasi akademik yang baik, berdisiplin, dan beretika selama mengikuti perkuliahan maupun kegiatan kemahasiswaan.") + "\n\n"
+        + "Berdasarkan pengamatan saya, saya merekomendasikan yang bersangkutan untuk " + (f.alasan || "mengikuti program yang dituju di " + f.inst) + ". Saya meyakini yang bersangkutan mampu memenuhi tanggung jawab yang diberikan.\n\n"
+        + "Demikian surat rekomendasi ini saya buat untuk dapat digunakan sebagaimana mestinya.\n\n" + f.kota.split(",")[0] + ", " + f.kota.split(", ").slice(1).join(", ") + "\nDosen Pemberi Rekomendasi,\n\n\n" + f.tujuan;
+    case "pernyataan":
+      return f.kota + "\n\nSURAT PERNYATAAN\n\n" + idSaya + "Dengan ini menyatakan dengan sebenar-benarnya bahwa:\n\n"
+        + (f.alasan ? f.alasan.split(/\n/).map((s) => s.trim()).filter(Boolean).map((s, i) => (i + 1) + ". " + s).join("\n") : "1. Seluruh data dan pernyataan yang saya sampaikan adalah benar.\n2. Saya tidak sedang menerima beasiswa dari sumber lain untuk komponen yang sama.")
+        + "\n\nDemikian surat pernyataan ini saya buat dalam keadaan sadar dan tanpa paksaan dari pihak mana pun. Apabila di kemudian hari terbukti pernyataan ini tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.\n\n"
+        + f.kota + "\n\n[Materai Rp10.000]\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "kuasa":
+      return f.kota + "\n\nSURAT KUASA\n\n" + idSaya.replace("Saya yang bertanda tangan di bawah ini:", "Pemberi Kuasa:\nSaya yang bertanda tangan di bawah ini:")
+        + "Dengan ini memberikan kuasa kepada:\nNama: " + f.tujuan + "\n\nUntuk keperluan: " + (f.alasan || "mewakili saya dalam pengurusan dan pengambilan dokumen akademik (ijazah/transkrip)") + " di " + f.inst + ".\n\n"
+        + "Segala akibat dan tanggung jawab yang timbul dari pemberian kuasa ini menjadi tanggung jawab saya selaku pemberi kuasa.\n\nDemikian surat kuasa ini saya buat dengan sebenarnya untuk dapat digunakan sebagaimana mestinya.\n\n"
+        + f.kota + "\n\nPenerima Kuasa,\t\tPemberi Kuasa,\n\n\n" + f.tujuan + "\t\t" + f.nama + " [materai]";
+    case "resign":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Pengunduran Diri")
+        + idSaya + "Dengan ini saya mengajukan pengunduran diri dari jabatan " + (f.tujuan || "(jabatan)") + " di " + f.inst + ", terhitung efektif mulai " + (f.waktu || "(tanggal efektif)") + ". "
+        + (f.alasan || "Pengunduran diri ini saya ajukan atas pertimbangan pribadi yang telah saya pikirkan dengan matang.") + "\n\n"
+        + "Saya mengucapkan terima kasih atas kepercayaan, kesempatan, dan pengalaman yang telah diberikan selama saya bergabung. Saya memohon maaf apabila terdapat kekurangan selama menjalankan tugas, dan saya bersedia membantu proses serah terima tugas sebelum tanggal efektif pengunduran diri.\n\nDemikian surat pengunduran diri ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+  }
+  return "";
+}
+(function () {
+  const _prevMotlet = buatMotlet;
+  const JENIS_BARU = { penelitian: 1, ukt: 1, cuti: 1, beasiswasurat: 1, sponsor: 1, undangan: 1, pinjam: 1, narasumber: 1, rekomendasi: 1, pernyataan: 1, kuasa: 1, resign: 1 };
+  buatMotlet = function () {
+    const jenis = $("#mlJenis") ? $("#mlJenis").value : "";
+    if (!JENIS_BARU[jenis]) { _prevMotlet(); return; }
+    const g = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
+    const f = { nama: g("mlNama") || "Nama Kamu", kota: g("mlKota"), tujuan: g("mlTujuan") || "(tujuan)", inst: g("mlInst") || "(institusi)", latar: g("mlLatar"), alasan: g("mlAlasan"), skill: g("mlSkill"), kontak: g("mlKontak"), nim: g("mlNim"), prodi: g("mlProdi"), judul: g("mlJudul"), waktu: g("mlWaktu"), tempat: g("mlTempat") };
+    const surat = suratBaru(jenis, f);
+    window._motlet = surat;
+    $("#mlOut").innerHTML = '<div class="' + OUT + '"><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[15px]" style="font-family:Georgia,serif">' + esc(surat) + "</div>"
+      + '<p class="text-xs text-slate-500 mt-2">Periksa kembali nama, tanggal, dan instansi sebelum mengirim. Untuk Surat Pernyataan & Kuasa, tempel materai Rp10.000 pada bagian yang ditandai.</p>'
+      + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="copyText(window._motlet)">📋 Copy Surat</button>'
+      + '<button class="' + BTN2 + '" onclick="download(\'Surat.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt;white-space:pre-wrap&quot;>\' + esc(window._motlet) + \'</body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
+    window._suratDoc = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(surat) + "</div></body></html>";
+    const btn = [...document.querySelectorAll("#mlOut button")].find((b) => (b.getAttribute("onclick") || "").includes("Surat.doc"));
+    if (btn) btn.setAttribute("onclick", "download('Surat.doc', window._suratDoc, 'application/msword')");
+  };
+  // petunjuk awal
+  const hint = $("#mlHint");
+  if (hint) hint.textContent = "Pilih jenis surat — ada 15 jenis sekarang, termasuk izin penelitian, keringanan UKT, sponsorship, dan surat pernyataan. Surat ter-generate live saat kamu mengetik.";
+})();
+
 
 /* ---------- 51. SIMULASI WAWANCARA KERJA ---------- */
 const BANK_WAWANCARA = [
@@ -3144,6 +3436,7 @@ function unduhFlashTeks() {
 
 ;
 
+/* === MT-CORE-BEGIN === */
 /* ============================================================
    ARSITEKTUR BRIEF: statistik dinamis, Web Share API,
    Back-Button Trap untuk modal, tombol bagikan di modal
@@ -3209,6 +3502,7 @@ window.addEventListener("popstate", function () {
 
 ;
 
+/* === MT-CORE-END === */
 /* ============================================================
    TOOL BARU MANDIRI: Word Frequency, Waktu Baca, Kerangka Bab
    ============================================================ */
@@ -3412,61 +3706,6 @@ function pindahCombo(which) {
 ;
 
 /* Fungsi pendukung upgrade: logo QR, pie chart, sertifikat PDF */
-function qrLogoLoad(input) { const f = input.files && input.files[0]; if (!f) return; fileToImage(f).then((img) => { window._qrLogoImg = img; toast("Logo QR dimuat — generate ulang QR-nya 🔳"); }); }
-function gambarPie(data) {
-  const cv = $("#grCv"); cv.classList.remove("hidden");
-  const ctx = cv.getContext("2d");
-  ctx.fillStyle = "#FFFFFF"; ctx.fillRect(0, 0, 880, 520);
-  ctx.fillStyle = "#000"; ctx.font = "bold 21px Georgia, serif"; ctx.textAlign = "center";
-  ctx.fillText($("#grT").value.trim(), 440, 40);
-  const total = data.reduce((a, d) => a + d.v, 0) || 1;
-  const cx = 290, cy = 285, R = 185;
-  let ang = -Math.PI / 2;
-  data.forEach((d, i) => {
-    const sweep = (d.v / total) * Math.PI * 2;
-    ctx.beginPath(); ctx.moveTo(cx, cy); ctx.arc(cx, cy, R, ang, ang + sweep); ctx.closePath();
-    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat"); ctx.fill();
-    ctx.strokeStyle = "#000"; ctx.lineWidth = 2; ctx.stroke();
-    ang += sweep;
-  });
-  ctx.textAlign = "left";
-  data.forEach((d, i) => {
-    const y = 130 + i * 44;
-    ctx.fillStyle = ctx.createPattern(polaCanvas(i % 6), "repeat");
-    ctx.fillRect(545, y - 15, 30, 22);
-    ctx.strokeStyle = "#000"; ctx.lineWidth = 1.4; ctx.strokeRect(545, y - 15, 30, 22);
-    ctx.fillStyle = "#000"; ctx.font = "15px Georgia, serif";
-    ctx.fillText((d.label.length > 20 ? d.label.slice(0, 19) + "…" : d.label) + " — " + d.v + " (" + (d.v / total * 100).toFixed(1) + "%)", 588, y + 2);
-  });
-  cv.toBlob((b) => { window._grafikPng = b; }, "image/png");
-  $("#grOut").innerHTML = '<div class="' + OUT + '"><p class="text-sm">Diagram pie hitam-putih dengan ' + data.length + ' pola arsiran berbeda — aman difotokopi untuk Bab 4.</p>'
-    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="download(\'Grafik_Bab4.png\', window._grafikPng)">⬇️ Download PNG</button>'
-    + '<button class="' + BTN2 + '" onclick="buatGrafik()">🔄 Gambar Ulang</button></div></div>';
-}
-async function unduhSertifikatPdfZip() {
-  const out = $("#srOut");
-  const okZip = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
-  const okPdf = await loadPdfLib();
-  if (!okZip || !okPdf) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library gagal dimuat — cek koneksi lalu coba lagi.</div>'; return; }
-  const names = $("#srNama").value.split(/\n/).map((s) => s.trim()).filter(Boolean);
-  if (!names.length) { toast("Isi minimal satu nama penerima."); return; }
-  out.innerHTML = '<div class="' + OUT + '">⏳ Membuat ' + names.length + " sertifikat PDF…</div>";
-  const zip = new JSZip();
-  for (let i = 0; i < names.length; i++) {
-    const cv = gambarSertifikat(i);
-    const pngBlob = await canvasBlob(cv);
-    const doc = await PDFLib.PDFDocument.create();
-    const page = doc.addPage([841.89, 595.28]);
-    const emb = await doc.embedPng(await pngBlob.arrayBuffer());
-    page.drawImage(emb, { x: 0, y: 0, width: 841.89, height: 595.28 });
-    const pdfBytes = await doc.save();
-    zip.file("Sertifikat_" + String(i + 1).padStart(2, "0") + "_" + names[i].replace(/[^\w]+/g, "_") + ".pdf", pdfBytes);
-  }
-  const zipBlob = await zip.generateAsync({ type: "blob" });
-  window._sertifikatPdfZip = zipBlob;
-  out.innerHTML = '<div class="' + OUT + '">✅ ' + names.length + ' sertifikat PDF (A4 landscape) selesai dalam satu ZIP.</div>';
-  download("Sertifikat_Massal_PDF.zip", zipBlob);
-}
 
 ;
 
@@ -3912,6 +4151,7 @@ function resetBukti() {
 
 ;
 
+/* === MT-CORE-BEGIN === */
 /* ============================================================
    PREVIEW LIVE + TEMPLATE CUSTOM
    ============================================================ */
@@ -3940,16 +4180,15 @@ function renderCvLive() {
     + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">PENDIDIKAN</h2>' + (d.edu.trim() ? d.edu.split(/\n/).filter((s) => s.trim()).map((s) => '<p style="margin:2pt 0;font-size:11pt">' + esc(s.trim()) + "</p>").join("") : '<p style="font-size:11pt;color:#666">Riwayat pendidikanmu tampil di sini…</p>')
     + '<h2 style="font-size:12pt;border-bottom:1.5pt solid #111;padding-bottom:2pt">KEAHLIAN</h2><p style="font-size:11pt">' + esc(d.skill || "Daftar keahlianmu tampil di sini…") + "</p></div>";
 }
-(function () {
-  const _ui = UI.k53;
-  UI.k53 = function (el) {
+mtEnhanceUI("k53", function (_ui) {
+  return function (el) {
     _ui(el);
     const btn = el.querySelector('button[onclick="buatCv()"]');
     if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW LANGSUNG — berubah saat kamu mengetik</p><div class="bg-white text-slate-900 p-5 border border-slate-200 dark:border-slate-700 overflow-x-auto bshadow-sm"><div style="min-width:520px" id="cvLiveInner"></div></div></div>');
     el.addEventListener("input", renderCvLive);
     renderCvLive();
   };
-})();
+});
 
 /* ---------- Template .docx: preview struktur ---------- */
 function renderDocPreview() {
@@ -3968,16 +4207,15 @@ function renderDocPreview() {
     + '<p class="text-sm mt-2"><b>DAFTAR PUSTAKA</b> (contoh format)</p>'
     + '<p class="text-[11px] text-slate-500 mt-4">Kertas A4 • Margin 4-4-3-3 • Times New Roman 12 • Spasi 1,5 • Pembimbing: ' + esc(gv("xDospem") || "—") + "</p></div>";
 }
-(function () {
-  const _ui = UI.k16;
-  UI.k16 = function (el) {
+mtEnhanceUI("k16", function (_ui) {
+  return function (el) {
     _ui(el);
     const btn = el.querySelector('button[onclick="buatDocx()"]');
     if (btn) btn.insertAdjacentHTML("beforebegin", '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW STRUKTUR DOKUMEN</p><div id="docPrev"></div></div>');
     el.addEventListener("input", renderDocPreview);
     renderDocPreview();
   };
-})();
+});
 
 /* ---------- PPTX: preview daftar slide ---------- */
 function parseOutlineSlides(text) {
@@ -4010,27 +4248,25 @@ function renderSlidePreview() {
       : card('<div class="font-extrabold text-[11.5px] leading-tight border-b border-slate-200 pb-1 mb-1">' + esc(s.title) + "</div>" + s.bullets.slice(0, 5).map((b) => '<div class="text-[10px] leading-snug">• ' + esc(b) + "</div>").join(""), false)).join("")
     + "</div>";
 }
-(function () {
-  const _ui = UI.k27;
-  UI.k27 = function (el) {
+mtEnhanceUI("k27", function (_ui) {
+  return function (el) {
     _ui(el);
     const btn = el.querySelector('button[onclick="buatPptx()"]');
     if (btn) btn.insertAdjacentHTML("beforebegin", '<div id="ppPrev" class="mb-4"></div>');
     el.addEventListener("input", renderSlidePreview);
     renderSlidePreview();
   };
-})();
+});
 
 /* ---------- Motlet: preview live ---------- */
-(function () {
-  const _ui = UI.k50;
-  UI.k50 = function (el) {
+mtEnhanceUI("k50", function (_ui) {
+  return function (el) {
     _ui(el);
     let t = null;
     el.addEventListener("input", () => { clearTimeout(t); t = setTimeout(() => { try { buatMotlet(); } catch (e) {} }, 400); });
     el.addEventListener("change", () => { try { buatMotlet(); } catch (e) {} });
   };
-})();
+});
 
 /* ---------- Flashcard: preview pasangan depan–belakang live ---------- */
 function renderFlashPreview() {
@@ -4043,28 +4279,26 @@ function renderFlashPreview() {
     + (cards.length ? '<div class="space-y-2">' + cards.map((c, i) => '<div class="grid grid-cols-2 gap-2"><div class="rounded-lg border-2 border-dashed border-slate-400 dark:border-slate-500 bg-white dark:bg-slate-900 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">DEPAN ' + (i + 1) + '</div><div class="font-extrabold text-sm">' + esc(c.t) + '</div></div><div class="rounded-lg border-2 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-slate-800 p-3 text-center"><div class="text-[9px] font-bold tracking-widest text-slate-400">BELAKANG ' + (i + 1) + '</div><div class="text-[12.5px] leading-snug">' + esc(c.d) + "</div></div></div>").join("") + "</div>"
     : '<p class="text-sm text-slate-500">Format: Istilah | Definisi (satu kartu per baris).</p>');
 }
-(function () {
-  const _ui = UI.k55;
-  UI.k55 = function (el) {
+mtEnhanceUI("k55", function (_ui) {
+  return function (el) {
     _ui(el);
     const btn = el.querySelector('button[onclick="buatFlashPrint()"]');
     if (btn) btn.insertAdjacentHTML("beforebegin", '<div id="fcPrev" class="mb-4"></div>');
     el.addEventListener("input", renderFlashPreview);
     renderFlashPreview();
   };
-})();
+});
 
 /* ---------- Deklarasi AI: preview live ---------- */
-(function () {
-  const _ui = UI.deklarasi;
-  UI.deklarasi = function (el) {
+mtEnhanceUI("deklarasi", function (_ui) {
+  return function (el) {
     _ui(el);
     const run = () => { if ($("#dkNama")) { try { buatDeklarasi(); } catch (e) {} } };
     el.addEventListener("input", run);
     el.addEventListener("change", run);
     run();
   };
-})();
+});
 
 ;
 
@@ -4122,35 +4356,28 @@ function sisipLogoField(el, btnOnclick) {
   else if (el.firstElementChild) el.firstElementChild.insertAdjacentHTML("afterbegin", logoFieldHtml());
   segarkanLogoUI(); muatLogoImg();
 }
-(function () {
-  const wraps = [["k16", "buatDocx()"], ["k27", "buatPptx()"], ["k32", "buatKwitansi()"], ["k35", "gambarSertifikat(0)"], ["k50", "buatMotlet()"], ["deklarasi", "buatDeklarasi()"]];
-  wraps.forEach(([id, btn]) => {
-    const _ui = UI[id];
-    if (!_ui) return;
-    UI[id] = function (el) { _ui(el); sisipLogoField(el, btn); };
-  });
-  const _k31 = UI.k31;
-  if (_k31) UI.k31 = function (el) { _k31(el); sisipLogoField(el, "tambahLog()"); };
-  // Preview struktur docx ikut menampilkan logo
-  const _rdp = renderDocPreview;
-  renderDocPreview = function () {
+[["k16", "buatDocx()"], ["k27", "buatPptx()"], ["k32", "buatKwitansi()"], ["k35", "gambarSertifikat(0)"], ["k50", "buatMotlet()"], ["deklarasi", "buatDeklarasi()"]].forEach(([id, btn]) => {
+  mtEnhanceUI(id, function (_ui) { return function (el) { _ui(el); sisipLogoField(el, btn); }; });
+});
+mtEnhanceUI("k31", function (_ui) { return function (el) { _ui(el); sisipLogoField(el, "tambahLog()"); }; });
+mtEnhanceFn("renderDocPreview", function (_rdp) {
+  return function () {
     _rdp();
     const d = getLogoData(); const box = $("#docPrev");
     if (d && box && box.firstElementChild) box.firstElementChild.insertAdjacentHTML("afterbegin", '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:72px;margin:0 auto"></p>');
   };
-  // Surat: unduhan .doc berkop logo
-  const _bm = buatMotlet;
-  buatMotlet = function () {
+});
+mtEnhanceFn("buatMotlet", function (_bm) {
+  return function () {
     _bm();
     window._suratDoc = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(window._motlet || "") + "</div></body></html>";
     const btn = [...document.querySelectorAll("#mlOut button")].find((b) => (b.getAttribute("onclick") || "").includes("Surat.doc"));
     if (btn) btn.setAttribute("onclick", "download('Surat.doc', window._suratDoc, 'application/msword')");
   };
-})();
+});
 /* Sertifikat & kwitansi: gambar logo di canvas */
-(function () {
-  const _gs = gambarSertifikat;
-  gambarSertifikat = function (idx) {
+mtEnhanceFn("gambarSertifikat", function (_gs) {
+  return function (idx) {
     const cv = _gs(idx);
     const tpl = ($("#srTpl") || {}).value || "klasik";
     const im = window._logoImg;
@@ -4161,8 +4388,9 @@ function sisipLogoField(el, btnOnclick) {
     }
     return cv;
   };
-  const _bk = buatKwitansi;
-  buatKwitansi = function () {
+});
+mtEnhanceFn("buatKwitansi", function (_bk) {
+  return function () {
     _bk();
     const im = window._logoImg;
     if (im) {
@@ -4172,15 +4400,13 @@ function sisipLogoField(el, btnOnclick) {
       ctx.drawImage(im, 46, 42, w, h);
     }
   };
-  const _uz = unduhSertifikatZip;
-  unduhSertifikatZip = async function () { await muatLogoImg(); return _uz(); };
-  const _up = unduhSertifikatPdfZip;
-  unduhSertifikatPdfZip = async function () { await muatLogoImg(); return _up(); };
-  muatLogoImg();
-})();
+});
+mtEnhanceFn("unduhSertifikatZip", function (_uz) { return async function () { await muatLogoImg(); return _uz(); }; });
+mtEnhanceFn("unduhSertifikatPdfZip", function (_up) { return async function () { await muatLogoImg(); return _up(); }; });
 
 ;
 
+/* === MT-CORE-END === */
 /* ============================================================
    TOOL 66 — GENERATOR PROPOSAL (penelitian / kegiatan / magang)
    ============================================================ */
@@ -4269,7 +4495,6 @@ function hitungRab() {
   });
   return { items, total: items.reduce((a, b) => a + b.sub, 0) };
 }
-function rp(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
 function proposalBlocks() {
   const j = gvPr("prJenis") || "riset";
   const B = [];
@@ -4420,140 +4645,12 @@ SHARE_GETTERS.proposal = function () { return window._proposalText || ""; };
 /* ============================================================
    PEMBUAT SURAT — 12 JENIS SURAT RESMI BARU
    ============================================================ */
-const ML_HINT = {
-  penelitian: "🔬 Izin Penelitian — isi: Institusi Tujuan (pimpinan lokasi penelitian), Judul Penelitian, Waktu, Tempat. Latar/Alasan boleh diisi data pendukung yang diminta.",
-  ukt: "💸 Keringanan UKT — isi: Tujuan = semester (cth: Semester 5), Institusi Tujuan = kampusmu, Latar Belakang = kondisi ekonomi keluarga, Alasan = bentuk keringanan yang dimohon (cicilan/penundaan/pengurangan).",
-  cuti: "⏸️ Cuti Akademik — isi: Tujuan = semester cuti (cth: Semester Ganjil 2026/2027), Waktu = lama cuti (cth: 1 semester), Alasan = alasan pengajuan cuti.",
-  beasiswasurat: "🏅 Permohonan Beasiswa — isi: Tujuan = nama program beasiswa, Institusi Tujuan = pemberi beasiswa, Latar = prestasi/IPK, Keahlian = pendukung keunggulanmu.",
-  sponsor: "🤝 Sponsorship — isi: Institusi Tujuan = perusahaan, Judul = nama kegiatan, Waktu & Tempat acara, Keahlian & Pengalaman = paket sponsor dan benefit bagi perusahaan.",
-  undangan: "✉️ Undangan Resmi — isi: Tujuan = nama & jabatan tamu yang diundang, Institusi Tujuan = instansi tamu, Judul = nama acara, Waktu & Tempat acara, Kontak = narahubung konfirmasi.",
-  pinjam: "🏛️ Peminjaman — isi: Judul = ruangan/alat yang dipinjam (cth: Aula Kampus & Sound System), Waktu = jadwal pinjam, Latar = untuk kegiatan apa, Institusi Tujuan = kampus/pengelola gedung.",
-  narasumber: "🎤 Narasumber — isi: Tujuan = nama narasumber, Institusi Tujuan = instansi narasumber, Judul = nama acara, Keahlian = tema/materi yang diharapkan, Waktu & Tempat acara.",
-  rekomendasi: "⭐ Rekomendasi — surat ini ditulis dari sudut pandang DOSEN: Tujuan = nama dosen pemberi rekomendasi, Nama Lengkap = namamu, Latar = prestasimu menurut dosen, Institusi Tujuan = program/instansi yang dituju.",
-  pernyataan: "📜 Pernyataan Bermaterai — isi: Alasan Memilih = isi pernyataanmu (satu poin per baris). Akan ditutup komitmen bersedia menerima sanksi bila tidak benar.",
-  kuasa: "✍️ Surat Kuasa — isi: Nama Lengkap = pemberi kuasa, Tujuan = nama penerima kuasa, Alasan = keperluan kuasa (cth: mengambil ijazah & transkrip), Institusi Tujuan = tempat pengurusan.",
-  resign: "🚪 Pengunduran Diri — isi: Tujuan = jabatanmu, Institusi Tujuan = organisasi, Waktu = tanggal efektif, Alasan = alasan pengunduran diri (opsional)."
-};
-(function () {
-  const _mt = mlToggle;
-  mlToggle = function () {
-    _mt();
-    const h = $("#mlHint");
-    if (h) h.innerHTML = ML_HINT[$("#mlJenis").value] || "Pilih jenis surat — field yang dipakai menyesuaikan. Surat ter-generate live di bawah saat kamu mengetik; unduhan .doc otomatis berkop logo institusi bila logo sudah di-upload.";
-    if (typeof buatMotlet === "function") { try { buatMotlet(); } catch (e) {} }
-  };
-  const h0 = $("#mlHint");
-})();
-function suratBaru(jenis, f) {
-  const kepala = (penerima, perihal) => f.kota + "\n\nKepada Yth.\n" + penerima + "\ndi tempat\n\nPerihal: " + perihal + "\n\nDengan hormat,\n\n";
-  const ttd = (salam) => "\n\n" + (salam || "Hormat saya,") + "\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
-  const idSaya = "Saya yang bertanda tangan di bawah ini:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi/Organisasi: " + f.prodi : "") + "\n\n";
-  switch (jenis) {
-    case "penelitian":
-      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Izin Penelitian")
-        + idSaya + "Bermaksud mengajukan permohonan izin untuk melaksanakan penelitian dalam rangka penyusunan skripsi dengan judul:\n\n\"" + (f.judul || "(judul penelitian)") + "\"\n\n"
-        + "Penelitian direncanakan pada " + (f.waktu || "(waktu penelitian)") + " bertempat di " + (f.tempat || f.inst) + ". " + (f.alasan || "Data dan informasi yang diperoleh dari penelitian ini semata-mata digunakan untuk kepentingan akademik dan penyusunan skripsi.")
-        + "\n\nDemikian permohonan ini saya sampaikan. Atas perhatian, izin, dan bantuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
-    case "ukt":
-      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Keringanan Biaya Pendidikan (UKT)")
-        + idSaya + "Dengan ini saya mengajukan permohonan keringanan pembayaran Uang Kuliah Tunggal (UKT) untuk " + (f.tujuan || "semester ini") + ". "
-        + (f.latar || "Permohonan ini saya ajukan mengingat kondisi ekonomi keluarga kami yang saat ini mengalami kesulitan.") + "\n\n"
-        + (f.alasan || "Bentuk keringanan yang saya mohon adalah penundaan/pencicilan pembayaran sampai batas waktu yang Bapak/Ibu tentukan. Saya berkomitmen melunasi kewajiban tersebut sesuai kesepakatan.")
-        + "\n\nDemikian permohonan ini saya sampaikan dengan sebenar-benarnya. Atas perhatian dan kebijaksanaan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
-    case "cuti":
-      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Cuti Akademik")
-        + idSaya + "Dengan ini saya mengajukan permohonan cuti akademik pada " + (f.tujuan || "(semester)") + " selama " + (f.waktu || "1 (satu) semester") + ". "
-        + (f.alasan || "Pengajuan cuti ini dikarenakan hal yang tidak dapat saya hindari pada semester tersebut.") + "\n\n"
-        + "Saya bersedia memenuhi segala ketentuan administrasi yang berlaku dan akan aktif kembali pada semester berikutnya sesuai jadwal akademik.\n\nDemikian permohonan ini saya sampaikan. Atas perhatian dan persetujuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
-    case "beasiswasurat":
-      return kepala("Bapak/Ibu Pimpinan / Pengelola " + f.inst, "Permohonan Beasiswa — " + f.tujuan)
-        + idSaya + "Dengan ini saya mengajukan permohonan untuk mengikuti seleksi " + (f.tujuan || "program beasiswa") + " yang diselenggarakan oleh " + f.inst + ". "
-        + (f.latar || "Selama menempuh studi, saya berusaha menjaga prestasi akademik dan aktif dalam kegiatan kemahasiswaan.") + "\n\n"
-        + (f.skill || "Saya memiliki kemampuan dan pengalaman yang mendukung kelayakan saya sebagai penerima beasiswa.") + " " + (f.alasan || "Beasiswa ini akan sangat membantu keberlangsungan studi saya dan memotivasi saya untuk terus berprestasi.") + "\n\n"
-        + "Sebagai bahan pertimbangan, bersama surat ini saya lampirkan berkas persyaratan yang telah ditentukan. Demikian permohonan ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
-    case "sponsor":
-      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Kerja Sama Sponsorship — " + (f.judul || "Kegiatan"))
-        + "Kami dari " + (f.prodi || "panitia kegiatan") + " bermaksud menyelenggarakan kegiatan:\n\nNama Kegiatan: " + (f.judul || "(nama kegiatan)") + "\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
-        + (f.latar || "Kegiatan ini bertujuan memberikan manfaat bagi mahasiswa dan masyarakat serta menjadi sarana positif bagi citra perusahaan Bapak/Ibu.") + "\n\n"
-        + (f.skill || "Adapun bentuk kerja sama yang kami tawarkan antara lain penempatan logo perusahaan pada media publikasi, penyebutan oleh MC, dan booth promosi selama kegiatan berlangsung.") + "\n\n"
-        + "Sebagai bahan pertimbangan, bersama surat ini kami lampirkan proposal kegiatan beserta rincian anggaran dan paket sponsorship. Demikian permohonan ini kami sampaikan. Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih."
-        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
-    case "undangan":
-      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Undangan " + (f.judul || "Kegiatan") + "\n\nDengan hormat,\n\n"
-        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " dengan hormat mengundang Bapak/Ibu untuk hadir pada:\n\nHari/Tanggal: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
-        + (f.latar || "Kehadiran Bapak/Ibu sangat kami harapkan demi kelancaran dan kesuksesan acara tersebut.") + "\n\n"
-        + "Untuk konfirmasi kehadiran, Bapak/Ibu dapat menghubungi narahubung kami" + (f.kontak ? " (" + f.kontak + ")" : "") + ". Demikian undangan ini kami sampaikan. Atas perhatian dan kehadiran Bapak/Ibu, kami ucapkan terima kasih."
-        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
-    case "pinjam":
-      return kepala("Bapak/Ibu Kepala Bagian Umum / Pengelola Sarana " + f.inst, "Permohonan Peminjaman " + (f.judul || "Ruangan/Alat"))
-        + idSaya + "Bermaksud mengajukan permohonan peminjaman " + (f.judul || "(ruangan/alat)") + " untuk keperluan " + (f.latar || "kegiatan kemahasiswaan") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + (f.tempat ? "\nTempat Kegiatan: " + f.tempat : "") + "\n\n"
-        + "Kami berkomitmen menjaga kebersihan, keamanan, dan ketertiban selama penggunaan, serta mengembalikan fasilitas dalam keadaan seperti semula.\n\nDemikian permohonan ini kami sampaikan. Atas perhatian dan izin Bapak/Ibu, kami ucapkan terima kasih."
-        + "\n\nHormat kami,\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
-    case "narasumber":
-      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Permohonan Menjadi Narasumber\n\nDengan hormat,\n\n"
-        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " bermaksud memohon kesediaan Bapak/Ibu menjadi narasumber dengan tema/materi " + (f.skill || "(tema materi)") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
-        + (f.latar || "Kami menilai Bapak/Ibu memiliki kompetensi dan pengalaman yang sangat relevan dengan tema tersebut.") + "\n\n"
-        + "Demikian permohonan ini kami sampaikan. Besar harapan kami Bapak/Ibu berkenan memenuhi permohonan ini. Atas perhatian dan kesediaan Bapak/Ibu, kami ucapkan terima kasih."
-        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
-    case "rekomendasi":
-      return f.kota + "\n\nSURAT REKOMENDASI\n\nYang bertanda tangan di bawah ini:\nNama: " + f.tujuan + "\nJabatan: Dosen " + (f.prodi || "") + "\n\nMenerangkan dengan sebenarnya bahwa:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi: " + f.prodi : "") + "\n\n"
-        + "adalah mahasiswa yang saya kenal selama menempuh studi. " + (f.latar || "Yang bersangkutan menunjukkan prestasi akademik yang baik, berdisiplin, dan beretika selama mengikuti perkuliahan maupun kegiatan kemahasiswaan.") + "\n\n"
-        + "Berdasarkan pengamatan saya, saya merekomendasikan yang bersangkutan untuk " + (f.alasan || "mengikuti program yang dituju di " + f.inst) + ". Saya meyakini yang bersangkutan mampu memenuhi tanggung jawab yang diberikan.\n\n"
-        + "Demikian surat rekomendasi ini saya buat untuk dapat digunakan sebagaimana mestinya.\n\n" + f.kota.split(",")[0] + ", " + f.kota.split(", ").slice(1).join(", ") + "\nDosen Pemberi Rekomendasi,\n\n\n" + f.tujuan;
-    case "pernyataan":
-      return f.kota + "\n\nSURAT PERNYATAAN\n\n" + idSaya + "Dengan ini menyatakan dengan sebenar-benarnya bahwa:\n\n"
-        + (f.alasan ? f.alasan.split(/\n/).map((s) => s.trim()).filter(Boolean).map((s, i) => (i + 1) + ". " + s).join("\n") : "1. Seluruh data dan pernyataan yang saya sampaikan adalah benar.\n2. Saya tidak sedang menerima beasiswa dari sumber lain untuk komponen yang sama.")
-        + "\n\nDemikian surat pernyataan ini saya buat dalam keadaan sadar dan tanpa paksaan dari pihak mana pun. Apabila di kemudian hari terbukti pernyataan ini tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.\n\n"
-        + f.kota + "\n\n[Materai Rp10.000]\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
-    case "kuasa":
-      return f.kota + "\n\nSURAT KUASA\n\n" + idSaya.replace("Saya yang bertanda tangan di bawah ini:", "Pemberi Kuasa:\nSaya yang bertanda tangan di bawah ini:")
-        + "Dengan ini memberikan kuasa kepada:\nNama: " + f.tujuan + "\n\nUntuk keperluan: " + (f.alasan || "mewakili saya dalam pengurusan dan pengambilan dokumen akademik (ijazah/transkrip)") + " di " + f.inst + ".\n\n"
-        + "Segala akibat dan tanggung jawab yang timbul dari pemberian kuasa ini menjadi tanggung jawab saya selaku pemberi kuasa.\n\nDemikian surat kuasa ini saya buat dengan sebenarnya untuk dapat digunakan sebagaimana mestinya.\n\n"
-        + f.kota + "\n\nPenerima Kuasa,\t\tPemberi Kuasa,\n\n\n" + f.tujuan + "\t\t" + f.nama + " [materai]";
-    case "resign":
-      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Pengunduran Diri")
-        + idSaya + "Dengan ini saya mengajukan pengunduran diri dari jabatan " + (f.tujuan || "(jabatan)") + " di " + f.inst + ", terhitung efektif mulai " + (f.waktu || "(tanggal efektif)") + ". "
-        + (f.alasan || "Pengunduran diri ini saya ajukan atas pertimbangan pribadi yang telah saya pikirkan dengan matang.") + "\n\n"
-        + "Saya mengucapkan terima kasih atas kepercayaan, kesempatan, dan pengalaman yang telah diberikan selama saya bergabung. Saya memohon maaf apabila terdapat kekurangan selama menjalankan tugas, dan saya bersedia membantu proses serah terima tugas sebelum tanggal efektif pengunduran diri.\n\nDemikian surat pengunduran diri ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
-  }
-  return "";
-}
-(function () {
-  const _prevMotlet = buatMotlet;
-  const JENIS_BARU = { penelitian: 1, ukt: 1, cuti: 1, beasiswasurat: 1, sponsor: 1, undangan: 1, pinjam: 1, narasumber: 1, rekomendasi: 1, pernyataan: 1, kuasa: 1, resign: 1 };
-  buatMotlet = function () {
-    const jenis = $("#mlJenis") ? $("#mlJenis").value : "";
-    if (!JENIS_BARU[jenis]) { _prevMotlet(); return; }
-    const g = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
-    const f = { nama: g("mlNama") || "Nama Kamu", kota: g("mlKota"), tujuan: g("mlTujuan") || "(tujuan)", inst: g("mlInst") || "(institusi)", latar: g("mlLatar"), alasan: g("mlAlasan"), skill: g("mlSkill"), kontak: g("mlKontak"), nim: g("mlNim"), prodi: g("mlProdi"), judul: g("mlJudul"), waktu: g("mlWaktu"), tempat: g("mlTempat") };
-    const surat = suratBaru(jenis, f);
-    window._motlet = surat;
-    $("#mlOut").innerHTML = '<div class="' + OUT + '"><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[15px]" style="font-family:Georgia,serif">' + esc(surat) + "</div>"
-      + '<p class="text-xs text-slate-500 mt-2">Periksa kembali nama, tanggal, dan instansi sebelum mengirim. Untuk Surat Pernyataan & Kuasa, tempel materai Rp10.000 pada bagian yang ditandai.</p>'
-      + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="copyText(window._motlet)">📋 Copy Surat</button>'
-      + '<button class="' + BTN2 + '" onclick="download(\'Surat.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt;white-space:pre-wrap&quot;>\' + esc(window._motlet) + \'</body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
-    window._suratDoc = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(surat) + "</div></body></html>";
-    const btn = [...document.querySelectorAll("#mlOut button")].find((b) => (b.getAttribute("onclick") || "").includes("Surat.doc"));
-    if (btn) btn.setAttribute("onclick", "download('Surat.doc', window._suratDoc, 'application/msword')");
-  };
-  // petunjuk awal
-  const hint = $("#mlHint");
-  if (hint) hint.textContent = "Pilih jenis surat — ada 15 jenis sekarang, termasuk izin penelitian, keringanan UKT, sponsorship, dan surat pernyataan. Surat ter-generate live saat kamu mengetik.";
-})();
 
 ;
 
 /* ============================================================
    TOOL 67 — UJI STATISTIK INFERENSIAL + NARASI BAB 4
    ============================================================ */
-function parseNums(t) { return (t || "").split(/[\s,;]+/).map((s) => parseFloat(String(s).replace(",", "."))).filter((n) => !isNaN(n)); }
-function _lgamma(x) { const c = [676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7]; if (x < 0.5) return Math.log(Math.PI / Math.sin(Math.PI * x)) - _lgamma(1 - x); x -= 1; let a = 0.99999999999980993; const t = x + 7.5; for (let i = 0; i < 8; i++) a += c[i] / (x + i + 1); return 0.5 * Math.log(2 * Math.PI) + (x + 0.5) * Math.log(t) - t + Math.log(a); }
-function _betacf(x, a, b) { const qab = a + b, qap = a + 1, qam = a - 1; let c = 1, d = 1 - qab * x / qap; if (Math.abs(d) < 1e-300) d = 1e-300; d = 1 / d; let h = d; for (let m = 1; m <= 200; m++) { const m2 = 2 * m; let aa = m * (b - m) * x / ((qam + m2) * (a + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; h *= d * c; aa = -(a + m) * (qab + m) * x / ((a + m2) * (qap + m2)); d = 1 + aa * d; if (Math.abs(d) < 1e-300) d = 1e-300; c = 1 + aa / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 3e-7) break; } return h; }
-function betainc(x, a, b) { if (x <= 0) return 0; if (x >= 1) return 1; const bt = Math.exp(_lgamma(a + b) - _lgamma(a) - _lgamma(b) + a * Math.log(x) + b * Math.log(1 - x)); if (x < (a + 1) / (a + b + 2)) return bt * _betacf(x, a, b) / a; return 1 - bt * _betacf(1 - x, b, a) / b; }
-function pDariT(t, df) { return betainc(df / (df + t * t), df / 2, 0.5); }
-function pDariF(f, d1, d2) { return 1 - betainc((d1 * f) / (d1 * f + d2), d1 / 2, d2 / 2); }
-function fmtP(p) { return p < 0.001 ? "< 0,001" : p.toFixed(3).replace(".", ","); }
-function fmtN(x, d) { return Number(x).toFixed(d == null ? 2 : d).replace(".", ","); }
 
 UI.inferens = function (el) {
   el.innerHTML = '<div class="fadein">'
@@ -5472,44 +5569,6 @@ async function prosesStamp() {
 
 ;
 
-/* ============================================================
-   SISTEM — BACKUP & RESTORE DATA (localStorage mt_*)
-   ============================================================ */
-function kumpulkanBackup() {
-  const data = {};
-  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf("mt_") === 0) data[k] = localStorage.getItem(k); }
-  return { app: "MahasiswaTools", kind: "backup-data", version: 1, exportedAt: new Date().toISOString(), data };
-}
-function backupData() {
-  const b = kumpulkanBackup();
-  const n = Object.keys(b.data).length;
-  if (!n) { toast("Belum ada data tersimpan untuk di-backup."); return; }
-  download("Backup_Data.json", JSON.stringify(b, null, 1), "application/json");
-  toast("Backup berisi " + n + " data diunduh 💾 Simpan baik-baik.");
-}
-function terapkanBackup(obj) {
-  if (!obj || obj.app !== "MahasiswaTools" || !obj.data || typeof obj.data !== "object") throw new Error("File bukan backup MahasiswaTools yang valid.");
-  let n = 0;
-  Object.keys(obj.data).forEach((k) => { if (k.indexOf("mt_") === 0) { try { localStorage.setItem(k, String(obj.data[k])); n++; } catch (e) {} } });
-  return n;
-}
-function restoreData(input) {
-  const f = input.files && input.files[0];
-  if (!f) return;
-  const rd = new FileReader();
-  rd.onload = function () {
-    try {
-      const obj = JSON.parse(rd.result);
-      if (!confirm("Restore backup ini? Data MahasiswaTools saat ini di browser ini akan DIGABUNGKAN/ditimpa oleh isi backup.")) return;
-      const n = terapkanBackup(obj);
-      toast("Restore berhasil: " + n + " data dimuat ulang ✅ Halaman akan dimuat ulang…");
-      setTimeout(() => location.reload(), 900);
-    } catch (e) { toast("❌ " + e.message); }
-    input.value = "";
-  };
-  rd.readAsText(f);
-}
-window._kumpulkanBackup = kumpulkanBackup; window._terapkanBackup = terapkanBackup;
 
 /* ============================================================
    TOOL 79 — KALKULATOR TARGET NILAI MATA KULIAH
@@ -5833,7 +5892,6 @@ SHARE_GETTERS.lpj = function () { const L = window._lpj || {}; return "LPJ " + (
 
 ;
 
-function fmtRp(n) { return "Rp" + Math.round(Number(n) || 0).toLocaleString("id-ID"); }
 
 /* ============================================================
    TOOL 83 — REGRESI BERGANDA & UJI ASUMSI KLASIK
@@ -6061,9 +6119,11 @@ SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount
 /* ============================================================
    ROUTER — deep-link hash & mode halaman tool (SEO)
    ============================================================ */
-(function () {
+function mtBootRouter() {
   const chip = document.querySelector("[data-tools-count]");
   if (chip) chip.textContent = TOOLS.length + " Tool Gratis";
+  try { applyToolEnhancers(); } catch (e) {}
+  try { muatLogoImg(); } catch (e) {}
   if (window.__MT_TOOL_ID__) {
     const t = TOOLS.find((x) => x.id === window.__MT_TOOL_ID__);
     const root = document.getElementById("toolRoot");
@@ -6079,4 +6139,10 @@ SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount
     const id = location.hash.slice(1);
     if (TOOLS.some((x) => x.id === id)) { try { openTool(id); } catch (e) {} }
   }
-})();
+  // Prefetch partisi kategori di latar belakang — muat awal tetap ringan,
+  // dan tool umumnya sudah siap sebelum sempat diklik.
+  const cats = ["anti", "tulis", "data", "present", "kelompok", "dokumen", "karir"];
+  setTimeout(() => { cats.reduce((p, c) => p.then(() => loadCat(c)), Promise.resolve()); }, 600);
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mtBootRouter);
+else mtBootRouter();

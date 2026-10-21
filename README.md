@@ -7,7 +7,117 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (65 — 55 brief + 4 bonus + 6 Kit Anti-AI)
+## 📚 Direktori 85 Tool
+
+Semua tool di bawah ini **aktif dan berfungsi penuh** — klik nama tool untuk membukanya langsung.
+
+### 🤖 Kit Anti-AI & Keaslian (6 tool)
+
+- **[Pendeteksi Gaya Tulisan AI (Burstiness)](https://detta2.github.io/mahasiswatools/tools/pendeteksi-gaya-tulisan-ai-burstiness/)** — Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.
+- **[Humanizer & Editor Variasi Kalimat](https://detta2.github.io/mahasiswatools/tools/humanizer-dan-editor-variasi-kalimat/)** — Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.
+- **[Pembersih Jejak & Karakter Tersembunyi AI](https://detta2.github.io/mahasiswatools/tools/pembersih-jejak-dan-karakter-tersembunyi-ai/)** — Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.
+- **[Verifikator Keaslian Daftar Pustaka (Crossref)](https://detta2.github.io/mahasiswatools/tools/verifikator-keaslian-daftar-pustaka-crossref/)** — Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.
+- **[Generator Deklarasi Penggunaan AI](https://detta2.github.io/mahasiswatools/tools/generator-deklarasi-penggunaan-ai/)** — Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.
+- **[Editor Bukti Ketikan Mandiri (Authorship Proof)](https://detta2.github.io/mahasiswatools/tools/editor-bukti-ketikan-mandiri-authorship-proof/)** — Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.
+
+### 📝 Penulisan & Skripsi (21 tool)
+
+- **[Template Makalah & Skripsi (.docx)](https://detta2.github.io/mahasiswatools/tools/template-makalah-dan-skripsi-docx/)** — Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.
+- **[Generator Proposal](https://detta2.github.io/mahasiswatools/tools/generator-proposal/)** — Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.
+- **[Pencari & Rak Jurnal](https://detta2.github.io/mahasiswatools/tools/pencari-dan-rak-jurnal/)** — Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.
+- **[Pembuat Daftar Singkatan Otomatis](https://detta2.github.io/mahasiswatools/tools/pembuat-daftar-singkatan-otomatis/)** — Ekstrak akronim dari naskah jadi daftar singkatan A–Z.
+- **[Lembar Bimbingan Skripsi](https://detta2.github.io/mahasiswatools/tools/lembar-bimbingan-skripsi/)** — Kartu kendali konsultasi dosen, ekspor .doc berkop logo.
+- **[Manajer Revisi Pasca-Sidang](https://detta2.github.io/mahasiswatools/tools/manajer-revisi-pasca-sidang/)** — Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.
+- **[Generator Ide Judul Skripsi](https://detta2.github.io/mahasiswatools/tools/generator-ide-judul-skripsi/)** — Puluhan pola judul dari variabel X, Y, lokasi & metode.
+- **[Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)](https://detta2.github.io/mahasiswatools/tools/daftar-pustaka-otomatis-apa-mla-harvard-vancouver/)** — Format sitasi instan, italic otomatis, urut A–Z, tersimpan.
+- **[Matriks Sintesis Jurnal Bab 2](https://detta2.github.io/mahasiswatools/tools/matriks-sintesis-jurnal-bab-2/)** — Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.
+- **[Academic Phrasebank (34+ Kalimat Akademik)](https://detta2.github.io/mahasiswatools/tools/academic-phrasebank-34-kalimat-akademik/)** — Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.
+- **[Generator Abstrak Dwibahasa](https://detta2.github.io/mahasiswatools/tools/generator-abstrak-dwibahasa/)** — Rakit abstrak ID + kerangka EN dari latar, tujuan, metode, hasil.
+- **[Kalkulator Target Kata & Deadline Skripsi](https://detta2.github.io/mahasiswatools/tools/kalkulator-target-kata-dan-deadline-skripsi/)** — Target kata per hari realistis + milestone tanggal per bab.
+- **[Glosarium & Singkatan Sorter (A–Z)](https://detta2.github.io/mahasiswatools/tools/glosarium-dan-singkatan-sorter-a-z/)** — Urutkan istilah A–Z, deteksi duplikat & entri tanpa definisi.
+- **[Generator Tabel Jurnal (Booktabs)](https://detta2.github.io/mahasiswatools/tools/generator-tabel-jurnal-booktabs/)** — Tabel bersih standar jurnal tanpa garis vertikal, siap paste Word.
+- **[Pembersih Teks Copy-Paste PDF](https://detta2.github.io/mahasiswatools/tools/pembersih-teks-copy-paste-pdf/)** — Hapus enter terpotong & spasi ganda dari teks jurnal PDF.
+- **[Auto-Italic Kata Asing & Latin](https://detta2.github.io/mahasiswatools/tools/auto-italic-kata-asing-dan-latin/)** — Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.
+- **[Case Converter EYD Judul](https://detta2.github.io/mahasiswatools/tools/case-converter-eyd-judul/)** — Title Case Bahasa Indonesia: kata hubung tetap huruf kecil.
+- **[Pre-Turnitin Similarity Checker (Lokal)](https://detta2.github.io/mahasiswatools/tools/pre-turnitin-similarity-checker-lokal/)** — Jaccard 3-gram: bandingkan teks asli vs parafrase + highlight.
+- **[Pengecek Kata Berulang (Word Frequency)](https://detta2.github.io/mahasiswatools/tools/pengecek-kata-berulang-word-frequency/)** — Hitung kata yang terlalu sering diulang dalam naskahmu.
+- **[Kalkulator Waktu Baca Presentasi](https://detta2.github.io/mahasiswatools/tools/kalkulator-waktu-baca-presentasi/)** — Jumlah kata naskah → estimasi durasi bicara + saran potong kata.
+- **[Generator Kerangka Bab & Sub-Bab Skripsi](https://detta2.github.io/mahasiswatools/tools/generator-kerangka-bab-dan-sub-bab-skripsi/)** — Kerangka Bab I–V sesuai metode penelitianmu + panduan isi.
+
+### 📊 Olah Data & Penelitian (14 tool)
+
+- **[Uji Statistik Inferensial](https://detta2.github.io/mahasiswatools/tools/uji-statistik-inferensial/)** — Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.
+- **[Pembuat Kuesioner Penelitian](https://detta2.github.io/mahasiswatools/tools/pembuat-kuesioner-penelitian/)** — Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.
+- **[Uji Statistik Non-Parametrik](https://detta2.github.io/mahasiswatools/tools/uji-statistik-non-parametrik/)** — Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.
+- **[Statistik Deskriptif & Distribusi Frekuensi](https://detta2.github.io/mahasiswatools/tools/statistik-deskriptif-dan-distribusi-frekuensi/)** — Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.
+- **[Regresi Berganda & Uji Asumsi Klasik](https://detta2.github.io/mahasiswatools/tools/regresi-berganda-dan-uji-asumsi-klasik/)** — Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.
+- **[Lembar Persetujuan Responden](https://detta2.github.io/mahasiswatools/tools/lembar-persetujuan-responden/)** — Informed consent etika penelitian, berkop logo, siap tanda tangan.
+- **[Koding Kualitatif Transkrip](https://detta2.github.io/mahasiswatools/tools/koding-kualitatif-transkrip/)** — Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.
+- **[Uji Validitas Pearson & Reliabilitas Alpha](https://detta2.github.io/mahasiswatools/tools/uji-validitas-pearson-dan-reliabilitas-alpha/)** — Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.
+- **[Konverter Skala Likert Massal](https://detta2.github.io/mahasiswatools/tools/konverter-skala-likert-massal/)** — Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.
+- **[Kalkulator Sampel (Slovin, Isaac & Lemeshow)](https://detta2.github.io/mahasiswatools/tools/kalkulator-sampel-slovin-isaac-dan-lemeshow/)** — Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.
+- **[Dummy Data Kuesioner Generator (Auto-Valid)](https://detta2.github.io/mahasiswatools/tools/dummy-data-kuesioner-generator-auto-valid/)** — Data simulasi latihan yang diverifikasi lolos Alpha target.
+- **[Pembersih Transkrip Wawancara & Analisis Teks](https://detta2.github.io/mahasiswatools/tools/pembersih-transkrip-wawancara-dan-analisis-teks/)** — Rapikan transkrip kualitatif + frekuensi kata narasumber.
+- **[Generator Grafik Bab 4 Arsiran (Batang & Pie)](https://detta2.github.io/mahasiswatools/tools/generator-grafik-bab-4-arsiran-batang-dan-pie/)** — Diagram arsiran hitam-putih, tetap jelas saat difotokopi.
+- **[Pembuat Bagan Kerangka Berpikir (X → Y)](https://detta2.github.io/mahasiswatools/tools/pembuat-bagan-kerangka-berpikir-x-y/)** — Kotak variabel + panah hubungan + narasi, ekspor PNG.
+
+### 🎤 Presentasi & Sidang (10 tool)
+
+- **[Outline Makalah ke PowerPoint (.pptx)](https://detta2.github.io/mahasiswatools/tools/outline-makalah-ke-powerpoint-pptx/)** — Poin makalah → file presentasi .pptx asli per bab.
+- **[Teleprompter & Timer Sidang](https://detta2.github.io/mahasiswatools/tools/teleprompter-dan-timer-sidang/)** — Teks berjalan otomatis + estimasi kata per menit.
+- **[Simulasi Pertanyaan Penguji Sidang (18+ Soal)](https://detta2.github.io/mahasiswatools/tools/simulasi-pertanyaan-penguji-sidang-18-soal/)** — Bank soal jebakan penguji + kerangka jawaban + timer.
+- **[Mind Map Generator (SVG Radial)](https://detta2.github.io/mahasiswatools/tools/mind-map-generator-svg-radial/)** — Topik + sub-topik → peta konsep bercabang warna, unduh PNG.
+- **[Kuis Pilihan Ganda & Flashcard Otomatis](https://detta2.github.io/mahasiswatools/tools/kuis-pilihan-ganda-dan-flashcard-otomatis/)** — Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.
+- **[Cornell Notes Generator](https://detta2.github.io/mahasiswatools/tools/cornell-notes-generator/)** — Catatan metode Cornell: isyarat, catatan, ringkasan.
+- **[Pomodoro Timer + Suara Fokus Web Audio](https://detta2.github.io/mahasiswatools/tools/pomodoro-timer-suara-fokus-web-audio/)** — Timer 25/5 + white/brown noise & hujan prosedural.
+- **[Roda Undian Urutan Presentasi](https://detta2.github.io/mahasiswatools/tools/roda-undian-urutan-presentasi/)** — Spin wheel pengundi giliran kelompok presentasi.
+- **[Flashcard Cetak (Duplex A4)](https://detta2.github.io/mahasiswatools/tools/flashcard-cetak-duplex-a4/)** — Lembar A4 depan–belakang tercermin, siap cetak & gunting.
+- **[Generator Soal Rumpang (Cloze)](https://detta2.github.io/mahasiswatools/tools/generator-soal-rumpang-cloze/)** — Soal isian titik-titik otomatis dari teks materi + kunci.
+
+### 👥 Tugas Kelompok & KKN (11 tool)
+
+- **[LPJ & Kas Kegiatan UKM](https://detta2.github.io/mahasiswatools/tools/lpj-dan-kas-kegiatan-ukm/)** — Realisasi anggaran vs RAB + sisa dana, ekspor LPJ resmi.
+- **[Smart Group Generator (Pengacak Adil)](https://detta2.github.io/mahasiswatools/tools/smart-group-generator-pengacak-adil/)** — Bagi nama ke kelompok merata, seimbang gender bila ditandai.
+- **[Splitter Kas & Patungan Kelompok](https://detta2.github.io/mahasiswatools/tools/splitter-kas-dan-patungan-kelompok/)** — Hitung patungan + siapa transfer ke siapa agar impas.
+- **[Pencari Jadwal Kosong Bersama](https://detta2.github.io/mahasiswatools/tools/pencari-jadwal-kosong-bersama/)** — Irisan jam kosong seluruh anggota tanpa login.
+- **[Logbook Harian Magang / KKN](https://detta2.github.io/mahasiswatools/tools/logbook-harian-magang-kkn/)** — Catatan harian formal, ekspor .doc berkop paraf & DPL.
+- **[Daftar Hadir & Berita Acara](https://detta2.github.io/mahasiswatools/tools/daftar-hadir-dan-berita-acara/)** — Daftar hadir siap cetak & berita acara kegiatan resmi.
+- **[Kwitansi & Nota LPJ Ber-Terbilang](https://detta2.github.io/mahasiswatools/tools/kwitansi-dan-nota-lpj-ber-terbilang/)** — Kwitansi canvas resmi, angka otomatis jadi terbilang.
+- **[Gantt Chart & Matriks Proker KKN](https://detta2.github.io/mahasiswatools/tools/gantt-chart-dan-matriks-proker-kkn/)** — Linimasa program kerja mingguan, ekspor PNG.
+- **[Bagan Struktur Organisasi Posko KKN](https://detta2.github.io/mahasiswatools/tools/bagan-struktur-organisasi-posko-kkn/)** — Hierarki posko/desa dari pembina sampai divisi, PNG.
+- **[Generator Sertifikat Massal (ZIP)](https://detta2.github.io/mahasiswatools/tools/generator-sertifikat-massal-zip/)** — Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.
+- **[Desain Plang Jalan & Edukasi Desa (Bonus)](https://detta2.github.io/mahasiswatools/tools/desain-plang-jalan-dan-edukasi-desa-bonus/)** — Desain plang canvas 4 tema untuk program fisik KKN.
+
+### 📄 Dokumen, PDF & Gambar (11 tool)
+
+- **[Nomor Halaman & Watermark PDF](https://detta2.github.io/mahasiswatools/tools/nomor-halaman-dan-watermark-pdf/)** — Beri nomor halaman & cap watermark pada PDF yang di-upload.
+- **[Pas Foto & Ganti Background](https://detta2.github.io/mahasiswatools/tools/pas-foto-dan-ganti-background/)** — Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.
+- **[Pembuat Tanda Tangan Transparan PNG](https://detta2.github.io/mahasiswatools/tools/pembuat-tanda-tangan-transparan-png/)** — Buang latar kertas via luminansi → PNG transparan.
+- **[Grid Foto Dokumentasi Lampiran](https://detta2.github.io/mahasiswatools/tools/grid-foto-dokumentasi-lampiran/)** — Banyak foto + caption → satu gambar lampiran rapi.
+- **[Timestamp & Geotagging Foto](https://detta2.github.io/mahasiswatools/tools/timestamp-dan-geotagging-foto/)** — Tempel waktu & lokasi ala kamera lapangan ke foto tugas.
+- **[Generator QR Code Permanen (+ Logo)](https://detta2.github.io/mahasiswatools/tools/generator-qr-code-permanen-logo/)** — QR link kuesioner ECC-H, bisa sisip logo di tengah.
+- **[OCR Gambar Buku / Catatan ke Teks](https://detta2.github.io/mahasiswatools/tools/ocr-gambar-buku-catatan-ke-teks/)** — Foto halaman → teks bisa copy (Tesseract.js, ID/EN).
+- **[Penggabung PDF (Merger)](https://detta2.github.io/mahasiswatools/tools/penggabung-pdf-merger/)** — Gabungkan banyak PDF berkas jadi satu file utuh.
+- **[Kompresor File (Gambar / PDF / DOCX)](https://detta2.github.io/mahasiswatools/tools/kompresor-file-gambar-pdf-docx/)** — Perkecil gambar, PDF, dan .docx langsung di browser.
+- **[Konverter Gambar ke PDF](https://detta2.github.io/mahasiswatools/tools/konverter-gambar-ke-pdf/)** — Kumpulan foto dokumen → satu PDF A4 rapi per halaman.
+- **[Ekstrak Halaman PDF Tertentu](https://detta2.github.io/mahasiswatools/tools/ekstrak-halaman-pdf-tertentu/)** — Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.
+
+### 🎓 Akademik, Karir & Harian (12 tool)
+
+- **[Konverter SKS MBKM / Kampus Merdeka](https://detta2.github.io/mahasiswatools/tools/konverter-sks-mbkm-kampus-merdeka/)** — Konversi jam magang/KKN/studi independen ke penyetaraan SKS.
+- **[Kalkulator Target Nilai Mata Kuliah](https://detta2.github.io/mahasiswatools/tools/kalkulator-target-nilai-mata-kuliah/)** — Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.
+- **[Kalkulator Target Biaya Kuliah](https://detta2.github.io/mahasiswatools/tools/kalkulator-target-biaya-kuliah/)** — Total sisa biaya kuliah jadi target tabungan per bulan.
+- **[CV ATS-Friendly Builder + Skor Struktural](https://detta2.github.io/mahasiswatools/tools/cv-ats-friendly-builder-skor-struktural/)** — CV 1 kolom aman ATS + skor cek struktur instan.
+- **[Pembuat Surat Resmi & Motivation Letter](https://detta2.github.io/mahasiswatools/tools/pembuat-surat-resmi-dan-motivation-letter/)** — 15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.
+- **[Simulasi Wawancara Kerja (Metode STAR)](https://detta2.github.io/mahasiswatools/tools/simulasi-wawancara-kerja-metode-star/)** — Latihan wawancara + timer 90 detik + kerangka STAR.
+- **[Simulator Target IPK (GPA Planner)](https://detta2.github.io/mahasiswatools/tools/simulator-target-ipk-gpa-planner/)** — Proyeksi IP semester depan untuk target cumlaude.
+- **[Checklist Syarat Yudisium & Sidang](https://detta2.github.io/mahasiswatools/tools/checklist-syarat-yudisium-dan-sidang/)** — 14+ syarat kelulusan, progres tersimpan otomatis.
+- **[Budget Anak Kos + Terbilang & Romawi](https://detta2.github.io/mahasiswatools/tools/budget-anak-kos-terbilang-dan-romawi/)** — Jatah aman makan harian + konverter terbilang & angka Romawi.
+- **[Kalender Akademik & Pengingat Deadline (Bonus)](https://detta2.github.io/mahasiswatools/tools/kalender-akademik-dan-pengingat-deadline-bonus/)** — Kalender + hitung mundur H-x + ekspor .ics.
+- **[Wallpaper Jadwal Kuliah / KRS (Bonus)](https://detta2.github.io/mahasiswatools/tools/wallpaper-jadwal-kuliah-krs-bonus/)** — Jadwal kuliah jadi wallpaper HP 1080×1920.
+- **[Generator Chat & Surat Izin Dosen (Bonus)](https://detta2.github.io/mahasiswatools/tools/generator-chat-dan-surat-izin-dosen-bonus/)** — Template chat sopan ke dosen + surat izin resmi.
+
+## Fitur Aktif (85 Tool — Semua Berfungsi Penuh)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -120,5 +230,8 @@ Arsitektur sesuai brief: lazy-load library (JSZip/PptxGenJS/pdf-lib/QR/Tesseract
 
 ## Teknologi
 
-Satu file `index.html` — HTML + Tailwind CSS (CDN) + JavaScript murni.
-Preferensi (favorit, tema, daftar pustaka) disimpan di `localStorage`.
+- **100% client-side** — HTML + JavaScript murni dengan CSS statis hasil kompilasi Tailwind CLI (`style.css`); tanpa framework, tanpa server, tanpa pengiriman data ke mana pun.
+- **Arsitektur muat cepat (partisi lazy per kategori)** — kunjungan pertama hanya mengunduh `js/core.js` (±68 KB: shell portal, katalog, dan helper bersama). Implementasi tool dipecah per kategori — `js/cat-anti.js`, `js/cat-tulis.js`, `js/cat-data.js`, `js/cat-present.js`, `js/cat-kelompok.js`, `js/cat-dokumen.js`, `js/cat-karir.js` — dan dimuat otomatis saat tool pertama dari kategori itu dibuka, lalu di-prefetch di latar belakang agar tool berikutnya instan. JavaScript awal turun dari ±565 KB (satu file) menjadi ±68 KB.
+- **Sumber & build** — seluruh logika ditulis dalam satu sumber kebenaran `app.js`. Perintah `node build/split.js` memecahnya menjadi core + partisi (integritasnya dijaga `node build/audit-partisi.js` yang memastikan tidak ada referensi lintas partisi), dan `node build/build-seo.js` membangkitkan 85 halaman statis per tool di `tools/<slug>/` beserta `sitemap.xml` dan `robots.txt` untuk SEO.
+- **Library eksternal dimuat malas** — JSZip, PptxGenJS, pdf-lib, qrcode-generator, dan Tesseract.js hanya diunduh dari CDN saat tool yang membutuhkannya dipakai.
+- Preferensi & data pengguna (favorit, tema, catatan, ceklis, dll.) disimpan lokal di `localStorage` dan dapat dicadangkan/diimpor lewat fitur Backup & Restore Data di footer situs.
