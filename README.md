@@ -7,7 +7,7 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## Fitur Aktif (59 — 55 sesuai brief + 4 bonus)
+## Fitur Aktif (65 — 55 brief + 4 bonus + 6 Kit Anti-AI)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -68,7 +68,15 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) — total 59 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 65 tool.
+
+### 🤖 Kit Anti-AI & Keaslian (Tool 60–65)
+60. **Pendeteksi Gaya Tulisan AI** — skor risiko dari burstiness (CV panjang kalimat), type-token ratio, 30+ frasa klise LLM (ID/EN), grafik batang kalimat & sentence heatmap.
+61. **Humanizer & Editor Variasi Kalimat** — editor per kalimat, analisis ritme (peringatan 3 kalimat mirip beruntun), kamus klik-ganti 58 kata klise AI → sinonim akademik natural.
+62. **Pembersih Jejak AI** — pindai & bersihkan zero-width chars, NBSP, em-dash, kutip melengkung, sisa Markdown.
+63. **Verifikator Keaslian Daftar Pustaka** — fetch nyata ke Crossref REST API per sitasi (atau via DOI), skor kemiripan judul, flag potensi halusinasi AI; status offline dibedakan dari tidak ditemukan.
+64. **Generator Deklarasi Penggunaan AI** — pernyataan dwibahasa (skripsi kampus ID + jurnal internasional EN), ekspor .doc.
+65. **Editor Bukti Ketikan Mandiri** — telemetri lokal (ketukan, koreksi, paste, waktu aktif, snapshot 10 detik) di localStorage + ekspor Sertifikat Bukti Penulisan (.doc) berisi linimasa pertumbuhan naskah.
 Arsitektur sesuai brief: lazy-load library (JSZip/PptxGenJS/pdf-lib/QR/Tesseract), Web Share API (tombol bagikan di tool kelompok/teks), back-button trap (tombol back HP menutup modal), panel modal bottom-sheet dengan dvh, statistik hero dinamis dari katalog.
 
 ## Teknologi
