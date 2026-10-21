@@ -161,6 +161,7 @@ const TOOLS = [
   { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
   { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
   { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
+  { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", aktif: 1 },
   { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
   { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
   { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
@@ -273,7 +274,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 function toolCard(t) {
   const fav = favs.has(t.id);
@@ -4222,4 +4223,240 @@ function sisipLogoField(el, btnOnclick) {
   unduhSertifikatPdfZip = async function () { await muatLogoImg(); return _up(); };
   muatLogoImg();
 })();
+</script>
+
+<script>
+/* ============================================================
+   TOOL 66 — GENERATOR PROPOSAL (penelitian / kegiatan / magang)
+   ============================================================ */
+UI.proposal = function (el) {
+  const F = (label, inner) => field(label, inner);
+  el.innerHTML = '<div class="fadein">'
+    + F("Jenis Proposal", '<select id="prJenis" class="' + IN + '" onchange="prGantiJenis()"><option value="riset">🔬 Proposal Penelitian / Skripsi</option><option value="kegiatan">🎪 Proposal Kegiatan Mahasiswa (Acara/UKM)</option><option value="magang">💼 Proposal Magang / PKL</option></select>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + F("Judul Proposal", '<input id="prJudul" class="' + IN + '" placeholder="Judul lengkap proposal">')
+    + F("Nama Pengusul / Ketua", '<input id="prNama" class="' + IN + '" placeholder="Nama lengkap">')
+    + F("NIM", '<input id="prNim" class="' + IN + '" placeholder="NIM kamu">')
+    + F("Program Studi / Organisasi", '<input id="prProdi" class="' + IN + '" placeholder="cth: Pendidikan Ekonomi / HIMA Ekonomi">')
+    + F("Universitas / Kampus", '<input id="prKampus" class="' + IN + '" placeholder="cth: Universitas Contoh Indonesia">')
+    + F("Kota & Tanggal", '<input id="prKota" class="' + IN + '" value="Palembang, ' + new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) + '">')
+    + "</div>"
+    /* --- PENELITIAN --- */
+    + '<div id="prSecRiset">'
+    + F("Latar Belakang", '<textarea id="prLatar" rows="4" class="' + IN + '" placeholder="Fenomena, data pendukung, kesenjangan masalah — dari umum ke khusus"></textarea>')
+    + F("Rumusan Masalah (satu per baris)", '<textarea id="prRumusan" rows="2" class="' + IN + '" placeholder="Apakah terdapat pengaruh … terhadap …?"></textarea>')
+    + F("Tujuan Penelitian (satu per baris)", '<textarea id="prTujuan" rows="2" class="' + IN + '" placeholder="Untuk mengetahui pengaruh … terhadap …"></textarea>')
+    + F("Manfaat Penelitian", '<textarea id="prManfaat" rows="2" class="' + IN + '" placeholder="Manfaat teoretis & praktis"></textarea>')
+    + F("Tinjauan Pustaka Ringkas", '<textarea id="prTinjauan" rows="3" class="' + IN + '" placeholder="Teori utama + penelitian terdahulu yang relevan"></textarea>')
+    + F("Metode: Jenis & Pendekatan", '<textarea id="prMetode" rows="2" class="' + IN + '" placeholder="cth: Kuantitatif, metode survei, desain korelasional"></textarea>')
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + F("Populasi & Sampel", '<textarea id="prSubjek" rows="2" class="' + IN + '" placeholder="Populasi … sampel … teknik …"></textarea>')
+    + F("Instrumen", '<textarea id="prInstrumen" rows="2" class="' + IN + '" placeholder="Angket skala Likert, uji validitas & reliabilitas"></textarea>')
+    + F("Teknik Analisis Data", '<textarea id="prAnalisis" rows="2" class="' + IN + '" placeholder="Regresi linear sederhana, uji t, SPSS"></textarea>')
+    + "</div>"
+    + F("Jadwal Penelitian (format: Kegiatan | Waktu)", '<textarea id="prJadwal" rows="3" class="' + IN + '" placeholder="Penyusunan proposal | November 2026&#10;Pengambilan data | Desember 2026&#10;Analisis & pelaporan | Januari 2027"></textarea>')
+    + "</div>"
+    /* --- KEGIATAN --- */
+    + '<div id="prSecKegiatan" class="hidden">'
+    + F("Latar Belakang Kegiatan", '<textarea id="prKgLatar" rows="3" class="' + IN + '" placeholder="Alasan & urgensi kegiatan ini diselenggarakan"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + F("Nama & Tema Kegiatan", '<input id="prKgTema" class="' + IN + '" placeholder="cth: Seminar Nasional — “Tema acara”">')
+    + F("Sasaran / Peserta", '<input id="prKgSasaran" class="' + IN + '" placeholder="cth: 150 mahasiswa se-kota">')
+    + F("Waktu Pelaksanaan", '<input id="prKgWaktu" class="' + IN + '" placeholder="cth: Sabtu, 14 November 2026, 08.00–15.00 WIB">')
+    + F("Tempat Pelaksanaan", '<input id="prKgTempat" class="' + IN + '" placeholder="cth: Aula Kampus / Zoom Meeting">')
+    + "</div>"
+    + F("Tujuan Kegiatan (satu per baris)", '<textarea id="prKgTujuan" rows="2" class="' + IN + '" placeholder="Meningkatkan wawasan peserta tentang …"></textarea>')
+    + F("Susunan Acara (format: Waktu | Acara | Penanggung Jawab)", '<textarea id="prKgAcara" rows="3" class="' + IN + '" placeholder="08.00–08.30 | Registrasi peserta | Sie Acara&#10;08.30–09.00 | Pembukaan & sambutan | MC"></textarea>')
+    + F("Susunan Kepanitiaan (format: Jabatan | Nama)", '<textarea id="prKgPanitia" rows="3" class="' + IN + '" placeholder="Ketua Pelaksana | Nama Ketua&#10;Sekretaris | Nama Sekretaris&#10;Bendahara | Nama Bendahara"></textarea>')
+    + F("RAB — Rencana Anggaran Biaya (format: Item | Jumlah | Harga Satuan)", '<textarea id="prRab" rows="4" class="' + IN + '" placeholder="Konsumsi peserta | 50 | 15000&#10;Sewa sound system | 1 | 750000&#10;Sertifikat & ATK | 1 | 250000"></textarea>')
+    + '<p id="prRabTotal" class="text-sm font-extrabold mb-3"></p>'
+    + F("Penutup", '<textarea id="prKgPenutup" rows="2" class="' + IN + '" placeholder="Kalimat penutup & harapan dukungan (opsional)"></textarea>')
+    + "</div>"
+    /* --- MAGANG --- */
+    + '<div id="prSecMagang" class="hidden">'
+    + F("Tujuan Magang (satu per baris)", '<textarea id="prMgTujuan" rows="3" class="' + IN + '" placeholder="Mengaplikasikan ilmu … di dunia kerja nyata&#10;Memenuhi syarat mata kuliah PKL"></textarea>')
+    + F("Profil Singkat Instansi Tujuan", '<textarea id="prMgProfil" rows="2" class="' + IN + '" placeholder="Nama instansi/perusahaan, bidang, alamat singkat"></textarea>')
+    + F("Waktu Pelaksanaan Magang", '<input id="prMgWaktu" class="' + IN + '" placeholder="cth: 5 Januari – 27 Februari 2027 (8 minggu)">')
+    + F("Rencana Kegiatan (format: Periode | Rencana Kegiatan)", '<textarea id="prMgRencana" rows="3" class="' + IN + '" placeholder="Minggu 1 | Orientasi & pengenalan unit kerja&#10;Minggu 2–4 | Praktik administrasi & pengolahan data"></textarea>')
+    + F("Penutup", '<textarea id="prMgPenutup" rows="2" class="' + IN + '" placeholder="Kalimat penutup (opsional)"></textarea>')
+    + "</div>"
+    /* --- Pengesahan --- */
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + F("Pengesahan 1 — Jabatan | Nama", '<input id="prSah1" class="' + IN + '" placeholder="cth: Ketua Pelaksana | Nama">')
+    + F("Pengesahan 2 — Jabatan | Nama", '<input id="prSah2" class="' + IN + '" placeholder="cth: Dosen Pembimbing | Nama, Gelar">')
+    + F("Pengesahan 3 — Jabatan | Nama", '<input id="prSah3" class="' + IN + '" placeholder="cth: Ketua Program Studi | Nama, Gelar">')
+    + "</div>"
+    + '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW PROPOSAL</p><div id="propPrev"></div></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="buatProposalDocx()">⬇️ Download Proposal .docx (Asli)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(window._proposalText || \'\')">📋 Copy Teks Proposal</button></div>'
+    + '<span id="propStat" class="text-sm text-slate-500"></span>'
+    + outBox("propOut") + "</div>";
+  sisipLogoField(el, "buatProposalDocx()");
+  el.addEventListener("input", renderProposalPreview);
+  renderProposalPreview();
+};
+function prGantiJenis() {
+  const j = $("#prJenis").value;
+  $("#prSecRiset").classList.toggle("hidden", j !== "riset");
+  $("#prSecKegiatan").classList.toggle("hidden", j !== "kegiatan");
+  $("#prSecMagang").classList.toggle("hidden", j !== "magang");
+  renderProposalPreview();
+}
+function gvPr(id) { const e = $("#" + id); return e ? e.value.trim() : ""; }
+function barisNomor(teks) { return teks.split(/\n/).map((s) => s.trim()).filter(Boolean).map((s, i) => (i + 1) + ". " + s).join("\n"); }
+function hitungRab() {
+  const items = [];
+  gvPr("prRab").split(/\n/).map((s) => s.trim()).filter(Boolean).forEach((l) => {
+    const p = l.split("|").map((s) => s.trim());
+    const qty = parseFloat((p[1] || "1").replace(/[^\d.]/g, "")) || 0;
+    const harga = parseFloat((p[2] || "0").replace(/[^\d.]/g, "")) || 0;
+    if (p[0]) items.push({ item: p[0], qty, harga, sub: qty * harga });
+  });
+  return { items, total: items.reduce((a, b) => a + b.sub, 0) };
+}
+function rp(n) { return "Rp" + Math.round(n).toLocaleString("id-ID"); }
+function proposalBlocks() {
+  const j = gvPr("prJenis") || "riset";
+  const B = [];
+  const sub = (judul, isi, panduan) => ({ judul, isi: isi || "", panduan: panduan || "" });
+  if (j === "riset") {
+    B.push({ bab: "BAB I — PENDAHULUAN", subs: [
+      sub("1.1 Latar Belakang", gvPr("prLatar"), "Uraikan fenomena dan data pendukung dari umum ke khusus, tunjukkan kesenjangan antara harapan dan kenyataan, dan tutup dengan urgensi penelitian ini."),
+      sub("1.2 Rumusan Masalah", gvPr("prRumusan") ? barisNomor(gvPr("prRumusan")) : "", "Tulis pertanyaan penelitian yang sejajar dengan tujuan, satu per baris di formulir."),
+      sub("1.3 Tujuan Penelitian", gvPr("prTujuan") ? barisNomor(gvPr("prTujuan")) : "", "Tujuan diawali kata kerja operasional: untuk mengetahui, untuk menganalisis, dst."),
+      sub("1.4 Manfaat Penelitian", gvPr("prManfaat"), "Manfaat teoretis (bagi ilmu) dan praktis (bagi lembaga, masyarakat, peneliti berikutnya).")
+    ]});
+    B.push({ bab: "BAB II — TINJAUAN PUSTAKA", subs: [
+      sub("2.1 Kajian Teori dan Penelitian Terdahulu", gvPr("prTinjauan"), "Paparkan teori utama variabel penelitian dan minimal 5 penelitian terdahulu yang relevan beserta persamaan-perbedaannya.")
+    ]});
+    const jadwal = gvPr("prJadwal").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((s) => s.trim()); return "• " + p[0] + (p[1] ? " — " + p[1] : ""); }).join("\n");
+    B.push({ bab: "BAB III — METODE PENELITIAN", subs: [
+      sub("3.1 Jenis dan Pendekatan Penelitian", gvPr("prMetode"), "Jelaskan jenis/pendekatan dan alasan pemilihannya."),
+      sub("3.2 Populasi dan Sampel", gvPr("prSubjek"), "Sebutkan populasi, jumlah sampel, dan teknik pengambilan sampel."),
+      sub("3.3 Instrumen Penelitian", gvPr("prInstrumen"), "Instrumen yang dipakai beserta uji validitas dan reliabilitasnya."),
+      sub("3.4 Teknik Analisis Data", gvPr("prAnalisis"), "Teknik analisis yang digunakan dan perangkat lunaknya."),
+      sub("3.5 Jadwal Penelitian", jadwal, "Susun jadwal per tahap: proposal, pengambilan data, analisis, pelaporan.")
+    ]});
+  } else if (j === "kegiatan") {
+    const acara = gvPr("prKgAcara").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((s) => s.trim()); return p[0] + " — " + (p[1] || "") + (p[2] ? " (" + p[2] + ")" : ""); }).join("\n");
+    const panitia = gvPr("prKgPanitia").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((s) => s.trim()); return (p[0] || "") + ": " + (p[1] || ""); }).join("\n");
+    const rab = hitungRab();
+    const rabTeks = rab.items.map((r, i) => (i + 1) + ". " + r.item + " — " + r.qty + " × " + rp(r.harga) + " = " + rp(r.sub)).join("\n") + (rab.items.length ? "\nTOTAL ANGGARAN: " + rp(rab.total) : "");
+    B.push({ bab: "BAB I — PENDAHULUAN", subs: [
+      sub("1.1 Latar Belakang", gvPr("prKgLatar"), "Jelaskan alasan dan urgensi kegiatan ini diselenggarakan."),
+      sub("1.2 Nama dan Tema Kegiatan", gvPr("prKgTema"), "Tuliskan nama kegiatan beserta tema yang diusung."),
+      sub("1.3 Tujuan Kegiatan", gvPr("prKgTujuan") ? barisNomor(gvPr("prKgTujuan")) : "", "Tujuan kegiatan yang terukur, satu per baris."),
+      sub("1.4 Sasaran dan Peserta", gvPr("prKgSasaran"), "Siapa peserta kegiatan dan perkiraan jumlahnya.")
+    ]});
+    B.push({ bab: "BAB II — PELAKSANAAN KEGIATAN", subs: [
+      sub("2.1 Waktu dan Tempat", (gvPr("prKgWaktu") ? "Waktu: " + gvPr("prKgWaktu") : "") + (gvPr("prKgTempat") ? "\nTempat: " + gvPr("prKgTempat") : ""), "Tuliskan hari, tanggal, jam, dan tempat pelaksanaan."),
+      sub("2.2 Susunan Acara", acara, "Susun rundown acara per baris dengan format Waktu | Acara | Penanggung Jawab."),
+      sub("2.3 Susunan Kepanitiaan", panitia, "Daftar panitia per baris dengan format Jabatan | Nama.")
+    ]});
+    B.push({ bab: "BAB III — RENCANA ANGGARAN BIAYA", subs: [
+      sub("3.1 Rincian Anggaran", rabTeks, "Isi RAB per baris dengan format Item | Jumlah | Harga Satuan — total dihitung otomatis.")
+    ]});
+    B.push({ bab: "BAB IV — PENUTUP", subs: [
+      sub("4.1 Penutup", gvPr("prKgPenutup"), "Demikian proposal ini kami sampaikan. Besar harapan kami kegiatan ini mendapat dukungan dan persetujuan dari pihak terkait. Atas perhatian dan kerja samanya, kami ucapkan terima kasih.")
+    ]});
+  } else {
+    const rencana = gvPr("prMgRencana").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((s) => s.trim()); return "• " + p[0] + (p[1] ? " — " + p[1] : ""); }).join("\n");
+    B.push({ bab: "BAB I — PENDAHULUAN", subs: [
+      sub("1.1 Latar Belakang", gvPr("prMgProfil") ? "Magang/Praktik Kerja Lapangan (PKL) merupakan sarana penerapan ilmu yang diperoleh di bangku kuliah ke dunia kerja nyata. Adapun instansi tujuan magang adalah sebagai berikut.\n" + gvPr("prMgProfil") : "", "Isi profil singkat instansi tujuan: nama, bidang usaha, dan alamat."),
+      sub("1.2 Tujuan Magang", gvPr("prMgTujuan") ? barisNomor(gvPr("prMgTujuan")) : "", "Tujuan magang, satu per baris."),
+      sub("1.3 Waktu Pelaksanaan", gvPr("prMgWaktu"), "Periode magang: tanggal mulai sampai selesai beserta durasinya.")
+    ]});
+    B.push({ bab: "BAB II — RENCANA KEGIATAN", subs: [
+      sub("2.1 Rencana Kegiatan Magang", rencana, "Rencana kegiatan per periode dengan format Periode | Rencana Kegiatan.")
+    ]});
+    B.push({ bab: "BAB III — PENUTUP", subs: [
+      sub("3.1 Penutup", gvPr("prMgPenutup"), "Demikian proposal magang ini saya sampaikan sebagai bahan pertimbangan. Besar harapan saya untuk dapat diterima melaksanakan magang di instansi Bapak/Ibu. Atas perhatian dan kesempatan yang diberikan, saya ucapkan terima kasih.")
+    ]});
+  }
+  return B;
+}
+function proposalTeksPolos() {
+  const namaJenis = { riset: "PROPOSAL PENELITIAN", kegiatan: "PROPOSAL KEGIATAN", magang: "PROPOSAL MAGANG / PKL" };
+  let t = namaJenis[gvPr("prJenis")] + "\n" + (gvPr("prJudul") || "Judul Proposal").toUpperCase() + "\n\nOleh: " + gvPr("prNama") + (gvPr("prNim") ? " (NIM. " + gvPr("prNim") + ")" : "") + "\n" + gvPr("prProdi") + " — " + gvPr("prKampus") + "\n\n";
+  proposalBlocks().forEach((b) => {
+    t += "\n" + b.bab + "\n";
+    b.subs.forEach((s) => { t += "\n" + s.judul + "\n" + (s.isi || s.panduan) + "\n"; });
+  });
+  return t;
+}
+function renderProposalPreview() {
+  const box = $("#propPrev"); if (!box) return;
+  const namaJenis = { riset: "PROPOSAL PENELITIAN / SKRIPSI", kegiatan: "PROPOSAL KEGIATAN MAHASISWA", magang: "PROPOSAL MAGANG / PKL" };
+  const d = getLogoData();
+  const rab = gvPr("prJenis") === "kegiatan" ? hitungRab() : null;
+  const elTotal = $("#prRabTotal");
+  if (elTotal) elTotal.innerHTML = rab && rab.items.length ? "💰 Total RAB terhitung: <b>" + rp(rab.total) + "</b> dari " + rab.items.length + " item" : "";
+  window._proposalText = proposalTeksPolos();
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+    + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:70px;margin:0 auto"></p>' : "")
+    + '<p class="text-center font-bold text-sm tracking-wide">' + esc((gvPr("prKampus") || "UNIVERSITAS").toUpperCase()) + '</p>'
+    + '<p class="text-center text-xs">' + esc(gvPr("prProdi") || "Program Studi / Organisasi") + '</p>'
+    + '<p class="text-center font-extrabold text-[15px] mt-4 tracking-widest">' + namaJenis[gvPr("prJenis") || "riset"] + '</p>'
+    + '<h3 class="text-center font-extrabold text-base mt-1 leading-snug">' + esc((gvPr("prJudul") || "JUDUL PROPOSAL").toUpperCase()) + '</h3>'
+    + '<p class="text-center text-sm mt-3">Oleh: <b>' + esc(gvPr("prNama") || "Nama Pengusul") + "</b>" + (gvPr("prNim") ? "<br>NIM. " + esc(gvPr("prNim")) : "") + "</p>"
+    + '<p class="text-center text-sm">' + esc(gvPr("prKota")) + "</p>"
+    + '<hr class="my-4 border-slate-300">'
+    + proposalBlocks().map((b) => '<p class="font-extrabold text-sm mt-4 tracking-wide">' + b.bab + "</p>" + b.subs.map((s) => '<p class="text-sm mt-2.5"><b>' + s.judul + '</b></p>' + (s.isi ? '<p class="text-[13.5px] leading-relaxed whitespace-pre-wrap">' + esc(s.isi) + "</p>" : '<p class="text-[13px] italic text-slate-500">(Belum diisi — di dokumen akan tampil teks panduan ini: ' + esc(s.panduan) + ")</p>")).join("")).join("")
+    + (rab && rab.items.length ? '<div class="mt-4 rounded border border-slate-300 p-3"><p class="text-sm font-extrabold mb-1.5">RINCIAN RAB</p>' + rab.items.map((r) => '<p class="text-[13px] flex justify-between gap-2"><span>' + esc(r.item) + " — " + r.qty + " × " + rp(r.harga) + '</span><b>' + rp(r.sub) + "</b></p>").join("") + '<p class="text-sm font-extrabold flex justify-between border-t border-slate-300 mt-2 pt-1.5"><span>TOTAL</span><span>' + rp(rab.total) + "</span></p></div>" : "")
+    + "</div>";
+}
+async function buatProposalDocx() {
+  const stat = $("#propStat"); stat.textContent = "⏳ Menyiapkan library…";
+  const ok = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+  if (!ok) { stat.textContent = "❌ Gagal memuat JSZip (butuh internet sekali untuk library)."; return; }
+  const namaJenis = { riset: "PROPOSAL PENELITIAN", kegiatan: "PROPOSAL KEGIATAN MAHASISWA", magang: "PROPOSAL MAGANG / PKL" };
+  const jenis = gvPr("prJenis") || "riset";
+  const B = [];
+  for (let i = 0; i < 3; i++) B.push(pDoc(""));
+  B.push(pDoc(namaJenis[jenis], { center: 1, b: 1, sz: 26, after: 160 }));
+  B.push(pDoc((gvPr("prJudul") || "Judul Proposal").toUpperCase(), { center: 1, b: 1, sz: 28, after: 300 }));
+  const _lg = getLogoData(); const _lm = getLogoMeta();
+  if (_lg) { const cxL = 1260000; const cyL = Math.min(1440000, Math.round(cxL * ((_lm.h || 1) / (_lm.w || 1)))); B.push('<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="300"/></w:pPr><w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="' + cxL + '" cy="' + cyL + '"/><wp:docPr id="1" name="Logo"/><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="1" name="logo.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdLogo"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cxL + '" cy="' + cyL + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r></w:p>'); }
+  else B.push(pDoc("[ LOGO UNIVERSITAS ]", { center: 1, after: 300 }));
+  B.push(pDoc("Disusun oleh:", { center: 1, after: 60 }));
+  B.push(pDoc(gvPr("prNama") || "Nama Pengusul", { center: 1, b: 1, after: 40 }));
+  if (gvPr("prNim")) B.push(pDoc("NIM. " + gvPr("prNim"), { center: 1, after: 300 }));
+  B.push(pDoc((gvPr("prProdi") || "").toUpperCase(), { center: 1, b: 1, after: 40 }));
+  B.push(pDoc((gvPr("prKampus") || "").toUpperCase(), { center: 1, b: 1, after: 200 }));
+  B.push(pDoc(gvPr("prKota"), { center: 1, b: 1 }));
+  B.push('<w:p><w:r><w:br w:type="page"/></w:r></w:p>');
+  proposalBlocks().forEach((b) => {
+    B.push(headingBab(b.bab));
+    b.subs.forEach((s) => {
+      B.push(subBab(s.judul));
+      if (s.isi) s.isi.split(/\n/).forEach((par) => { if (par.trim()) B.push(pDoc(par)); });
+      else B.push(panduan(s.panduan));
+    });
+  });
+  const sah = [gvPr("prSah1"), gvPr("prSah2"), gvPr("prSah3")].filter(Boolean);
+  if (sah.length) {
+    B.push(headingBab("LEMBAR PENGESAHAN"));
+    B.push(pDoc(gvPr("prKota") + ",", { after: 200 }));
+    sah.forEach((s) => {
+      const p = s.split("|").map((x) => x.trim());
+      B.push(pDoc(p[0] || "", { after: 40 }));
+      B.push(pDoc("", { after: 700 }));
+      B.push(pDoc(p[1] || "", { b: 1, after: 300 }));
+    });
+  }
+  const sect = '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="2268" w:right="1701" w:bottom="1701" w:left="2268" w:header="720" w:footer="720" w:gutter="0"/></w:sectPr>';
+  const doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><w:body>' + B.join("") + sect + "</w:body></w:document>";
+  const ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  const rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const zip = new JSZip();
+  zip.file("[Content_Types].xml", ct); zip.folder("_rels").file(".rels", rels);
+  const wf = zip.folder("word"); wf.file("document.xml", doc);
+  if (_lg) { wf.folder("_rels").file("document.xml.rels", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdLogo" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.png"/></Relationships>'); wf.folder("media").file("logo.png", _lg.split(",")[1], { base64: true }); }
+  const blob = await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+  window._lastPropDocx = blob;
+  stat.textContent = "✅ Proposal berhasil dibuat!";
+  $("#propOut").innerHTML = '<div class="' + OUT + '"><p class="font-bold">✅ Proposal <b>' + esc(gvPr("prJudul") || "") + '</b> ter-generate sebagai .docx asli (A4, margin 4-4-3-3, TNR 12, spasi 1,5' + (_lg ? ", logo institusi terpasang" : "") + (sah.length ? ", lengkap dengan lembar pengesahan" : "") + ').</p><p class="text-xs text-slate-500 mt-1">Bagian yang belum kamu isi diisi teks panduan miring agar mudah ditimpa tulisanmu sendiri.</p></div>';
+  download("Proposal.docx", blob);
+}
+SHARE_GETTERS.proposal = function () { return window._proposalText || ""; };
 </script>

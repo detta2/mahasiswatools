@@ -68,9 +68,13 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 65 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 66 tool.
 
-### 🤖 Kit Anti-AI & Keaslian (Tool 60–65)
+### 📑 Generator Proposal (Tool 66)
+
+Tiga jenis proposal dalam satu tool — **Penelitian/Skripsi** (BAB I–III lengkap), **Kegiatan Mahasiswa** (susunan acara, kepanitiaan, **RAB terhitung otomatis**), dan **Magang/PKL** — cover berlogo institusi, preview kertas live, lembar pengesahan, ekspor **.docx asli** margin 4-4-3-3.
+
+## 🤖 Kit Anti-AI & Keaslian (Tool 60–65)
 60. **Pendeteksi Gaya Tulisan AI** — skor risiko dari burstiness (CV panjang kalimat), type-token ratio, 30+ frasa klise LLM (ID/EN), grafik batang kalimat & sentence heatmap.
 61. **Humanizer & Editor Variasi Kalimat** — editor per kalimat, analisis ritme (peringatan 3 kalimat mirip beruntun), kamus klik-ganti 58 kata klise AI → sinonim akademik natural.
 62. **Pembersih Jejak AI** — pindai & bersihkan zero-width chars, NBSP, em-dash, kutip melengkung, sisa Markdown.
