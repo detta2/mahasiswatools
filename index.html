@@ -212,7 +212,7 @@ const TOOLS = [
   { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", aktif: 1 },
   { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
   { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
-  { id: "k50", n: "Motivation Letter & Surat Lamaran", c: "karir", i: "✉️", d: "Kerangka beasiswa (EN), lamaran kerja & magang (ID).", aktif: 1 },
+  { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
   { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 },
   { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
   { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
@@ -2884,7 +2884,7 @@ window._teleStop = function () { if (_prevStop2) _prevStop2(); stopPomoTimer(); 
 /* ---------- 50. MOTIVATION LETTER & SURAT LAMARAN ---------- */
 UI.k50 = function (el) {
   el.innerHTML = '<div class="fadein">'
-    + field("Jenis Surat", '<select id="mlJenis" class="' + IN + '" onchange="mlToggle()"><option value="beasiswa">🎓 Motivation Letter — Beasiswa (Bahasa Inggris)</option><option value="lamaran">💼 Surat Lamaran Kerja (Bahasa Indonesia)</option><option value="magang">🧑‍🎓 Surat Pengantar Magang (Bahasa Indonesia)</option></select>')
+    + field("Jenis Surat", '<select id="mlJenis" class="' + IN + '" onchange="mlToggle()"><option value="beasiswa">🎓 Motivation Letter — Beasiswa (Bahasa Inggris)</option><option value="lamaran">💼 Surat Lamaran Kerja</option><option value="magang">🧑‍🎓 Surat Pengantar Magang</option><option value="penelitian">🔬 Surat Permohonan Izin Penelitian</option><option value="ukt">💸 Surat Permohonan Keringanan UKT</option><option value="cuti">⏸️ Surat Permohonan Cuti Akademik</option><option value="beasiswasurat">🏅 Surat Permohonan Beasiswa</option><option value="sponsor">🤝 Surat Permohonan Sponsorship</option><option value="undangan">✉️ Surat Undangan Resmi</option><option value="pinjam">🏛️ Surat Peminjaman Ruangan / Alat</option><option value="narasumber">🎤 Surat Permohonan Narasumber</option><option value="rekomendasi">⭐ Surat Rekomendasi Dosen</option><option value="pernyataan">📜 Surat Pernyataan Bermaterai</option><option value="kuasa">✍️ Surat Kuasa</option><option value="resign">🚪 Surat Pengunduran Diri</option></select>')
     + '<div class="grid sm:grid-cols-2 gap-x-4">'
     + field("Nama Lengkap", '<input id="mlNama" class="' + IN + '" placeholder="Nama kamu">')
     + field("Kota & Tanggal", '<input id="mlKota" class="' + IN + '" value="Palembang, ' + new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }) + '">')
@@ -2894,7 +2894,7 @@ UI.k50 = function (el) {
     + field("Alasan Memilih Program/Posisi Ini", '<textarea id="mlAlasan" rows="3" class="' + IN + '" placeholder="Kenapa program ini, kenapa kamu — hubungkan dengan tujuan masa depanmu"></textarea>')
     + field("Keahlian & Pengalaman Andalan", '<textarea id="mlSkill" rows="3" class="' + IN + '" placeholder="Pengalaman organisasi/magang/proyek + keahlian yang paling relevan"></textarea>')
     + field("Kontak (email • telepon • LinkedIn)", '<input id="mlKontak" class="' + IN + '" placeholder="cth: nama@email.com • 08xx • linkedin.com/in/nama">')
-    + '</div><button class="' + BTN + '" onclick="buatMotlet()">✉️ Generate Surat</button>' + outBox("mlOut") + "</div>";
+    + '</div><div class="grid sm:grid-cols-2 gap-x-4">' + field("NIM / NPM", '<input id="mlNim" class="' + IN + '" placeholder="NIM kamu (untuk surat kampus)">') + field("Program Studi / Organisasi", '<input id="mlProdi" class="' + IN + '" placeholder="cth: Pendidikan Ekonomi / HIMA Ekonomi">') + field("Judul Penelitian / Nama Kegiatan / Tema", '<input id="mlJudul" class="' + IN + '" placeholder="Sesuai jenis surat yang dipilih">') + field("Waktu / Periode / Tanggal Efektif", '<input id="mlWaktu" class="' + IN + '" placeholder="cth: 10–20 November 2026 / Semester Ganjil 2026/2027">') + field("Tempat / Lokasi", '<input id="mlTempat" class="' + IN + '" placeholder="cth: SMA Negeri 1 Lahat / Aula Kampus">') + '</div><p id="mlHint" class="rounded-lg bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 p-3 text-[13px] mb-4"></p>' + '<button class="' + BTN + '" onclick="buatMotlet()">✉️ Generate Surat</button>' + outBox("mlOut") + "</div>";
 };
 function mlToggle() { toast("Jenis surat: " + $("#mlJenis").selectedOptions[0].textContent); }
 function buatMotlet() {
@@ -4459,4 +4459,130 @@ async function buatProposalDocx() {
   download("Proposal.docx", blob);
 }
 SHARE_GETTERS.proposal = function () { return window._proposalText || ""; };
+</script>
+
+<script>
+/* ============================================================
+   PEMBUAT SURAT — 12 JENIS SURAT RESMI BARU
+   ============================================================ */
+const ML_HINT = {
+  penelitian: "🔬 Izin Penelitian — isi: Institusi Tujuan (pimpinan lokasi penelitian), Judul Penelitian, Waktu, Tempat. Latar/Alasan boleh diisi data pendukung yang diminta.",
+  ukt: "💸 Keringanan UKT — isi: Tujuan = semester (cth: Semester 5), Institusi Tujuan = kampusmu, Latar Belakang = kondisi ekonomi keluarga, Alasan = bentuk keringanan yang dimohon (cicilan/penundaan/pengurangan).",
+  cuti: "⏸️ Cuti Akademik — isi: Tujuan = semester cuti (cth: Semester Ganjil 2026/2027), Waktu = lama cuti (cth: 1 semester), Alasan = alasan pengajuan cuti.",
+  beasiswasurat: "🏅 Permohonan Beasiswa — isi: Tujuan = nama program beasiswa, Institusi Tujuan = pemberi beasiswa, Latar = prestasi/IPK, Keahlian = pendukung keunggulanmu.",
+  sponsor: "🤝 Sponsorship — isi: Institusi Tujuan = perusahaan, Judul = nama kegiatan, Waktu & Tempat acara, Keahlian & Pengalaman = paket sponsor dan benefit bagi perusahaan.",
+  undangan: "✉️ Undangan Resmi — isi: Tujuan = nama & jabatan tamu yang diundang, Institusi Tujuan = instansi tamu, Judul = nama acara, Waktu & Tempat acara, Kontak = narahubung konfirmasi.",
+  pinjam: "🏛️ Peminjaman — isi: Judul = ruangan/alat yang dipinjam (cth: Aula Kampus & Sound System), Waktu = jadwal pinjam, Latar = untuk kegiatan apa, Institusi Tujuan = kampus/pengelola gedung.",
+  narasumber: "🎤 Narasumber — isi: Tujuan = nama narasumber, Institusi Tujuan = instansi narasumber, Judul = nama acara, Keahlian = tema/materi yang diharapkan, Waktu & Tempat acara.",
+  rekomendasi: "⭐ Rekomendasi — surat ini ditulis dari sudut pandang DOSEN: Tujuan = nama dosen pemberi rekomendasi, Nama Lengkap = namamu, Latar = prestasimu menurut dosen, Institusi Tujuan = program/instansi yang dituju.",
+  pernyataan: "📜 Pernyataan Bermaterai — isi: Alasan Memilih = isi pernyataanmu (satu poin per baris). Akan ditutup komitmen bersedia menerima sanksi bila tidak benar.",
+  kuasa: "✍️ Surat Kuasa — isi: Nama Lengkap = pemberi kuasa, Tujuan = nama penerima kuasa, Alasan = keperluan kuasa (cth: mengambil ijazah & transkrip), Institusi Tujuan = tempat pengurusan.",
+  resign: "🚪 Pengunduran Diri — isi: Tujuan = jabatanmu, Institusi Tujuan = organisasi, Waktu = tanggal efektif, Alasan = alasan pengunduran diri (opsional)."
+};
+(function () {
+  const _mt = mlToggle;
+  mlToggle = function () {
+    _mt();
+    const h = $("#mlHint");
+    if (h) h.innerHTML = ML_HINT[$("#mlJenis").value] || "Pilih jenis surat — field yang dipakai menyesuaikan. Surat ter-generate live di bawah saat kamu mengetik; unduhan .doc otomatis berkop logo institusi bila logo sudah di-upload.";
+    if (typeof buatMotlet === "function") { try { buatMotlet(); } catch (e) {} }
+  };
+  const h0 = $("#mlHint");
+})();
+function suratBaru(jenis, f) {
+  const kepala = (penerima, perihal) => f.kota + "\n\nKepada Yth.\n" + penerima + "\ndi tempat\n\nPerihal: " + perihal + "\n\nDengan hormat,\n\n";
+  const ttd = (salam) => "\n\n" + (salam || "Hormat saya,") + "\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+  const idSaya = "Saya yang bertanda tangan di bawah ini:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi/Organisasi: " + f.prodi : "") + "\n\n";
+  switch (jenis) {
+    case "penelitian":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Izin Penelitian")
+        + idSaya + "Bermaksud mengajukan permohonan izin untuk melaksanakan penelitian dalam rangka penyusunan skripsi dengan judul:\n\n\"" + (f.judul || "(judul penelitian)") + "\"\n\n"
+        + "Penelitian direncanakan pada " + (f.waktu || "(waktu penelitian)") + " bertempat di " + (f.tempat || f.inst) + ". " + (f.alasan || "Data dan informasi yang diperoleh dari penelitian ini semata-mata digunakan untuk kepentingan akademik dan penyusunan skripsi.")
+        + "\n\nDemikian permohonan ini saya sampaikan. Atas perhatian, izin, dan bantuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "ukt":
+      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Keringanan Biaya Pendidikan (UKT)")
+        + idSaya + "Dengan ini saya mengajukan permohonan keringanan pembayaran Uang Kuliah Tunggal (UKT) untuk " + (f.tujuan || "semester ini") + ". "
+        + (f.latar || "Permohonan ini saya ajukan mengingat kondisi ekonomi keluarga kami yang saat ini mengalami kesulitan.") + "\n\n"
+        + (f.alasan || "Bentuk keringanan yang saya mohon adalah penundaan/pencicilan pembayaran sampai batas waktu yang Bapak/Ibu tentukan. Saya berkomitmen melunasi kewajiban tersebut sesuai kesepakatan.")
+        + "\n\nDemikian permohonan ini saya sampaikan dengan sebenar-benarnya. Atas perhatian dan kebijaksanaan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "cuti":
+      return kepala("Bapak/Ibu Rektor / Dekan " + f.inst, "Permohonan Cuti Akademik")
+        + idSaya + "Dengan ini saya mengajukan permohonan cuti akademik pada " + (f.tujuan || "(semester)") + " selama " + (f.waktu || "1 (satu) semester") + ". "
+        + (f.alasan || "Pengajuan cuti ini dikarenakan hal yang tidak dapat saya hindari pada semester tersebut.") + "\n\n"
+        + "Saya bersedia memenuhi segala ketentuan administrasi yang berlaku dan akan aktif kembali pada semester berikutnya sesuai jadwal akademik.\n\nDemikian permohonan ini saya sampaikan. Atas perhatian dan persetujuan Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "beasiswasurat":
+      return kepala("Bapak/Ibu Pimpinan / Pengelola " + f.inst, "Permohonan Beasiswa — " + f.tujuan)
+        + idSaya + "Dengan ini saya mengajukan permohonan untuk mengikuti seleksi " + (f.tujuan || "program beasiswa") + " yang diselenggarakan oleh " + f.inst + ". "
+        + (f.latar || "Selama menempuh studi, saya berusaha menjaga prestasi akademik dan aktif dalam kegiatan kemahasiswaan.") + "\n\n"
+        + (f.skill || "Saya memiliki kemampuan dan pengalaman yang mendukung kelayakan saya sebagai penerima beasiswa.") + " " + (f.alasan || "Beasiswa ini akan sangat membantu keberlangsungan studi saya dan memotivasi saya untuk terus berprestasi.") + "\n\n"
+        + "Sebagai bahan pertimbangan, bersama surat ini saya lampirkan berkas persyaratan yang telah ditentukan. Demikian permohonan ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+    case "sponsor":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Permohonan Kerja Sama Sponsorship — " + (f.judul || "Kegiatan"))
+        + "Kami dari " + (f.prodi || "panitia kegiatan") + " bermaksud menyelenggarakan kegiatan:\n\nNama Kegiatan: " + (f.judul || "(nama kegiatan)") + "\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kegiatan ini bertujuan memberikan manfaat bagi mahasiswa dan masyarakat serta menjadi sarana positif bagi citra perusahaan Bapak/Ibu.") + "\n\n"
+        + (f.skill || "Adapun bentuk kerja sama yang kami tawarkan antara lain penempatan logo perusahaan pada media publikasi, penyebutan oleh MC, dan booth promosi selama kegiatan berlangsung.") + "\n\n"
+        + "Sebagai bahan pertimbangan, bersama surat ini kami lampirkan proposal kegiatan beserta rincian anggaran dan paket sponsorship. Demikian permohonan ini kami sampaikan. Atas perhatian dan kerja sama Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "undangan":
+      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Undangan " + (f.judul || "Kegiatan") + "\n\nDengan hormat,\n\n"
+        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " dengan hormat mengundang Bapak/Ibu untuk hadir pada:\n\nHari/Tanggal: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kehadiran Bapak/Ibu sangat kami harapkan demi kelancaran dan kesuksesan acara tersebut.") + "\n\n"
+        + "Untuk konfirmasi kehadiran, Bapak/Ibu dapat menghubungi narahubung kami" + (f.kontak ? " (" + f.kontak + ")" : "") + ". Demikian undangan ini kami sampaikan. Atas perhatian dan kehadiran Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
+    case "pinjam":
+      return kepala("Bapak/Ibu Kepala Bagian Umum / Pengelola Sarana " + f.inst, "Permohonan Peminjaman " + (f.judul || "Ruangan/Alat"))
+        + idSaya + "Bermaksud mengajukan permohonan peminjaman " + (f.judul || "(ruangan/alat)") + " untuk keperluan " + (f.latar || "kegiatan kemahasiswaan") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + (f.tempat ? "\nTempat Kegiatan: " + f.tempat : "") + "\n\n"
+        + "Kami berkomitmen menjaga kebersihan, keamanan, dan ketertiban selama penggunaan, serta mengembalikan fasilitas dalam keadaan seperti semula.\n\nDemikian permohonan ini kami sampaikan. Atas perhatian dan izin Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\n\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "narasumber":
+      return f.kota + "\n\nKepada Yth.\n" + f.tujuan + "\n" + f.inst + "\ndi tempat\n\nPerihal: Permohonan Menjadi Narasumber\n\nDengan hormat,\n\n"
+        + "Dalam rangka penyelenggaraan " + (f.judul || "(nama acara)") + ", kami dari " + (f.prodi || "panitia") + " bermaksud memohon kesediaan Bapak/Ibu menjadi narasumber dengan tema/materi " + (f.skill || "(tema materi)") + ", yang akan dilaksanakan pada:\n\nWaktu: " + (f.waktu || "(waktu)") + "\nTempat: " + (f.tempat || "(tempat)") + "\n\n"
+        + (f.latar || "Kami menilai Bapak/Ibu memiliki kompetensi dan pengalaman yang sangat relevan dengan tema tersebut.") + "\n\n"
+        + "Demikian permohonan ini kami sampaikan. Besar harapan kami Bapak/Ibu berkenan memenuhi permohonan ini. Atas perhatian dan kesediaan Bapak/Ibu, kami ucapkan terima kasih."
+        + "\n\nHormat kami,\nPanitia " + (f.judul || "Kegiatan") + ",\n\n\n" + f.nama;
+    case "rekomendasi":
+      return f.kota + "\n\nSURAT REKOMENDASI\n\nYang bertanda tangan di bawah ini:\nNama: " + f.tujuan + "\nJabatan: Dosen " + (f.prodi || "") + "\n\nMenerangkan dengan sebenarnya bahwa:\nNama: " + f.nama + (f.nim ? "\nNIM: " + f.nim : "") + (f.prodi ? "\nProgram Studi: " + f.prodi : "") + "\n\n"
+        + "adalah mahasiswa yang saya kenal selama menempuh studi. " + (f.latar || "Yang bersangkutan menunjukkan prestasi akademik yang baik, berdisiplin, dan beretika selama mengikuti perkuliahan maupun kegiatan kemahasiswaan.") + "\n\n"
+        + "Berdasarkan pengamatan saya, saya merekomendasikan yang bersangkutan untuk " + (f.alasan || "mengikuti program yang dituju di " + f.inst) + ". Saya meyakini yang bersangkutan mampu memenuhi tanggung jawab yang diberikan.\n\n"
+        + "Demikian surat rekomendasi ini saya buat untuk dapat digunakan sebagaimana mestinya.\n\n" + f.kota.split(",")[0] + ", " + f.kota.split(", ").slice(1).join(", ") + "\nDosen Pemberi Rekomendasi,\n\n\n" + f.tujuan;
+    case "pernyataan":
+      return f.kota + "\n\nSURAT PERNYATAAN\n\n" + idSaya + "Dengan ini menyatakan dengan sebenar-benarnya bahwa:\n\n"
+        + (f.alasan ? f.alasan.split(/\n/).map((s) => s.trim()).filter(Boolean).map((s, i) => (i + 1) + ". " + s).join("\n") : "1. Seluruh data dan pernyataan yang saya sampaikan adalah benar.\n2. Saya tidak sedang menerima beasiswa dari sumber lain untuk komponen yang sama.")
+        + "\n\nDemikian surat pernyataan ini saya buat dalam keadaan sadar dan tanpa paksaan dari pihak mana pun. Apabila di kemudian hari terbukti pernyataan ini tidak benar, saya bersedia menerima sanksi sesuai ketentuan yang berlaku.\n\n"
+        + f.kota + "\n\n[Materai Rp10.000]\n\n" + f.nama + (f.nim ? "\nNIM. " + f.nim : "");
+    case "kuasa":
+      return f.kota + "\n\nSURAT KUASA\n\n" + idSaya.replace("Saya yang bertanda tangan di bawah ini:", "Pemberi Kuasa:\nSaya yang bertanda tangan di bawah ini:")
+        + "Dengan ini memberikan kuasa kepada:\nNama: " + f.tujuan + "\n\nUntuk keperluan: " + (f.alasan || "mewakili saya dalam pengurusan dan pengambilan dokumen akademik (ijazah/transkrip)") + " di " + f.inst + ".\n\n"
+        + "Segala akibat dan tanggung jawab yang timbul dari pemberian kuasa ini menjadi tanggung jawab saya selaku pemberi kuasa.\n\nDemikian surat kuasa ini saya buat dengan sebenarnya untuk dapat digunakan sebagaimana mestinya.\n\n"
+        + f.kota + "\n\nPenerima Kuasa,\t\tPemberi Kuasa,\n\n\n" + f.tujuan + "\t\t" + f.nama + " [materai]";
+    case "resign":
+      return kepala("Bapak/Ibu Pimpinan " + f.inst, "Pengunduran Diri")
+        + idSaya + "Dengan ini saya mengajukan pengunduran diri dari jabatan " + (f.tujuan || "(jabatan)") + " di " + f.inst + ", terhitung efektif mulai " + (f.waktu || "(tanggal efektif)") + ". "
+        + (f.alasan || "Pengunduran diri ini saya ajukan atas pertimbangan pribadi yang telah saya pikirkan dengan matang.") + "\n\n"
+        + "Saya mengucapkan terima kasih atas kepercayaan, kesempatan, dan pengalaman yang telah diberikan selama saya bergabung. Saya memohon maaf apabila terdapat kekurangan selama menjalankan tugas, dan saya bersedia membantu proses serah terima tugas sebelum tanggal efektif pengunduran diri.\n\nDemikian surat pengunduran diri ini saya sampaikan. Atas perhatian Bapak/Ibu, saya ucapkan terima kasih." + ttd();
+  }
+  return "";
+}
+(function () {
+  const _prevMotlet = buatMotlet;
+  const JENIS_BARU = { penelitian: 1, ukt: 1, cuti: 1, beasiswasurat: 1, sponsor: 1, undangan: 1, pinjam: 1, narasumber: 1, rekomendasi: 1, pernyataan: 1, kuasa: 1, resign: 1 };
+  buatMotlet = function () {
+    const jenis = $("#mlJenis") ? $("#mlJenis").value : "";
+    if (!JENIS_BARU[jenis]) { _prevMotlet(); return; }
+    const g = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
+    const f = { nama: g("mlNama") || "Nama Kamu", kota: g("mlKota"), tujuan: g("mlTujuan") || "(tujuan)", inst: g("mlInst") || "(institusi)", latar: g("mlLatar"), alasan: g("mlAlasan"), skill: g("mlSkill"), kontak: g("mlKontak"), nim: g("mlNim"), prodi: g("mlProdi"), judul: g("mlJudul"), waktu: g("mlWaktu"), tempat: g("mlTempat") };
+    const surat = suratBaru(jenis, f);
+    window._motlet = surat;
+    $("#mlOut").innerHTML = '<div class="' + OUT + '"><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[15px]" style="font-family:Georgia,serif">' + esc(surat) + "</div>"
+      + '<p class="text-xs text-slate-500 mt-2">Periksa kembali nama, tanggal, dan instansi sebelum mengirim. Untuk Surat Pernyataan & Kuasa, tempel materai Rp10.000 pada bagian yang ditandai.</p>'
+      + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="copyText(window._motlet)">📋 Copy Surat</button>'
+      + '<button class="' + BTN2 + '" onclick="download(\'Surat.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt;white-space:pre-wrap&quot;>\' + esc(window._motlet) + \'</body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
+    window._suratDoc = "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(surat) + "</div></body></html>";
+    const btn = [...document.querySelectorAll("#mlOut button")].find((b) => (b.getAttribute("onclick") || "").includes("Surat.doc"));
+    if (btn) btn.setAttribute("onclick", "download('Surat.doc', window._suratDoc, 'application/msword')");
+  };
+  // petunjuk awal
+  const hint = $("#mlHint");
+  if (hint) hint.textContent = "Pilih jenis surat — ada 15 jenis sekarang, termasuk izin penelitian, keringanan UKT, sponsorship, dan surat pernyataan. Surat ter-generate live saat kamu mengetik.";
+})();
 </script>
