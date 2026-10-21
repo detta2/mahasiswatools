@@ -7,16 +7,17 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 
 🌐 **Live:** https://detta2.github.io/mahasiswatools/
 
-## 📚 Direktori 96 Tool
+## 📚 Direktori 100 Tool
 
 Seluruh tool terdaftar di bawah ini aktif dan berfungsi penuh. Klik judulnya untuk membuka langsung halaman tool-nya.
 
-### 🤖 Kit Anti-AI & Keaslian (6 tool)
+### 🤖 Kit Anti-AI & Keaslian (7 tool)
 
 - **[Pendeteksi Gaya Tulisan AI (Burstiness)](https://detta2.github.io/mahasiswatools/tools/pendeteksi-gaya-tulisan-ai-burstiness/)** — Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.
 - **[Humanizer & Editor Variasi Kalimat](https://detta2.github.io/mahasiswatools/tools/humanizer-dan-editor-variasi-kalimat/)** — Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.
 - **[Pembersih Jejak & Karakter Tersembunyi AI](https://detta2.github.io/mahasiswatools/tools/pembersih-jejak-dan-karakter-tersembunyi-ai/)** — Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.
 - **[Verifikator Keaslian Daftar Pustaka (Crossref)](https://detta2.github.io/mahasiswatools/tools/verifikator-keaslian-daftar-pustaka-crossref/)** — Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.
+- **[Pengecek Sitasi In-Text vs Daftar Pustaka](https://detta2.github.io/mahasiswatools/tools/pengecek-sitasi-in-text-vs-daftar-pustaka/)** — Cek dua arah: sitasi yang kamu kutip di teks tapi tidak ada di daftar pustaka (dan sebaliknya) langsung ketahuan.
 - **[Generator Deklarasi Penggunaan AI](https://detta2.github.io/mahasiswatools/tools/generator-deklarasi-penggunaan-ai/)** — Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.
 - **[Editor Bukti Ketikan Mandiri (Authorship Proof)](https://detta2.github.io/mahasiswatools/tools/editor-bukti-ketikan-mandiri-authorship-proof/)** — Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.
 
@@ -68,11 +69,12 @@ Seluruh tool terdaftar di bawah ini aktif dan berfungsi penuh. Klik judulnya unt
 - **[Lembar Persetujuan Responden](https://detta2.github.io/mahasiswatools/tools/lembar-persetujuan-responden/)** — Informed consent etika penelitian, berkop logo, siap tanda tangan.
 - **[Kalkulator Sampel Eksperimen (Federer)](https://detta2.github.io/mahasiswatools/tools/kalkulator-sampel-eksperimen-federer/)** — Hitung sampel eksperimen (rumus Federer) + koreksi drop-out + pengacak kelompok perlakuan RAL/RAK.
 
-### 🎤 Presentasi & Sidang (10 tool)
+### 🎤 Presentasi & Sidang (11 tool)
 
 - **[Outline Makalah ke PowerPoint (.pptx)](https://detta2.github.io/mahasiswatools/tools/outline-makalah-ke-powerpoint-pptx/)** — Poin makalah → file presentasi .pptx asli per bab.
 - **[Teleprompter & Timer Sidang](https://detta2.github.io/mahasiswatools/tools/teleprompter-dan-timer-sidang/)** — Teks berjalan otomatis + estimasi kata per menit.
 - **[Simulasi Pertanyaan Penguji Sidang (18+ Soal)](https://detta2.github.io/mahasiswatools/tools/simulasi-pertanyaan-penguji-sidang-18-soal/)** — Bank soal jebakan penguji + kerangka jawaban + timer.
+- **[Prediksi Pertanyaan Sidang dari Abstrak](https://detta2.github.io/mahasiswatools/tools/prediksi-pertanyaan-sidang-dari-abstrak/)** — Tempel abstrak skripsimu — keluar daftar pertanyaan yang paling mungkin ditanya penguji + kerangka cara menjawabnya.
 - **[Mind Map Generator (SVG Radial)](https://detta2.github.io/mahasiswatools/tools/mind-map-generator-svg-radial/)** — Topik + sub-topik → peta konsep bercabang warna, unduh PNG.
 - **[Kuis Pilihan Ganda & Flashcard Otomatis](https://detta2.github.io/mahasiswatools/tools/kuis-pilihan-ganda-dan-flashcard-otomatis/)** — Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.
 - **[Cornell Notes Generator](https://detta2.github.io/mahasiswatools/tools/cornell-notes-generator/)** — Catatan metode Cornell: isyarat, catatan, ringkasan.
@@ -113,22 +115,24 @@ Seluruh tool terdaftar di bawah ini aktif dan berfungsi penuh. Klik judulnya unt
 - **[Timestamp & Geotagging Foto](https://detta2.github.io/mahasiswatools/tools/timestamp-dan-geotagging-foto/)** — Tempel waktu & lokasi ala kamera lapangan ke foto tugas.
 - **[Pembuat Tanda Tangan Transparan PNG](https://detta2.github.io/mahasiswatools/tools/pembuat-tanda-tangan-transparan-png/)** — Buang latar kertas via luminansi → PNG transparan.
 
-### 🎓 Akademik, Karir & Harian (12 tool)
+### 🎓 Akademik, Karir & Harian (14 tool)
 
 - **[CV ATS-Friendly Builder + Skor Struktural](https://detta2.github.io/mahasiswatools/tools/cv-ats-friendly-builder-skor-struktural/)** — CV 1 kolom aman ATS + skor cek struktur instan.
 - **[Pembuat Surat Resmi & Motivation Letter](https://detta2.github.io/mahasiswatools/tools/pembuat-surat-resmi-dan-motivation-letter/)** — 15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.
 - **[Generator Chat & Surat Izin Dosen (Bonus)](https://detta2.github.io/mahasiswatools/tools/generator-chat-dan-surat-izin-dosen-bonus/)** — Template chat sopan ke dosen + surat izin resmi.
 - **[Simulator Target IPK (GPA Planner)](https://detta2.github.io/mahasiswatools/tools/simulator-target-ipk-gpa-planner/)** — Proyeksi IP semester depan untuk target cumlaude.
+- **[Kalkulator IPK Transkrip & Cek Cum Laude](https://detta2.github.io/mahasiswatools/tools/kalkulator-ipk-transkrip-dan-cek-cum-laude/)** — Tempel nilai mata kuliahmu — keluar IPK, IPS per semester, predikat kelulusan, dan cek syarat cum laude.
 - **[Kalkulator Target Nilai Mata Kuliah](https://detta2.github.io/mahasiswatools/tools/kalkulator-target-nilai-mata-kuliah/)** — Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.
 - **[Wallpaper Jadwal Kuliah / KRS (Bonus)](https://detta2.github.io/mahasiswatools/tools/wallpaper-jadwal-kuliah-krs-bonus/)** — Jadwal kuliah jadi wallpaper HP 1080×1920.
 - **[Checklist Syarat Yudisium & Sidang](https://detta2.github.io/mahasiswatools/tools/checklist-syarat-yudisium-dan-sidang/)** — 14+ syarat kelulusan, progres tersimpan otomatis.
 - **[Kalender Akademik & Pengingat Deadline (Bonus)](https://detta2.github.io/mahasiswatools/tools/kalender-akademik-dan-pengingat-deadline-bonus/)** — Kalender + hitung mundur H-x + ekspor .ics.
+- **[Kalkulator Sisa Masa Studi & Risiko DO](https://detta2.github.io/mahasiswatools/tools/kalkulator-sisa-masa-studi-dan-risiko-do/)** — Hitung sisa SKS & sisa semestermu: tempo minimal per semester supaya lulus tepat waktu — dan seberapa besar risiko DO-mu.
 - **[Konverter SKS MBKM / Kampus Merdeka](https://detta2.github.io/mahasiswatools/tools/konverter-sks-mbkm-kampus-merdeka/)** — Konversi jam magang/KKN/studi independen ke penyetaraan SKS.
 - **[Kalkulator Target Biaya Kuliah](https://detta2.github.io/mahasiswatools/tools/kalkulator-target-biaya-kuliah/)** — Total sisa biaya kuliah jadi target tabungan per bulan.
 - **[Budget Anak Kos + Terbilang & Romawi](https://detta2.github.io/mahasiswatools/tools/budget-anak-kos-terbilang-dan-romawi/)** — Jatah aman makan harian + konverter terbilang & angka Romawi.
 - **[Simulasi Wawancara Kerja (Metode STAR)](https://detta2.github.io/mahasiswatools/tools/simulasi-wawancara-kerja-metode-star/)** — Latihan wawancara + timer 90 detik + kerangka STAR.
 
-## Fitur Aktif (96 Tool — Semua Berfungsi Penuh)
+## Fitur Aktif (100 Tool — Semua Berfungsi Penuh)
 
 1. Uji Validitas & Reliabilitas Kuesioner + Auto-Narasi Bab 4
 2. Konverter Skala Likert Massal
@@ -191,9 +195,9 @@ Seluruh tool terdaftar di bawah ini aktif dan berfungsi penuh. Klik judulnya unt
 
 **Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 85 tool.
 
-### 🎉 Batch Penggenap Milestone 100 (Tool 86–96 dari 100)
+### 🎉 Milestone 100 TERCAPAI — Batch Penggenap (Tool 86–100)
 
-Sebelas tool baru menuju target ikonik **100 Tool** (putusan Detta × Argon): Konverter Skripsi ke Jurnal IMRAD, OJS Kit (cover letter + matriks reviewer), Kisi-Kisi & Operasionalisasi Variabel, Lembar Pengesahan & Pernyataan Bebas Plagiat, Tabel Statistik Eksak (r/t/F/χ² untuk N/df berapa pun), Uji Mediasi Sobel & Moderasi MRA, Kalkulator Sampel Federer + pengacak RAL/RAK, Konverter Sitasi BibTeX/RIS, Poster Ilmiah canvas, Peer-Assessment anti free-rider, dan Splitter Tagihan Kos Pro-Rata. Sekalian: **Smart Intent Prefetch** (boot hanya memanaskan kategori favorit/terakhir dibuka; partisi lain dimuat saat kartu disentuh kursor/jari; penghemat data dihormati), modal tool kini menutup dengan klik di mana pun di luar panel, katalog diurutkan menurut perkiraan paling banyak dicari, bahasa deskripsi kartu disederhanakan, dan footer branding diseragamkan pada keluaran gambar non-formal. Empat nomor terakhir (88, 95, 99, 100) menyusul untuk menggenapkan tepat 100.
+Sebelas tool baru menuju target ikonik **100 Tool** (putusan Detta × Argon): Konverter Skripsi ke Jurnal IMRAD, OJS Kit (cover letter + matriks reviewer), Kisi-Kisi & Operasionalisasi Variabel, Lembar Pengesahan & Pernyataan Bebas Plagiat, Tabel Statistik Eksak (r/t/F/χ² untuk N/df berapa pun), Uji Mediasi Sobel & Moderasi MRA, Kalkulator Sampel Federer + pengacak RAL/RAK, Konverter Sitasi BibTeX/RIS, Poster Ilmiah canvas, Peer-Assessment anti free-rider, dan Splitter Tagihan Kos Pro-Rata. Sekalian: **Smart Intent Prefetch** (boot hanya memanaskan kategori favorit/terakhir dibuka; partisi lain dimuat saat kartu disentuh kursor/jari; penghemat data dihormati), modal tool kini menutup dengan klik di mana pun di luar panel, katalog diurutkan menurut perkiraan paling banyak dicari, bahasa deskripsi kartu disederhanakan, dan footer branding diseragamkan pada keluaran gambar non-formal. Empat nomor terakhir dilengkapi usulan yang disetujui Detta: Prediksi Pertanyaan Sidang dari Abstrak (88), Pengecek Sitasi In-Text vs Daftar Pustaka (95), Kalkulator Sisa Masa Studi & Risiko DO (99), dan Kalkulator IPK Transkrip & Cek Cum Laude (100) — katalog resmi genap **100 Tool**, sitemap 101 URL. Proyek masuk fase **Code Freeze**.
 
 ### 📈 Batch Saran Argon #2 — 5 Tool Terakhir (Tool 81–85)
 
@@ -247,6 +251,6 @@ Arsitektur sesuai brief: lazy-load library (JSZip/PptxGenJS/pdf-lib/QR/Tesseract
 
 - **100% client-side** — HTML + JavaScript murni dengan CSS statis hasil kompilasi Tailwind CLI (`style.css`); tanpa framework, tanpa server, tanpa pengiriman data ke mana pun.
 - **Arsitektur muat cepat (partisi lazy per kategori)** — kunjungan pertama hanya mengunduh `js/core.js` (±68 KB: shell portal, katalog, dan helper bersama). Implementasi tool dipecah per kategori — `js/cat-anti.js`, `js/cat-tulis.js`, `js/cat-data.js`, `js/cat-present.js`, `js/cat-kelompok.js`, `js/cat-dokumen.js`, `js/cat-karir.js` — dan dimuat otomatis saat tool pertama dari kategori itu dibuka, lalu di-prefetch di latar belakang agar tool berikutnya instan. JavaScript awal turun dari ±565 KB (satu file) menjadi ±68 KB.
-- **Sumber & build** — seluruh logika ditulis dalam satu sumber kebenaran `app.js`. Perintah `node build/split.js` memecahnya menjadi core + partisi (integritasnya dijaga `node build/audit-partisi.js` yang memastikan tidak ada referensi lintas partisi), dan `node build/build-seo.js` membangkitkan 96 halaman statis per tool di `tools/<slug>/` beserta `sitemap.xml` dan `robots.txt` untuk SEO.
+- **Sumber & build** — seluruh logika ditulis dalam satu sumber kebenaran `app.js`. Perintah `node build/split.js` memecahnya menjadi core + partisi (integritasnya dijaga `node build/audit-partisi.js` yang memastikan tidak ada referensi lintas partisi), dan `node build/build-seo.js` membangkitkan 100 halaman statis per tool di `tools/<slug>/` beserta `sitemap.xml` dan `robots.txt` untuk SEO.
 - **Library eksternal dimuat malas** — JSZip, PptxGenJS, pdf-lib, qrcode-generator, dan Tesseract.js hanya diunduh dari CDN saat tool yang membutuhkannya dipakai.
 - Preferensi & data pengguna (favorit, tema, catatan, ceklis, dll.) disimpan lokal di `localStorage` dan dapat dicadangkan/diimpor lewat fitur Backup & Restore Data di footer situs.

@@ -48,6 +48,7 @@ const TOOLS = [
   { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
   { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 },
   { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
+  { id: "transkrip", n: "Kalkulator IPK Transkrip & Cek Cum Laude", c: "karir", i: "🎓", d: "Tempel nilai mata kuliahmu — keluar IPK, IPS per semester, predikat kelulusan, dan cek syarat cum laude.", aktif: 1 },
   { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
   { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
   { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
@@ -72,6 +73,7 @@ const TOOLS = [
   { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
   { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
   { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
+  { id: "tanyajawab", n: "Prediksi Pertanyaan Sidang dari Abstrak", c: "present", i: "🎯", d: "Tempel abstrak skripsimu — keluar daftar pertanyaan yang paling mungkin ditanya penguji + kerangka cara menjawabnya.", aktif: 1 },
   { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
   { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
   { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
@@ -99,6 +101,7 @@ const TOOLS = [
   { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
   { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
   { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
+  { id: "masastudi", n: "Kalkulator Sisa Masa Studi & Risiko DO", c: "karir", i: "⏳", d: "Hitung sisa SKS & sisa semestermu: tempo minimal per semester supaya lulus tepat waktu — dan seberapa besar risiko DO-mu.", aktif: 1 },
   { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
   { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
   { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
@@ -106,6 +109,7 @@ const TOOLS = [
   { id: "humanizer", n: "Humanizer & Editor Variasi Kalimat", c: "anti", i: "🪶", d: "Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.", aktif: 1 },
   { id: "scrubber", n: "Pembersih Jejak & Karakter Tersembunyi AI", c: "anti", i: "🧽", d: "Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.", aktif: 1 },
   { id: "sitasi", n: "Verifikator Keaslian Daftar Pustaka (Crossref)", c: "anti", i: "🔎", d: "Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.", aktif: 1 },
+  { id: "ceksitasi", n: "Pengecek Sitasi In-Text vs Daftar Pustaka", c: "anti", i: "🔍", d: "Cek dua arah: sitasi yang kamu kutip di teks tapi tidak ada di daftar pustaka (dan sebaliknya) langsung ketahuan.", aktif: 1 },
   { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
   { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
   { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
@@ -171,7 +175,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); if (typeof loadCat === "function" && CATNAME[k]) loadCat(k); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB", tanyajawab: "PS", ceksitasi: "CS", masastudi: "DO", transkrip: "TR" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 
 /* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */

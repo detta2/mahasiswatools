@@ -47,6 +47,7 @@ const TOOLS = [
   { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
   { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 },
   { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
+  { id: "transkrip", n: "Kalkulator IPK Transkrip & Cek Cum Laude", c: "karir", i: "🎓", d: "Tempel nilai mata kuliahmu — keluar IPK, IPS per semester, predikat kelulusan, dan cek syarat cum laude.", aktif: 1 },
   { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
   { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
   { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
@@ -71,6 +72,7 @@ const TOOLS = [
   { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
   { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
   { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
+  { id: "tanyajawab", n: "Prediksi Pertanyaan Sidang dari Abstrak", c: "present", i: "🎯", d: "Tempel abstrak skripsimu — keluar daftar pertanyaan yang paling mungkin ditanya penguji + kerangka cara menjawabnya.", aktif: 1 },
   { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
   { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
   { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
@@ -98,6 +100,7 @@ const TOOLS = [
   { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
   { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
   { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
+  { id: "masastudi", n: "Kalkulator Sisa Masa Studi & Risiko DO", c: "karir", i: "⏳", d: "Hitung sisa SKS & sisa semestermu: tempo minimal per semester supaya lulus tepat waktu — dan seberapa besar risiko DO-mu.", aktif: 1 },
   { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
   { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
   { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
@@ -105,6 +108,7 @@ const TOOLS = [
   { id: "humanizer", n: "Humanizer & Editor Variasi Kalimat", c: "anti", i: "🪶", d: "Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.", aktif: 1 },
   { id: "scrubber", n: "Pembersih Jejak & Karakter Tersembunyi AI", c: "anti", i: "🧽", d: "Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.", aktif: 1 },
   { id: "sitasi", n: "Verifikator Keaslian Daftar Pustaka (Crossref)", c: "anti", i: "🔎", d: "Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.", aktif: 1 },
+  { id: "ceksitasi", n: "Pengecek Sitasi In-Text vs Daftar Pustaka", c: "anti", i: "🔍", d: "Cek dua arah: sitasi yang kamu kutip di teks tapi tidak ada di daftar pustaka (dan sebaliknya) langsung ketahuan.", aktif: 1 },
   { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
   { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
   { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
@@ -170,7 +174,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); if (typeof loadCat === "function" && CATNAME[k]) loadCat(k); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB", tanyajawab: "PS", ceksitasi: "CS", masastudi: "DO", transkrip: "TR" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 
 /* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */
@@ -6877,6 +6881,185 @@ function proHitung() {
     + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._proTeks || \'\')">📋 Copy Ringkasan (untuk grup WA kos)</button></div></div>';
 }
 SHARE_GETTERS.prorata = function () { return window._proTeks ? "Tagihan kos bulan ini terbagi adil pro-rata hari huni — total " + fmtRp(window._proTotal || 0) + ". Dihitung dengan Splitter Tagihan Kos MahasiswaTools." : ""; };
+
+/* ---------- 88. PREDIKSI PERTANYAAN SIDANG DARI ABSTRAK ---------- */
+UI.tanyajawab = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Penguji hampir selalu bertanya dari abstrakmu. Tempel abstrak skripsimu — tool membaca metode, jumlah sampel, dan hasil signifikansinya, lalu menyusun <b>daftar pertanyaan yang paling mungkin keluar + kerangka cara menjawabnya</b>.</p>'
+    + field("Judul Skripsi", '<input id="tjJudul" class="\' + IN + \'">')
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Metode Penelitian", '<select id="tjMetode" class="\' + IN + \'"><option value="kuantitatif">Kuantitatif</option><option value="kualitatif">Kualitatif</option><option value="campuran">Campuran (Mixed Methods)</option><option value="rnd">R&D / Pengembangan</option><option value="kasus">Studi Kasus</option><option value="eksperimen">Eksperimen</option></select>')
+    + field("Variabel X / Fokus (opsional)", '<input id="tjX" class="\' + IN + \'" placeholder="cth: Kualitas Layanan">')
+    + field("Variabel Y / Hasil (opsional)", '<input id="tjY" class="\' + IN + \'" placeholder="cth: Kepuasan Pengguna">')
+    + "</div>"
+    + field("Abstrak Skripsimu", '<textarea id="tjAbstrak" rows="6" class="\' + IN + \'" placeholder="Tempel abstrak lengkap (latar, tujuan, metode, hasil, kesimpulan)"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="tjBuat()">🎯 Susun Prediksi Pertanyaan</button>'
+    + outBox("tjOut") + "</div>";
+};
+function tjBuat() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const judul = g("tjJudul"), metode = g("tjMetode"), abs = g("tjAbstrak"), X = g("tjX"), Y = g("tjY");
+  const out = $("#tjOut");
+  if (abs.length < 80) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tempel abstrak lengkapmu dulu (minimal ±80 karakter) supaya prediksinya akurat.</div>'; return; }
+  const mSampel = /(\d+)\s*(responden|sampel|subjek|partisipan|informan|siswa|mahasiswa)/i.exec(abs);
+  const tidakSig = /tidak (berpengaruh )?signifikan|tidak terdapat pengaruh|hipotesis ditolak/i.test(abs);
+  const sig = !tidakSig && /signifikan|berpengaruh positif|hipotesis diterima|p\s*<\s*0[.,]05/i.test(abs);
+  const Q = [];
+  Q.push(["Apa latar belakang dan urgensi penelitian ini?", "Jawab dengan pola: kondisi ideal → fakta masalah di lapangan (dengan data) → kesenjangan → mengapa harus diteliti sekarang. Akhiri dengan satu kalimat masalah utamamu."]);
+  Q.push(["Apa kebaruan (novelty) penelitianmu dibanding penelitian sebelumnya?", "Sebutkan 2–3 penelitian terdahulu terdekat, lalu bedakan secara spesifik: objek/lokasi, variabel tambahan, metode, atau konteks waktu. Hindari jawaban 'belum pernah diteliti' tanpa bukti."]);
+  Q.push(["Jelaskan rumusan masalahmu dan bagaimana hipotesis/pertanyaan penelitian diturunkan dari teori.", "Tunjukkan alurnya: teori → kerangka berpikir → rumusan masalah → hipotesis. Penguji ingin melihat benang merah, bukan hafalan."]);
+  if (metode === "kuantitatif" || metode === "eksperimen" || metode === "campuran") Q.push(["Mengapa memilih pendekatan kuantitatif" + (metode === "eksperimen" ? " dengan desain eksperimen" : "") + "? Uji statistik apa yang kamu pakai dan mengapa itu yang paling tepat?", "Jelaskan desain penelitianmu, sifat data (skala & distribusi), dan alasan pemilihan uji — sebutkan uji asumsi yang sudah kamu penuhi sebelum uji utama."]);
+  if (metode === "kualitatif" || metode === "kasus" || metode === "campuran") Q.push(["Mengapa pendekatan kualitatif" + (metode === "kasus" ? " dengan studi kasus" : "") + "? Bagaimana kamu menjamin keabsahan data?", "Jelaskan teknik pengumpulan data (wawancara/observasi/dokumen), cara memilih informan, dan teknik keabsahanmu: triangulasi sumber/teknik, member check, atau audit trail."]);
+  if (metode === "rnd") Q.push(["Model pengembangan apa yang kamu gunakan dan apa saja tahapannya? Bagaimana produkmu divalidasi?", "Sebutkan modelnya (ADDIE, Borg & Gall, 4D, dll), tahap yang kamu lalui, siapa validator ahli & praktisinya, skor kelayakan yang diperoleh, dan revisi apa saja yang dilakukan."]);
+  if (mSampel) Q.push(["Populasimu siapa, dan mengapa " + mSampel[1] + " " + mSampel[2] + " dianggap cukup mewakili?", "Jelaskan teknik samplingmu dan dasar penentuan jumlah sampel (rumus/kriteria) — hubungkan dengan karakteristik populasi."]);
+  else Q.push(["Bagaimana kamu menentukan subjek/sampel penelitian, dan apakah jumlahnya memadai?", "Jelaskan teknik sampling/pemilihan informan beserta alasan kecukupannya (kejenuhan data untuk kualitatif, kecukupan statistik untuk kuantitatif)."]);
+  if (metode === "kuantitatif" || metode === "eksperimen" || metode === "campuran") Q.push(["Bagaimana kamu memastikan instrumenmu valid dan reliabel?", "Sebutkan uji validitas (korelasi item-total vs r tabel) dan reliabilitas (Cronbach's Alpha) beserta nilai yang kamu peroleh dan batas minimalnya."]);
+  if (X || Y) Q.push(["Definisikan secara operasional variabel " + (X || "bebas") + (Y ? " dan " + Y : "") + " — apa saja indikatornya?", "Jabarkan: definisi konseptual → definisi operasional → dimensi → indikator → nomor item. Hafalkan tabel operasionalisasimu."]);
+  if (sig) Q.push(["Hasil penelitianmu berpengaruh signifikan — apa implikasi teoretis dan praktisnya?", "Implikasi teoretis: teori apa yang diperkuat/diperluas. Implikasi praktis: rekomendasi konkret untuk pihak terkait, jangan sekadar 'dapat menjadi referensi'."]);
+  else if (tidakSig) Q.push(["Mengapa hasilmu tidak signifikan? Faktor apa yang mungkin memengaruhi?", "Jawab jujur & ilmiah: keterbatasan sampel, varians data, variabel luar yang tidak dikontrol, atau memang teori tidak terbukti di konteksmu — jangan menyalahkan alat. Ini pertanyaan jebakan klasik: sikapmu yang dinilai."]);
+  Q.push(["Temuan mana yang paling penting dari penelitianmu? Mengapa?", "Pilih satu temuan paling kuat datanya, kaitkan kembali ke rumusan masalah nomor satu."]);
+  Q.push(["Apakah kesimpulanmu benar-benar menjawab rumusan masalah satu per satu?", "Petakan lisan: rumusan 1 → kesimpulan 1, dst. Penguji sering mengecek konsistensi Bab 1 ↔ Bab 5 ini."]);
+  Q.push(["Apa keterbatasan penelitianmu, dan apa saranmu untuk peneliti selanjutnya?", "Sebutkan 2–3 keterbatasan nyata (cakupan lokasi, waktu, variabel) dan ubah masing-masing jadi saran yang spesifik."]);
+  if (/pengaruh|hubungan|peran/i.test(judul)) Q.push(["Judulmu memakai kata '" + (/pengaruh/i.test(judul) ? "Pengaruh" : /hubungan/i.test(judul) ? "Hubungan" : "Peran") + "' — apakah desain penelitianmu memang memungkinkan klaim seperti itu?", "Jelaskan arah hubungan antarvariabel dalam desainmu dan batas klaimnya (asosiatif vs kausal). Untuk korelasional, tegaskan kamu tidak mengklaim sebab-akibat mutlak."]);
+  Q.push(["Kalau kamu mengulang penelitian ini dari nol, apa yang akan kamu ubah?", "Tunjukkan refleksi metodologis: satu hal teknis (sampel/instrumen) dan satu hal konseptual (variabel/teori). Jawaban ini menilai kedewasaan ilmiahmu."]);
+  Q.push(["Coba jelaskan inti teorimu dalam satu menit.", "Siapkan versi lift-pitch: nama teori, tokoh, bunyi pokoknya, dan mengapa teori itu pas untuk variabelmu."]);
+  window._tjTeks = Q.map((q, i) => (i + 1) + ". " + q[0] + "\n   Kerangka jawab: " + q[1]).join("\n\n");
+  window._tjJumlah = Q.length;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🎯 ' + Q.length + ' Pertanyaan Paling Mungkin Ditanya Penguji</p>'
+    + '<p class="text-[13px] text-slate-500 mb-3">' + (mSampel ? "Sampel terdeteksi: " + mSampel[1] + " " + mSampel[2] + ". " : "") + (sig ? "Hasilmu terbaca signifikan." : tidakSig ? "Hasilmu terbaca TIDAK signifikan — pertanyaan jebakannya sudah kusiapkan." : "Signifikansi hasil tidak terdeteksi dari abstrak.") + '</p>'
+    + Q.map((q, i) => '<div class="py-2.5 border-t border-slate-200 dark:border-slate-700"><p class="font-bold text-[14.5px]">' + (i + 1) + ". " + esc(q[0]) + '</p><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5">💡 ' + esc(q[1]) + "</p></div>").join("")
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tjTeks || \'\')">📋 Copy Semua (untuk latihan)</button></div></div>';
+}
+SHARE_GETTERS.tanyajawab = function () { return "Saya sedang latihan sidang dengan " + (window._tjJumlah || 0) + " prediksi pertanyaan penguji dari abstrak saya sendiri — disusun oleh MahasiswaTools."; };
+
+/* ---------- 95. PENGECEK SITASI IN-TEXT VS DAFTAR PUSTAKA ---------- */
+UI.ceksitasi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua kesalahan sitasi yang paling sering kena coret penguji: <b>mengutip di teks tapi lupa memasukkan ke daftar pustaka</b>, dan <b>daftar pustaka berisi sumber yang tidak pernah dikutip</b>. Tempel keduanya, tool mencocokkan nama penulis + tahun secara dua arah.</p>'
+    + field("Isi Naskah (Bab 1–5, berisi sitasi seperti (Pranata, 2024) atau Sari (2023))", '<textarea id="csTeks" rows="7" class="\' + IN + \'"></textarea>')
+    + field("Daftar Pustaka (format APA: Nama, I. (Tahun). Judul...)", '<textarea id="csRefs" rows="7" class="\' + IN + \'"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="csCek()">🔍 Cocokkan Dua Arah</button>'
+    + outBox("csOut") + "</div>";
+};
+function csKunci(nama, tahun) { return (nama || "").toLowerCase().replace(/[^a-zà-ÿ]/gi, "") + "|" + tahun; }
+function csCek() {
+  const teks = $("#csTeks").value || "", refs = $("#csRefs").value || "";
+  const out = $("#csOut");
+  if (!teks.trim() || !refs.trim()) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu naskah dan daftar pustakanya.</div>'; return; }
+  const cited = new Map();
+  let m;
+  const reParen = /\(([^()]*?\d{4}[a-z]?)\)/g;
+  while ((m = reParen.exec(teks))) {
+    m[1].split(";").forEach((part) => {
+      const y = /(\d{4})[a-z]?/.exec(part); if (!y) return;
+      const nm = /^[^,(]+/.exec(part.trim()); if (!nm) return;
+      const surname = nm[0].trim().split(/\s+/).filter((w) => !/^(et|al|&|dan|dkk)$/i.test(w)).pop() || nm[0].trim();
+      if (surname.length > 1 && /[A-Za-zÀ-ÿ]/.test(surname) && !/^\d+$/.test(surname)) cited.set(csKunci(surname, y[1]), surname + " (" + y[1] + ")");
+    });
+  }
+  const reNarr = /([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)(?:\s+(?:et al\.|&|dan)\s*[^()]{0,30})?\s*\((\d{4})[a-z]?\)/g;
+  while ((m = reNarr.exec(teks))) cited.set(csKunci(m[1], m[2]), m[1] + " (" + m[2] + ")");
+  const refMap = new Map();
+  refs.split(/\n+/).map((s) => s.trim()).filter(Boolean).forEach((ln) => {
+    const mm = /^([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)\s*,[^()]*\((\d{4})[a-z]?\)/.exec(ln) || /^([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)[^()]*\((\d{4})[a-z]?\)/.exec(ln);
+    if (mm) refMap.set(csKunci(mm[1], mm[2]), ln.slice(0, 72));
+  });
+  if (!cited.size && !refMap.size) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada sitasi terbaca. Pastikan formatnya (Nama, Tahun) di teks dan Nama, I. (Tahun) di daftar pustaka.</div>'; return; }
+  const hilang = [...cited.entries()].filter(([k]) => !refMap.has(k));
+  const yatim = [...refMap.entries()].filter(([k]) => !cited.has(k));
+  const cocok = cited.size - hilang.length;
+  window._csHasil = { cocok, hilang: hilang.length, yatim: yatim.length };
+  const daftar = (arr, ambil) => arr.length ? '<ul class="list-disc ml-5 text-[13.5px] space-y-0.5">' + arr.map((e) => "<li>" + esc(ambil(e)) + "</li>").join("") + "</ul>" : '<p class="text-[13.5px] text-emerald-600 font-semibold">Tidak ada ✅</p>';
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🔍 Hasil Pengecekan: ' + cocok + ' sitasi cocok • ' + cited.size + ' dikutip di teks • ' + refMap.size + ' entri di daftar pustaka</p>'
+    + '<p class="font-bold mt-2">❌ Dikutip di teks tapi TIDAK ada di daftar pustaka (' + hilang.length + ')</p>' + daftar(hilang, (e) => e[1])
+    + '<p class="font-bold mt-3">❌ Ada di daftar pustaka tapi TIDAK pernah dikutip (' + yatim.length + ')</p>' + daftar(yatim, (e) => e[1])
+    + '<p class="text-[12.5px] text-slate-500 mt-3">Catatan: pengecekan memakai nama keluarga penulis pertama + tahun. Sitasi "et al." dicocokkan ke penulis pertamanya; tahun dengan huruf (2024a/2024b) dianggap tahun yang sama — periksa manual bila kamu punya dua sumber dari penulis & tahun yang sama.</p></div>';
+}
+SHARE_GETTERS.ceksitasi = function () { const h = window._csHasil; return h ? "Kecocokan sitasi naskah saya: " + h.cocok + " cocok, " + h.hilang + " belum masuk daftar pustaka, " + h.yatim + " tidak terpakai — dicek dengan MahasiswaTools." : ""; };
+
+/* ---------- 99. KALKULATOR SISA MASA STUDI & RISIKO DO ---------- */
+UI.masastudi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Jangan sampai kaget di semester akhir: hitung <b>sisa SKS, sisa semester, dan tempo minimal per semester</b> supaya kamu lulus sebelum batas masa studi — lengkap dengan tingkat risiko DO dan skenario beban SKS.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Total SKS Syarat Lulus", '<input id="msTotal" type="number" class="\' + IN + \'" value="144">')
+    + field("SKS Sudah Lulus/Ditempuh", '<input id="msTempuh" type="number" class="\' + IN + \'">')
+    + field("Semester Berjalan Sekarang", '<input id="msSem" type="number" class="\' + IN + \'" placeholder="cth: 7">')
+    + field("Batas Maksimal Semester (aturan kampus)", '<input id="msMaks" type="number" class="\' + IN + \'" value="14">')
+    + field("Rencana Ambil SKS per Semester", '<input id="msRencana" type="number" class="\' + IN + \'" value="20">')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="msHitung()">⏳ Hitung Sisa Masa Studi</button>'
+    + outBox("msOut") + "</div>";
+};
+function msHitung() {
+  const v = (id, d) => Number(($("#" + id) || {}).value) || d;
+  const total = v("msTotal", 144), tempuh = v("msTempuh", 0), sem = v("msSem", 1), maks = v("msMaks", 14), rencana = Math.min(24, Math.max(1, v("msRencana", 20)));
+  const out = $("#msOut");
+  if (tempuh >= total) { out.innerHTML = '<div class="\' + OUT + \' font-semibold text-emerald-600">🎉 SKS kamu sudah memenuhi syarat lulus (' + tempuh + '/' + total + '). Fokus ke skripsi & yudisium!</div>'; return; }
+  const sisa = total - tempuh, sisaSem = Math.max(1, maks - sem + 1), tempo = sisa / sisaSem;
+  const status = tempo <= 18 ? ["AMAN ✅", "text-emerald-600", "Tempo di bawah 18 SKS/semester — longgar. Jaga IPK, jangan sampai ada mata kuliah mengulang."] : tempo <= 21 ? ["WASPADA 🟡", "text-amber-600", "Tempo 19–21 SKS/semester — masih wajar, tapi tidak ada ruang untuk gagal. Prioritaskan lulus semua mata kuliah yang diambil."] : tempo <= 24 ? ["KRITIS 🟠", "text-orange-600", "Tempo 22–24 SKS/semester — beban maksimal terus-menerus. Ambil semester pendek/antara bila tersedia dan konsultasikan ke dosen PA sekarang."] : ["RISIKO DO 🔴", "text-rose-600", "Tempo di atas 24 SKS/semester — TIDAK MUNGKIN dikejar dalam batas masa studi. Segera urus perpanjangan masa studi / konsultasi ke program studi sebelum terlambat."];
+  const skenario = [24, 21, 20, 18].map((cap) => { const butuh = Math.ceil(sisa / cap), lulus = sem + butuh - 1; return "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + cap + " SKS/semester</td><td class=\"py-1 pr-3\">" + butuh + " semester lagi</td><td class=\"py-1 pr-3\">Semester " + lulus + "</td><td class=\"py-1\">" + (lulus <= maks ? '<span class="text-emerald-600 font-bold">Muat ✅</span>' : '<span class="text-rose-600 font-bold">Lewat batas ❌</span>') + "</td></tr>"; }).join("");
+  const butuhR = Math.ceil(sisa / rencana), lulusR = sem + butuhR - 1;
+  window._msHasil = { sisa, sisaSem, tempo, status: status[0] };
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">⏳ Sisa Masa Studimu</p>'
+    + '<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 my-2"><div class="bg-indigo-600 h-3 rounded-full" style="width:' + Math.min(100, Math.round(tempuh / total * 100)) + '%"></div></div>'
+    + '<p class="text-[14px]">Progress SKS: <b>' + tempuh + '/' + total + ' (' + fmtN(tempuh / total * 100, 0) + '%)</b> • Sisa <b>' + sisa + ' SKS</b> dalam <b>' + sisaSem + ' semester</b> (semester ' + sem + ' s.d. ' + maks + ') • Tempo minimal <b>' + fmtN(tempo, 1) + ' SKS/semester</b></p>'
+    + '<p class="font-extrabold text-[16px] mt-2 ' + status[1] + '">Status: ' + status[0] + '</p><p class="text-[13.5px]">' + status[2] + '</p>'
+    + '<p class="text-[14px] mt-2">Dengan rencanamu (' + rencana + ' SKS/semester): butuh <b>' + butuhR + ' semester lagi</b> → lulus semester <b>' + lulusR + '</b> ' + (lulusR <= maks ? '<span class="text-emerald-600 font-bold">(masih dalam batas ✅)</span>' : '<span class="text-rose-600 font-bold">(LEWAT batas maksimal ❌ — tambah beban atau ambil semester pendek)</span>') + '</p>'
+    + '<table class="w-full text-[13px] mt-3"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Skenario Beban</th><th class="py-1 pr-3">Butuh</th><th class="py-1 pr-3">Lulus</th><th class="py-1">Keterangan</th></tr>' + skenario + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">Batas maksimal semester berbeda tiap kampus & jenjang (umumnya S1 = 14 semester). Sesuaikan dengan buku pedoman akademik kampusmu.</p></div>';
+}
+SHARE_GETTERS.masastudi = function () { const h = window._msHasil; return h ? "Sisa masa studi saya: " + h.sisa + " SKS dalam " + h.sisaSem + " semester (tempo " + fmtN(h.tempo, 1) + " SKS/semester) — status " + h.status + ". Dihitung dengan MahasiswaTools." : ""; };
+
+/* ---------- 100. KALKULATOR IPK TRANSKRIP & CEK CUM LAUDE ---------- */
+UI.transkrip = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Tempel nilai mata kuliahmu dari transkrip/KHS — tool menghitung <b>IPK, IPS per semester, predikat kelulusan</b>, dan mengecek apakah kamu memenuhi syarat <b>cum laude</b>. Format per baris: <code class="text-[12px]">Nama MK; SKS; Nilai (A/AB/B/BC/C/D/E atau angka 0–4); Semester (opsional)</code></p>'
+    + field("Daftar Mata Kuliah", '<textarea id="trIn" rows="8" class="\' + IN + \' !text-[13px]" placeholder="Pengantar Ekonomi; 3; A; 1&#10;Statistika; 3; AB; 1&#10;Bahasa Inggris; 2; B; 2"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Jumlah Semester Ditempuh", '<input id="trSemTotal" type="number" class="\' + IN + \'" value="8">')
+    + field("Pernah Mengulang Mata Kuliah?", '<select id="trUlang" class="\' + IN + \'"><option value="0">Tidak pernah</option><option value="1">Pernah</option></select>')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="trHitung()">🎓 Hitung IPK & Cek Predikat</button>'
+    + outBox("trOut") + "</div>";
+};
+const TR_BOBOT = { A: 4, "A-": 3.7, AB: 3.5, "B+": 3.3, B: 3, "B-": 2.7, BC: 2.5, "C+": 2.3, C: 2, D: 1, E: 0 };
+function trHitung() {
+  const lines = ($("#trIn").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#trOut");
+  const rows = []; let totSks = 0, totPoin = 0, adaDE = false; const perSem = {};
+  lines.forEach((ln) => {
+    const p = ln.split(";").map((s) => s.trim());
+    if (p.length < 3) return;
+    const sks = parseFloat((p[1] || "").replace(",", ".")) || 0;
+    const nv = (p[2] || "").toUpperCase();
+    const bobot = TR_BOBOT[nv] !== undefined ? TR_BOBOT[nv] : parseFloat(nv.replace(",", "."));
+    if (!sks || !isFinite(bobot)) return;
+    const poin = sks * bobot;
+    totSks += sks; totPoin += poin;
+    if (bobot <= 1) adaDE = true;
+    const sm = p[3] ? Number(p[3]) : 0;
+    if (sm) { perSem[sm] = perSem[sm] || { sks: 0, poin: 0 }; perSem[sm].sks += sks; perSem[sm].poin += poin; }
+    rows.push({ mk: p[0], sks, nilai: p[2], bobot, poin });
+  });
+  if (!rows.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada baris terbaca. Pastikan formatnya: Nama MK; SKS; Nilai; Semester.</div>'; return; }
+  const ipk = totPoin / totSks;
+  const predikat = ipk >= 3.51 ? "Dengan Pujian (Cum Laude)*" : ipk >= 3.01 ? "Sangat Memuaskan" : ipk >= 2.76 ? "Memuaskan" : "Cukup";
+  const semTotal = Number($("#trSemTotal").value) || 8, ulang = $("#trUlang").value === "1";
+  const cek = [
+    ["IPK ≥ 3,51", ipk >= 3.51],
+    ["Masa studi ≤ 8 semester (tepat waktu)", semTotal <= 8],
+    ["Tidak ada nilai D/E", !adaDE],
+    ["Tidak pernah mengulang mata kuliah", !ulang]
+  ];
+  const lulusCumlaude = cek.every((c) => c[1]) && ipk >= 3.51;
+  window._trHasil = { ipk, totSks, predikat, lulusCumlaude };
+  const tabelSem = Object.keys(perSem).length ? '<p class="font-bold mt-3">IPS per Semester</p><div class="flex flex-wrap gap-2 mt-1">' + Object.keys(perSem).sort((a, b) => a - b).map((s) => '<span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[13px] font-semibold">Sem ' + s + ": " + fmtN(perSem[s].poin / perSem[s].sks, 2) + "</span>").join("") + "</div>" : "";
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🎓 Hasil Transkrip</p>'
+    + '<p class="text-[15px]">Total <b>' + fmtN(totSks, 0) + ' SKS</b> • Total poin <b>' + fmtN(totPoin, 1) + '</b> • IPK <b class="text-xl text-indigo-600 dark:text-indigo-400">' + fmtN(ipk, 2) + '</b> • Predikat: <b>' + predikat + '</b></p>'
+    + tabelSem
+    + '<p class="font-bold mt-3">🏅 Cek Syarat Cum Laude</p><ul class="text-[13.5px] space-y-0.5">' + cek.map((c) => "<li>" + (c[1] ? "✅" : "❌") + " " + c[0] + "</li>").join("") + '</ul>'
+    + '<p class="font-extrabold mt-1 ' + (lulusCumlaude ? "text-emerald-600" : "text-amber-600") + '">' + (lulusCumlaude ? "🎉 Kamu MEMENUHI syarat umum cum laude!" : "Kamu belum memenuhi semua syarat umum cum laude.") + '</p>'
+    + '<p class="text-[12.5px] text-slate-500">*Syarat cum laude berbeda antar kampus (ada yang mensyaratkan IPK ≥ 3,50, tanpa nilai C, atau publikasi) — jadikan ini perkiraan dan cek pedoman akademik kampusmu.</p>'
+    + '<details class="mt-2"><summary class="font-bold cursor-pointer text-[13.5px]">Rincian per mata kuliah (' + rows.length + ')</summary><table class="w-full text-[12.5px] mt-2"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Mata Kuliah</th><th class="py-1 pr-3">SKS</th><th class="py-1 pr-3">Nilai</th><th class="py-1 pr-3">Bobot</th><th class="py-1">Poin</th></tr>' + rows.map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + esc(r.mk) + "</td><td class=\"py-1 pr-3\">" + r.sks + "</td><td class=\"py-1 pr-3\">" + esc(r.nilai) + "</td><td class=\"py-1 pr-3\">" + fmtN(r.bobot, 1) + "</td><td class=\"py-1\">" + fmtN(r.poin, 1) + "</td></tr>").join("") + "</table></details></div>";
+}
+SHARE_GETTERS.transkrip = function () { const h = window._trHasil; return h ? "IPK transkrip saya " + fmtN(h.ipk, 2) + " dari " + fmtN(h.totSks, 0) + " SKS — predikat " + h.predikat + (h.lulusCumlaude ? " dan memenuhi syarat cum laude!" : ".") + " Dihitung dengan MahasiswaTools." : ""; };
 
 /* ============================================================
    ROUTER — deep-link hash & mode halaman tool (SEO)

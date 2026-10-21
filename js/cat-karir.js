@@ -850,3 +850,91 @@ SHARE_GETTERS.sks = function () { const s = window._sksHasil || {}; return "Kegi
 /* ============================================================
    TOOL 85 — LEMBAR BIMBINGAN SKRIPSI (KARTU KENDALI)
    ============================================================ */
+;
+/* ---------- 99. KALKULATOR SISA MASA STUDI & RISIKO DO ---------- */
+UI.masastudi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Jangan sampai kaget di semester akhir: hitung <b>sisa SKS, sisa semester, dan tempo minimal per semester</b> supaya kamu lulus sebelum batas masa studi — lengkap dengan tingkat risiko DO dan skenario beban SKS.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Total SKS Syarat Lulus", '<input id="msTotal" type="number" class="\' + IN + \'" value="144">')
+    + field("SKS Sudah Lulus/Ditempuh", '<input id="msTempuh" type="number" class="\' + IN + \'">')
+    + field("Semester Berjalan Sekarang", '<input id="msSem" type="number" class="\' + IN + \'" placeholder="cth: 7">')
+    + field("Batas Maksimal Semester (aturan kampus)", '<input id="msMaks" type="number" class="\' + IN + \'" value="14">')
+    + field("Rencana Ambil SKS per Semester", '<input id="msRencana" type="number" class="\' + IN + \'" value="20">')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="msHitung()">⏳ Hitung Sisa Masa Studi</button>'
+    + outBox("msOut") + "</div>";
+};
+function msHitung() {
+  const v = (id, d) => Number(($("#" + id) || {}).value) || d;
+  const total = v("msTotal", 144), tempuh = v("msTempuh", 0), sem = v("msSem", 1), maks = v("msMaks", 14), rencana = Math.min(24, Math.max(1, v("msRencana", 20)));
+  const out = $("#msOut");
+  if (tempuh >= total) { out.innerHTML = '<div class="\' + OUT + \' font-semibold text-emerald-600">🎉 SKS kamu sudah memenuhi syarat lulus (' + tempuh + '/' + total + '). Fokus ke skripsi & yudisium!</div>'; return; }
+  const sisa = total - tempuh, sisaSem = Math.max(1, maks - sem + 1), tempo = sisa / sisaSem;
+  const status = tempo <= 18 ? ["AMAN ✅", "text-emerald-600", "Tempo di bawah 18 SKS/semester — longgar. Jaga IPK, jangan sampai ada mata kuliah mengulang."] : tempo <= 21 ? ["WASPADA 🟡", "text-amber-600", "Tempo 19–21 SKS/semester — masih wajar, tapi tidak ada ruang untuk gagal. Prioritaskan lulus semua mata kuliah yang diambil."] : tempo <= 24 ? ["KRITIS 🟠", "text-orange-600", "Tempo 22–24 SKS/semester — beban maksimal terus-menerus. Ambil semester pendek/antara bila tersedia dan konsultasikan ke dosen PA sekarang."] : ["RISIKO DO 🔴", "text-rose-600", "Tempo di atas 24 SKS/semester — TIDAK MUNGKIN dikejar dalam batas masa studi. Segera urus perpanjangan masa studi / konsultasi ke program studi sebelum terlambat."];
+  const skenario = [24, 21, 20, 18].map((cap) => { const butuh = Math.ceil(sisa / cap), lulus = sem + butuh - 1; return "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + cap + " SKS/semester</td><td class=\"py-1 pr-3\">" + butuh + " semester lagi</td><td class=\"py-1 pr-3\">Semester " + lulus + "</td><td class=\"py-1\">" + (lulus <= maks ? '<span class="text-emerald-600 font-bold">Muat ✅</span>' : '<span class="text-rose-600 font-bold">Lewat batas ❌</span>') + "</td></tr>"; }).join("");
+  const butuhR = Math.ceil(sisa / rencana), lulusR = sem + butuhR - 1;
+  window._msHasil = { sisa, sisaSem, tempo, status: status[0] };
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">⏳ Sisa Masa Studimu</p>'
+    + '<div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-3 my-2"><div class="bg-indigo-600 h-3 rounded-full" style="width:' + Math.min(100, Math.round(tempuh / total * 100)) + '%"></div></div>'
+    + '<p class="text-[14px]">Progress SKS: <b>' + tempuh + '/' + total + ' (' + fmtN(tempuh / total * 100, 0) + '%)</b> • Sisa <b>' + sisa + ' SKS</b> dalam <b>' + sisaSem + ' semester</b> (semester ' + sem + ' s.d. ' + maks + ') • Tempo minimal <b>' + fmtN(tempo, 1) + ' SKS/semester</b></p>'
+    + '<p class="font-extrabold text-[16px] mt-2 ' + status[1] + '">Status: ' + status[0] + '</p><p class="text-[13.5px]">' + status[2] + '</p>'
+    + '<p class="text-[14px] mt-2">Dengan rencanamu (' + rencana + ' SKS/semester): butuh <b>' + butuhR + ' semester lagi</b> → lulus semester <b>' + lulusR + '</b> ' + (lulusR <= maks ? '<span class="text-emerald-600 font-bold">(masih dalam batas ✅)</span>' : '<span class="text-rose-600 font-bold">(LEWAT batas maksimal ❌ — tambah beban atau ambil semester pendek)</span>') + '</p>'
+    + '<table class="w-full text-[13px] mt-3"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Skenario Beban</th><th class="py-1 pr-3">Butuh</th><th class="py-1 pr-3">Lulus</th><th class="py-1">Keterangan</th></tr>' + skenario + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">Batas maksimal semester berbeda tiap kampus & jenjang (umumnya S1 = 14 semester). Sesuaikan dengan buku pedoman akademik kampusmu.</p></div>';
+}
+SHARE_GETTERS.masastudi = function () { const h = window._msHasil; return h ? "Sisa masa studi saya: " + h.sisa + " SKS dalam " + h.sisaSem + " semester (tempo " + fmtN(h.tempo, 1) + " SKS/semester) — status " + h.status + ". Dihitung dengan MahasiswaTools." : ""; };
+
+;
+/* ---------- 100. KALKULATOR IPK TRANSKRIP & CEK CUM LAUDE ---------- */
+UI.transkrip = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Tempel nilai mata kuliahmu dari transkrip/KHS — tool menghitung <b>IPK, IPS per semester, predikat kelulusan</b>, dan mengecek apakah kamu memenuhi syarat <b>cum laude</b>. Format per baris: <code class="text-[12px]">Nama MK; SKS; Nilai (A/AB/B/BC/C/D/E atau angka 0–4); Semester (opsional)</code></p>'
+    + field("Daftar Mata Kuliah", '<textarea id="trIn" rows="8" class="\' + IN + \' !text-[13px]" placeholder="Pengantar Ekonomi; 3; A; 1&#10;Statistika; 3; AB; 1&#10;Bahasa Inggris; 2; B; 2"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Jumlah Semester Ditempuh", '<input id="trSemTotal" type="number" class="\' + IN + \'" value="8">')
+    + field("Pernah Mengulang Mata Kuliah?", '<select id="trUlang" class="\' + IN + \'"><option value="0">Tidak pernah</option><option value="1">Pernah</option></select>')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="trHitung()">🎓 Hitung IPK & Cek Predikat</button>'
+    + outBox("trOut") + "</div>";
+};
+const TR_BOBOT = { A: 4, "A-": 3.7, AB: 3.5, "B+": 3.3, B: 3, "B-": 2.7, BC: 2.5, "C+": 2.3, C: 2, D: 1, E: 0 };
+function trHitung() {
+  const lines = ($("#trIn").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#trOut");
+  const rows = []; let totSks = 0, totPoin = 0, adaDE = false; const perSem = {};
+  lines.forEach((ln) => {
+    const p = ln.split(";").map((s) => s.trim());
+    if (p.length < 3) return;
+    const sks = parseFloat((p[1] || "").replace(",", ".")) || 0;
+    const nv = (p[2] || "").toUpperCase();
+    const bobot = TR_BOBOT[nv] !== undefined ? TR_BOBOT[nv] : parseFloat(nv.replace(",", "."));
+    if (!sks || !isFinite(bobot)) return;
+    const poin = sks * bobot;
+    totSks += sks; totPoin += poin;
+    if (bobot <= 1) adaDE = true;
+    const sm = p[3] ? Number(p[3]) : 0;
+    if (sm) { perSem[sm] = perSem[sm] || { sks: 0, poin: 0 }; perSem[sm].sks += sks; perSem[sm].poin += poin; }
+    rows.push({ mk: p[0], sks, nilai: p[2], bobot, poin });
+  });
+  if (!rows.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada baris terbaca. Pastikan formatnya: Nama MK; SKS; Nilai; Semester.</div>'; return; }
+  const ipk = totPoin / totSks;
+  const predikat = ipk >= 3.51 ? "Dengan Pujian (Cum Laude)*" : ipk >= 3.01 ? "Sangat Memuaskan" : ipk >= 2.76 ? "Memuaskan" : "Cukup";
+  const semTotal = Number($("#trSemTotal").value) || 8, ulang = $("#trUlang").value === "1";
+  const cek = [
+    ["IPK ≥ 3,51", ipk >= 3.51],
+    ["Masa studi ≤ 8 semester (tepat waktu)", semTotal <= 8],
+    ["Tidak ada nilai D/E", !adaDE],
+    ["Tidak pernah mengulang mata kuliah", !ulang]
+  ];
+  const lulusCumlaude = cek.every((c) => c[1]) && ipk >= 3.51;
+  window._trHasil = { ipk, totSks, predikat, lulusCumlaude };
+  const tabelSem = Object.keys(perSem).length ? '<p class="font-bold mt-3">IPS per Semester</p><div class="flex flex-wrap gap-2 mt-1">' + Object.keys(perSem).sort((a, b) => a - b).map((s) => '<span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[13px] font-semibold">Sem ' + s + ": " + fmtN(perSem[s].poin / perSem[s].sks, 2) + "</span>").join("") + "</div>" : "";
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🎓 Hasil Transkrip</p>'
+    + '<p class="text-[15px]">Total <b>' + fmtN(totSks, 0) + ' SKS</b> • Total poin <b>' + fmtN(totPoin, 1) + '</b> • IPK <b class="text-xl text-indigo-600 dark:text-indigo-400">' + fmtN(ipk, 2) + '</b> • Predikat: <b>' + predikat + '</b></p>'
+    + tabelSem
+    + '<p class="font-bold mt-3">🏅 Cek Syarat Cum Laude</p><ul class="text-[13.5px] space-y-0.5">' + cek.map((c) => "<li>" + (c[1] ? "✅" : "❌") + " " + c[0] + "</li>").join("") + '</ul>'
+    + '<p class="font-extrabold mt-1 ' + (lulusCumlaude ? "text-emerald-600" : "text-amber-600") + '">' + (lulusCumlaude ? "🎉 Kamu MEMENUHI syarat umum cum laude!" : "Kamu belum memenuhi semua syarat umum cum laude.") + '</p>'
+    + '<p class="text-[12.5px] text-slate-500">*Syarat cum laude berbeda antar kampus (ada yang mensyaratkan IPK ≥ 3,50, tanpa nilai C, atau publikasi) — jadikan ini perkiraan dan cek pedoman akademik kampusmu.</p>'
+    + '<details class="mt-2"><summary class="font-bold cursor-pointer text-[13.5px]">Rincian per mata kuliah (' + rows.length + ')</summary><table class="w-full text-[12.5px] mt-2"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Mata Kuliah</th><th class="py-1 pr-3">SKS</th><th class="py-1 pr-3">Nilai</th><th class="py-1 pr-3">Bobot</th><th class="py-1">Poin</th></tr>' + rows.map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + esc(r.mk) + "</td><td class=\"py-1 pr-3\">" + r.sks + "</td><td class=\"py-1 pr-3\">" + esc(r.nilai) + "</td><td class=\"py-1 pr-3\">" + fmtN(r.bobot, 1) + "</td><td class=\"py-1\">" + fmtN(r.poin, 1) + "</td></tr>").join("") + "</table></details></div>";
+}
+SHARE_GETTERS.transkrip = function () { const h = window._trHasil; return h ? "IPK transkrip saya " + fmtN(h.ipk, 2) + " dari " + fmtN(h.totSks, 0) + " SKS — predikat " + h.predikat + (h.lulusCumlaude ? " dan memenuhi syarat cum laude!" : ".") + " Dihitung dengan MahasiswaTools." : ""; };
+

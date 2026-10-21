@@ -450,3 +450,48 @@ function resetBukti() {
 /* ============================================================
    TOOL 66 — GENERATOR PROPOSAL (penelitian / kegiatan / magang)
    ============================================================ */
+;
+/* ---------- 95. PENGECEK SITASI IN-TEXT VS DAFTAR PUSTAKA ---------- */
+UI.ceksitasi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua kesalahan sitasi yang paling sering kena coret penguji: <b>mengutip di teks tapi lupa memasukkan ke daftar pustaka</b>, dan <b>daftar pustaka berisi sumber yang tidak pernah dikutip</b>. Tempel keduanya, tool mencocokkan nama penulis + tahun secara dua arah.</p>'
+    + field("Isi Naskah (Bab 1–5, berisi sitasi seperti (Pranata, 2024) atau Sari (2023))", '<textarea id="csTeks" rows="7" class="\' + IN + \'"></textarea>')
+    + field("Daftar Pustaka (format APA: Nama, I. (Tahun). Judul...)", '<textarea id="csRefs" rows="7" class="\' + IN + \'"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="csCek()">🔍 Cocokkan Dua Arah</button>'
+    + outBox("csOut") + "</div>";
+};
+function csKunci(nama, tahun) { return (nama || "").toLowerCase().replace(/[^a-zà-ÿ]/gi, "") + "|" + tahun; }
+function csCek() {
+  const teks = $("#csTeks").value || "", refs = $("#csRefs").value || "";
+  const out = $("#csOut");
+  if (!teks.trim() || !refs.trim()) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu naskah dan daftar pustakanya.</div>'; return; }
+  const cited = new Map();
+  let m;
+  const reParen = /\(([^()]*?\d{4}[a-z]?)\)/g;
+  while ((m = reParen.exec(teks))) {
+    m[1].split(";").forEach((part) => {
+      const y = /(\d{4})[a-z]?/.exec(part); if (!y) return;
+      const nm = /^[^,(]+/.exec(part.trim()); if (!nm) return;
+      const surname = nm[0].trim().split(/\s+/).filter((w) => !/^(et|al|&|dan|dkk)$/i.test(w)).pop() || nm[0].trim();
+      if (surname.length > 1 && /[A-Za-zÀ-ÿ]/.test(surname) && !/^\d+$/.test(surname)) cited.set(csKunci(surname, y[1]), surname + " (" + y[1] + ")");
+    });
+  }
+  const reNarr = /([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)(?:\s+(?:et al\.|&|dan)\s*[^()]{0,30})?\s*\((\d{4})[a-z]?\)/g;
+  while ((m = reNarr.exec(teks))) cited.set(csKunci(m[1], m[2]), m[1] + " (" + m[2] + ")");
+  const refMap = new Map();
+  refs.split(/\n+/).map((s) => s.trim()).filter(Boolean).forEach((ln) => {
+    const mm = /^([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)\s*,[^()]*\((\d{4})[a-z]?\)/.exec(ln) || /^([A-ZÀ-Þ][A-Za-zÀ-ÿ'’-]+)[^()]*\((\d{4})[a-z]?\)/.exec(ln);
+    if (mm) refMap.set(csKunci(mm[1], mm[2]), ln.slice(0, 72));
+  });
+  if (!cited.size && !refMap.size) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada sitasi terbaca. Pastikan formatnya (Nama, Tahun) di teks dan Nama, I. (Tahun) di daftar pustaka.</div>'; return; }
+  const hilang = [...cited.entries()].filter(([k]) => !refMap.has(k));
+  const yatim = [...refMap.entries()].filter(([k]) => !cited.has(k));
+  const cocok = cited.size - hilang.length;
+  window._csHasil = { cocok, hilang: hilang.length, yatim: yatim.length };
+  const daftar = (arr, ambil) => arr.length ? '<ul class="list-disc ml-5 text-[13.5px] space-y-0.5">' + arr.map((e) => "<li>" + esc(ambil(e)) + "</li>").join("") + "</ul>" : '<p class="text-[13.5px] text-emerald-600 font-semibold">Tidak ada ✅</p>';
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🔍 Hasil Pengecekan: ' + cocok + ' sitasi cocok • ' + cited.size + ' dikutip di teks • ' + refMap.size + ' entri di daftar pustaka</p>'
+    + '<p class="font-bold mt-2">❌ Dikutip di teks tapi TIDAK ada di daftar pustaka (' + hilang.length + ')</p>' + daftar(hilang, (e) => e[1])
+    + '<p class="font-bold mt-3">❌ Ada di daftar pustaka tapi TIDAK pernah dikutip (' + yatim.length + ')</p>' + daftar(yatim, (e) => e[1])
+    + '<p class="text-[12.5px] text-slate-500 mt-3">Catatan: pengecekan memakai nama keluarga penulis pertama + tahun. Sitasi "et al." dicocokkan ke penulis pertamanya; tahun dengan huruf (2024a/2024b) dianggap tahun yang sama — periksa manual bila kamu punya dua sumber dari penulis & tahun yang sama.</p></div>';
+}
+SHARE_GETTERS.ceksitasi = function () { const h = window._csHasil; return h ? "Kecocokan sitasi naskah saya: " + h.cocok + " cocok, " + h.hilang + " belum masuk daftar pustaka, " + h.yatim + " tidak terpakai — dicek dengan MahasiswaTools." : ""; };
+

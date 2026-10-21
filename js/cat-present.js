@@ -629,3 +629,53 @@ SHARE_GETTERS.cloze = function () { return window._cloze ? window._cloze.soal : 
 
 ;
 
+;
+/* ---------- 88. PREDIKSI PERTANYAAN SIDANG DARI ABSTRAK ---------- */
+UI.tanyajawab = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Penguji hampir selalu bertanya dari abstrakmu. Tempel abstrak skripsimu — tool membaca metode, jumlah sampel, dan hasil signifikansinya, lalu menyusun <b>daftar pertanyaan yang paling mungkin keluar + kerangka cara menjawabnya</b>.</p>'
+    + field("Judul Skripsi", '<input id="tjJudul" class="\' + IN + \'">')
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Metode Penelitian", '<select id="tjMetode" class="\' + IN + \'"><option value="kuantitatif">Kuantitatif</option><option value="kualitatif">Kualitatif</option><option value="campuran">Campuran (Mixed Methods)</option><option value="rnd">R&D / Pengembangan</option><option value="kasus">Studi Kasus</option><option value="eksperimen">Eksperimen</option></select>')
+    + field("Variabel X / Fokus (opsional)", '<input id="tjX" class="\' + IN + \'" placeholder="cth: Kualitas Layanan">')
+    + field("Variabel Y / Hasil (opsional)", '<input id="tjY" class="\' + IN + \'" placeholder="cth: Kepuasan Pengguna">')
+    + "</div>"
+    + field("Abstrak Skripsimu", '<textarea id="tjAbstrak" rows="6" class="\' + IN + \'" placeholder="Tempel abstrak lengkap (latar, tujuan, metode, hasil, kesimpulan)"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="tjBuat()">🎯 Susun Prediksi Pertanyaan</button>'
+    + outBox("tjOut") + "</div>";
+};
+function tjBuat() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const judul = g("tjJudul"), metode = g("tjMetode"), abs = g("tjAbstrak"), X = g("tjX"), Y = g("tjY");
+  const out = $("#tjOut");
+  if (abs.length < 80) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tempel abstrak lengkapmu dulu (minimal ±80 karakter) supaya prediksinya akurat.</div>'; return; }
+  const mSampel = /(\d+)\s*(responden|sampel|subjek|partisipan|informan|siswa|mahasiswa)/i.exec(abs);
+  const tidakSig = /tidak (berpengaruh )?signifikan|tidak terdapat pengaruh|hipotesis ditolak/i.test(abs);
+  const sig = !tidakSig && /signifikan|berpengaruh positif|hipotesis diterima|p\s*<\s*0[.,]05/i.test(abs);
+  const Q = [];
+  Q.push(["Apa latar belakang dan urgensi penelitian ini?", "Jawab dengan pola: kondisi ideal → fakta masalah di lapangan (dengan data) → kesenjangan → mengapa harus diteliti sekarang. Akhiri dengan satu kalimat masalah utamamu."]);
+  Q.push(["Apa kebaruan (novelty) penelitianmu dibanding penelitian sebelumnya?", "Sebutkan 2–3 penelitian terdahulu terdekat, lalu bedakan secara spesifik: objek/lokasi, variabel tambahan, metode, atau konteks waktu. Hindari jawaban 'belum pernah diteliti' tanpa bukti."]);
+  Q.push(["Jelaskan rumusan masalahmu dan bagaimana hipotesis/pertanyaan penelitian diturunkan dari teori.", "Tunjukkan alurnya: teori → kerangka berpikir → rumusan masalah → hipotesis. Penguji ingin melihat benang merah, bukan hafalan."]);
+  if (metode === "kuantitatif" || metode === "eksperimen" || metode === "campuran") Q.push(["Mengapa memilih pendekatan kuantitatif" + (metode === "eksperimen" ? " dengan desain eksperimen" : "") + "? Uji statistik apa yang kamu pakai dan mengapa itu yang paling tepat?", "Jelaskan desain penelitianmu, sifat data (skala & distribusi), dan alasan pemilihan uji — sebutkan uji asumsi yang sudah kamu penuhi sebelum uji utama."]);
+  if (metode === "kualitatif" || metode === "kasus" || metode === "campuran") Q.push(["Mengapa pendekatan kualitatif" + (metode === "kasus" ? " dengan studi kasus" : "") + "? Bagaimana kamu menjamin keabsahan data?", "Jelaskan teknik pengumpulan data (wawancara/observasi/dokumen), cara memilih informan, dan teknik keabsahanmu: triangulasi sumber/teknik, member check, atau audit trail."]);
+  if (metode === "rnd") Q.push(["Model pengembangan apa yang kamu gunakan dan apa saja tahapannya? Bagaimana produkmu divalidasi?", "Sebutkan modelnya (ADDIE, Borg & Gall, 4D, dll), tahap yang kamu lalui, siapa validator ahli & praktisinya, skor kelayakan yang diperoleh, dan revisi apa saja yang dilakukan."]);
+  if (mSampel) Q.push(["Populasimu siapa, dan mengapa " + mSampel[1] + " " + mSampel[2] + " dianggap cukup mewakili?", "Jelaskan teknik samplingmu dan dasar penentuan jumlah sampel (rumus/kriteria) — hubungkan dengan karakteristik populasi."]);
+  else Q.push(["Bagaimana kamu menentukan subjek/sampel penelitian, dan apakah jumlahnya memadai?", "Jelaskan teknik sampling/pemilihan informan beserta alasan kecukupannya (kejenuhan data untuk kualitatif, kecukupan statistik untuk kuantitatif)."]);
+  if (metode === "kuantitatif" || metode === "eksperimen" || metode === "campuran") Q.push(["Bagaimana kamu memastikan instrumenmu valid dan reliabel?", "Sebutkan uji validitas (korelasi item-total vs r tabel) dan reliabilitas (Cronbach's Alpha) beserta nilai yang kamu peroleh dan batas minimalnya."]);
+  if (X || Y) Q.push(["Definisikan secara operasional variabel " + (X || "bebas") + (Y ? " dan " + Y : "") + " — apa saja indikatornya?", "Jabarkan: definisi konseptual → definisi operasional → dimensi → indikator → nomor item. Hafalkan tabel operasionalisasimu."]);
+  if (sig) Q.push(["Hasil penelitianmu berpengaruh signifikan — apa implikasi teoretis dan praktisnya?", "Implikasi teoretis: teori apa yang diperkuat/diperluas. Implikasi praktis: rekomendasi konkret untuk pihak terkait, jangan sekadar 'dapat menjadi referensi'."]);
+  else if (tidakSig) Q.push(["Mengapa hasilmu tidak signifikan? Faktor apa yang mungkin memengaruhi?", "Jawab jujur & ilmiah: keterbatasan sampel, varians data, variabel luar yang tidak dikontrol, atau memang teori tidak terbukti di konteksmu — jangan menyalahkan alat. Ini pertanyaan jebakan klasik: sikapmu yang dinilai."]);
+  Q.push(["Temuan mana yang paling penting dari penelitianmu? Mengapa?", "Pilih satu temuan paling kuat datanya, kaitkan kembali ke rumusan masalah nomor satu."]);
+  Q.push(["Apakah kesimpulanmu benar-benar menjawab rumusan masalah satu per satu?", "Petakan lisan: rumusan 1 → kesimpulan 1, dst. Penguji sering mengecek konsistensi Bab 1 ↔ Bab 5 ini."]);
+  Q.push(["Apa keterbatasan penelitianmu, dan apa saranmu untuk peneliti selanjutnya?", "Sebutkan 2–3 keterbatasan nyata (cakupan lokasi, waktu, variabel) dan ubah masing-masing jadi saran yang spesifik."]);
+  if (/pengaruh|hubungan|peran/i.test(judul)) Q.push(["Judulmu memakai kata '" + (/pengaruh/i.test(judul) ? "Pengaruh" : /hubungan/i.test(judul) ? "Hubungan" : "Peran") + "' — apakah desain penelitianmu memang memungkinkan klaim seperti itu?", "Jelaskan arah hubungan antarvariabel dalam desainmu dan batas klaimnya (asosiatif vs kausal). Untuk korelasional, tegaskan kamu tidak mengklaim sebab-akibat mutlak."]);
+  Q.push(["Kalau kamu mengulang penelitian ini dari nol, apa yang akan kamu ubah?", "Tunjukkan refleksi metodologis: satu hal teknis (sampel/instrumen) dan satu hal konseptual (variabel/teori). Jawaban ini menilai kedewasaan ilmiahmu."]);
+  Q.push(["Coba jelaskan inti teorimu dalam satu menit.", "Siapkan versi lift-pitch: nama teori, tokoh, bunyi pokoknya, dan mengapa teori itu pas untuk variabelmu."]);
+  window._tjTeks = Q.map((q, i) => (i + 1) + ". " + q[0] + "\n   Kerangka jawab: " + q[1]).join("\n\n");
+  window._tjJumlah = Q.length;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🎯 ' + Q.length + ' Pertanyaan Paling Mungkin Ditanya Penguji</p>'
+    + '<p class="text-[13px] text-slate-500 mb-3">' + (mSampel ? "Sampel terdeteksi: " + mSampel[1] + " " + mSampel[2] + ". " : "") + (sig ? "Hasilmu terbaca signifikan." : tidakSig ? "Hasilmu terbaca TIDAK signifikan — pertanyaan jebakannya sudah kusiapkan." : "Signifikansi hasil tidak terdeteksi dari abstrak.") + '</p>'
+    + Q.map((q, i) => '<div class="py-2.5 border-t border-slate-200 dark:border-slate-700"><p class="font-bold text-[14.5px]">' + (i + 1) + ". " + esc(q[0]) + '</p><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-0.5">💡 ' + esc(q[1]) + "</p></div>").join("")
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tjTeks || \'\')">📋 Copy Semua (untuk latihan)</button></div></div>';
+}
+SHARE_GETTERS.tanyajawab = function () { return "Saya sedang latihan sidang dengan " + (window._tjJumlah || 0) + " prediksi pertanyaan penguji dari abstrak saya sendiri — disusun oleh MahasiswaTools."; };
+
