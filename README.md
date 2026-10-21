@@ -68,9 +68,19 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 69 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 76 tool.
 
-### 📈📝📚 Tiga Tool Baru (Tool 67–69)
+### 🧪 Tujuh Tool Baru (Tool 70–76)
+
+- **Uji Statistik Non-Parametrik** — Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4 (pendekatan normal & chi-kuadrat, koreksi ties).
+- **Lembar Persetujuan Responden (Informed Consent)** — dokumen etika penelitian berkop logo, siap tanda tangan.
+- **Koding Kualitatif Transkrip** — buku kode berwarna, tandai segmen wawancara, frekuensi tema otomatis, ekspor tabel koding .doc.
+- **Daftar Hadir & Berita Acara** — tabel hadir tanda tangan zig-zag format resmi + berita acara, .doc berkop.
+- **Generator Ide Judul Skripsi** — pola judul dari variabel X/Y/lokasi untuk 6 jenis penelitian.
+- **Kalkulator Target Biaya Kuliah** — total sisa biaya → target tabungan per bulan/minggu/hari + progress bar.
+- **Generator Soal Rumpang (Cloze)** — soal isian otomatis dari teks materi (mode kata kunci/berkala) + kunci jawaban.
+
+## 📈📝📚 Tiga Tool Baru (Tool 67–69)
 
 - **Uji Statistik Inferensial** — normalitas Jarque-Bera, uji-t independen & berpasangan, ANOVA satu arah, regresi linear + korelasi, lengkap dengan **narasi interpretasi otomatis gaya Bab 4** (nilai p dihitung via fungsi beta inkomplet, terverifikasi terhadap hitung manual).
 - **Pembuat Kuesioner Penelitian** — item Likert 4/5, pilihan ganda, dan terbuka; preview berkop logo; ekspor .doc bertabel skala dan teks siap tempel ke Google Form.

@@ -165,6 +165,10 @@ const TOOLS = [
   { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
   { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
   { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
+  { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
+  { id: "consent", n: "Lembar Persetujuan Responden", c: "data", i: "🤝", d: "Informed consent etika penelitian, berkop logo, siap tanda tangan.", aktif: 1 },
+  { id: "koding", n: "Koding Kualitatif Transkrip", c: "data", i: "🏷️", d: "Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.", aktif: 1 },
+  { id: "judul", n: "Generator Ide Judul Skripsi", c: "tulis", i: "💡", d: "Puluhan pola judul dari variabel X, Y, lokasi & metode.", aktif: 1 },
   { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
   { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
   { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
@@ -199,6 +203,9 @@ const TOOLS = [
   { id: "splitter", n: "Splitter Kas & Patungan Kelompok", c: "kelompok", i: "💸", d: "Hitung patungan + siapa transfer ke siapa agar impas.", aktif: 1 },
   { id: "k30", n: "Pencari Jadwal Kosong Bersama", c: "kelompok", i: "🗓️", d: "Irisan jam kosong seluruh anggota tanpa login.", aktif: 1 },
   { id: "k31", n: "Logbook Harian Magang / KKN", c: "kelompok", i: "📓", d: "Catatan harian formal, ekspor .doc berkop paraf & DPL.", aktif: 1 },
+  { id: "hadir", n: "Daftar Hadir & Berita Acara", c: "kelompok", i: "🖊️", d: "Daftar hadir siap cetak & berita acara kegiatan resmi.", aktif: 1 },
+  { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
+  { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 },
   { id: "k32", n: "Kwitansi & Nota LPJ Ber-Terbilang", c: "kelompok", i: "🧾", d: "Kwitansi canvas resmi, angka otomatis jadi terbilang.", aktif: 1 },
   { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
   { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
@@ -277,7 +284,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 function toolCard(t) {
   const fav = favs.has(t.id);
@@ -4919,4 +4926,460 @@ function eksporRak(mode) {
   toast("Referensi diunduh ⬇️");
 }
 SHARE_GETTERS.jurnal = function () { return rakSebagaiAPA(); };
+</script>
+
+<script>
+/* ============================================================
+   TOOL 70 — UJI STATISTIK NON-PARAMETRIK + NARASI
+   ============================================================ */
+function normCdf(z) { const t = 1 / (1 + 0.2316419 * Math.abs(z)); const d = 0.3989422804014327 * Math.exp(-z * z / 2); let p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); if (z > 0) p = 1 - p; return p; }
+function pNormDuaSisi(z) { return 2 * (1 - normCdf(Math.abs(z))); }
+function ranksOf(arr) {
+  const idx = arr.map((v, i) => [v, i]).sort((a, b) => a[0] - b[0]);
+  const r = new Array(arr.length); let i = 0; const tieCorr = [];
+  while (i < idx.length) { let j = i; while (j + 1 < idx.length && idx[j + 1][0] === idx[i][0]) j++; const avg = (i + 1 + j + 1) / 2; for (let k = i; k <= j; k++) r[idx[k][1]] = avg; if (j > i) tieCorr.push(j - i + 1); i = j + 1; }
+  return { r, tieCorr };
+}
+function _gser(a, x) { let ap = a, s = 1 / a, d = s; for (let n = 1; n <= 200; n++) { ap += 1; d *= x / ap; s += d; if (Math.abs(d) < Math.abs(s) * 1e-9) break; } return s * Math.exp(-x + a * Math.log(x) - _lgamma(a)); }
+function _gcf(a, x) { let b = x + 1 - a, c = 1e300, d = 1 / b, h = d; for (let i = 1; i <= 200; i++) { const an = -i * (i - a); b += 2; d = an * d + b; if (Math.abs(d) < 1e-300) d = 1e-300; c = b + an / c; if (Math.abs(c) < 1e-300) c = 1e-300; d = 1 / d; const del = d * c; h *= del; if (Math.abs(del - 1) < 1e-9) break; } return Math.exp(-x + a * Math.log(x) - _lgamma(a)) * h; }
+function pChi2(x, df) { const a = df / 2, xx = x / 2; if (xx < a + 1) return 1 - _gser(a, xx); return _gcf(a, xx); }
+
+UI.nonpar = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Pilih Uji Non-Parametrik", '<select id="npJenis" class="' + IN + '" onchange="npGanti()"><option value="mw">Mann-Whitney U — 2 kelompok berbeda</option><option value="wx">Wilcoxon Signed-Rank — sebelum vs sesudah</option><option value="kw">Kruskal-Wallis — 3+ kelompok</option><option value="sp">Korelasi Spearman — hubungan X & Y (data ordinal/tidak normal)</option></select>')
+    + '<p id="npHint" class="rounded-lg bg-brand-50 dark:bg-brand-900/30 border border-brand-200 dark:border-brand-800 p-3 text-[13px] mb-4"></p>'
+    + '<div id="npBox1">' + field("Data Kelompok 1 / Variabel X", '<textarea id="npA" rows="5" class="' + IN + '" placeholder="Angka dipisah spasi/koma/baris baru"></textarea>') + "</div>"
+    + '<div id="npBox2">' + field("Data Kelompok 2 / Variabel Y", '<textarea id="npB" rows="5" class="' + IN + '" placeholder="Kelompok pembanding / data sesudah / variabel Y"></textarea>') + "</div>"
+    + '<div id="npBoxG" class="hidden">' + field("Data Semua Kelompok (satu kelompok per baris)", '<textarea id="npG" rows="6" class="' + IN + '" placeholder="Kelompok A: 80, 82, 84&#10;Kelompok B: 70, 72, 74&#10;Kelompok C: 90, 91, 93"></textarea>') + "</div>"
+    + field("Nama Variabel / Kelompok (untuk narasi)", '<input id="npNama" class="' + IN + '" placeholder="cth: skor motivasi kelompok eksperimen vs kontrol">')
+    + '<button class="' + BTN + '" onclick="hitungNonpar()">📉 Hitung Uji Non-Parametrik</button>'
+    + outBox("npOut") + "</div>";
+  npGanti();
+};
+function npGanti() {
+  const j = $("#npJenis").value;
+  const hints = { mw: "Mann-Whitney membandingkan dua kelompok independen bila data tidak normal/berskala ordinal. Isi kedua kotak data.", wx: "Wilcoxon membandingkan pasangan data yang sama (pretest–posttest) bila selisihnya tidak normal. Jumlah data kedua kotak harus sama.", kw: "Kruskal-Wallis = ANOVA non-parametrik untuk 3+ kelompok. Satu kelompok per baris.", sp: "Spearman mengukur hubungan monotonik X–Y (cocok untuk data Likert/ordinal). Jumlah data kedua kotak harus sama." };
+  $("#npHint").innerHTML = hints[j];
+  $("#npBox1").classList.toggle("hidden", j === "kw");
+  $("#npBox2").classList.toggle("hidden", j === "kw");
+  $("#npBoxG").classList.toggle("hidden", j !== "kw");
+}
+function npHasil(judul, baris, narasi) {
+  window._npNarasi = narasi;
+  $("#npOut").innerHTML = '<div class="' + OUT + '"><p class="font-extrabold mb-3">' + judul + '</p><div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">'
+    + baris.map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2 text-center"><div class="text-lg font-extrabold">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<p class="text-[13.5px] leading-relaxed whitespace-pre-wrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-3.5">' + esc(narasi) + "</p>"
+    + '<button class="' + BTN2 + '" onclick="copyText(window._npNarasi)">📋 Copy Narasi Bab 4</button>'
+    + '<p class="text-xs text-slate-500 mt-2">Nilai p uji berbasis peringkat dihitung dengan pendekatan normal (koreksi ties & kontinuitas) — setara keluaran SPSS untuk uji yang sama pada data tanpa ties ekstrem.</p></div>';
+}
+function hitungNonpar() {
+  const j = $("#npJenis").value, nama = $("#npNama").value.trim() || "variabel penelitian";
+  const A = parseNums($("#npA").value), B = parseNums($("#npB").value);
+  const err = (m) => { $("#npOut").innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ ' + m + "</div>"; };
+  if (j === "mw") {
+    if (A.length < 3 || B.length < 3) return err("Mann-Whitney butuh minimal 3 data per kelompok.");
+    const n1 = A.length, n2 = B.length, N = n1 + n2;
+    const { r, tieCorr } = ranksOf(A.concat(B));
+    const R1 = r.slice(0, n1).reduce((a, b) => a + b, 0);
+    const U1 = R1 - n1 * (n1 + 1) / 2, U2 = n1 * n2 - U1, U = Math.min(U1, U2);
+    const mu = n1 * n2 / 2;
+    const tieSum = tieCorr.reduce((a, t) => a + (t * t * t - t), 0);
+    const sd = Math.sqrt(n1 * n2 / 12 * ((N + 1) - tieSum / (N * (N - 1))));
+    const z = (U - mu + 0.5) / sd, p = pNormDuaSisi(z), sig = p < 0.05;
+    window._npHasil = { uji: "Mann-Whitney", U, z, p };
+    npHasil("Hasil Uji Mann-Whitney U", [["U", fmtN(U)], ["Rata-rata Rank Kel. 1", fmtN(R1 / n1)], ["z", fmtN(z, 3)], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "BERBEDA SIGNIFIKAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil uji Mann-Whitney U terhadap " + nama + ", diperoleh nilai U sebesar " + fmtN(U) + " dengan nilai z sebesar " + fmtN(z, 3) + " dan signifikansi (p) sebesar " + fmtP(p) + ". Rata-rata peringkat kelompok pertama adalah " + fmtN(R1 / n1) + " dan kelompok kedua " + fmtN((r.slice(n1).reduce((a, b) => a + b, 0)) / n2) + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan yang signifikan antara kedua kelompok." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan yang signifikan antara kedua kelompok."));
+  }
+  else if (j === "wx") {
+    if (A.length !== B.length || A.length < 3) return err("Wilcoxon butuh jumlah data yang sama di kedua kotak (minimal 3 pasang).");
+    const diffs = A.map((x, i) => B[i] - x).filter((d) => d !== 0);
+    if (diffs.length < 3) return err("Pasangan yang berbeda (bukan nol) kurang dari 3 — uji tidak dapat dilakukan.");
+    const { r, tieCorr } = ranksOf(diffs.map(Math.abs));
+    let Wp = 0, Wm = 0;
+    diffs.forEach((d, i) => { if (d > 0) Wp += r[i]; else Wm += r[i]; });
+    const W = Math.min(Wp, Wm), n = diffs.length;
+    const mu = n * (n + 1) / 4;
+    const tieSum = tieCorr.reduce((a, t) => a + (t * t * t - t), 0);
+    const sd = Math.sqrt(n * (n + 1) * (2 * n + 1) / 24 - tieSum / 48);
+    const z = (W - mu + 0.5) / sd, p = pNormDuaSisi(z), sig = p < 0.05;
+    window._npHasil = { uji: "Wilcoxon", W, Wp, Wm, z, p };
+    npHasil("Hasil Uji Wilcoxon Signed-Rank", [["W (min W+/W−)", fmtN(W)], ["W+", fmtN(Wp)], ["W−", fmtN(Wm)], ["z", fmtN(z, 3)], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "BERBEDA SIGNIFIKAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil uji Wilcoxon Signed-Rank terhadap " + nama + ", diperoleh jumlah peringkat positif (W+) sebesar " + fmtN(Wp) + " dan peringkat negatif (W−) sebesar " + fmtN(Wm) + ", dengan nilai z sebesar " + fmtN(z, 3) + " dan signifikansi (p) sebesar " + fmtP(p) + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan yang signifikan antara data sebelum dan sesudah." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan yang signifikan antara data sebelum dan sesudah."));
+  }
+  else if (j === "kw") {
+    const groups = $("#npG").value.split(/\n/).map((l) => parseNums(l.replace(/^[^:]*:/, ""))).filter((g) => g.length >= 2);
+    if (groups.length < 3) return err("Kruskal-Wallis butuh minimal 3 kelompok (satu per baris, masing-masing ≥2 data).");
+    const all = groups.flat(), N = all.length;
+    const { r, tieCorr } = ranksOf(all);
+    let pos = 0, sum = 0;
+    const Rg = groups.map((g) => { let s = 0; for (let i = 0; i < g.length; i++) s += r[pos++]; sum += (s * s) / g.length; return s; });
+    let H = 12 / (N * (N + 1)) * sum - 3 * (N + 1);
+    const tieSum = tieCorr.reduce((a, t) => a + (t * t * t - t), 0);
+    const corr = 1 - tieSum / (N * N * N - N);
+    if (corr > 0) H = H / corr;
+    const df = groups.length - 1, p = pChi2(H, df), sig = p < 0.05;
+    window._npHasil = { uji: "Kruskal-Wallis", H, df, p };
+    npHasil("Hasil Uji Kruskal-Wallis", [["H", fmtN(H, 3)], ["df", df], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "ADA PERBEDAAN ✅" : "Tidak Berbeda ❌"]],
+      "Berdasarkan hasil uji Kruskal-Wallis terhadap " + nama + ", diperoleh nilai H sebesar " + fmtN(H, 3) + " dengan df = " + df + " dan signifikansi (p) sebesar " + fmtP(p) + ". Rata-rata peringkat tiap kelompok adalah " + groups.map((g, i) => "kelompok " + (i + 1) + " = " + fmtN(Rg[i] / g.length)).join(", ") + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, dapat disimpulkan bahwa terdapat perbedaan yang signifikan di antara kelompok-kelompok tersebut; lanjutkan dengan uji Mann-Whitney berpasangan (post-hoc) untuk mengetahui pasangan yang berbeda." : "lebih besar dari 0,05, dapat disimpulkan bahwa tidak terdapat perbedaan yang signifikan di antara kelompok-kelompok tersebut."));
+  }
+  else if (j === "sp") {
+    if (A.length !== B.length || A.length < 4) return err("Spearman butuh jumlah data X dan Y yang sama (minimal 4 pasang).");
+    const ra = ranksOf(A).r, rb = ranksOf(B).r, n = A.length;
+    const rho = pearson(ra, rb);
+    const t = rho * Math.sqrt(n - 2) / Math.sqrt(1 - rho * rho), p = pDariT(Math.abs(t), n - 2), sig = p < 0.05;
+    const kuat = Math.abs(rho) >= 0.8 ? "sangat kuat" : Math.abs(rho) >= 0.6 ? "kuat" : Math.abs(rho) >= 0.4 ? "sedang" : Math.abs(rho) >= 0.2 ? "lemah" : "sangat lemah";
+    window._npHasil = { uji: "Spearman", rho, p };
+    npHasil("Hasil Korelasi Spearman", [["rho (ρ)", fmtN(rho, 3)], ["Kekuatan", kuat], ["Nilai p", fmtP(p)], ["Kesimpulan", sig ? "SIGNIFIKAN ✅" : "Tidak Signifikan ❌"]],
+      "Berdasarkan hasil uji korelasi Spearman, diperoleh nilai koefisien korelasi (rho) sebesar " + fmtN(rho, 3) + " dengan signifikansi (p) sebesar " + fmtP(p) + ". Nilai tersebut menunjukkan hubungan yang " + kuat + " dan bersifat " + (rho >= 0 ? "positif (searah)" : "negatif (berlawanan arah)") + " antara kedua variabel pada " + nama + ". Karena nilai p " + (sig ? "lebih kecil dari 0,05, hubungan tersebut dinyatakan signifikan secara statistik." : "lebih besar dari 0,05, hubungan tersebut dinyatakan tidak signifikan secara statistik."));
+  }
+}
+
+/* ============================================================
+   TOOL 71 — LEMBAR PERSETUJUAN RESPONDEN (INFORMED CONSENT)
+   ============================================================ */
+UI.consent = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Judul Penelitian", '<input id="icJudul" class="' + IN + '" placeholder="Judul lengkap penelitian">')
+    + field("Nama Peneliti", '<input id="icNama" class="' + IN + '" placeholder="Nama peneliti utama">')
+    + field("Institusi Peneliti", '<input id="icInst" class="' + IN + '" placeholder="Prodi — Universitas">')
+    + field("Kontak Peneliti (HP/Email)", '<input id="icKontak" class="' + IN + '" placeholder="Untuk pertanyaan responden">')
+    + "</div>"
+    + field("Tujuan Penelitian", '<textarea id="icTujuan" rows="2" class="' + IN + '" placeholder="Jelaskan dengan bahasa sederhana untuk orang awam"></textarea>')
+    + field("Prosedur yang Akan Dialami Responden", '<textarea id="icProsedur" rows="2" class="' + IN + '" placeholder="cth: Mengisi kuesioner ±10 menit / wawancara ±30 menit yang direkam atas izin"></textarea>')
+    + field("Manfaat & Risiko", '<textarea id="icRisiko" rows="2" class="' + IN + '">Penelitian ini tidak menimbulkan risiko berarti bagi responden. Hasil penelitian diharapkan bermanfaat bagi pengembangan ilmu dan perbaikan program terkait.</textarea>')
+    + '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW LEMBAR PERSETUJUAN</p><div id="icPrev"></div></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="unduhConsent()">⬇️ Download .doc (Siap Tanda Tangan)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(window._consentText || \'\')">📋 Copy Teks</button></div>'
+    + "</div>";
+  sisipLogoField(el, null);
+  el.addEventListener("input", renderConsent);
+  renderConsent();
+};
+function consentTeks() {
+  const g = (id) => $("#" + id) ? $("#" + id).value.trim() : "";
+  return "LEMBAR PERSETUJUAN MENJADI RESPONDEN\n(INFORMED CONSENT)\n\n"
+    + "Judul Penelitian: " + (g("icJudul") || "(judul penelitian)") + "\nPeneliti: " + (g("icNama") || "(nama peneliti)") + "\nInstitusi: " + (g("icInst") || "(institusi)") + "\n\n"
+    + "PENJELASAN PENELITIAN\n" + (g("icTujuan") || "Penelitian ini bertujuan untuk memperoleh data dalam rangka penyusunan karya ilmiah (skripsi).") + "\n\n"
+    + "PROSEDUR\n" + (g("icProsedur") || "Responden akan diminta mengisi kuesioner/ mengikuti wawancara sesuai petunjuk peneliti.") + "\n\n"
+    + "MANFAAT DAN RISIKO\n" + g("icRisiko") + "\n\n"
+    + "KERAHASIAAN DAN KESEDIAAN\nIdentitas dan seluruh jawaban responden dijamin kerahasiaannya dan hanya digunakan untuk kepentingan penelitian. Partisipasi bersifat sukarela; responden berhak menolak atau mengundurkan diri kapan pun tanpa konsekuensi apa pun.\n\n"
+    + "Apabila ada hal yang ingin ditanyakan, responden dapat menghubungi peneliti melalui " + (g("icKontak") || "(kontak peneliti)") + ".\n\n"
+    + "PERNYATAAN PERSETUJUAN\nSaya yang bertanda tangan di bawah ini menyatakan telah membaca/mendengarkan penjelasan di atas dan bersedia menjadi responden dalam penelitian ini secara sukarela.\n\n"
+    + "Nama Responden: ______________________\nTanggal: ______________________\n\nTanda tangan responden,\t\tTanda tangan peneliti,\n\n\n( ______________________ )\t\t( " + (g("icNama") || "______________________") + " )";
+}
+function renderConsent() {
+  const box = $("#icPrev"); if (!box) return;
+  const t = consentTeks();
+  window._consentText = t;
+  const d = getLogoData();
+  box.innerHTML = '<div class="bg-white text-slate-900 p-6 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+    + (d ? '<p style="text-align:center;margin:0 0 4pt"><img src="' + d + '" style="height:64px;margin:0 auto"></p>' : "")
+    + '<div class="whitespace-pre-wrap text-[13.5px] leading-relaxed">' + esc(t) + "</div></div>";
+}
+function consentDocHtml() { return "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(consentTeks()) + "</div><p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>"; }
+function unduhConsent() { download("Lembar_Persetujuan_Responden.doc", consentDocHtml(), "application/msword"); toast("Lembar persetujuan diunduh 🤝"); }
+SHARE_GETTERS.consent = function () { return window._consentText || ""; };
+</script>
+
+<script>
+/* ============================================================
+   TOOL 72 — KODING KUALITATIF TRANSKRIP
+   ============================================================ */
+const KOD_WARNA = ["#FDE047", "#A7F3D0", "#BFDBFE", "#FBCFE8", "#FED7AA", "#DDD6FE", "#99F6E4", "#FECACA"];
+UI.koding = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Transkrip Wawancara / Catatan Lapangan", '<textarea id="kdIn" rows="7" class="' + IN + '" placeholder="Tempel transkrip di sini. Pisahkan tiap segmen (jawaban/ucapan) dengan BARIS KOSONG."></textarea>')
+    + '<button class="' + BTN + '" onclick="pecahSegmen()">✂️ Pecah Jadi Segmen</button>'
+    + '<div class="rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-3.5 mb-4"><p class="text-sm font-extrabold mb-2">🏷️ Buku Kode (Tema)</p>'
+    + '<div class="flex gap-2 mb-2.5"><input id="kdKodeBaru" class="flex-1 ' + IN + '" placeholder="Nama kode baru, cth: Manfaat Ekonomi"><button class="' + BTN2 + '" style="width:auto" onclick="tambahKode()">+ Kode</button></div>'
+    + '<div id="kdKodeList" class="flex flex-wrap gap-2"></div>'
+    + '<p class="text-xs text-slate-500 mt-2">Pilih kode aktif, lalu klik segmen untuk menandainya (klik lagi untuk melepas).</p></div>'
+    + '<div id="kdStats" class="mb-3"></div>'
+    + '<div id="kdSegs" class="space-y-2 mb-4"></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="unduhKoding()">⬇️ Download Tabel Koding .doc</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(ringkasanKoding())">📋 Copy Ringkasan Tema</button></div>'
+    + "</div>";
+  const lama = store.get("mt_koding", null);
+  if (lama && lama.segs && lama.segs.length) { window._kodSegs = lama.segs; window._kodCodes = lama.codes || []; }
+  else { window._kodSegs = []; window._kodCodes = []; }
+  window._kodAktif = "";
+  renderKoding();
+};
+function simpanKoding() { store.set("mt_koding", { segs: window._kodSegs, codes: window._kodCodes }); }
+function pecahSegmen() {
+  const raw = $("#kdIn").value.trim();
+  if (!raw) { toast("⚠️ Tempel transkrip dulu."); return; }
+  window._kodSegs = raw.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean).map((teks) => ({ teks, kode: "" }));
+  simpanKoding(); renderKoding();
+  toast(window._kodSegs.length + " segmen terbentuk ✂️");
+}
+function tambahKode() {
+  const v = $("#kdKodeBaru").value.trim();
+  if (!v) return;
+  if (!window._kodCodes.includes(v)) window._kodCodes.push(v);
+  $("#kdKodeBaru").value = "";
+  window._kodAktif = v;
+  simpanKoding(); renderKoding();
+}
+function pilihKode(k) { window._kodAktif = (window._kodAktif === k ? "" : k); renderKoding(); }
+function tandaiSegmen(i) {
+  if (!window._kodAktif) { toast("Pilih kode aktif dulu di Buku Kode 🏷️"); return; }
+  const s = window._kodSegs[i];
+  s.kode = (s.kode === window._kodAktif ? "" : window._kodAktif);
+  simpanKoding(); renderKoding();
+}
+function warnaKode(k) { const i = window._kodCodes.indexOf(k); return KOD_WARNA[Math.max(0, i) % KOD_WARNA.length]; }
+function renderKoding() {
+  const kl = $("#kdKodeList"); if (!kl) return;
+  kl.innerHTML = window._kodCodes.length ? window._kodCodes.map((k) => '<button onclick="pilihKode(\'' + esc(k).replace(/'/g, "\\'") + '\')" class="px-3 py-1.5 rounded-full text-[13px] font-bold border-2 ' + (window._kodAktif === k ? "border-black dark:border-[#FDE047]" : "border-transparent") + '" style="background:' + warnaKode(k) + ';color:#111">' + esc(k) + "</button>").join("") : '<span class="text-sm text-slate-500">Belum ada kode — tambahkan tema pertama di atas.</span>';
+  const total = window._kodSegs.length, terkode = window._kodSegs.filter((s) => s.kode).length;
+  const stats = $("#kdStats");
+  if (stats) stats.innerHTML = total ? '<div class="flex flex-wrap gap-2">' + window._kodCodes.map((k) => { const c = window._kodSegs.filter((s) => s.kode === k).length; return '<span class="px-2.5 py-1 rounded-lg text-xs font-extrabold border-2 border-black/10" style="background:' + warnaKode(k) + ';color:#111">' + esc(k) + ": " + c + " segmen (" + (total ? Math.round(c / total * 100) : 0) + "%)</span>"; }).join("") + '<span class="px-2.5 py-1 rounded-lg text-xs font-extrabold bg-slate-900 text-white dark:bg-white dark:text-slate-900">Terkode: ' + terkode + "/" + total + "</span></div>" : "";
+  const box = $("#kdSegs");
+  if (box) box.innerHTML = total ? window._kodSegs.map((s, i) => '<div onclick="tandaiSegmen(' + i + ')" class="cursor-pointer rounded-lg border-2 p-3 text-[13.5px] leading-relaxed bg-white dark:bg-slate-900 ' + (s.kode ? "border-black dark:border-[#FDE047]" : "border-slate-200 dark:border-slate-700") + '"><span class="text-[11px] font-extrabold text-slate-400 mr-1.5">#' + (i + 1) + "</span>" + esc(s.teks) + (s.kode ? ' <span class="ml-1.5 px-2 py-0.5 rounded-full text-[11px] font-extrabold" style="background:' + warnaKode(s.kode) + ';color:#111">' + esc(s.kode) + "</span>" : "") + "</div>").join("") : '<p class="text-sm text-slate-500">Belum ada segmen — tempel transkrip lalu klik “Pecah Jadi Segmen”.</p>';
+}
+function ringkasanKoding() {
+  const total = window._kodSegs.length;
+  let t = "RINGKASAN KODING KUALITATIF\nTotal segmen: " + total + "\n\n";
+  window._kodCodes.forEach((k) => { const c = window._kodSegs.filter((s) => s.kode === k).length; t += "• " + k + ": " + c + " segmen (" + (total ? Math.round(c / total * 100) : 0) + "%)\n"; });
+  return t;
+}
+function unduhKoding() {
+  if (!window._kodSegs.length) { toast("Belum ada segmen 📄"); return; }
+  let h = "<html><body style='font-family:serif;font-size:12pt'><h3>TABEL KODING KUALITATIF</h3><table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Segmen Data</th><th>Kode/Tema</th></tr>"
+    + window._kodSegs.map((s, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(s.teks) + "</td><td>" + esc(s.kode || "—") + "</td></tr>").join("") + "</table>"
+    + "<h4>Ringkasan Frekuensi Tema</h4><table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse'><tr><th>Tema</th><th>Frekuensi</th><th>Persentase</th></tr>"
+    + window._kodCodes.map((k) => { const c = window._kodSegs.filter((s) => s.kode === k).length; return "<tr><td>" + esc(k) + "</td><td>" + c + "</td><td>" + (window._kodSegs.length ? Math.round(c / window._kodSegs.length * 100) : 0) + "%</td></tr>"; }).join("") + "</table>"
+    + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+  download("Tabel_Koding.doc", h, "application/msword");
+  toast("Tabel koding diunduh ⬇️");
+}
+SHARE_GETTERS.koding = function () { return ringkasanKoding(); };
+
+/* ============================================================
+   TOOL 73 — DAFTAR HADIR & BERITA ACARA
+   ============================================================ */
+UI.hadir = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Jenis Dokumen", '<select id="hdMode" class="' + IN + '" onchange="renderHadir()"><option value="hadir">📋 Daftar Hadir Kegiatan</option><option value="berita">📰 Berita Acara Kegiatan</option></select>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Kegiatan", '<input id="hdKegiatan" class="' + IN + '" placeholder="cth: Seminar Nasional Kewirausahaan 2026">')
+    + field("Penyelenggara", '<input id="hdPeny" class="' + IN + '" placeholder="cth: HIMA Ekonomi — Universitas Contoh">')
+    + field("Hari, Tanggal", '<input id="hdTgl" class="' + IN + '" placeholder="cth: Sabtu, 14 November 2026">')
+    + field("Waktu & Tempat", '<input id="hdWaktu" class="' + IN + '" placeholder="cth: 08.00–15.00 WIB, Aula Kampus">')
+    + "</div>"
+    + '<div id="hdBoxHadir">' + field("Daftar Nama Peserta (satu per baris, format: Nama | Instansi)", '<textarea id="hdNama" rows="6" class="' + IN + '" placeholder="Andini Prameswari | Univ. Contoh&#10;Bima Aditya Nugraha | Univ. Contoh&#10;Citra Dewi Lestari | SMAN 1"></textarea>') + "</div>"
+    + '<div id="hdBoxBerita" class="hidden">'
+    + field("Hasil / Kesimpulan Kegiatan (satu poin per baris)", '<textarea id="hdHasil" rows="4" class="' + IN + '" placeholder="Kegiatan berjalan lancar dan dihadiri peserta sesuai target&#10;Disepakati tindak lanjut berupa pelatihan lanjutan bulan depan"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Pimpinan Kegiatan/Rapat", '<input id="hdPimpin" class="' + IN + '" placeholder="Nama pimpinan">')
+    + field("Notulis / Sekretaris", '<input id="hdNotulis" class="' + IN + '" placeholder="Nama notulis">')
+    + "</div></div>"
+    + '<div class="mb-4"><p class="text-sm font-extrabold mb-2">👁 PREVIEW DOKUMEN</p><div id="hdPrev"></div></div>'
+    + '<button class="' + BTN + '" onclick="unduhHadir()">⬇️ Download .doc</button>'
+    + "</div>";
+  sisipLogoField(el, null);
+  el.addEventListener("input", renderHadir);
+  renderHadir();
+};
+function hdData() {
+  const g = (id) => $("#" + id) ? $("#" + id).value.trim() : "";
+  return { mode: g("hdMode") || "hadir", keg: g("hdKegiatan"), peny: g("hdPeny"), tgl: g("hdTgl"), waktu: g("hdWaktu"),
+    peserta: g("hdNama").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((x) => x.trim()); return { nama: p[0], inst: p[1] || "" }; }),
+    hasil: g("hdHasil").split(/\n/).map((s) => s.trim()).filter(Boolean), pimpin: g("hdPimpin"), notulis: g("hdNotulis") };
+}
+function hadirDocHtml() {
+  const d = hdData();
+  const kop = kopLogoHtml("center") + "<p style='text-align:center;margin:0'><b>" + esc((d.peny || "Penyelenggara").toUpperCase()) + "</b></p>";
+  if (d.mode === "hadir") {
+    return "<html><body style='font-family:serif;font-size:12pt'>" + kop
+      + "<h3 style='text-align:center'>DAFTAR HADIR</h3><p style='text-align:center'><b>" + esc(d.keg || "Nama Kegiatan") + "</b><br>" + esc(d.tgl) + (d.waktu ? " • " + esc(d.waktu) : "") + "</p>"
+      + "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th style='width:5%'>No</th><th style='width:38%'>Nama</th><th style='width:27%'>Instansi</th><th style='width:15%'>Tanda Tangan</th><th style='width:15%'>Tanda Tangan</th></tr>"
+      + d.peserta.map((p, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(p.nama) + "</td><td>" + esc(p.inst) + "</td><td>" + (i % 2 === 0 ? (i + 1) + ". " : "") + "</td><td>" + (i % 2 === 1 ? (i + 1) + ". " : "") + "</td></tr>").join("") + "</table>"
+      + "<p style='font-size:10pt'>Jumlah peserta hadir: " + d.peserta.length + " orang.</p><p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools</p></body></html>";
+  }
+  return "<html><body style='font-family:serif;font-size:12pt'>" + kop
+    + "<h3 style='text-align:center'>BERITA ACARA KEGIATAN</h3>"
+    + "<p>Pada hari ini, " + esc(d.tgl || "__________") + ", bertempat di " + esc(d.waktu.split(",").slice(1).join(",").trim() || d.waktu || "__________") + ", telah dilaksanakan kegiatan:</p>"
+    + "<p><b>" + esc(d.keg || "Nama Kegiatan") + "</b><br>Penyelenggara: " + esc(d.peny) + "<br>Waktu: " + esc(d.waktu) + "</p>"
+    + "<p>Dengan hasil/kesimpulan sebagai berikut:</p>" + d.hasil.map((h, i) => "<p>" + (i + 1) + ". " + esc(h) + "</p>").join("")
+    + "<p>Demikian berita acara ini dibuat dengan sebenarnya untuk digunakan sebagaimana mestinya.</p><br>"
+    + "<table style='width:100%'><tr><td style='width:50%'>Notulis / Sekretaris,<br><br><br><br>( " + esc(d.notulis || "________________") + " )</td><td>Pimpinan Kegiatan,<br><br><br><br>( " + esc(d.pimpin || "________________") + " )</td></tr></table>"
+    + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools</p></body></html>";
+}
+function renderHadir() {
+  const box = $("#hdPrev"); if (!box) return;
+  const d = hdData();
+  $("#hdBoxHadir").classList.toggle("hidden", d.mode !== "hadir");
+  $("#hdBoxBerita").classList.toggle("hidden", d.mode !== "berita");
+  window._hdCount = d.peserta.length;
+  if (d.mode === "hadir") {
+    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] bshadow-sm" style="font-family:Georgia,serif">'
+      + (getLogoData() ? '<p style="text-align:center;margin:0"><img src="' + getLogoData() + '" style="height:52px;margin:0 auto"></p>' : "")
+      + '<p class="text-center font-extrabold text-sm">DAFTAR HADIR</p><p class="text-center font-bold text-[13px]">' + esc(d.keg || "Nama Kegiatan") + '</p><p class="text-center text-xs">' + esc(d.tgl) + (d.waktu ? " • " + esc(d.waktu) : "") + "</p>"
+      + '<table class="w-full text-[12.5px] mt-3" style="border-collapse:collapse"><tr><th class="border border-slate-400 px-2 py-1">No</th><th class="border border-slate-400 px-2 py-1 text-left">Nama</th><th class="border border-slate-400 px-2 py-1 text-left">Instansi</th><th class="border border-slate-400 px-2 py-1">TTD</th></tr>'
+      + d.peserta.map((p, i) => '<tr><td class="border border-slate-300 px-2 py-1 text-center">' + (i + 1) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(p.nama) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(p.inst) + '</td><td class="border border-slate-300 px-2 py-1 text-slate-400">' + (i + 1) + ".</td></tr>").join("") + "</table>"
+      + '<p class="text-[11.5px] mt-2">Jumlah peserta: ' + d.peserta.length + " orang (di .doc, kolom tanda tangan dibuat zig-zag dua kolom seperti format resmi).</p></div>";
+  } else {
+    box.innerHTML = '<div class="bg-white text-slate-900 p-5 border-[3px] border-black dark:border-[#FDE047] bshadow-sm whitespace-pre-wrap text-[13.5px] leading-relaxed" style="font-family:Georgia,serif">'
+      + (getLogoData() ? '<p style="text-align:center;margin:0"><img src="' + getLogoData() + '" style="height:52px;margin:0 auto"></p>' : "")
+      + "<b>BERITA ACARA KEGIATAN</b>\n\n" + esc(d.keg || "Nama Kegiatan") + "\n" + esc(d.tgl) + " • " + esc(d.waktu) + "\n\nHasil/Kesimpulan:\n" + d.hasil.map((h, i) => (i + 1) + ". " + h).join("\n") + "\n\nNotulis: " + esc(d.notulis || "—") + " • Pimpinan: " + esc(d.pimpin || "—") + "</div>";
+  }
+}
+function unduhHadir() { download(hdData().mode === "hadir" ? "Daftar_Hadir.doc" : "Berita_Acara.doc", hadirDocHtml(), "application/msword"); toast("Dokumen diunduh ⬇️"); }
+
+/* ============================================================
+   TOOL 74 — GENERATOR IDE JUDUL SKRIPSI
+   ============================================================ */
+UI.judul = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Variabel / Topik X", '<input id="jdX" class="' + IN + '" placeholder="cth: Penggunaan Media Sosial">')
+    + field("Variabel / Topik Y", '<input id="jdY" class="' + IN + '" placeholder="cth: Prestasi Belajar (boleh kosong)">')
+    + field("Lokasi / Objek Penelitian", '<input id="jdZ" class="' + IN + '" placeholder="cth: Siswa SMA Negeri 1 Lahat">')
+    + field("Jenis / Metode Penelitian", '<select id="jdM" class="' + IN + '"><option value="pengaruh">Kuantitatif — Pengaruh/Hubungan</option><option value="eksperimen">Eksperimen / Perbandingan</option><option value="kualitatif">Kualitatif — Studi Kasus/Fenomenologi</option><option value="rnd">Pengembangan (R&D)</option><option value="ptk">Penelitian Tindakan Kelas (PTK)</option><option value="evaluasi">Evaluasi / Analisis</option></select>')
+    + "</div>"
+    + '<button class="' + BTN + '" onclick="buatIdeJudul()">💡 Buat Ide Judul</button>'
+    + '<p class="text-xs text-slate-500 mb-3">Klik judul untuk menyalin. Jadikan pancingan ide — selalu diskusikan & sesuaikan dengan dosen pembimbing.</p>'
+    + '<div id="jdHasil" class="space-y-2"></div>'
+    + "</div>";
+};
+function polaJudul(m, X, Y, Z) {
+  const xz = Z ? " pada " + Z : "", xd = Z ? " di " + Z : "";
+  switch (m) {
+    case "pengaruh": return [
+      "Pengaruh " + X + " terhadap " + Y + xz, "Hubungan antara " + X + " dengan " + Y + xz,
+      "Pengaruh " + X + " terhadap " + Y + " dan Implikasinya" + xd, "Kontribusi " + X + " terhadap Peningkatan " + Y + xz,
+      "Analisis Pengaruh " + X + " terhadap " + Y + xz, "Seberapa Besar Pengaruh " + X + " terhadap " + Y + "?" + (Z ? " (Studi pada " + Z + ")" : ""),
+      "Pengaruh " + X + " dan Faktor Lain terhadap " + Y + xz, "Determinan " + Y + ": Peran " + X + xz,
+      "Pengaruh " + X + " terhadap " + Y + " Ditinjau dari Aspek Sosial Ekonomi" + xz, "Model Hubungan " + X + " dengan " + Y + xz];
+    case "eksperimen": return [
+      "Perbedaan " + Y + " antara Kelompok yang Menggunakan " + X + " dan Kelompok Konvensional" + xz,
+      "Efektivitas " + X + " dalam Meningkatkan " + Y + xz, "Pengaruh Penerapan " + X + " terhadap " + Y + ": Studi Eksperimen" + xz,
+      "Komparasi Hasil " + Y + " Menggunakan " + X + " dan Metode Konvensional" + xz,
+      "Keefektifan " + X + " terhadap Peningkatan " + Y + xz, "Eksperimentasi " + X + " untuk Meningkatkan " + Y + xz];
+    case "kualitatif": return [
+      "Studi Kasus: " + X + xz, "Fenomena " + X + " dalam Perspektif " + (Z || "Masyarakat") + ": Kajian Fenomenologi",
+      "Makna " + X + " bagi " + (Z || "Pelaku") + ": Sebuah Studi Kualitatif", "Dinamika " + X + xd + ": Analisis Naratif",
+      "Potret " + X + xz, "Strategi " + (Z || "Subjek") + " dalam Menghadapi " + X + ": Studi Kasus" + xd,
+      "Eksplorasi " + X + " dan Dampaknya terhadap " + Y + xz, "Peran " + X + " dalam Kehidupan " + (Z || "Subjek Penelitian")];
+    case "rnd": return [
+      "Pengembangan " + X + " untuk Meningkatkan " + Y + xz, "Pengembangan Media " + X + " Berbasis Teknologi pada Pembelajaran" + xz,
+      "Rancang Bangun " + X + " guna Mendukung " + Y + xz, "Pengembangan " + X + " dengan Model ADDIE" + xz,
+      "Validitas dan Kepraktisan " + X + " untuk " + Y + xz, "Pengembangan Instrumen Penilaian " + Y + " Berbasis " + X + xz];
+    case "ptk": return [
+      "Peningkatan " + Y + " melalui Penerapan " + X + xz, "Upaya Meningkatkan " + Y + " dengan " + X + ": Penelitian Tindakan Kelas" + xz,
+      "Penerapan " + X + " untuk Meningkatkan " + Y + xz, "Optimalisasi " + Y + " melalui Strategi " + X + xz,
+      "Meningkatkan " + Y + " Menggunakan " + X + " (Penelitian Tindakan Kelas)" + xz];
+    default: return [
+      "Analisis " + X + " terhadap " + Y + xz, "Evaluasi " + X + xd, "Analisis Faktor-Faktor yang Memengaruhi " + Y + xz,
+      "Tinjauan " + X + " dalam Meningkatkan " + Y + xz, "Studi Evaluatif: Implementasi " + X + xz,
+      "Analisis Efektivitas " + X + " terhadap " + Y + xz, "Peran " + X + " dalam " + Y + xz];
+  }
+}
+function buatIdeJudul() {
+  const X = $("#jdX").value.trim(), Y = $("#jdY").value.trim(), Z = $("#jdZ").value.trim(), m = $("#jdM").value;
+  if (!X) { toast("⚠️ Isi minimal Variabel/Topik X."); return; }
+  const pola = polaJudul(m, X, Y || "(variabel terikat)", Z);
+  window._judulList = pola;
+  $("#jdHasil").innerHTML = pola.map((j) => '<button onclick="copyText(this.dataset.j)" data-j="' + esc(j) + '" class="w-full text-left rounded-lg border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-4 py-3 font-bold text-[14.5px] hover:border-black dark:hover:border-[#FDE047] transition-colors">' + esc(j) + "</button>").join("");
+  toast(pola.length + " ide judul dibuat 💡");
+}
+</script>
+
+<script>
+/* ============================================================
+   TOOL 75 — KALKULATOR TARGET BIAYA KULIAH
+   ============================================================ */
+UI.biaya = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("UKT / SPP per Semester (Rp)", '<input id="byUkt" type="number" class="' + IN + '" value="3500000">')
+    + field("Sisa Semester (termasuk semester ini)", '<input id="bySisa" type="number" class="' + IN + '" value="4">')
+    + field("Tabungan yang Sudah Terkumpul (Rp)", '<input id="byPunya" type="number" class="' + IN + '" value="1000000">')
+    + field("Target Terkumpul Dalam (bulan)", '<input id="byBulan" type="number" class="' + IN + '" value="12">')
+    + "</div>"
+    + field("Biaya Lain Sekali Bayar (format: Nama | Jumlah) — KKN, skripsi, wisuda, dll.", '<textarea id="byLain" rows="3" class="' + IN + '">KKN | 1500000\nCetak & jilid skripsi | 500000\nWisuda & toga | 750000</textarea>')
+    + '<div id="byOut"></div>'
+    + "</div>";
+  el.addEventListener("input", renderBiaya);
+  renderBiaya();
+};
+function renderBiaya() {
+  const box = $("#byOut"); if (!box) return;
+  const num = (id) => Number(($("#" + id) || {}).value) || 0;
+  const uktTotal = num("byUkt") * num("bySisa");
+  const lain = $("#byLain").value.split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((x) => x.trim()); return { nama: p[0], jml: parseFloat((p[1] || "0").replace(/[^\d.]/g, "")) || 0 }; });
+  const lainTotal = lain.reduce((a, b) => a + b.jml, 0);
+  const total = uktTotal + lainTotal;
+  const punya = num("byPunya"), bulan = Math.max(1, num("byBulan"));
+  const kurang = Math.max(0, total - punya);
+  const perBulan = kurang / bulan, perMinggu = perBulan / 4.33, perHari = perBulan / 30;
+  const persen = total ? Math.min(100, Math.round(punya / total * 100)) : 0;
+  window._biaya = { total, kurang, perBulan, persen };
+  const rpF = (n) => "Rp" + Math.round(n).toLocaleString("id-ID");
+  box.innerHTML = '<div class="' + OUT + '"><div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-4">'
+    + [["Total Kebutuhan", rpF(total)], ["UKT (" + num("bySisa") + " semester)", rpF(uktTotal)], ["Biaya Lain", rpF(lainTotal)], ["Masih Kurang", rpF(kurang)]].map((b) => '<div class="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 px-3 py-2.5 text-center"><div class="text-[15px] font-extrabold">' + b[1] + '</div><div class="text-[11px] text-slate-500 font-semibold">' + b[0] + "</div></div>").join("") + "</div>"
+    + '<div class="mb-1.5 flex justify-between text-sm font-bold"><span>Tabungan terkumpul</span><span>' + persen + "%</span></div>"
+    + '<div class="h-4 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden mb-4"><div class="h-full bg-emerald-500 transition-all" style="width:' + persen + '%"></div></div>'
+    + (kurang > 0 ? '<div class="grid grid-cols-3 gap-2 text-center">' + [["Target Nabung / Bulan", rpF(perBulan)], ["Per Minggu", rpF(perMinggu)], ["Per Hari", rpF(perHari)]].map((b) => '<div class="rounded-lg bg-[#FEFCE8] dark:bg-slate-800 border-2 border-black dark:border-[#FDE047] px-2 py-2.5"><div class="font-extrabold text-[14.5px]">' + b[1] + '</div><div class="text-[11px] font-semibold text-slate-500">' + b[0] + "</div></div>").join("") + "</div>"
+      + '<p class="text-[13px] mt-3">Dengan menabung <b>' + rpF(perBulan) + "/bulan</b> selama " + bulan + " bulan, target " + rpF(total) + " akan tercapai tepat waktu. Kurangi jajan harian sebesar " + rpF(perHari) + " saja sudah cukup menutupnya.</p>"
+      : '<p class="font-extrabold text-emerald-600">🎉 Target biaya sudah terpenuhi dari tabunganmu saat ini!</p>')
+    + "</div>";
+}
+SHARE_GETTERS.biaya = function () { const b = window._biaya || {}; return "Target biaya kuliah saya: Rp" + Math.round(b.total || 0).toLocaleString("id-ID") + " — masih kurang Rp" + Math.round(b.kurang || 0).toLocaleString("id-ID") + ", target nabung Rp" + Math.round(b.perBulan || 0).toLocaleString("id-ID") + "/bulan."; };
+
+/* ============================================================
+   TOOL 76 — GENERATOR SOAL RUMPANG (CLOZE)
+   ============================================================ */
+const STOPWORD_ID = new Set("yang dan di ke dari untuk dengan pada adalah ini itu atau juga akan telah tidak ada dalam sebagai oleh karena saat dapat lebih sangat antara sudah bagi para nya kita kami mereka dia ia anda saya aku kamu tidak ada berada menjadi memiliki dilakukan tersebut yaitu yakni antara melalui selama sebelum sesudah ketika jika maka namun tetapi sedangkan sehingga agar supaya baik buruk besar kecil banyak sedikit semua setiap tentang terhadap kepada daripada lainnya sebagainya".split(" "));
+UI.cloze = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + field("Teks Materi", '<textarea id="czTeks" rows="8" class="' + IN + '" placeholder="Tempel paragraf materi kuliah di sini…">Fotosintesis adalah proses biologis yang dilakukan tumbuhan hijau untuk mengubah energi cahaya matahari menjadi energi kimia. Proses ini menghasilkan oksigen yang dilepaskan ke atmosfer dan glukosa sebagai sumber makanan tumbuhan. Klorofil merupakan pigmen hijau pada daun yang berperan menangkap cahaya matahari selama proses fotosintesis berlangsung.</textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Mode Pengosongan", '<select id="czMode" class="' + IN + '"><option value="kunci">Kata Kunci — 1 kata penting per kalimat</option><option value="berkala">Berkala — tiap N kata yang layak</option></select>')
+    + field("Jarak Kata (mode berkala)", '<input id="czN" type="number" class="' + IN + '" value="5">')
+    + "</div>"
+    + '<button class="' + BTN + '" onclick="buatCloze()">✏️ Buat Soal Rumpang</button>'
+    + '<div id="czOut"></div>'
+    + "</div>";
+};
+function buatCloze() {
+  const teks = $("#czTeks").value.trim();
+  const out = $("#czOut");
+  if (!teks) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Isi teks materi dulu.</div>'; return; }
+  const mode = $("#czMode").value, N = Math.max(2, Number($("#czN").value) || 5);
+  const kunci = [];
+  const bersih = (w) => w.replace(/^[^\p{L}]+|[^\p{L}]+$/gu, "");
+  const layak = (w) => { const b = bersih(w); return b.length >= 5 && !STOPWORD_ID.has(b.toLowerCase()); };
+  let soal = "";
+  if (mode === "kunci") {
+    const kalimat = teks.split(/(?<=[.!?])\s+/);
+    soal = kalimat.map((kal) => {
+      const kata = kal.split(/\s+/);
+      let best = -1, bestLen = 0;
+      kata.forEach((w, i) => { if (layak(w) && bersih(w).length > bestLen) { bestLen = bersih(w).length; best = i; } });
+      if (best < 0) return kal;
+      kunci.push(bersih(kata[best]));
+      kata[best] = kata[best].replace(bersih(kata[best]), "_____(" + kunci.length + ")");
+      return kata.join(" ");
+    }).join(" ");
+  } else {
+    let hitung = 0;
+    soal = teks.split(/\s+/).map((w) => {
+      if (layak(w)) { hitung++; if (hitung % N === 0) { kunci.push(bersih(w)); return w.replace(bersih(w), "_____(" + kunci.length + ")"); } }
+      return w;
+    }).join(" ");
+  }
+  if (!kunci.length) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">⚠️ Tidak ditemukan kata yang layak dikosongkan — coba teks yang lebih panjang.</div>'; return; }
+  window._cloze = { soal, kunci };
+  out.innerHTML = '<div class="' + OUT + '"><p class="font-extrabold mb-2">📝 Soal (' + kunci.length + ' rumpang)</p>'
+    + '<p class="text-[14.5px] leading-relaxed whitespace-pre-wrap bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg p-4">' + esc(soal) + "</p>"
+    + '<details class="mt-3"><summary class="font-bold cursor-pointer text-sm">🔑 Kunci Jawaban</summary><p class="text-sm mt-2 leading-relaxed">' + kunci.map((k, i) => (i + 1) + ". " + esc(k)).join(" &nbsp;•&nbsp; ") + "</p></details>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN2 + '" onclick="copyText(window._cloze.soal)">📋 Copy Soal</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(window._cloze.kunci.map((k,i)=>(i+1)+\'. \'+k).join(\'\\n\'))">📋 Copy Kunci</button>'
+    + '<button class="' + BTN2 + '" onclick="download(\'Soal_Rumpang.doc\', \'<html><body style=&quot;font-family:serif;font-size:12pt&quot;><h3>SOAL LATIHAN (RUMPANG)</h3><p>\' + esc(window._cloze.soal) + \'</p><h4>Kunci Jawaban</h4><p>\' + window._cloze.kunci.map((k,i)=>(i+1)+\'. \'+esc(k)).join(\'<br>\') + \'</p></body></html>\', \'application/msword\')">⬇️ Download .doc</button></div></div>';
+}
+SHARE_GETTERS.cloze = function () { return window._cloze ? window._cloze.soal : ""; };
 </script>
