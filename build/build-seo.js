@@ -104,6 +104,7 @@ function pageFor(t) {
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>${esc(judul)}</title>
 <meta name="description" content="${esc(desk)}">
+<meta name="google-site-verification" content="NwryzLwTbI3z3snM5yOTWtQFbcRExZVpm91PQWon30o">
 <link rel="canonical" href="${url}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="${esc(judul)}">
