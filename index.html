@@ -105,6 +105,7 @@ body{background:#FDE047 !important}
 </main>
 
 <footer class="border-t-[3px] border-black bg-black text-[#FDE047]">
+  <div class="max-w-6xl mx-auto px-4 pt-5 flex flex-wrap items-center gap-2.5"><span class="text-sm font-bold mr-1">💾 Data kamu tersimpan lokal di browser ini:</span><button onclick="backupData()" class="px-3.5 py-2 rounded-lg bg-[#FDE047] text-black text-sm font-extrabold border-2 border-[#FDE047]">⬇️ Backup Data (.json)</button><label class="px-3.5 py-2 rounded-lg bg-transparent text-[#FDE047] text-sm font-extrabold border-2 border-[#FDE047] cursor-pointer">⬆️ Restore dari Backup<input type="file" accept="application/json" class="hidden" onchange="restoreData(this)"></label></div>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-center">
     <p class="font-bold">MahasiswaTools — Dibuat dengan semangat <span class="text-white underline decoration-[#FDE047] decoration-2">Dari Mahasiswa, Untuk Mahasiswa</span> Indonesia.</p>
     <p class="text-sm text-[#FDE047]/60 mt-1.5">Semua data diproses lokal di browser kamu dan tidak pernah dikirim ke server mana pun.</p>
@@ -167,6 +168,8 @@ const TOOLS = [
   { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
   { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
   { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
+  { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
+  { id: "revisi", n: "Manajer Revisi Pasca-Sidang", c: "tulis", i: "🖊️", d: "Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.", aktif: 1 },
   { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", aktif: 1 },
   { id: "consent", n: "Lembar Persetujuan Responden", c: "data", i: "🤝", d: "Informed consent etika penelitian, berkop logo, siap tanda tangan.", aktif: 1 },
   { id: "koding", n: "Koding Kualitatif Transkrip", c: "data", i: "🏷️", d: "Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.", aktif: 1 },
@@ -240,7 +243,7 @@ const $$ = (s, r) => [...(r || document).querySelectorAll(s)];
 const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (m) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[m]));
 const store = {
   get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (typeof toast === "function") toast("⚠️ Penyimpanan browser penuh — data terakhir mungkin tidak tersimpan. Segera Backup Data di footer."); } }
 };
 let favs = new Set(store.get("mt_favs", []));
 let curCat = "all", curQuery = "", curTool = null;
@@ -286,7 +289,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; renderTabs(); renderGrid(); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 function toolCard(t) {
   const fav = favs.has(t.id);
@@ -5526,4 +5529,233 @@ async function prosesStamp() {
     stat.textContent = "✅ Selesai! PDF bernomor" + ($("#psWm").value.trim() ? " + watermark" : "") + " terunduh.";
   } catch (e) { stat.textContent = "❌ " + e.message; }
 }
+</script>
+
+<script>
+/* ============================================================
+   SISTEM — BACKUP & RESTORE DATA (localStorage mt_*)
+   ============================================================ */
+function kumpulkanBackup() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) { const k = localStorage.key(i); if (k && k.indexOf("mt_") === 0) data[k] = localStorage.getItem(k); }
+  return { app: "MahasiswaTools", kind: "backup-data", version: 1, exportedAt: new Date().toISOString(), data };
+}
+function backupData() {
+  const b = kumpulkanBackup();
+  const n = Object.keys(b.data).length;
+  if (!n) { toast("Belum ada data tersimpan untuk di-backup."); return; }
+  download("Backup_Data.json", JSON.stringify(b, null, 1), "application/json");
+  toast("Backup berisi " + n + " data diunduh 💾 Simpan baik-baik.");
+}
+function terapkanBackup(obj) {
+  if (!obj || obj.app !== "MahasiswaTools" || !obj.data || typeof obj.data !== "object") throw new Error("File bukan backup MahasiswaTools yang valid.");
+  let n = 0;
+  Object.keys(obj.data).forEach((k) => { if (k.indexOf("mt_") === 0) { try { localStorage.setItem(k, String(obj.data[k])); n++; } catch (e) {} } });
+  return n;
+}
+function restoreData(input) {
+  const f = input.files && input.files[0];
+  if (!f) return;
+  const rd = new FileReader();
+  rd.onload = function () {
+    try {
+      const obj = JSON.parse(rd.result);
+      if (!confirm("Restore backup ini? Data MahasiswaTools saat ini di browser ini akan DIGABUNGKAN/ditimpa oleh isi backup.")) return;
+      const n = terapkanBackup(obj);
+      toast("Restore berhasil: " + n + " data dimuat ulang ✅ Halaman akan dimuat ulang…");
+      setTimeout(() => location.reload(), 900);
+    } catch (e) { toast("❌ " + e.message); }
+    input.value = "";
+  };
+  rd.readAsText(f);
+}
+window._kumpulkanBackup = kumpulkanBackup; window._terapkanBackup = terapkanBackup;
+
+/* ============================================================
+   TOOL 79 — KALKULATOR TARGET NILAI MATA KULIAH
+   ============================================================ */
+UI.targetnilai = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Mata Kuliah", '<input id="tnNama" class="' + IN + '" placeholder="cth: Statistika Ekonomi">')
+    + field("Target Nilai Akhir", '<input id="tnTarget" type="number" class="' + IN + '" value="80">')
+    + "</div>"
+    + '<p class="text-[13px] text-slate-500 mb-2">Isi bobot (%) dan nilai tiap komponen. <b>Kosongkan nilai komponen yang belum ada</b> (mis. UAS) — kalkulator menghitung nilai minimal yang kamu butuhkan di komponen itu. Skala target umum: A ≈ 80–85, B ≈ 70, C ≈ 60 (sesuaikan standar kampusmu).</p>'
+    + '<div id="tnRows" class="space-y-2 mb-2"></div>'
+    + '<button class="' + BTN2 + '" onclick="tnTambahBaris()">+ Tambah Komponen</button>'
+    + '<div id="tnOut" class="mt-4"></div>'
+    + '<div class="flex flex-wrap gap-2 mt-2"><button class="' + BTN + '" onclick="tnSimpan()">💾 Simpan Mata Kuliah Ini</button>'
+    + '<button class="' + BTN2 + '" onclick="kartuTargetNilai()">🖼️ Unduh Kartu Target (PNG)</button></div>'
+    + '<div id="tnTersimpan" class="mt-4"></div>'
+    + "</div>";
+  const d = store.get("mt_targetnilai", null);
+  window._tnCourses = (d && d.courses) || [];
+  window._tnKomp = [
+    { nama: "Kehadiran", bobot: 10, nilai: 100 },
+    { nama: "Tugas", bobot: 20, nilai: 80 },
+    { nama: "UTS", bobot: 30, nilai: 65 },
+    { nama: "UAS", bobot: 40, nilai: null }
+  ];
+  renderTnRows(); renderTnTersimpan();
+  el.addEventListener("input", hitungTargetNilai);
+  hitungTargetNilai();
+};
+function renderTnRows() {
+  const box = $("#tnRows"); if (!box) return;
+  box.innerHTML = window._tnKomp.map((k, i) => '<div class="grid grid-cols-[1fr_76px_76px_34px] gap-2 items-center">'
+    + '<input class="' + IN + '" style="margin:0" value="' + esc(k.nama) + '" oninput="window._tnKomp[' + i + '].nama=this.value">'
+    + '<input type="number" class="' + IN + '" style="margin:0" value="' + k.bobot + '" title="Bobot %" oninput="window._tnKomp[' + i + '].bobot=Number(this.value)||0; hitungTargetNilai()">'
+    + '<input type="number" class="' + IN + '" style="margin:0" value="' + (k.nilai === null ? "" : k.nilai) + '" placeholder="—" title="Nilai (kosongkan bila belum ada)" oninput="window._tnKomp[' + i + '].nilai=this.value===\'\'?null:Number(this.value); hitungTargetNilai()">'
+    + '<button class="text-rose-500 font-extrabold text-lg" onclick="window._tnKomp.splice(' + i + ',1); renderTnRows(); hitungTargetNilai()">✕</button></div>').join("");
+}
+function tnTambahBaris() { window._tnKomp.push({ nama: "Komponen", bobot: 0, nilai: null }); renderTnRows(); hitungTargetNilai(); }
+function hitungTargetNilai() {
+  const out = $("#tnOut"); if (!out) return;
+  const target = Number(($("#tnTarget") || {}).value) || 80;
+  const komp = window._tnKomp;
+  const totBobot = komp.reduce((a, k) => a + (Number(k.bobot) || 0), 0);
+  let S = 0; const kosong = [];
+  komp.forEach((k) => { if (k.nilai === null || k.nilai === "" || isNaN(k.nilai)) kosong.push(k); else S += (Number(k.bobot) / 100) * Number(k.nilai); });
+  let html = "";
+  if (totBobot !== 100) html += '<p class="text-amber-600 font-bold text-sm mb-2">⚠️ Total bobot saat ini ' + totBobot + '% (idealnya 100%). Hasil di bawah tetap dihitung dari bobot yang terisi.</p>';
+  if (kosong.length === 0) {
+    html += '<div class="' + OUT + '"><p class="font-extrabold">Nilai akhirmu (semua komponen terisi): <span class="text-brand-600">' + fmtN(S) + '</span></p><p class="text-sm">Target ' + target + (S >= target ? " — TERCAPAI 🎉" : " — belum tercapai.") + "</p></div>";
+    window._tnHasil = { akhir: S, perlu: null };
+  } else if (kosong.length > 1) {
+    const sisaBobot = kosong.reduce((a, k) => a + (Number(k.bobot) || 0), 0);
+    const maks = S + sisaBobot;
+    html += '<div class="' + OUT + '"><p class="font-extrabold">Ada ' + kosong.length + ' komponen kosong (' + kosong.map((k) => esc(k.nama)).join(", ") + ').</p><p class="text-sm">Poin terkunci dari komponen terisi: <b>' + fmtN(S) + '</b>. Nilai akhir maksimum yang masih mungkin: <b>' + fmtN(maks) + '</b>. Kosongkan tepat satu komponen untuk menghitung nilai minimalnya.</p></div>';
+    window._tnHasil = { akhir: null, perlu: null, maks };
+  } else {
+    const k = kosong[0], b = Number(k.bobot) / 100;
+    const perlu = b > 0 ? (target - S) / b : Infinity;
+    window._tnHasil = { akhir: null, perlu, komponen: k.nama, maks: S + Number(k.bobot) };
+    let status, warna;
+    if (perlu <= 0) { status = "Target sudah aman 🎉 — nilai 0 pun di " + esc(k.nama) + " tetap membuatmu mencapai " + target + " (poin terkunci " + fmtN(S) + ")."; warna = "text-emerald-600"; }
+    else if (perlu > 100) { status = "Target " + target + " tidak lagi terjangkau 😔 — bahkan nilai 100 di " + esc(k.nama) + " hanya menghasilkan nilai akhir " + fmtN(S + Number(k.bobot)) + ". Turunkan target atau maksimalkan komponen lain bila masih bisa direvisi."; warna = "text-rose-600"; }
+    else { status = "Kamu butuh nilai minimal di " + esc(k.nama) + " untuk mencapai target " + target + "."; warna = ""; }
+    const tabelLain = [90, 85, 80, 75, 70, 60].filter((t) => t !== target).map((t) => { const p = (t - S) / b; return "<tr><td class='border border-slate-300 dark:border-slate-600 px-2.5 py-1.5'>Target " + t + "</td><td class='border border-slate-300 dark:border-slate-600 px-2.5 py-1.5 text-center font-bold'>" + (p <= 0 ? "Sudah aman ✅" : p > 100 ? "Mustahil (maks " + fmtN(S + Number(k.bobot)) + ")" : fmtN(p, 1)) + "</td></tr>"; }).join("");
+    html += '<div class="' + OUT + '"><p class="text-sm font-semibold">Poin terkunci: ' + fmtN(S) + " dari komponen yang sudah dinilai.</p>"
+      + '<p class="text-2xl font-extrabold my-2">Butuh <span class="text-brand-600">' + (perlu <= 0 ? "0" : perlu > 100 ? "—" : fmtN(perlu, 1)) + '</span> di ' + esc(k.nama) + "</p>"
+      + '<p class="font-bold ' + warna + '">' + status + "</p>"
+      + '<table class="w-full text-[13px] mt-3 max-w-sm" style="border-collapse:collapse">' + tabelLain + "</table></div>";
+  }
+  out.innerHTML = html;
+}
+function tnSimpan() {
+  const nama = $("#tnNama").value.trim();
+  if (!nama) { toast("⚠️ Isi nama mata kuliah dulu."); return; }
+  const entry = { nama, target: Number($("#tnTarget").value) || 80, komp: JSON.parse(JSON.stringify(window._tnKomp)) };
+  const ix = window._tnCourses.findIndex((c) => c.nama.toLowerCase() === nama.toLowerCase());
+  if (ix >= 0) window._tnCourses[ix] = entry; else window._tnCourses.push(entry);
+  store.set("mt_targetnilai", { courses: window._tnCourses });
+  renderTnTersimpan();
+  toast("Mata kuliah tersimpan 💾");
+}
+function renderTnTersimpan() {
+  const box = $("#tnTersimpan"); if (!box) return;
+  box.innerHTML = window._tnCourses.length ? '<p class="text-sm font-extrabold mb-2">📚 Mata Kuliah Tersimpan</p>' + window._tnCourses.map((c, i) => '<div class="flex items-center gap-2 mb-1.5"><button class="' + BTN2 + '" style="width:auto" onclick="tnMuat(' + i + ')">' + esc(c.nama) + ' (target ' + c.target + ')</button><button class="text-rose-500 font-extrabold" onclick="window._tnCourses.splice(' + i + ',1); store.set(\'mt_targetnilai\',{courses:window._tnCourses}); renderTnTersimpan()">✕</button></div>').join("") : "";
+}
+function tnMuat(i) {
+  const c = window._tnCourses[i]; if (!c) return;
+  $("#tnNama").value = c.nama; $("#tnTarget").value = c.target;
+  window._tnKomp = JSON.parse(JSON.stringify(c.komp));
+  renderTnRows(); hitungTargetNilai();
+}
+function kartuTargetNilai() {
+  const h = window._tnHasil;
+  const nama = $("#tnNama").value.trim() || "Mata Kuliah";
+  if (!h || h.perlu === null || h.perlu === undefined) { toast("Hitung dulu dengan tepat satu komponen kosong 🎯"); return; }
+  const cv = document.createElement("canvas"); cv.width = 900; cv.height = 560;
+  const x = cv.getContext("2d");
+  x.fillStyle = "#FDE047"; x.fillRect(0, 0, 900, 560);
+  x.strokeStyle = "#111"; x.lineWidth = 10; x.strokeRect(14, 14, 872, 532);
+  x.fillStyle = "#111"; x.font = "900 40px 'Archivo Black', sans-serif"; x.fillText("TARGET NILAI", 52, 92);
+  x.font = "700 30px 'Plus Jakarta Sans', sans-serif";
+  x.fillText(nama.slice(0, 34), 52, 142);
+  x.font = "900 120px 'Archivo Black', sans-serif";
+  x.fillText(h.perlu <= 0 ? "AMAN!" : h.perlu > 100 ? "—" : fmtN(h.perlu, 1), 52, 300);
+  x.font = "700 28px 'Plus Jakarta Sans', sans-serif";
+  x.fillText("nilai minimal di " + (h.komponen || "komponen terakhir"), 52, 352);
+  x.font = "400 24px 'Plus Jakarta Sans', sans-serif";
+  window._tnKomp.forEach((k, i) => { x.fillText("• " + k.nama + " (" + k.bobot + "%): " + (k.nilai === null ? "belum ada" : k.nilai), 52, 408 + i * 34); });
+  x.font = "italic 20px Georgia, serif"; x.fillText("Dihitung dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa", 52, 524);
+  cv.toBlob((b) => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "MahasiswaTools_Kartu_Target_" + nama.replace(/\s+/g, "_") + ".png"; document.body.appendChild(a); a.click(); a.remove(); }, "image/png");
+}
+SHARE_GETTERS.targetnilai = function () { const h = window._tnHasil; if (!h || h.perlu == null) return ""; return "Target nilai " + ($("#tnNama").value || "mata kuliah") + ": saya butuh minimal " + fmtN(h.perlu, 1) + " di " + h.komponen + " untuk mencapai nilai akhir " + ($("#tnTarget").value || 80) + "."; };
+
+/* ============================================================
+   TOOL 80 — MANAJER REVISI PASCA-SIDANG
+   ============================================================ */
+UI.revisi = function (el) {
+  el.innerHTML = '<div class="fadein">'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Mahasiswa", '<input id="rvNama" class="' + IN + '" placeholder="Nama kamu">')
+    + field("Tanggal Sidang", '<input id="rvTgl" class="' + IN + '" placeholder="cth: 18 Oktober 2026">')
+    + "</div>"
+    + field("Judul Skripsi", '<input id="rvJudul" class="' + IN + '" placeholder="Judul skripsi">')
+    + '<div class="rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 p-3.5 mb-4"><p class="text-sm font-extrabold mb-2">➕ Tambah Catatan Revisi</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-3">'
+    + field("Nama Penguji", '<input id="rvPenguji" class="' + IN + '" placeholder="cth: Dr. Ani Wijaya, M.Si.">')
+    + field("Halaman Lama (yg direvisi)", '<input id="rvHalLama" class="' + IN + '" placeholder="cth: 45">')
+    + "</div>"
+    + field("Uraian Revisi", '<textarea id="rvUraian" rows="2" class="' + IN + '" placeholder="cth: Perbaiki teknik sampling dan tambahkan uji asumsi klasik"></textarea>')
+    + '<button class="' + BTN2 + '" onclick="rvTambah()">+ Tambahkan ke Daftar</button></div>'
+    + '<div id="rvProg" class="mb-3"></div>'
+    + '<div id="rvList" class="space-y-2 mb-4"></div>'
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" onclick="unduhLembarRevisi()">⬇️ Download Lembar Revisi .doc (Resmi)</button>'
+    + '<button class="' + BTN2 + '" onclick="copyText(ringkasanRevisi())">📋 Copy Ringkasan</button></div>'
+    + "</div>";
+  sisipLogoField(el, null);
+  const d = store.get("mt_revisi", null);
+  window._rv = d && d.items ? d : { nama: "", judul: "", tgl: "", items: [] };
+  $("#rvNama").value = window._rv.nama || ""; $("#rvJudul").value = window._rv.judul || ""; $("#rvTgl").value = window._rv.tgl || "";
+  el.addEventListener("input", () => { window._rv.nama = $("#rvNama").value; window._rv.judul = $("#rvJudul").value; window._rv.tgl = $("#rvTgl").value; store.set("mt_revisi", window._rv); });
+  renderRevisi();
+};
+function rvTambah() {
+  const p = $("#rvPenguji").value.trim(), u = $("#rvUraian").value.trim();
+  if (!p || !u) { toast("⚠️ Isi nama penguji & uraian revisi."); return; }
+  window._rv.items.push({ penguji: p, uraian: u, halLama: $("#rvHalLama").value.trim(), halBaru: "", done: false });
+  $("#rvPenguji").value = ""; $("#rvUraian").value = ""; $("#rvHalLama").value = "";
+  store.set("mt_revisi", window._rv); renderRevisi();
+  toast("Catatan revisi ditambahkan 🖊️");
+}
+function rvToggle(i) { window._rv.items[i].done = !window._rv.items[i].done; store.set("mt_revisi", window._rv); renderRevisi(); }
+function rvHalBaru(i, v) { window._rv.items[i].halBaru = v; store.set("mt_revisi", window._rv); }
+function rvHapus(i) { window._rv.items.splice(i, 1); store.set("mt_revisi", window._rv); renderRevisi(); }
+function renderRevisi() {
+  const list = $("#rvList"), prog = $("#rvProg");
+  if (!list) return;
+  const items = window._rv.items, done = items.filter((x) => x.done).length;
+  const pct = items.length ? Math.round(done / items.length * 100) : 0;
+  window._rvProgress = pct;
+  prog.innerHTML = items.length ? '<div class="flex justify-between text-sm font-bold mb-1"><span>Progres revisi: ' + done + "/" + items.length + ' selesai</span><span>' + pct + '%</span></div><div class="h-4 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden"><div class="h-full bg-emerald-500 transition-all" style="width:' + pct + '%"></div></div>' + (pct === 100 ? '<p class="font-extrabold text-emerald-600 mt-1.5">🎉 Semua revisi selesai — siap kumpul & minta paraf penguji!</p>' : "") : "";
+  list.innerHTML = items.length ? items.map((x, i) => '<div class="flex gap-2.5 items-start rounded-lg border-2 p-3 bg-white dark:bg-slate-900 ' + (x.done ? "border-emerald-400" : "border-slate-200 dark:border-slate-700") + '">'
+    + '<input type="checkbox" ' + (x.done ? "checked" : "") + ' onchange="rvToggle(' + i + ')" class="mt-1 w-5 h-5 accent-emerald-600">'
+    + '<div class="flex-1"><p class="font-bold text-[14px]">' + esc(x.penguji) + '</p><p class="text-[13.5px] ' + (x.done ? "line-through text-slate-400" : "") + '">' + esc(x.uraian) + '</p>'
+    + '<div class="flex flex-wrap gap-2 mt-1.5 items-center text-xs"><span class="font-semibold text-slate-500">Hal. lama: ' + esc(x.halLama || "—") + '</span><label class="font-semibold text-slate-500">Hal. baru: <input value="' + esc(x.halBaru || "") + '" onchange="rvHalBaru(' + i + ', this.value)" class="border rounded px-1.5 py-0.5 w-16 text-slate-800 dark:bg-slate-800 dark:text-white" placeholder="—"></label></div></div>'
+    + '<button class="text-rose-500 font-extrabold" onclick="rvHapus(' + i + ')">✕</button></div>').join("")
+    : '<p class="text-sm text-slate-500">Belum ada catatan revisi — tambahkan dari panel di atas begitu selesai sidang.</p>';
+}
+function ringkasanRevisi() {
+  const it = window._rv.items, done = it.filter((x) => x.done).length;
+  return "REVISI SKRIPSI — " + (window._rv.judul || "") + "\nProgres: " + done + "/" + it.length + " selesai\n" + it.map((x, i) => (i + 1) + ". [" + (x.done ? "✓" : " ") + "] " + x.penguji + ": " + x.uraian).join("\n");
+}
+function revisiDocHtml() {
+  const d = window._rv;
+  return "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center")
+    + "<h3 style='text-align:center'>LEMBAR REVISI SKRIPSI</h3>"
+    + "<p>Nama Mahasiswa: " + esc(d.nama || "—") + "<br>Judul Skripsi: " + esc(d.judul || "—") + "<br>Tanggal Sidang: " + esc(d.tgl || "—") + "</p>"
+    + "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th style='width:4%'>No</th><th style='width:20%'>Nama Penguji</th><th>Uraian Revisi</th><th style='width:9%'>Hal. Lama</th><th style='width:9%'>Hal. Baru</th><th style='width:12%'>Paraf Penguji</th></tr>"
+    + d.items.map((x, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(x.penguji) + "</td><td>" + esc(x.uraian) + "</td><td>" + esc(x.halLama || "") + "</td><td>" + esc(x.halBaru || "") + "</td><td></td></tr>").join("") + "</table>"
+    + "<br><table style='width:100%'><tr><td style='width:50%'></td><td>Mahasiswa,<br><br><br><br>( " + esc(d.nama || "________________") + " )</td></tr></table>"
+    + "<p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa</p></body></html>";
+}
+function unduhLembarRevisi() {
+  if (!window._rv.items.length) { toast("Belum ada catatan revisi 📄"); return; }
+  download("Lembar_Revisi_Skripsi.doc", revisiDocHtml(), "application/msword");
+  toast("Lembar revisi resmi diunduh ⬇️");
+}
+SHARE_GETTERS.revisi = function () { return ringkasanRevisi(); };
 </script>

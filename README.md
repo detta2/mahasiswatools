@@ -68,9 +68,15 @@ Portal utilitas akademik 100% gratis, tanpa login, tanpa watermark, dan berjalan
 54. Ceklis Syarat Sidang & Yudisium (progres tersimpan localStorage)
 55. Flashcard Ujian Siap Cetak (lembar A4 depan–belakang tercermin)
 
-**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 78 tool.
+**Seluruh 55 tool pada brief berstatus AKTIF dan berfungsi penuh**, ditambah 4 tool bonus (Kalender Akademik .ics, Wallpaper KRS, Plang Desa, Chat Dosen) dan **6 tool Kit Anti-AI & Keaslian** — total 80 tool.
 
-### 📊🔢 Dua Tool Baru (Tool 77–78)
+### 🎯🖊️💾 Batch Saran Argon #1 (Tool 79–80 + Backup)
+
+- **Kalkulator Target Nilai Mata Kuliah** — bobot komponen dapat diedit, nilai minimal komponen terakhir untuk target akhir + tabel target lain, simpan banyak mata kuliah, unduh Kartu Target PNG.
+- **Manajer Revisi Pasca-Sidang** — checklist revisi per penguji (halaman lama/baru), progres %, ekspor Lembar Revisi resmi berkop logo dengan kolom paraf penguji.
+- **Backup & Restore Data** — tombol di footer: unduh seluruh data lokal (favorit, ceklis, koding, catatan, dll.) sebagai JSON dan pulihkan di perangkat lain. Penyimpanan kini memperingatkan bila kuota browser penuh.
+
+## 📊🔢 Dua Tool Baru (Tool 77–78)
 
 - **Statistik Deskriptif & Distribusi Frekuensi** — mean/median/modus/SD/kuartil, tabel distribusi frekuensi (Sturges), kategorisasi skor empiris & ideal, narasi deskripsi Bab 4 otomatis. Paket statistik kini lengkap: deskriptif → asumsi → parametrik → non-parametrik.
 - **Nomor Halaman & Watermark PDF** — beri nomor halaman (5 posisi, 4 format, opsi lewati cover) dan watermark teks diagonal pada PDF yang di-upload, 100% lokal via pdf-lib.
