@@ -925,3 +925,211 @@ SHARE_GETTERS.regresi = function () { return window._regNarasi || ""; };
 /* ============================================================
    TOOL 84 — KONVERTER SKS MBKM / KAMPUS MERDEKA
    ============================================================ */
+;
+/* ---------- 89. GENERATOR TABEL STATISTIK EKSAK (r / t / F / CHI-SQUARE) ---------- */
+UI.tabelstat = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Buku tabel statistik cuma memuat N/df tertentu — tool ini menghitung <b>nilai kritis eksak untuk N atau df berapa pun</b> (misal N=137) pada α 0,10, 0,05, dan 0,01, lengkap dengan pembanding nilai hitungmu.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Jenis Tabel", '<select id="tbsJenis" class="\' + IN + \'"><option value="r">r — Korelasi Product Moment</option><option value="t">t — Distribusi t</option><option value="f">F — Distribusi F</option><option value="x2">χ² — Chi-Square</option></select>')
+    + field("Mode", '<select id="tbsMode" class="\' + IN + \'" onchange="tbsModeChange()"><option value="satu">Satu nilai + pembanding</option><option value="rentang">Rentang tabel (klasik)</option></select>')
+    + "</div>"
+    + '<div id="tbsSatu"><div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("N (untuk r) / df (t, χ²) / df1 (F)", '<input id="tbsDf1" type="number" class="\' + IN + \'" placeholder="cth: 137">')
+    + field("df2 (hanya untuk F)", '<input id="tbsDf2" type="number" class="\' + IN + \'" placeholder="cth: 40">')
+    + field("Nilai Hitung Kamu (opsional)", '<input id="tbsHitung" type="number" step="any" class="\' + IN + \'" placeholder="cth: 0,31">')
+    + "</div></div>"
+    + '<div id="tbsRentang" class="hidden"><div class="grid sm:grid-cols-4 gap-x-4">'
+    + field("Dari", '<input id="tbsDari" type="number" class="\' + IN + \'" value="5">')
+    + field("Sampai", '<input id="tbsSampai" type="number" class="\' + IN + \'" value="30">')
+    + field("Langkah", '<input id="tbsLangkah" type="number" class="\' + IN + \'" value="5">')
+    + field("df2 Tetap (hanya F)", '<input id="tbsDf2r" type="number" class="\' + IN + \'" placeholder="cth: 40">')
+    + "</div></div>"
+    + '<button class="\' + BTN + \'" onclick="tbsBuat()">📊 Hitung Nilai Kritis</button>'
+    + outBox("tbsOut") + "</div>";
+};
+function tbsModeChange() { const r = $("#tbsMode").value === "rentang"; $("#tbsRentang").classList.toggle("hidden", !r); $("#tbsSatu").classList.toggle("hidden", r); }
+function tbsCdfT(t, df) { const x = df / (df + t * t); const ib = betainc(x, df / 2, 0.5); return t >= 0 ? 1 - 0.5 * ib : 0.5 * ib; }
+function tbsInvT(df, alpha) { const target = 1 - alpha / 2; let lo = 0, hi = 200; for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (tbsCdfT(mid, df) < target) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+function tbsInvUpper(fnP, alpha) { let lo = 0, hi = 1; let g = 0; while (fnP(hi) > alpha && g++ < 40) hi *= 2; for (let i = 0; i < 70; i++) { const mid = (lo + hi) / 2; if (fnP(mid) > alpha) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+function tbsInvF(d1, d2, alpha) { return tbsInvUpper((f) => pDariF(f, d1, d2), alpha); }
+function tbsInvChi(df, alpha) { return tbsInvUpper((x) => pChi2(x, df), alpha); }
+function tbsKritis(jenis, d1, d2, alpha) {
+  if (jenis === "r") { const df = d1 - 2; const t = tbsInvT(df, alpha); return t / Math.sqrt(t * t + df); }
+  if (jenis === "t") return tbsInvT(d1, alpha);
+  if (jenis === "f") return tbsInvF(d1, d2, alpha);
+  return tbsInvChi(d1, alpha);
+}
+function tbsBuat() {
+  const jenis = $("#tbsJenis").value, mode = $("#tbsMode").value, out = $("#tbsOut");
+  const namaJ = { r: "r tabel (df = N − 2)", t: "t tabel", f: "F tabel", x2: "χ² tabel" }[jenis];
+  const alphas = [0.10, 0.05, 0.01];
+  const fmtA = (a) => "α " + String(a).replace(".", ",");
+  if (mode === "satu") {
+    const d1 = Number($("#tbsDf1").value), d2 = Number($("#tbsDf2").value);
+    if (!d1 || d1 < 3 || (jenis === "f" && !d2)) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi N/df' + (jenis === "f" ? " dan df2" : "") + " dulu (N minimal 3).</div>"; return; }
+    const hit = parseFloat(($("#tbsHitung").value || "").replace(",", "."));
+    const krit = alphas.map((a) => tbsKritis(jenis, d1, d2, a));
+    window._tbsTeks = namaJ + " (" + (jenis === "r" ? "N=" + d1 : jenis === "f" ? "df1=" + d1 + ", df2=" + d2 : "df=" + d1) + "): " + alphas.map((a, i) => fmtA(a) + " = " + fmtN(krit[i], 3)).join("; ");
+    let banding = "";
+    if (isFinite(hit)) banding = '<div class="mt-3 text-[13.5px] leading-relaxed"><p class="font-extrabold">⚖️ Pembanding — nilai hitungmu: ' + fmtN(hit, 3) + "</p>" + alphas.map((a, i) => { const sig = Math.abs(hit) > krit[i]; return "<p>• Pada " + fmtA(a) + ": " + fmtN(Math.abs(hit), 3) + (sig ? " &gt; " : " ≤ ") + fmtN(krit[i], 3) + " → <b class=\"" + (sig ? "text-emerald-600" : "text-rose-600") + "\">" + (sig ? "SIGNIFIKAN ✅" : "Tidak signifikan ❌") + "</b></p>"; }).join("") + '<p class="text-slate-500">Cara membaca: hasil uji signifikan bila nilai hitung (mutlak) lebih besar dari nilai tabel pada taraf α pilihanmu.</p></div>';
+    out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 ' + namaJ + (jenis === "r" ? " untuk N = " + d1 : jenis === "f" ? " untuk df1 = " + d1 + ", df2 = " + d2 : " untuk df = " + d1) + "</p>"
+      + '<table class="w-full text-[13.5px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Taraf α</th>' + alphas.map((a) => '<th class="py-1 pr-3">' + fmtA(a) + "</th>").join("") + "</tr><tr><td class=\"py-1 pr-3 font-semibold\">Nilai kritis</td>" + krit.map((k) => '<td class="py-1 pr-3 font-bold">' + fmtN(k, 3) + "</td>").join("") + "</tr></table>" + banding
+      + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tbsTeks)">📋 Copy Hasil</button></div></div>';
+    return;
+  }
+  const dari = Number($("#tbsDari").value) || 1, sampai = Number($("#tbsSampai").value) || 30, langkah = Math.max(1, Number($("#tbsLangkah").value) || 1), d2r = Number($("#tbsDf2r").value) || Number($("#tbsDf2").value) || 40;
+  const vals = []; for (let v = dari; v <= sampai && vals.length < 100; v += langkah) vals.push(v);
+  const rows = vals.map((v) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + v + "</td>" + alphas.map((a) => '<td class="py-1 pr-3">' + fmtN(tbsKritis(jenis, v, d2r, a), 3) + "</td>").join("") + "</tr>").join("");
+  window._tbsTeks = namaJ + (jenis === "f" ? " (df2=" + d2r + ")" : "") + "\n" + (jenis === "r" ? "N" : "df") + "\t" + alphas.map(fmtA).join("\t") + "\n" + vals.map((v) => v + "\t" + alphas.map((a) => fmtN(tbsKritis(jenis, v, d2r, a), 3)).join("\t")).join("\n");
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 ' + namaJ + (jenis === "f" ? " (df2 tetap = " + d2r + ")" : "") + '</p><div class="overflow-x-auto"><table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">' + (jenis === "r" ? "N" : jenis === "f" ? "df1" : "df") + "</th>" + alphas.map((a) => '<th class="py-1 pr-3">' + fmtA(a) + "</th>").join("") + "</tr>" + rows + "</table></div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tbsTeks)">📋 Copy Tabel (TSV)</button></div></div>';
+}
+SHARE_GETTERS.tabelstat = function () { return window._tbsTeks ? "Saya menghitung nilai tabel statistik eksak tanpa buku tabel: " + window._tbsTeks.split("\n")[0] + " — dengan MahasiswaTools." : ""; };
+
+;
+/* ---------- 90. UJI MEDIASI (SOBEL) & MODERASI (MRA) ---------- */
+UI.mediasi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua uji lanjutan Bab 4: <b>Sobel Test</b> untuk membuktikan variabel mediasi (perantara) dan <b>MRA</b> untuk variabel moderasi (memperkuat/memperlemah hubungan).</p>'
+    + '<div class="flex gap-2 mb-4"><button id="medTabS" class="\' + BTN + \'" onclick="medPindah(\'s\')">💧 Tab 1 — Sobel Test (Mediasi)</button><button id="medTabM" class="\' + BTN2 + \'" onclick="medPindah(\'m\')">🎚️ Tab 2 — Moderasi (MRA)</button></div>'
+    + '<div id="medBoxS">'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">' + field("Nama Variabel Bebas (X)", '<input id="medLX" class="\' + IN + \'" placeholder="cth: Kualitas Layanan">') + field("Nama Mediator (Z)", '<input id="medLZ" class="\' + IN + \'" placeholder="cth: Kepuasan">') + field("Nama Variabel Terikat (Y)", '<input id="medLY" class="\' + IN + \'" placeholder="cth: Loyalitas">') + "</div>"
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Koefisien jalur a (X → Z)", '<input id="medA" type="number" step="any" class="\' + IN + \'">') + field("Standard Error a (SEa)", '<input id="medSEa" type="number" step="any" class="\' + IN + \'">')
+    + field("Koefisien jalur b (Z → Y)", '<input id="medB" type="number" step="any" class="\' + IN + \'">') + field("Standard Error b (SEb)", '<input id="medSEb" type="number" step="any" class="\' + IN + \'">')
+    + field("Jalur langsung c′ (X → Y, opsional)", '<input id="medCp" type="number" step="any" class="\' + IN + \'" placeholder="untuk menentukan mediasi penuh/parsial">') + "</div>"
+    + '<button class="\' + BTN + \'" onclick="medSobel()">💧 Hitung Sobel Test</button>'
+    + '<details class="mt-4"><summary class="font-bold cursor-pointer text-[14px]">📥 Atau hitung a, b & SE langsung dari data mentah</summary><div class="grid sm:grid-cols-3 gap-x-4 mt-3">'
+    + field("Data X (satu angka per baris)", '<textarea id="medXd" rows="5" class="\' + IN + \'"></textarea>') + field("Data Z (mediator)", '<textarea id="medZd" rows="5" class="\' + IN + \'"></textarea>') + field("Data Y", '<textarea id="medYd" rows="5" class="\' + IN + \'"></textarea>') + '</div><button class="\' + BTN2 + \'" onclick="medDariData()">Hitung Koefisien dari Data</button></details>'
+    + outBox("medOutS") + "</div>"
+    + '<div id="medBoxM" class="hidden">'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Data X", '<textarea id="medXm" rows="5" class="\' + IN + \'"></textarea>') + field("Data M (moderator)", '<textarea id="medMm" rows="5" class="\' + IN + \'"></textarea>') + field("Data Y", '<textarea id="medYm" rows="5" class="\' + IN + \'"></textarea>') + "</div>"
+    + '<p class="text-[13px] text-slate-500 mb-2">X dan M di-centering (dikurangi rata-rata) sebelum membentuk interaksi X×M — praktik standar MRA.</p>'
+    + '<button class="\' + BTN + \'" onclick="medMra()">🎚️ Jalankan Regresi Moderasi</button>'
+    + outBox("medOutM") + "</div></div>";
+};
+function medPindah(w) { $("#medBoxS").classList.toggle("hidden", w !== "s"); $("#medBoxM").classList.toggle("hidden", w !== "m"); $("#medTabS").className = w === "s" ? BTN : BTN2; $("#medTabM").className = w === "m" ? BTN : BTN2; }
+function medPhi(z) { const t = 1 / (1 + 0.2316419 * Math.abs(z)); const d = 0.3989422804014327 * Math.exp(-z * z / 2); const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z > 0 ? 1 - p : p; }
+function medP2(z) { return 2 * (1 - medPhi(Math.abs(z))); }
+function medSobel() {
+  const v = (id) => parseFloat((($("#" + id) || {}).value || "").replace(",", "."));
+  const a = v("medA"), sea = v("medSEa"), b = v("medB"), seb = v("medSEb"), cp = v("medCp");
+  const out = $("#medOutS");
+  if (![a, sea, b, seb].every(isFinite) || sea <= 0 || seb <= 0) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi a, SEa, b, dan SEb dengan benar (SE harus > 0) — atau hitung dari data mentah di bawah.</div>'; return; }
+  const ab = a * b;
+  const seS = Math.sqrt(b * b * sea * sea + a * a * seb * seb);
+  const seA = Math.sqrt(b * b * sea * sea + a * a * seb * seb + sea * sea * seb * seb);
+  const seG = Math.sqrt(Math.max(1e-12, b * b * sea * sea + a * a * seb * seb - sea * sea * seb * seb));
+  const zS = ab / seS, zA = ab / seA, zG = ab / seG, p = medP2(zS);
+  const sig = p < 0.05;
+  const LX = ($("#medLX").value || "X").trim() || "X", LZ = ($("#medLZ").value || "Z").trim() || "Z", LY = ($("#medLY").value || "Y").trim() || "Y";
+  const ketCp = isFinite(cp) ? (Math.abs(cp) >= 1.96 * 0 ? "" : "") : "";
+  const narasi = "Hasil uji Sobel menunjukkan efek tidak langsung " + LX + " terhadap " + LY + " melalui " + LZ + " sebesar ab = " + fmtN(ab, 3) + " dengan nilai z = " + fmtN(zS, 3) + " dan p = " + fmtP(p) + ". Karena " + (sig ? "p < 0,05, efek mediasi dinyatakan <b>signifikan</b> — " + LZ + " terbukti berperan sebagai variabel perantara" : "p ≥ 0,05, efek mediasi <b>tidak signifikan</b> — " + LZ + " tidak terbukti memediasi") + " hubungan " + LX + " → " + LY + (isFinite(cp) ? (sig ? (Math.abs(cp) > 0 ? ". Jalur langsung c′ = " + fmtN(cp, 3) + " masih ada setelah mediator dimasukkan, jadi sifatnya <b>mediasi parsial</b> (bila c′ ikut signifikan) — cek nilai p jalur langsung pada output regresimu untuk memastikan." : ".") : ".") : ".");
+  window._medHasil = { ab, zS, p, sig, narasi };
+  const svg = '<svg viewBox="0 0 560 170" class="w-full max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"><defs><marker id="medArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F46E5"/></marker></defs>'
+    + '<rect x="20" y="65" width="130" height="46" rx="10" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2"/><text x="85" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LX.slice(0, 16)) + '</text>'
+    + '<rect x="215" y="15" width="130" height="46" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="2"/><text x="280" y="43" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LZ.slice(0, 16)) + '</text>'
+    + '<rect x="410" y="65" width="130" height="46" rx="10" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/><text x="475" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LY.slice(0, 16)) + '</text>'
+    + '<line x1="150" y1="70" x2="212" y2="45" stroke="#4F46E5" stroke-width="2.4" marker-end="url(#medArr)"/><text x="168" y="45" font-size="13" font-weight="bold" fill="#4F46E5">a = ' + fmtN(a, 3) + '</text>'
+    + '<line x1="348" y1="45" x2="407" y2="70" stroke="#4F46E5" stroke-width="2.4" marker-end="url(#medArr)"/><text x="352" y="45" font-size="13" font-weight="bold" fill="#4F46E5">b = ' + fmtN(b, 3) + '</text>'
+    + '<line x1="152" y1="95" x2="407" y2="95" stroke="#64748B" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#medArr)"/><text x="280" y="118" text-anchor="middle" font-size="13" fill="#475569">c′ = ' + (isFinite(cp) ? fmtN(cp, 3) : "—") + ' (langsung)</text></svg>';
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">💧 Hasil Sobel Test</p>' + svg
+    + '<table class="w-full text-[13.5px] mt-3"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Varian</th><th class="py-1 pr-3">SE efek tidak langsung</th><th class="py-1 pr-3">z</th><th class="py-1">p (dua arah)</th></tr>'
+    + [["Sobel", seS, zS], ["Aroian", seA, zA], ["Goodman", seG, zG]].map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + r[0] + "</td><td class=\"py-1 pr-3\">" + fmtN(r[1], 4) + "</td><td class=\"py-1 pr-3 font-bold\">" + fmtN(r[2], 3) + "</td><td class=\"py-1\">" + fmtP(medP2(r[2])) + "</td></tr>").join("") + "</table>"
+    + '<p class="mt-2 font-bold ' + (sig ? "text-emerald-600" : "text-rose-600") + '">Efek tidak langsung ab = ' + fmtN(ab, 3) + " → " + (sig ? "MEDIASI SIGNIFIKAN ✅" : "Mediasi tidak signifikan ❌") + "</p>"
+    + '<p class="mt-2 text-[13.5px] leading-relaxed"><b>Narasi Bab 4:</b> ' + narasi + "</p>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText((window._medHasil||{}).narasi || \'\')">📋 Copy Narasi</button></div></div>';
+}
+function medDariData() {
+  const X = parseNums($("#medXd").value || ""), Z = parseNums($("#medZd").value || ""), Y = parseNums($("#medYd").value || "");
+  const out = $("#medOutS");
+  if (X.length < 4 || X.length !== Z.length || X.length !== Y.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Data X, Z, Y harus sama panjang (minimal 4 baris).</div>'; return; }
+  const f1 = olsFit([X], Z), f2 = olsFit([X, Z], Y), f3 = olsFit([X], Y);
+  $("#medA").value = fmtN(f1.beta[1], 4); $("#medSEa").value = fmtN(f1.se[1], 4);
+  $("#medB").value = fmtN(f2.beta[2], 4); $("#medSEb").value = fmtN(f2.se[2], 4);
+  $("#medCp").value = fmtN(f2.beta[1], 4);
+  window._medTotalC = f3.beta[1];
+  medSobel();
+}
+function medMra() {
+  const X = parseNums($("#medXm").value || ""), M = parseNums($("#medMm").value || ""), Y = parseNums($("#medYm").value || "");
+  const out = $("#medOutM");
+  if (X.length < 6 || X.length !== M.length || X.length !== Y.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Data X, M, Y harus sama panjang (minimal 6 baris).</div>'; return; }
+  const mx = mean(X), mm = mean(M);
+  const Xc = X.map((v) => v - mx), Mc = M.map((v) => v - mm), XM = Xc.map((v, i) => v * Mc[i]);
+  const full = olsFit([Xc, Mc, XM], Y), red = olsFit([Xc, Mc], Y);
+  const n = Y.length, dR2 = full.r2 - red.r2;
+  const fChg = dR2 > 0 ? (dR2 / 1) / ((1 - full.r2) / (n - 4)) : 0;
+  const pChg = fChg > 0 ? pDariF(fChg, 1, n - 4) : 1;
+  const nm = ["Konstanta", "X (terpusat)", "M (terpusat)", "Interaksi X×M"];
+  const rows = nm.map((s, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + s + "</td><td class=\"py-1 pr-3\">" + fmtN(full.beta[i], 4) + "</td><td class=\"py-1 pr-3\">" + fmtN(full.se[i], 4) + "</td><td class=\"py-1 pr-3\">" + fmtN(full.t[i], 3) + "</td><td class=\"py-1\">" + fmtP(full.pv[i]) + "</td></tr>").join("");
+  const sigInt = full.pv[3] < 0.05, sigM = full.pv[2] < 0.05;
+  const jenis = sigInt && !sigM ? "Pure Moderator (moderasi murni)" : sigInt && sigM ? "Quasi Moderator (moderasi semu)" : !sigInt && sigM ? "Predictor Moderator (M berperan sebagai prediktor)" : "Homologizer Moderator (potensi moderasi, belum terbukti)";
+  const arah = full.beta[3] > 0 ? "memperkuat" : "memperlemah";
+  const narasi = "Hasil Moderated Regression Analysis (MRA) menunjukkan R² model penuh = " + fmtN(full.r2, 3) + " dengan tambahan ΔR² = " + fmtN(dR2, 3) + " dari interaksi X×M (F perubahan = " + fmtN(fChg, 3) + ", p = " + fmtP(pChg) + "). Koefisien interaksi b = " + fmtN(full.beta[3], 4) + " (p = " + fmtP(full.pv[3]) + ") sehingga M tergolong <b>" + jenis + "</b>" + (sigInt ? " dan " + arah + " hubungan X terhadap Y" : "") + ".";
+  window._mraNarasi = narasi;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🎚️ Hasil MRA — R² penuh ' + fmtN(full.r2, 3) + " • ΔR² interaksi " + fmtN(dR2, 3) + " (p = " + fmtP(pChg) + ")</p>"
+    + '<table class="w-full text-[13.5px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Koefisien</th><th class="py-1 pr-3">b</th><th class="py-1 pr-3">SE</th><th class="py-1 pr-3">t</th><th class="py-1">p</th></tr>' + rows + "</table>"
+    + '<p class="mt-2 font-bold">Klasifikasi: ' + jenis + "</p>"
+    + '<p class="mt-2 text-[13.5px] leading-relaxed"><b>Narasi Bab 4:</b> ' + narasi + "</p>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._mraNarasi || \'\')">📋 Copy Narasi</button></div></div>';
+}
+SHARE_GETTERS.mediasi = function () { const h = window._medHasil; return h ? "Uji mediasi (Sobel) saya: ab = " + fmtN(h.ab, 3) + ", z = " + fmtN(h.zS, 3) + ", p = " + fmtP(h.p) + " (" + (h.sig ? "signifikan" : "tidak signifikan") + ") — dihitung dengan MahasiswaTools." : (window._mraNarasi || ""); };
+
+;
+/* ---------- 92. KALKULATOR SAMPEL EKSPERIMEN (FEDERER) ---------- */
+UI.federer = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Untuk penelitian eksperimen: hitung <b>ulangan minimal per perlakuan</b> dengan rumus Federer <b>(t − 1)(r − 1) ≥ 15</b>, koreksi drop-out, plus pengacak penempatan sampel (RAL/RAK).</p>'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Jumlah Perlakuan (t)", '<input id="fedT" type="number" class="\' + IN + \'" value="4">')
+    + field("Target Derajat Bebas Galat", '<input id="fedTarget" type="number" class="\' + IN + \'" value="15">')
+    + field("Perkiraan Drop-out (%)", '<input id="fedDrop" type="number" class="\' + IN + \'" value="10">')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="fedHitung()">🧪 Hitung Ulangan Minimal</button>'
+    + outBox("fedOut")
+    + '<div class="mt-6"><p class="font-extrabold mb-2">🎲 Pengacak Penempatan Sampel</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Mode Rancangan", '<select id="fedMode" class="\' + IN + \'"><option value="ral">RAL — Rancangan Acak Lengkap</option><option value="rak">RAK — Rancangan Acak Kelompok (blok)</option></select>')
+    + field("Jumlah Blok (untuk RAK)", '<input id="fedBlok" type="number" class="\' + IN + \'" value="6">')
+    + "</div>"
+    + field("Label Unit Sampel (satu per baris — kosongkan untuk nomor otomatis)", '<textarea id="fedUnit" rows="5" class="\' + IN + \'" placeholder="Tikus-01&#10;Tikus-02&#10;Tikus-03"></textarea>')
+    + '<button class="\' + BTN2 + \'" onclick="fedAcak()">🎲 Acak Penempatan</button>'
+    + outBox("fedAcakOut") + "</div></div>";
+};
+function fedHitung() {
+  const t = Math.max(2, Number($("#fedT").value) || 2), target = Math.max(1, Number($("#fedTarget").value) || 15), drop = Math.min(95, Math.max(0, Number($("#fedDrop").value) || 0));
+  const r = Math.ceil(target / (t - 1)) + 1, db = (t - 1) * (r - 1), N = t * r;
+  const rAdj = Math.ceil(r / (1 - drop / 100)), Nadj = t * rAdj;
+  window._fedHasil = { t, r, N, rAdj, Nadj, db };
+  const rows = [0, 1, 2, 3].map((k) => { const rr = r + k; return "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + rr + "</td><td class=\"py-1 pr-3\">" + ((t - 1) * (rr - 1)) + "</td><td class=\"py-1\">" + (t * rr) + "</td></tr>"; }).join("");
+  $("#fedOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🧪 Hasil Rumus Federer</p>'
+    + '<p class="text-[14px] leading-relaxed">Dengan t = ' + t + ' perlakuan: ulangan minimal <b class="text-lg">r = ' + r + '</b> (derajat bebas galat (' + t + ' − 1)(' + r + ' − 1) = <b>' + db + '</b> ≥ ' + target + ' ✅). Total sampel minimal <b>N = ' + N + '</b>. Dengan antisipasi drop-out ' + drop + '%: naikkan menjadi <b>r = ' + rAdj + '</b> per kelompok → <b>N total = ' + Nadj + '</b>.</p>'
+    + '<table class="w-full text-[13px] mt-2 max-w-md"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Ulangan (r)</th><th class="py-1 pr-3">db Galat</th><th class="py-1">N Total</th></tr>' + rows + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">Rumus koreksi drop-out: r\' = r / (1 − d). Cantumkan r final (setelah koreksi) di Bab 3 sebagai jumlah sampel per kelompok.</p></div>';
+}
+function fedAcak() {
+  const t = Math.max(2, Number($("#fedT").value) || 2), mode = $("#fedMode").value, blok = Math.max(1, Number($("#fedBlok").value) || 1);
+  let labels = ($("#fedUnit").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#fedAcakOut");
+  const acakArr = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  let html = "", teks = "";
+  if (mode === "ral") {
+    if (!labels.length) { const N = (window._fedHasil && window._fedHasil.t === t) ? window._fedHasil.Nadj : t * 6; labels = Array.from({ length: N }, (_, i) => "Unit-" + (i + 1)); }
+    const acak = acakArr(labels), grup = Array.from({ length: t }, () => []);
+    acak.forEach((u, i) => grup[i % t].push(u));
+    html = '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Kelompok</th><th class="py-1">Unit Sampel</th></tr>' + grup.map((g, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">P" + (i + 1) + " (" + g.length + " unit)</td><td class=\"py-1\">" + g.map(esc).join(", ") + "</td></tr>").join("") + "</table>";
+    teks = grup.map((g, i) => "P" + (i + 1) + ": " + g.join(", ")).join("\n");
+  } else {
+    const need = blok * t;
+    if (labels.length < need) labels = labels.concat(Array.from({ length: need - labels.length }, (_, i) => "Unit-" + (labels.length + i + 1)));
+    labels = labels.slice(0, need);
+    const rowsB = [];
+    for (let b = 0; b < blok; b++) { const chunk = acakArr(labels.slice(b * t, b * t + t)); rowsB.push("<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">Blok " + (b + 1) + "</td>" + chunk.map((u, i) => "<td class=\"py-1 pr-3\">P" + (i + 1) + ": " + esc(u) + "</td>").join("") + "</tr>"); }
+    html = '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Blok</th>' + Array.from({ length: t }, (_, i) => '<th class="py-1 pr-3">Perlakuan ' + (i + 1) + "</th>").join("") + "</tr>" + rowsB.join("") + "</table>";
+    teks = rowsB.map((r) => r.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()).join("\n");
+  }
+  window._fedAcakTeks = (mode === "ral" ? "RAL" : "RAK") + " — t=" + t + "\n" + teks;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🎲 Hasil Pengacakan (' + (mode === "ral" ? "RAL" : "RAK") + ')</p><div class="overflow-x-auto">' + html + '</div><div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._fedAcakTeks || \'\')">📋 Copy Hasil Acak</button></div></div>';
+}
+SHARE_GETTERS.federer = function () { const h = window._fedHasil; return h ? "Rancangan eksperimen saya (Federer): " + h.t + " perlakuan × " + h.rAdj + " ulangan = " + h.Nadj + " sampel total — dihitung dengan MahasiswaTools." : ""; };
+

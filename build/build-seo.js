@@ -1,6 +1,6 @@
 /* ============================================================
    build-seo.js — Generator halaman statis SEO per tool
-   Menghasilkan: tools/<slug>/index.html (85 halaman), slugs.js,
+   Menghasilkan: tools/<slug>/index.html (satu per tool), slugs.js,
    sitemap.xml, robots.txt — dari katalog TOOLS di app.js.
    Jalankan: node build/build-seo.js  (setelah itu rebuild style.css)
    ============================================================ */
@@ -120,7 +120,7 @@ function pageFor(t) {
 <header class="backdrop-blur-md bg-white/80 dark:bg-[#0B0F19]/85 border-b border-slate-200/80 dark:border-slate-800 sticky top-0 z-40">
   <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
     <a href="../../" class="flex items-center gap-2 font-semibold text-[17px] tracking-tight"><svg width="30" height="30" viewBox="0 0 256 256" aria-hidden="true"><path d="M128 40 L240 96 L128 152 L16 96 Z" fill="#4F46E5"/><path d="M66 124 L128 158 L190 124 L190 168 C190 194 162 210 128 210 C94 210 66 194 66 168 Z" fill="#4F46E5"/><path d="M224 96 L224 138" stroke="#4F46E5" stroke-width="13" stroke-linecap="round"/><path d="M206 152 L222 168 L246 138" fill="none" stroke="#4F46E5" stroke-width="13" stroke-linecap="round" stroke-linejoin="round"/></svg>Mahasiswa<span class="font-extrabold text-indigo-600 dark:text-indigo-400 -ml-2">Tools</span></a>
-    <a href="../../" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">← Lihat Semua 85 Tool</a>
+    <a href="../../" class="text-sm font-semibold text-indigo-600 dark:text-indigo-400 hover:underline underline-offset-4">← Lihat Semua ${TOOLS.length} Tool</a>
   </div>
 </header>
 <main class="max-w-5xl mx-auto px-4 py-6">
@@ -142,7 +142,7 @@ function pageFor(t) {
     <h2 class="display-font text-xl font-black mt-6 mb-2.5">Tool Terkait</h2>
     <ul class="list-disc ml-5 space-y-1">${terkait.map((x) => '<li><a class="underline font-semibold" href="../' + slugs[x.id] + '/">' + esc(x.n) + "</a> — " + esc(x.d) + "</li>").join("")}</ul>
   </article>
-  <p class="text-center text-sm font-bold mt-7">MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa • <a class="underline" href="../../">Buka portal lengkap (85 tool)</a></p>
+  <p class="text-center text-sm font-bold mt-7">MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa • <a class="underline" href="../../">Buka portal lengkap (${TOOLS.length} tool)</a></p>
 </main>
 <script>window.__MT_TOOL_ID__ = "${t.id}"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>

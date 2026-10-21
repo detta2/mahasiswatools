@@ -144,7 +144,6 @@ function hitungBudget() {
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="copyText(window._budget)">📋 Copy Ringkasan</button></div></div>';
 }
 
-renderTabs(); renderGrid();
 
 ;
 
@@ -223,7 +222,7 @@ function buatWallpaper() {
     if (y > H - 220) return;
   });
   ctx.textAlign = "center"; ctx.font = "600 26px sans-serif"; ctx.globalAlpha = 0.75; ctx.fillStyle = "#FFF";
-  ctx.fillText("MahasiswaTools • Dari Mahasiswa, Untuk Mahasiswa", W / 2, H - 60);
+  ctx.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", W / 2, H - 60);
   ctx.globalAlpha = 1;
   const prev = $("#krCv"); prev.width = 540; prev.height = 960; prev.classList.remove("hidden");
   prev.getContext("2d").drawImage(cv, 0, 0, 540, 960);
@@ -802,7 +801,7 @@ function kartuTargetNilai() {
   x.fillText("nilai minimal di " + (h.komponen || "komponen terakhir"), 52, 352);
   x.font = "400 24px 'Plus Jakarta Sans', sans-serif";
   window._tnKomp.forEach((k, i) => { x.fillText("• " + k.nama + " (" + k.bobot + "%): " + (k.nilai === null ? "belum ada" : k.nilai), 52, 408 + i * 34); });
-  x.font = "italic 20px Georgia, serif"; x.fillText("Dihitung dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa", 52, 524);
+  x.font = "italic 20px Georgia, serif"; x.fillStyle = "#64748B"; x.font = "600 19px 'Plus Jakarta Sans', sans-serif"; x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", 52, 524);
   cv.toBlob((b) => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "MahasiswaTools_Kartu_Target_" + nama.replace(/\s+/g, "_") + ".png"; document.body.appendChild(a); a.click(); a.remove(); }, "image/png");
 }
 SHARE_GETTERS.targetnilai = function () { const h = window._tnHasil; if (!h || h.perlu == null) return ""; return "Target nilai " + ($("#tnNama").value || "mata kuliah") + ": saya butuh minimal " + fmtN(h.perlu, 1) + " di " + h.komponen + " untuk mencapai nilai akhir " + ($("#tnTarget").value || 80) + "."; };

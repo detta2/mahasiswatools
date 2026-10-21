@@ -18,91 +18,103 @@ const CATS = [
 const CATNAME = { anti: "Kit Anti-AI & Keaslian", tulis: "Penulisan & Skripsi", data: "Olah Data & Penelitian", present: "Presentasi & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Dokumen, PDF & Gambar", karir: "Akademik, Karir & Harian" };
 
 const TOOLS = [
+  { id: "validitas", n: "Uji Validitas Pearson & Reliabilitas Alpha", c: "data", i: "📊", d: "Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
+  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac & Lemeshow)", c: "data", i: "🧮", d: "Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.", aktif: 1 },
   { id: "aidetect", n: "Pendeteksi Gaya Tulisan AI (Burstiness)", c: "anti", i: "🤖", d: "Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.", aktif: 1 },
+  { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
+  { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", aktif: 1 },
+  { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
+  { id: "similarity", n: "Pre-Turnitin Similarity Checker (Lokal)", c: "tulis", i: "🔍", d: "Jaccard 3-gram: bandingkan teks asli vs parafrase + highlight.", aktif: 1 },
+  { id: "regresi", n: "Regresi Berganda & Uji Asumsi Klasik", c: "data", i: "📈", d: "Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.", aktif: 1 },
+  { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
+  { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
+  { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
+  { id: "kisikisi", n: "Generator Kisi-Kisi & Operasionalisasi Variabel", c: "tulis", i: "🧩", d: "Susun tabel kisi-kisi instrumen Bab 3 (variabel–indikator–nomor item favorable/unfavorable) otomatis.", aktif: 1 },
+  { id: "imrad", n: "Konverter Skripsi ke Jurnal (IMRAD)", c: "tulis", i: "📰", d: "Ubah ringkasan skripsimu (Bab 1–5) jadi draf artikel jurnal format IMRAD + cek proporsi kata ideal tiap bagian.", aktif: 1 },
+  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.", aktif: 1 },
+  { id: "judul", n: "Generator Ide Judul Skripsi", c: "tulis", i: "💡", d: "Puluhan pola judul dari variabel X, Y, lokasi & metode.", aktif: 1 },
+  { id: "singkatan", n: "Pembuat Daftar Singkatan Otomatis", c: "tulis", i: "🔤", d: "Ekstrak akronim dari naskah jadi daftar singkatan A–Z.", aktif: 1 },
+  { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
+  { id: "tabelstat", n: "Generator Tabel Statistik Eksak (r, t, F, χ²)", c: "data", i: "📊", d: "Nilai tabel r/t/F/χ² eksak untuk N atau df berapa pun (misal N=137) + pembanding nilai hitungmu.", aktif: 1 },
+  { id: "mediasi", n: "Uji Mediasi (Sobel) & Moderasi (MRA)", c: "data", i: "💧", d: "Uji Sobel untuk mediasi + regresi moderasi (MRA) dengan diagram jalur & narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "pengesahan", n: "Lembar Pengesahan & Pernyataan Bebas Plagiat", c: "tulis", i: "🖋️", d: "Buat lembar pengesahan skripsi & surat pernyataan bebas plagiat (ada kotak materai) — tinggal tanda tangan.", aktif: 1 },
+  { id: "ojskit", n: "OJS Kit: Cover Letter & Matriks Reviewer Jurnal", c: "tulis", i: "✉️", d: "Siap submit jurnal: buat cover letter untuk editor OJS & matriks tanggapan reviewer dalam satu .doc.", aktif: 1 },
+  { id: "bimbingan", n: "Lembar Bimbingan Skripsi", c: "tulis", i: "📔", d: "Kartu kendali konsultasi dosen, ekspor .doc berkop logo.", aktif: 1 },
+  { id: "revisi", n: "Manajer Revisi Pasca-Sidang", c: "tulis", i: "🖊️", d: "Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.", aktif: 1 },
+  { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
+  { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
+  { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 },
+  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
+  { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
+  { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
+  { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
+  { id: "eydcase", n: "Case Converter EYD Judul", c: "tulis", i: "🔠", d: "Title Case Bahasa Indonesia: kata hubung tetap huruf kecil.", aktif: 1 },
+  { id: "wordfreq", n: "Pengecek Kata Berulang (Word Frequency)", c: "tulis", i: "🔁", d: "Hitung kata yang terlalu sering diulang dalam naskahmu.", aktif: 1 },
+  { id: "k21", n: "Glosarium & Singkatan Sorter (A–Z)", c: "tulis", i: "🔤", d: "Urutkan istilah A–Z, deteksi duplikat & entri tanpa definisi.", aktif: 1 },
+  { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
+  { id: "k19", n: "Generator Abstrak Dwibahasa", c: "tulis", i: "🌐", d: "Rakit abstrak ID + kerangka EN dari latar, tujuan, metode, hasil.", aktif: 1 },
+  { id: "k22", n: "Generator Tabel Jurnal (Booktabs)", c: "tulis", i: "📋", d: "Tabel bersih standar jurnal tanpa garis vertikal, siap paste Word.", aktif: 1 },
+  { id: "kerangkabab", n: "Generator Kerangka Bab & Sub-Bab Skripsi", c: "tulis", i: "🗂️", d: "Kerangka Bab I–V sesuai metode penelitianmu + panduan isi.", aktif: 1 },
+  { id: "k20", n: "Kalkulator Target Kata & Deadline Skripsi", c: "tulis", i: "🎯", d: "Target kata per hari realistis + milestone tanggal per bab.", aktif: 1 },
+  { id: "bacawaktu", n: "Kalkulator Waktu Baca Presentasi", c: "tulis", i: "⏱️", d: "Jumlah kata naskah → estimasi durasi bicara + saran potong kata.", aktif: 1 },
+  { id: "k25", n: "Pembuat Bagan Kerangka Berpikir (X → Y)", c: "data", i: "🗺️", d: "Kotak variabel + panah hubungan + narasi, ekspor PNG.", aktif: 1 },
+  { id: "k26", n: "Generator Grafik Bab 4 Arsiran (Batang & Pie)", c: "data", i: "📈", d: "Diagram arsiran hitam-putih, tetap jelas saat difotokopi.", aktif: 1 },
+  { id: "k23", n: "Dummy Data Kuesioner Generator (Auto-Valid)", c: "data", i: "🧪", d: "Data simulasi latihan yang diverifikasi lolos Alpha target.", aktif: 1 },
+  { id: "k24", n: "Pembersih Transkrip Wawancara & Analisis Teks", c: "data", i: "🎧", d: "Rapikan transkrip kualitatif + frekuensi kata narasumber.", aktif: 1 },
+  { id: "koding", n: "Koding Kualitatif Transkrip", c: "data", i: "🏷️", d: "Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.", aktif: 1 },
+  { id: "consent", n: "Lembar Persetujuan Responden", c: "data", i: "🤝", d: "Informed consent etika penelitian, berkop logo, siap tanda tangan.", aktif: 1 },
+  { id: "federer", n: "Kalkulator Sampel Eksperimen (Federer)", c: "data", i: "🧪", d: "Hitung sampel eksperimen (rumus Federer) + koreksi drop-out + pengacak kelompok perlakuan RAL/RAK.", aktif: 1 },
+  { id: "bibtex", n: "Konverter Sitasi BibTeX/RIS ↔ APA/IEEE", c: "dokumen", i: "🔄", d: "Ubah file sitasi BibTeX/RIS (Mendeley/Zotero) jadi daftar pustaka APA/IEEE/Vancouver — dan sebaliknya.", aktif: 1 },
+  { id: "poster", n: "Pembuat Poster Ilmiah Seminar/PKM", c: "dokumen", i: "🖼️", d: "Buat poster ilmiah seminar/PKM resolusi tinggi: abstrak, metode, temuan, QR code — unduh PNG siap cetak.", aktif: 1 },
+  { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
+  { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
+  { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
+  { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
+  { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
+  { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
+  { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", aktif: 1 },
+  { id: "k44", n: "Kompresor File (Gambar / PDF / DOCX)", c: "dokumen", i: "🗜️", d: "Perkecil gambar, PDF, dan .docx langsung di browser.", aktif: 1 },
+  { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", aktif: 1 },
+  { id: "k41", n: "Generator QR Code Permanen (+ Logo)", c: "dokumen", i: "🔳", d: "QR link kuesioner ECC-H, bisa sisip logo di tengah.", aktif: 1 },
+  { id: "k42", n: "OCR Gambar Buku / Catatan ke Teks", c: "dokumen", i: "🔍", d: "Foto halaman → teks bisa copy (Tesseract.js, ID/EN).", aktif: 1 },
+  { id: "k35", n: "Generator Sertifikat Massal (ZIP)", c: "kelompok", i: "🏆", d: "Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.", aktif: 1 },
+  { id: "k31", n: "Logbook Harian Magang / KKN", c: "kelompok", i: "📓", d: "Catatan harian formal, ekspor .doc berkop paraf & DPL.", aktif: 1 },
+  { id: "kelompok", n: "Smart Group Generator (Pengacak Adil)", c: "kelompok", i: "👥", d: "Bagi nama ke kelompok merata, seimbang gender bila ditandai.", aktif: 1 },
+  { id: "splitter", n: "Splitter Kas & Patungan Kelompok", c: "kelompok", i: "💸", d: "Hitung patungan + siapa transfer ke siapa agar impas.", aktif: 1 },
+  { id: "lpj", n: "LPJ & Kas Kegiatan UKM", c: "kelompok", i: "🧾", d: "Realisasi anggaran vs RAB + sisa dana, ekspor LPJ resmi.", aktif: 1 },
+  { id: "k32", n: "Kwitansi & Nota LPJ Ber-Terbilang", c: "kelompok", i: "🧾", d: "Kwitansi canvas resmi, angka otomatis jadi terbilang.", aktif: 1 },
+  { id: "k30", n: "Pencari Jadwal Kosong Bersama", c: "kelompok", i: "🗓️", d: "Irisan jam kosong seluruh anggota tanpa login.", aktif: 1 },
+  { id: "peerassess", n: "Peer-Assessment & Kontribusi Kelompok", c: "kelompok", i: "⚖️", d: "Hitung kontribusi tiap anggota kelompok dari penilaian antar-teman — ketahuan siapa yang free-rider.", aktif: 1 },
+  { id: "prorata", n: "Splitter Tagihan Kos Pro-Rata", c: "kelompok", i: "🧾", d: "Bagi tagihan kos (listrik/WiFi/air) adil menurut hari huni & beban alat elektronik tiap kamar.", aktif: 1 },
+  { id: "hadir", n: "Daftar Hadir & Berita Acara", c: "kelompok", i: "🖊️", d: "Daftar hadir siap cetak & berita acara kegiatan resmi.", aktif: 1 },
+  { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
+  { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
+  { id: "k36", n: "Desain Plang Jalan & Edukasi Desa (Bonus)", c: "kelompok", i: "🪧", d: "Desain plang canvas 4 tema untuk program fisik KKN.", aktif: 1 },
+  { id: "k39", n: "Grid Foto Dokumentasi Lampiran", c: "dokumen", i: "🧩", d: "Banyak foto + caption → satu gambar lampiran rapi.", aktif: 1 },
+  { id: "k40", n: "Timestamp & Geotagging Foto", c: "dokumen", i: "🕒", d: "Tempel waktu & lokasi ala kamera lapangan ke foto tugas.", aktif: 1 },
+  { id: "k38", n: "Pembuat Tanda Tangan Transparan PNG", c: "dokumen", i: "✍️", d: "Buang latar kertas via luminansi → PNG transparan.", aktif: 1 },
+  { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
+  { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
+  { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
+  { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
+  { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
+  { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
+  { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 },
   { id: "humanizer", n: "Humanizer & Editor Variasi Kalimat", c: "anti", i: "🪶", d: "Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.", aktif: 1 },
   { id: "scrubber", n: "Pembersih Jejak & Karakter Tersembunyi AI", c: "anti", i: "🧽", d: "Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.", aktif: 1 },
   { id: "sitasi", n: "Verifikator Keaslian Daftar Pustaka (Crossref)", c: "anti", i: "🔎", d: "Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.", aktif: 1 },
   { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
   { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
-  { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
-  { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", aktif: 1 },
-  { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
-  { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
-  { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
-  { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
-  { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
-  { id: "singkatan", n: "Pembuat Daftar Singkatan Otomatis", c: "tulis", i: "🔤", d: "Ekstrak akronim dari naskah jadi daftar singkatan A–Z.", aktif: 1 },
-  { id: "lpj", n: "LPJ & Kas Kegiatan UKM", c: "kelompok", i: "🧾", d: "Realisasi anggaran vs RAB + sisa dana, ekspor LPJ resmi.", aktif: 1 },
-  { id: "regresi", n: "Regresi Berganda & Uji Asumsi Klasik", c: "data", i: "📈", d: "Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.", aktif: 1 },
-  { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
-  { id: "bimbingan", n: "Lembar Bimbingan Skripsi", c: "tulis", i: "📔", d: "Kartu kendali konsultasi dosen, ekspor .doc berkop logo.", aktif: 1 },
-  { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
-  { id: "revisi", n: "Manajer Revisi Pasca-Sidang", c: "tulis", i: "🖊️", d: "Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.", aktif: 1 },
-  { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", aktif: 1 },
-  { id: "consent", n: "Lembar Persetujuan Responden", c: "data", i: "🤝", d: "Informed consent etika penelitian, berkop logo, siap tanda tangan.", aktif: 1 },
-  { id: "koding", n: "Koding Kualitatif Transkrip", c: "data", i: "🏷️", d: "Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.", aktif: 1 },
-  { id: "judul", n: "Generator Ide Judul Skripsi", c: "tulis", i: "💡", d: "Puluhan pola judul dari variabel X, Y, lokasi & metode.", aktif: 1 },
-  { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
-  { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
-  { id: "k18", n: "Academic Phrasebank (34+ Kalimat Akademik)", c: "tulis", i: "🗣️", d: "Bank kalimat ilmiah: argumen, kutipan, perbandingan, kesimpulan.", aktif: 1 },
-  { id: "k19", n: "Generator Abstrak Dwibahasa", c: "tulis", i: "🌐", d: "Rakit abstrak ID + kerangka EN dari latar, tujuan, metode, hasil.", aktif: 1 },
-  { id: "k20", n: "Kalkulator Target Kata & Deadline Skripsi", c: "tulis", i: "🎯", d: "Target kata per hari realistis + milestone tanggal per bab.", aktif: 1 },
-  { id: "k21", n: "Glosarium & Singkatan Sorter (A–Z)", c: "tulis", i: "🔤", d: "Urutkan istilah A–Z, deteksi duplikat & entri tanpa definisi.", aktif: 1 },
-  { id: "k22", n: "Generator Tabel Jurnal (Booktabs)", c: "tulis", i: "📋", d: "Tabel bersih standar jurnal tanpa garis vertikal, siap paste Word.", aktif: 1 },
-  { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
-  { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
-  { id: "eydcase", n: "Case Converter EYD Judul", c: "tulis", i: "🔠", d: "Title Case Bahasa Indonesia: kata hubung tetap huruf kecil.", aktif: 1 },
-  { id: "similarity", n: "Pre-Turnitin Similarity Checker (Lokal)", c: "tulis", i: "🔍", d: "Jaccard 3-gram: bandingkan teks asli vs parafrase + highlight.", aktif: 1 },
-  { id: "wordfreq", n: "Pengecek Kata Berulang (Word Frequency)", c: "tulis", i: "🔁", d: "Hitung kata yang terlalu sering diulang dalam naskahmu.", aktif: 1 },
-  { id: "bacawaktu", n: "Kalkulator Waktu Baca Presentasi", c: "tulis", i: "⏱️", d: "Jumlah kata naskah → estimasi durasi bicara + saran potong kata.", aktif: 1 },
-  { id: "kerangkabab", n: "Generator Kerangka Bab & Sub-Bab Skripsi", c: "tulis", i: "🗂️", d: "Kerangka Bab I–V sesuai metode penelitianmu + panduan isi.", aktif: 1 },
-  { id: "validitas", n: "Uji Validitas Pearson & Reliabilitas Alpha", c: "data", i: "📊", d: "Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.", aktif: 1 },
-  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.", aktif: 1 },
-  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac & Lemeshow)", c: "data", i: "🧮", d: "Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.", aktif: 1 },
-  { id: "k23", n: "Dummy Data Kuesioner Generator (Auto-Valid)", c: "data", i: "🧪", d: "Data simulasi latihan yang diverifikasi lolos Alpha target.", aktif: 1 },
-  { id: "k24", n: "Pembersih Transkrip Wawancara & Analisis Teks", c: "data", i: "🎧", d: "Rapikan transkrip kualitatif + frekuensi kata narasumber.", aktif: 1 },
-  { id: "k26", n: "Generator Grafik Bab 4 Arsiran (Batang & Pie)", c: "data", i: "📈", d: "Diagram arsiran hitam-putih, tetap jelas saat difotokopi.", aktif: 1 },
-  { id: "k25", n: "Pembuat Bagan Kerangka Berpikir (X → Y)", c: "data", i: "🗺️", d: "Kotak variabel + panah hubungan + narasi, ekspor PNG.", aktif: 1 },
-  { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
-  { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
-  { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
   { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
   { id: "k47", n: "Kuis Pilihan Ganda & Flashcard Otomatis", c: "present", i: "🎯", d: "Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.", aktif: 1 },
   { id: "k48", n: "Cornell Notes Generator", c: "present", i: "📓", d: "Catatan metode Cornell: isyarat, catatan, ringkasan.", aktif: 1 },
   { id: "k49", n: "Pomodoro Timer + Suara Fokus Web Audio", c: "present", i: "🍅", d: "Timer 25/5 + white/brown noise & hujan prosedural.", aktif: 1 },
   { id: "k29", n: "Roda Undian Urutan Presentasi", c: "present", i: "🎡", d: "Spin wheel pengundi giliran kelompok presentasi.", aktif: 1 },
   { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
-  { id: "kelompok", n: "Smart Group Generator (Pengacak Adil)", c: "kelompok", i: "👥", d: "Bagi nama ke kelompok merata, seimbang gender bila ditandai.", aktif: 1 },
-  { id: "splitter", n: "Splitter Kas & Patungan Kelompok", c: "kelompok", i: "💸", d: "Hitung patungan + siapa transfer ke siapa agar impas.", aktif: 1 },
-  { id: "k30", n: "Pencari Jadwal Kosong Bersama", c: "kelompok", i: "🗓️", d: "Irisan jam kosong seluruh anggota tanpa login.", aktif: 1 },
-  { id: "k31", n: "Logbook Harian Magang / KKN", c: "kelompok", i: "📓", d: "Catatan harian formal, ekspor .doc berkop paraf & DPL.", aktif: 1 },
-  { id: "hadir", n: "Daftar Hadir & Berita Acara", c: "kelompok", i: "🖊️", d: "Daftar hadir siap cetak & berita acara kegiatan resmi.", aktif: 1 },
-  { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
-  { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 },
-  { id: "k32", n: "Kwitansi & Nota LPJ Ber-Terbilang", c: "kelompok", i: "🧾", d: "Kwitansi canvas resmi, angka otomatis jadi terbilang.", aktif: 1 },
-  { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
-  { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
-  { id: "k35", n: "Generator Sertifikat Massal (ZIP)", c: "kelompok", i: "🏆", d: "Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.", aktif: 1 },
-  { id: "k36", n: "Desain Plang Jalan & Edukasi Desa (Bonus)", c: "kelompok", i: "🪧", d: "Desain plang canvas 4 tema untuk program fisik KKN.", aktif: 1 },
-  { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
-  { id: "k38", n: "Pembuat Tanda Tangan Transparan PNG", c: "dokumen", i: "✍️", d: "Buang latar kertas via luminansi → PNG transparan.", aktif: 1 },
-  { id: "k39", n: "Grid Foto Dokumentasi Lampiran", c: "dokumen", i: "🧩", d: "Banyak foto + caption → satu gambar lampiran rapi.", aktif: 1 },
-  { id: "k40", n: "Timestamp & Geotagging Foto", c: "dokumen", i: "🕒", d: "Tempel waktu & lokasi ala kamera lapangan ke foto tugas.", aktif: 1 },
-  { id: "k41", n: "Generator QR Code Permanen (+ Logo)", c: "dokumen", i: "🔳", d: "QR link kuesioner ECC-H, bisa sisip logo di tengah.", aktif: 1 },
-  { id: "k42", n: "OCR Gambar Buku / Catatan ke Teks", c: "dokumen", i: "🔍", d: "Foto halaman → teks bisa copy (Tesseract.js, ID/EN).", aktif: 1 },
-  { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
-  { id: "k44", n: "Kompresor File (Gambar / PDF / DOCX)", c: "dokumen", i: "🗜️", d: "Perkecil gambar, PDF, dan .docx langsung di browser.", aktif: 1 },
-  { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", aktif: 1 },
-  { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
-  { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
-  { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
-  { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 },
-  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
-  { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
-  { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
-  { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
-  { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
-  { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 }
+  { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 }
+
 ];
 
 /* ---------------- state & helper ---------------- */
@@ -158,7 +170,7 @@ function renderTabs() {
   }).join("");
 }
 function setCat(k) { curCat = k; hideRoadmap(); renderTabs(); renderGrid(); if (typeof loadCat === "function" && CATNAME[k]) loadCat(k); }
-const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD" };
+const MONO = { aidetect: "DA", humanizer: "HU", scrubber: "PJ", sitasi: "VK", deklarasi: "DK", buktiketik: "BK", k16: "TS", dapus: "DP", k17: "MS", k18: "PB", k19: "AB", k20: "TK", k21: "GL", k22: "TJ", pdffix: "PT", italic: "AI", eydcase: "EY", similarity: "SM", wordfreq: "WF", bacawaktu: "WB", kerangkabab: "KB", validitas: "UV", likert: "LK", sampel: "SP", k23: "DD", k24: "TW", k26: "GB", k25: "XY", k27: "PP", teleprompter: "TP", k28: "PU", k46: "MM", k47: "PG", k48: "CN", k49: "PM", k29: "RU", k55: "FC", kelompok: "KG", splitter: "SK", k30: "JK", k31: "LB", k32: "KW", k33: "GC", k34: "SO", k35: "ST", k36: "PL", k37: "PF", k38: "TT", k39: "GF", k40: "TG", k41: "QR", k42: "OC", k43: "MP", k44: "KF", imgpdf: "IP", splitpdf: "EP", k53: "CV", k50: "ML", k51: "WK", ipk: "IPK", k54: "YD", targetnilai: "TN", revisi: "RV", singkatan: "DS", lpj: "LP", regresi: "RB", sks: "SK", bimbingan: "LB", deskriptif: "SD", pdfstamp: "WM", nonpar: "NP", consent: "IC", koding: "KQ", judul: "GJ", hadir: "DH", biaya: "TB", cloze: "CL", inferens: "US", kuesioner: "KU", jurnal: "JU", proposal: "PR", combo55: "55", k52: "KA", k45: "WP", chatdosen: "CD", imrad: "IM", ojskit: "OJ", tabelstat: "RT", mediasi: "MD", kisikisi: "KK", federer: "FD", bibtex: "BX", poster: "PI", pengesahan: "LP", peerassess: "PA", prorata: "SB" };
 function monoOf(t) { return MONO[t.id] || t.n.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0]).join("").toUpperCase(); }
 
 /* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */
@@ -316,6 +328,8 @@ function closeWS() {
   curTool = null;
 }
 const _wsc = $("#wsScrim"); if (_wsc) _wsc.addEventListener("click", closeWS);
+const _wsWrapEl = $("#wsWrap");
+if (_wsWrapEl) _wsWrapEl.addEventListener("click", (e) => { if (!e.target.closest("#wsPanel")) closeWS(); });
 const UI = {};
 
 ;
@@ -442,6 +456,7 @@ function mtBasePath() { return window.__MT_BASE__ || ""; }
 function loadCat(cat) {
   if (MT_CAT_LOADED[cat]) return Promise.resolve(true);
   if (MT_CAT_LOADING[cat]) return MT_CAT_LOADING[cat];
+  if (document.querySelector('script[src*="cat-' + cat + '.js"]')) { MT_CAT_LOADED[cat] = true; return Promise.resolve(true); } // sudah termuat statis (halaman tool SEO) — jangan injeksi dua kali
   MT_CAT_LOADING[cat] = new Promise((res) => {
     const s = document.createElement("script");
     s.src = mtBasePath() + "js/cat-" + cat + ".js";
@@ -456,6 +471,19 @@ const MT_ENHANCERS = [];
 const MT_ENHANCED = new Set();
 function mtEnhanceUI(id, wrap) { MT_ENHANCERS.push({ kind: "ui", key: "ui:" + id + ":" + MT_ENHANCERS.length, id: id, wrap: wrap }); }
 function mtEnhanceFn(name, wrap) { MT_ENHANCERS.push({ kind: "fn", key: "fn:" + name + ":" + MT_ENHANCERS.length, name: name, wrap: wrap }); }
+function mtCatOf(id) { const t = TOOLS.find((x) => x.id === id); return t ? t.c : null; }
+/* Smart Intent Prefetch: sentuhan kursor/jari pada kartu tool langsung
+   memanaskan partisi kategorinya — jeda alami sebelum klik (~100ms)
+   membuat tool terasa instan, tanpa menyedot semua partisi di awal. */
+function mtIntentPrefetch(e) {
+  if (navigator.connection && navigator.connection.saveData) return;
+  const el = e.target && e.target.closest ? e.target.closest("[onclick]") : null;
+  if (!el) return;
+  const m = (el.getAttribute("onclick") || "").match(/openTool\('([^']+)'\)/);
+  if (m) { const c = mtCatOf(m[1]); if (c) loadCat(c); }
+}
+document.addEventListener("mouseover", mtIntentPrefetch);
+document.addEventListener("touchstart", mtIntentPrefetch, { passive: true });
 function applyToolEnhancers() {
   MT_ENHANCERS.forEach((e) => {
     if (MT_ENHANCED.has(e.key)) return;
@@ -1114,7 +1142,6 @@ function hitungBudget() {
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="copyText(window._budget)">📋 Copy Ringkasan</button></div></div>';
 }
 
-renderTabs(); renderGrid();
 
 ;
 
@@ -2074,6 +2101,7 @@ function buatOrg() {
     anggota.forEach((a, ai) => { svg += '<text x="' + (dx + dw / 2) + '" y="' + (402 + ai * 17) + '" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#475569">' + xe(a) + "</text>"; });
     dx += dw + 14;
   });
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
   svg += "</svg>";
   $("#ogOut").innerHTML = '<div class="' + OUT + '">' + svg
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'ogSvg\', \'Struktur_Organisasi.png\')">⬇️ Download Bagan (PNG)</button>'
@@ -2703,7 +2731,7 @@ function buatWallpaper() {
     if (y > H - 220) return;
   });
   ctx.textAlign = "center"; ctx.font = "600 26px sans-serif"; ctx.globalAlpha = 0.75; ctx.fillStyle = "#FFF";
-  ctx.fillText("MahasiswaTools • Dari Mahasiswa, Untuk Mahasiswa", W / 2, H - 60);
+  ctx.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", W / 2, H - 60);
   ctx.globalAlpha = 1;
   const prev = $("#krCv"); prev.width = 540; prev.height = 960; prev.classList.remove("hidden");
   prev.getContext("2d").drawImage(cv, 0, 0, 540, 960);
@@ -2764,6 +2792,7 @@ function buatMindmap() {
   svg += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="128" ry="58" fill="#122B78"/>';
   const pusat = mmData.pusat.length > 42 ? mmData.pusat.slice(0, 41) + "…" : mmData.pusat;
   svg += '<text x="' + cx + '" y="' + (cy + 6) + '" text-anchor="middle" font-family="sans-serif" font-size="15.5" font-weight="800" fill="#FFFFFF">' + xe(pusat) + "</text>";
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
   svg += "</svg>";
   window._mmOutline = mmData.pusat + "\n" + branches.map((b) => "├─ " + b.nama + (b.sub ? "\n│   " + b.sub.split(",").map((s) => "• " + s.trim()).join("\n│   ") : "")).join("\n");
   $("#mmOut").innerHTML = '<div class="' + OUT + '">' + svg
@@ -3464,11 +3493,12 @@ const SHARE_GETTERS = {
   k33: () => window._ganttTxt,
   k52: () => "Kalender akademik saya:\n" + calEvents.map((e) => e.date + " — " + e.title).join("\n")
 };
-let wsOpenState = false, wsHistPushed = false;
+let wsOpenState = false, wsHistPushed = false, wsSession = 0, wsClosingSession = -1;
 const _openToolReal = openTool;
 openTool = function (id) {
   window._curTool = id;
   _openToolReal(id);
+  wsSession++;
   wsOpenState = true;
   if (!wsHistPushed) { try { history.pushState({ mtws: 1 }, ""); wsHistPushed = true; } catch (e) {} }
   const sb = document.getElementById("wsShareBtn");
@@ -3476,10 +3506,12 @@ openTool = function (id) {
 };
 const _closeWSReal = closeWS;
 closeWS = function () {
-  if (wsHistPushed) { wsHistPushed = false; try { history.back(); } catch (e) { _closeWSReal(); wsOpenState = false; } }
+  if (wsHistPushed) { wsHistPushed = false; wsClosingSession = wsSession; try { history.back(); } catch (e) { _closeWSReal(); wsOpenState = false; } }
   else { _closeWSReal(); wsOpenState = false; }
 };
 window.addEventListener("popstate", function () {
+  if (wsClosingSession !== -1 && wsSession !== wsClosingSession) { wsClosingSession = -1; return; } // popstate basi: sesi baru sudah dibuka setelah penutupan dimulai — abaikan
+  wsClosingSession = -1;
   if (wsOpenState) { wsOpenState = false; wsHistPushed = false; _closeWSReal(); }
 });
 (function () {
@@ -5678,7 +5710,7 @@ function kartuTargetNilai() {
   x.fillText("nilai minimal di " + (h.komponen || "komponen terakhir"), 52, 352);
   x.font = "400 24px 'Plus Jakarta Sans', sans-serif";
   window._tnKomp.forEach((k, i) => { x.fillText("• " + k.nama + " (" + k.bobot + "%): " + (k.nilai === null ? "belum ada" : k.nilai), 52, 408 + i * 34); });
-  x.font = "italic 20px Georgia, serif"; x.fillText("Dihitung dengan MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa", 52, 524);
+  x.font = "italic 20px Georgia, serif"; x.fillStyle = "#64748B"; x.font = "600 19px 'Plus Jakarta Sans', sans-serif"; x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", 52, 524);
   cv.toBlob((b) => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "MahasiswaTools_Kartu_Target_" + nama.replace(/\s+/g, "_") + ".png"; document.body.appendChild(a); a.click(); a.remove(); }, "image/png");
 }
 SHARE_GETTERS.targetnilai = function () { const h = window._tnHasil; if (!h || h.perlu == null) return ""; return "Target nilai " + ($("#tnNama").value || "mata kuliah") + ": saya butuh minimal " + fmtN(h.perlu, 1) + " di " + h.komponen + " untuk mencapai nilai akhir " + ($("#tnTarget").value || 80) + "."; };
@@ -6116,6 +6148,736 @@ function unduhBimbingan() {
 }
 SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount || 0) + " kali bimbingan skripsi. Kartu kendali tercatat rapi di MahasiswaTools."; };
 
+/* ---------- 86. KONVERTER SKRIPSI KE JURNAL (IMRAD) ---------- */
+UI.imrad = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Tempel ringkasan tiap bab skripsimu — tool menyusunnya jadi draf artikel jurnal format <b>IMRAD</b> (Pendahuluan–Metode–Hasil & Pembahasan–Kesimpulan) sekaligus mengecek proporsi kata idealnya: Pendahuluan 15%, Metode 20%, Hasil & Pembahasan 55%, Kesimpulan 10%.</p>'
+    + field("Judul Artikel", '<input id="imrJudul" class="\' + IN + \'" placeholder="Judul artikel jurnal (boleh sama dengan judul skripsi)">')
+    + field("Penulis & Institusi", '<input id="imrPenulis" class="\' + IN + \'" placeholder="cth: Detta Pranata — Universitas PGRI Palembang">')
+    + field("Bab I — Pendahuluan", '<textarea id="imrB1" rows="4" class="\' + IN + \'" placeholder="Ringkasan latar belakang, rumusan masalah, dan tujuan penelitian"></textarea>')
+    + field("Bab II — Tinjauan Pustaka (masuk Pendahuluan)", '<textarea id="imrB2" rows="3" class="\' + IN + \'" placeholder="Ringkasan teori & penelitian terdahulu yang paling relevan"></textarea>')
+    + field("Bab III — Metode Penelitian", '<textarea id="imrB3" rows="4" class="\' + IN + \'" placeholder="Jenis penelitian, populasi & sampel, instrumen, teknik analisis"></textarea>')
+    + field("Bab IV — Hasil & Pembahasan", '<textarea id="imrB4" rows="5" class="\' + IN + \'" placeholder="Temuan utama, tabel/grafik penting, dan pembahasannya"></textarea>')
+    + field("Bab V — Kesimpulan & Saran", '<textarea id="imrB5" rows="3" class="\' + IN + \'" placeholder="Kesimpulan dan saran penelitian"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Target Total Kata Artikel (opsional)", '<input id="imrTarget" type="number" class="\' + IN + \'" placeholder="cth: 5000 — kosongkan = total kata naskahmu">')
+    + field("Tata Letak .doc", '<select id="imrKolom" class="\' + IN + \'"><option value="1">1 kolom</option><option value="2">2 kolom (gaya jurnal SINTA)</option></select>')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="imrSusun()">📐 Susun Draf IMRAD & Cek Proporsi</button>'
+    + outBox("imrOut") + "</div>";
+};
+function imrKata(t) { const m = (t || "").trim().match(/\S+/g); return m ? m.length : 0; }
+function imrSusun() {
+  const g = (id) => ($("#" + id) || {}).value || "";
+  const judul = g("imrJudul").trim(), penulis = g("imrPenulis").trim();
+  const b1 = g("imrB1").trim(), b2 = g("imrB2").trim(), b3 = g("imrB3").trim(), b4 = g("imrB4").trim(), b5 = g("imrB5").trim();
+  const secs = [
+    { n: "Pendahuluan (Bab I + II)", isi: [b1, b2].filter(Boolean).join("\n\n"), pct: 15 },
+    { n: "Metode (Bab III)", isi: b3, pct: 20 },
+    { n: "Hasil & Pembahasan (Bab IV)", isi: b4, pct: 55 },
+    { n: "Kesimpulan (Bab V)", isi: b5, pct: 10 }
+  ];
+  const totalIsi = secs.reduce((a, s) => a + imrKata(s.isi), 0);
+  const target = Number(g("imrTarget")) || totalIsi;
+  if (!totalIsi) { $("#imrOut").innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu minimal satu bab.</div>'; return; }
+  const baris = secs.map((s) => {
+    const k = imrKata(s.isi), tk = Math.round(target * s.pct / 100), sel = k - tk;
+    const st = k === 0 ? '<span class="font-bold text-rose-600">Kosong</span>' : Math.abs(sel) <= Math.max(30, tk * 0.15) ? '<span class="font-bold text-emerald-600">Pas ✅</span>' : sel < 0 ? '<span class="font-bold text-amber-600">Kurang ' + fmtN(-sel, 0) + ' kata</span>' : '<span class="font-bold text-amber-600">Lebih ' + fmtN(sel, 0) + ' kata</span>';
+    return "<tr><td class=\"py-1.5 pr-3 font-semibold\">" + s.n + "</td><td class=\"py-1.5 pr-3\">" + fmtN(k, 0) + "</td><td class=\"py-1.5 pr-3\">" + fmtN(tk, 0) + " (" + s.pct + "%)</td><td class=\"py-1.5\">" + st + "</td></tr>";
+  }).join("");
+  const draf = (judul || "(Judul Artikel)") + "\n" + (penulis || "(Penulis — Institusi)") + "\n\nABSTRAK\n(Tulis abstrak 150–250 kata: latar singkat, tujuan, metode, hasil utama, kesimpulan — susun setelah draf ini rampung.)\n\n1. PENDAHULUAN\n" + (secs[0].isi || "(kosong)") + "\n\n2. METODE\n" + (b3 || "(kosong)") + "\n\n3. HASIL DAN PEMBAHASAN\n" + (b4 || "(kosong)") + "\n\n4. KESIMPULAN\n" + (b5 || "(kosong)") + "\n\nDAFTAR PUSTAKA\n(Salin dari daftar pustaka skripsimu, sesuaikan dengan gaya selingkung jurnal tujuan.)";
+  window._imrad = draf; window._imradSecs = secs; window._imradJudul = judul; window._imradPenulis = penulis;
+  $("#imrOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 Cek Proporsi Kata (total acuan: ' + fmtN(target, 0) + ' kata)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Bagian</th><th class="py-1 pr-3">Kata Saat Ini</th><th class="py-1 pr-3">Target Ideal</th><th class="py-1">Status</th></tr>' + baris + "</table>"
+    + '<p class="font-extrabold mt-4 mb-2">📄 Draf Artikel (IMRAD)</p><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[14px]" style="font-family:Georgia,serif">' + esc(draf) + "</div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="imrUnduhDoc()">⬇️ Download .doc (IMRAD)</button><button class="\' + BTN2 + \'" onclick="copyText(window._imrad)">📋 Copy Draf</button></div></div>';
+}
+function imrUnduhDoc() {
+  const s = window._imradSecs || [];
+  const h = (t) => '<h3 style="font-family:serif">' + t + "</h3>";
+  const p = (t) => (t || "(kosong)").split(/\n+/).map((x) => '<p style="font-family:serif;font-size:11pt;text-align:justify">' + esc(x) + "</p>").join("");
+  let body = '<h2 style="text-align:center;font-family:serif">' + esc(window._imradJudul || "Judul Artikel") + '</h2><p style="text-align:center;font-family:serif">' + esc(window._imradPenulis || "") + "</p>"
+    + h("ABSTRAK") + '<p style="font-family:serif;font-size:11pt;text-align:justify">(Tulis abstrak 150–250 kata: latar singkat, tujuan, metode, hasil utama, kesimpulan.)</p>'
+    + h("1. PENDAHULUAN") + p(s[0] && s[0].isi) + h("2. METODE") + p(s[1] && s[1].isi) + h("3. HASIL DAN PEMBAHASAN") + p(s[2] && s[2].isi) + h("4. KESIMPULAN") + p(s[3] && s[3].isi) + h("DAFTAR PUSTAKA") + '<p style="font-family:serif;font-size:11pt">(Salin dari daftar pustaka skripsi, sesuaikan gaya selingkung jurnal tujuan.)</p>';
+  if (($("#imrKolom") || {}).value === "2") body = '<table width="100%" cellspacing="0" cellpadding="10"><tr><td width="50%" valign="top">' + h("ABSTRAK") + '<p style="font-family:serif;font-size:11pt">(Abstrak 150–250 kata.)</p>' + h("1. PENDAHULUAN") + p(s[0] && s[0].isi) + h("2. METODE") + p(s[1] && s[1].isi) + '</td><td width="50%" valign="top">' + h("3. HASIL DAN PEMBAHASAN") + p(s[2] && s[2].isi) + h("4. KESIMPULAN") + p(s[3] && s[3].isi) + h("DAFTAR PUSTAKA") + '<p style="font-family:serif;font-size:11pt">(Sesuaikan gaya selingkung jurnal.)</p></td></tr></table><h2 style="text-align:center;font-family:serif">' + esc(window._imradJudul || "") + '</h2><p style="text-align:center;font-family:serif">' + esc(window._imradPenulis || "") + "</p>";
+  download("Artikel_IMRAD.doc", "<html><body>" + kopLogoHtml("center") + body + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.imrad = function () { return window._imrad ? "Saya sedang mengubah skripsi jadi artikel jurnal format IMRAD (" + imrKata(window._imrad) + " kata) dengan Konverter IMRAD MahasiswaTools." : ""; };
+
+/* ---------- 87. OJS KIT: COVER LETTER & MATRIKS REVIEWER ---------- */
+UI.ojskit = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua senjata submit jurnal via OJS: <b>surat pengantar (cover letter)</b> untuk editor dan <b>matriks tanggapan reviewer</b> untuk revisimu. Isi sekali, keduanya langsung jadi.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Jurnal Tujuan", '<input id="ojJurnal" class="\' + IN + \'" placeholder="cth: Jurnal Ilmu Ekonomi & Studi Pembangunan">')
+    + field("Bahasa Surat", '<select id="ojBahasa" class="\' + IN + \'"><option value="id">Bahasa Indonesia</option><option value="en">English</option></select>')
+    + field("Judul Artikel", '<input id="ojJudul" class="\' + IN + \'" placeholder="Judul artikel yang disubmit">')
+    + field("Nama Penulis Korespondensi", '<input id="ojPenulis" class="\' + IN + \'" placeholder="Nama kamu">')
+    + field("Institusi", '<input id="ojInst" class="\' + IN + \'" placeholder="cth: Universitas PGRI Palembang">')
+    + field("Email Korespondensi", '<input id="ojEmail" class="\' + IN + \'" placeholder="email@kamu.ac.id">')
+    + "</div>"
+    + field("Komentar Reviewer (satu komentar per baris, untuk matriks tanggapan)", '<textarea id="ojKomentar" rows="5" class="\' + IN + \'" placeholder="Reviewer 1: Perjelas kebaruan penelitian di pendahuluan&#10;Reviewer 1: Tambahkan uji asumsi klasik&#10;Reviewer 2: Perbaiki format tabel 3"></textarea>')
+    + outBox("ojOut") + "</div>";
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(ojsBuat, 350); });
+  ojsBuat();
+};
+function ojsBuat() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const jurnal = g("ojJurnal") || "(Nama Jurnal)", judul = g("ojJudul") || "(Judul Artikel)", penulis = g("ojPenulis") || "(Nama Penulis)", inst = g("ojInst") || "(Institusi)", email = g("ojEmail") || "(email)";
+  let surat;
+  if (g("ojBahasa") === "en") surat = "Dear Editor-in-Chief of " + jurnal + ",\n\nWe are pleased to submit our manuscript entitled \"" + judul + "\" for consideration for publication in " + jurnal + ".\n\nThis manuscript is original, has not been published previously, and is not under consideration by any other journal. All authors have read and approved the submitted version, and there are no conflicts of interest to declare. The study contributes empirical evidence and practical implications that we believe will be of interest to the readers of " + jurnal + ".\n\nThank you for your time and consideration. We look forward to your response.\n\nSincerely,\n" + penulis + "\n" + inst + "\nCorresponding author: " + email;
+  else surat = "Kepada Yth.\nEditor-in-Chief " + jurnal + "\ndi tempat\n\nDengan hormat,\n\nBersama ini kami mengajukan naskah artikel berjudul \"" + judul + "\" untuk dipertimbangkan penerbitannya di " + jurnal + ".\n\nKami menyatakan bahwa naskah ini orisinal, belum pernah diterbitkan, dan tidak sedang diajukan ke jurnal lain. Seluruh penulis telah membaca dan menyetujui versi yang diajukan, serta tidak terdapat konflik kepentingan. Penelitian ini menyumbang bukti empiris dan implikasi praktis yang kami yakini bermanfaat bagi pembaca " + jurnal + ".\n\nDemikian surat pengantar ini kami sampaikan. Atas perhatian dan pertimbangan Bapak/Ibu Editor, kami ucapkan terima kasih.\n\nHormat kami,\n" + penulis + "\n" + inst + "\nPenulis korespondensi: " + email;
+  if (!$("#ojOut")) return;
+  const koms = g("ojKomentar").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  window._ojSurat = surat; window._ojKoms = koms; window._ojJurnal = jurnal;
+  const matriks = koms.length ? '<table class="w-full text-[12.5px] mt-2"><tr class="text-left bg-slate-100 dark:bg-slate-800"><th class="p-2">No</th><th class="p-2">Komentar Reviewer</th><th class="p-2">Tanggapan & Perbaikan Penulis</th><th class="p-2">Hal/Baris</th></tr>' + koms.map((k, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"p-2\">" + (i + 1) + "</td><td class=\"p-2\">" + esc(k) + "</td><td class=\"p-2 text-slate-400\">(isi tanggapan & perbaikanmu)</td><td class=\"p-2 text-slate-400\">(hal/baris)</td></tr>").join("") + "</table>" : '<p class="text-sm text-slate-500 mt-2">Isi komentar reviewer di atas untuk membangkitkan matriks tanggapan.</p>';
+  $("#ojOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">✉️ Cover Letter</p><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[14px]" style="font-family:Georgia,serif">' + esc(surat) + '</div>'
+    + '<p class="font-extrabold mt-4">🧾 Matriks Tanggapan Reviewer (' + koms.length + ' komentar)</p>' + matriks
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="ojsUnduhDoc()">⬇️ Download .doc (Surat + Matriks)</button><button class="\' + BTN2 + \'" onclick="copyText(window._ojSurat)">📋 Copy Surat</button></div></div>';
+}
+function ojsUnduhDoc() {
+  const koms = window._ojKoms || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th style="width:5%">No</th><th style="width:35%">Komentar Reviewer</th><th style="width:42%">Tanggapan & Perbaikan Penulis</th><th style="width:18%">Hal/Baris</th></tr>' + koms.map((k, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(k) + "</td><td></td><td></td></tr>").join("") + "</table>";
+  download("OJS_Kit.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(window._ojSurat || "") + "</div><br><h3>Matriks Tanggapan Reviewer — " + esc(window._ojJurnal || "") + "</h3>" + tabel + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.ojskit = function () { return "Saya menyiapkan submit jurnal ke " + (window._ojJurnal || "jurnal tujuan") + " (cover letter + matriks tanggapan " + (window._ojKoms || []).length + " komentar reviewer) dengan OJS Kit MahasiswaTools."; };
+
+/* ---------- 91. GENERATOR KISI-KISI & OPERASIONALISASI VARIABEL ---------- */
+UI.kisikisi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Susun tabel kisi-kisi instrumen Bab 3 tanpa mengetik ulang nomor item. Satu variabel per baris, format:<br><code class="text-[12px]">Variabel | Definisi Operasional | Dimensi | Indikator 1, Indikator 2 | 2F/1U | Likert 5</code><br>Kolom 5 = jumlah item per indikator (F = favorable, U = unfavorable). Nomor item dihitung otomatis berurutan.</p>'
+    + field("Data Variabel & Indikator", '<textarea id="kkiIn" rows="7" class="\' + IN + \'" placeholder="Motivasi Belajar | Keinginan dan dorongan untuk belajar | Intrinsik | Hasrat berhasil, Dorongan kebutuhan belajar | 2F/1U | Likert 5"></textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-1"><button class="\' + BTN + \'" onclick="kkiSusun()">🧩 Susun Tabel Kisi-Kisi</button><button class="\' + BTN2 + \'" onclick="kkiContoh()">Contoh Isian</button></div>'
+    + outBox("kkiOut") + "</div>";
+};
+function kkiContoh() {
+  $("#kkiIn").value = "Motivasi Belajar | Keinginan dan dorongan dalam diri untuk belajar | Intrinsik | Hasrat untuk berhasil, Dorongan kebutuhan belajar | 2F/1U | Likert 5\nMotivasi Belajar | Keinginan dan dorongan dalam diri untuk belajar | Ekstrinsik | Penghargaan, Lingkungan belajar kondusif | 2F/0U | Likert 5\nPrestasi Belajar | Hasil yang dicapai dari kegiatan belajar | Kognitif | Nilai ujian, Pemahaman materi | 1F/1U | Tes";
+  kkiSusun();
+}
+function kkiSusun() {
+  const lines = ($("#kkiIn").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#kkiOut");
+  if (!lines.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu data variabelnya.</div>'; return; }
+  let no = 0; const rows = []; const rekap = {}; let totInd = 0;
+  lines.forEach((ln) => {
+    const p = ln.split("|").map((s) => s.trim());
+    const [vari, def, dim, inds, fu, skala] = [p[0] || "-", p[1] || "-", p[2] || "-", p[3] || "-", p[4] || "1F/0U", p[5] || "Likert 5"];
+    const mf = /(\d+)\s*F/i.exec(fu), mu = /(\d+)\s*U/i.exec(fu);
+    const nf = mf ? Number(mf[1]) : 1, nu = mu ? Number(mu[1]) : 0;
+    (inds.split(",").map((s) => s.trim()).filter(Boolean)).forEach((ind) => {
+      totInd++;
+      const fNums = [], uNums = [];
+      for (let i = 0; i < nf; i++) fNums.push(++no);
+      for (let i = 0; i < nu; i++) uNums.push(++no);
+      rows.push({ vari, def, dim, ind, f: fNums.join(", "), u: uNums.join(", ") || "—", skala });
+      rekap[vari] = (rekap[vari] || 0) + nf + nu;
+    });
+  });
+  window._kkiRows = rows; window._kkiTotal = no;
+  const tabel = '<table class="w-full text-[12.5px]"><tr class="text-left bg-slate-100 dark:bg-slate-800"><th class="p-2">Variabel</th><th class="p-2">Definisi Operasional</th><th class="p-2">Dimensi</th><th class="p-2">Indikator</th><th class="p-2">No. Item (F/U)</th><th class="p-2">Skala</th></tr>'
+    + rows.map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"p-2 font-semibold\">" + esc(r.vari) + "</td><td class=\"p-2\">" + esc(r.def) + "</td><td class=\"p-2\">" + esc(r.dim) + "</td><td class=\"p-2\">" + esc(r.ind) + "</td><td class=\"p-2\">F: " + r.f + "<br>U: " + r.u + "</td><td class=\"p-2\">" + esc(r.skala) + "</td></tr>").join("") + "</table>";
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🧩 Tabel Kisi-Kisi Instrumen</p><p class="text-[13px] mb-2">Rekap: ' + Object.entries(rekap).map(([v, n]) => "<b>" + esc(v) + "</b> = " + n + " item").join(" • ") + ' — <b>Total ' + no + ' item</b> dari ' + totInd + ' indikator.</p>' + tabel
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="kkiUnduhDoc()">⬇️ Download .doc (Tabel Bab 3)</button></div></div>';
+}
+function kkiUnduhDoc() {
+  const rows = window._kkiRows || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th>Variabel</th><th>Definisi Operasional</th><th>Dimensi</th><th>Indikator</th><th>No. Item Favorable</th><th>No. Item Unfavorable</th><th>Skala</th></tr>'
+    + rows.map((r) => "<tr><td>" + esc(r.vari) + "</td><td>" + esc(r.def) + "</td><td>" + esc(r.dim) + "</td><td>" + esc(r.ind) + "</td><td>" + r.f + "</td><td>" + r.u + "</td><td>" + esc(r.skala) + "</td></tr>").join("") + "</table>";
+  download("Kisi_Kisi_Instrumen.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<h3>Kisi-Kisi Instrumen Penelitian</h3>" + tabel + "<p>Total item: " + (window._kkiTotal || 0) + "</p></body></html>", "application/msword");
+}
+SHARE_GETTERS.kisikisi = function () { return "Kisi-kisi instrumen penelitian saya: total " + (window._kkiTotal || 0) + " item terpetakan rapi per variabel, dimensi, dan indikator — dibuat dengan MahasiswaTools."; };
+
+/* ---------- 96. LEMBAR PENGESAHAN & PERNYATAAN BEBAS PLAGIAT ---------- */
+UI.pengesahan = function (el) {
+  const f2 = (label, inner) => field(label, inner);
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua lembar resmi penutup skripsi: <b>Lembar Pengesahan</b> (tanda tangan pembimbing, penguji, kaprodi & dekan sejajar rapi) dan <b>Surat Pernyataan Keaslian</b> dengan kotak materai Rp10.000. Unduh sebagai satu .doc berkop institusi.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + f2("Nama Mahasiswa", '<input id="pgNama" class="\' + IN + \'">') + f2("NIM", '<input id="pgNim" class="\' + IN + \'">')
+    + f2("Program Studi", '<input id="pgProdi" class="\' + IN + \'">') + f2("Fakultas", '<input id="pgFak" class="\' + IN + \'">')
+    + f2("Universitas", '<input id="pgUniv" class="\' + IN + \'">') + f2("Kota & Tanggal", '<input id="pgTanggal" class="\' + IN + \'" placeholder="cth: Palembang, 21 Oktober 2026">')
+    + f2("Pembimbing 1 (nama + NIP)", '<input id="pgP1" class="\' + IN + \'" placeholder="Nama, gelar — NIP. ...">') + f2("Pembimbing 2 (opsional)", '<input id="pgP2" class="\' + IN + \'">')
+    + f2("Penguji 1", '<input id="pgU1" class="\' + IN + \'">') + f2("Penguji 2", '<input id="pgU2" class="\' + IN + \'">')
+    + f2("Ketua Prodi/Jurusan", '<input id="pgKap" class="\' + IN + \'">') + f2("Dekan (Mengetahui)", '<input id="pgDekan" class="\' + IN + \'">')
+    + "</div>"
+    + field("Judul Skripsi", '<textarea id="pgJudul" rows="2" class="\' + IN + \'"></textarea>')
+    + outBox("pgOut") + "</div>";
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(pgsBuat, 350); });
+  pgsBuat();
+};
+function pgsData() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  return { nama: g("pgNama"), nim: g("pgNim"), prodi: g("pgProdi"), fak: g("pgFak"), univ: g("pgUniv"), tgl: g("pgTanggal"), judul: g("pgJudul"), p1: g("pgP1"), p2: g("pgP2"), u1: g("pgU1"), u2: g("pgU2"), kap: g("pgKap"), dekan: g("pgDekan") };
+}
+function pgsHtml() {
+  const d = pgsData();
+  const ttd = (peran, nama) => '<td style="width:50%;vertical-align:top;padding:10px"><p style="font-family:serif;font-size:12pt">' + peran + ',</p><br><br><br><p style="font-family:serif;font-size:12pt"><b><u>' + esc(nama || "........................") + "</u></b></p></td>";
+  const sah = '<h2 style="text-align:center;font-family:serif">LEMBAR PENGESAHAN</h2>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:center">Skripsi dengan judul:</p><p style="text-align:center;font-family:serif;font-size:12pt"><b>"' + esc(d.judul || "—") + '"</b></p>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:center">Oleh:<br><b>' + esc(d.nama || "—") + "</b><br>NIM. " + esc(d.nim || "—") + "<br>Program Studi " + esc(d.prodi || "—") + ", " + esc(d.fak || "") + ", " + esc(d.univ || "") + "</p>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">telah dipertahankan di hadapan tim penguji dan diterima sebagai bagian persyaratan yang diperlukan untuk memperoleh gelar Sarjana pada Program Studi ' + esc(d.prodi || "—") + ", " + esc(d.fak || "") + ", " + esc(d.univ || "") + ".</p>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:right">' + esc(d.tgl || "—") + "</p>"
+    + '<table width="100%" cellspacing="0" cellpadding="0"><tr>' + ttd("Dosen Pembimbing 1", d.p1) + ttd("Dosen Pembimbing 2", d.p2) + "</tr><tr>" + ttd("Dosen Penguji 1", d.u1) + ttd("Dosen Penguji 2", d.u2) + "</tr></table>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:center;margin-top:12px">Mengetahui,</p><table width="100%" cellspacing="0" cellpadding="0"><tr>' + ttd("Dekan " + (d.fak || ""), d.dekan) + ttd("Ketua Program Studi " + (d.prodi || ""), d.kap) + "</tr></table>";
+  const per = '<h2 style="text-align:center;font-family:serif">SURAT PERNYATAAN KEASLIAN KARYA</h2>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">Saya yang bertanda tangan di bawah ini:</p>'
+    + '<table cellspacing="0" cellpadding="2" style="font-family:serif;font-size:12pt"><tr><td>Nama</td><td>: ' + esc(d.nama || "—") + "</td></tr><tr><td>NIM</td><td>: " + esc(d.nim || "—") + "</td></tr><tr><td>Program Studi</td><td>: " + esc(d.prodi || "—") + "</td></tr></table>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">menyatakan dengan sesungguhnya bahwa skripsi berjudul <b>"' + esc(d.judul || "—") + '"</b> adalah benar-benar karya saya sendiri dan bukan merupakan plagiat atau saduran dari karya orang lain, kecuali bagian-bagian yang dirujuk sumbernya sebagaimana tercantum dalam daftar pustaka. Apabila di kemudian hari terbukti pernyataan ini tidak benar, saya bersedia menerima sanksi akademik sesuai ketentuan yang berlaku.</p>'
+    + '<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="width:55%"></td><td style="font-family:serif;font-size:12pt">' + esc(d.tgl || "—") + '<br>Yang menyatakan,<br><table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse;margin:8px 0"><tr><td style="font-size:10pt;text-align:center">MATERAI<br>Rp10.000</td></tr></table><br><b><u>' + esc(d.nama || "........................") + "</u></b><br>NIM. " + esc(d.nim || "—") + "</td></tr></table>";
+  return { sah, per };
+}
+function pgsBuat() {
+  if (!$("#pgOut")) return;
+  const h = pgsHtml();
+  window._pgsSah = h.sah; window._pgsPer = h.per;
+  $("#pgOut").innerHTML = '<div class="\' + OUT + \'"><div class="bg-white text-slate-900 rounded-lg p-6 border border-slate-200 mb-4 overflow-x-auto"><div style="min-width:520px">' + h.sah + '</div></div>'
+    + '<div class="bg-white text-slate-900 rounded-lg p-6 border border-slate-200 overflow-x-auto"><div style="min-width:520px">' + h.per + "</div></div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="pgsUnduhDoc()">⬇️ Download .doc (Pengesahan + Pernyataan)</button></div></div>';
+}
+function pgsUnduhDoc() {
+  download("Lembar_Pengesahan_Pernyataan.doc", "<html><body>" + kopLogoHtml("center") + window._pgsSah + '<br style="page-break-after:always">' + window._pgsPer + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.pengesahan = function () { return "Lembar pengesahan & surat pernyataan bebas plagiat untuk skripsi saya sudah rapi (tinggal tanda tangan + materai) — dibuat dengan MahasiswaTools."; };
+
+/* ---------- 89. GENERATOR TABEL STATISTIK EKSAK (r / t / F / CHI-SQUARE) ---------- */
+UI.tabelstat = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Buku tabel statistik cuma memuat N/df tertentu — tool ini menghitung <b>nilai kritis eksak untuk N atau df berapa pun</b> (misal N=137) pada α 0,10, 0,05, dan 0,01, lengkap dengan pembanding nilai hitungmu.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Jenis Tabel", '<select id="tbsJenis" class="\' + IN + \'"><option value="r">r — Korelasi Product Moment</option><option value="t">t — Distribusi t</option><option value="f">F — Distribusi F</option><option value="x2">χ² — Chi-Square</option></select>')
+    + field("Mode", '<select id="tbsMode" class="\' + IN + \'" onchange="tbsModeChange()"><option value="satu">Satu nilai + pembanding</option><option value="rentang">Rentang tabel (klasik)</option></select>')
+    + "</div>"
+    + '<div id="tbsSatu"><div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("N (untuk r) / df (t, χ²) / df1 (F)", '<input id="tbsDf1" type="number" class="\' + IN + \'" placeholder="cth: 137">')
+    + field("df2 (hanya untuk F)", '<input id="tbsDf2" type="number" class="\' + IN + \'" placeholder="cth: 40">')
+    + field("Nilai Hitung Kamu (opsional)", '<input id="tbsHitung" type="number" step="any" class="\' + IN + \'" placeholder="cth: 0,31">')
+    + "</div></div>"
+    + '<div id="tbsRentang" class="hidden"><div class="grid sm:grid-cols-4 gap-x-4">'
+    + field("Dari", '<input id="tbsDari" type="number" class="\' + IN + \'" value="5">')
+    + field("Sampai", '<input id="tbsSampai" type="number" class="\' + IN + \'" value="30">')
+    + field("Langkah", '<input id="tbsLangkah" type="number" class="\' + IN + \'" value="5">')
+    + field("df2 Tetap (hanya F)", '<input id="tbsDf2r" type="number" class="\' + IN + \'" placeholder="cth: 40">')
+    + "</div></div>"
+    + '<button class="\' + BTN + \'" onclick="tbsBuat()">📊 Hitung Nilai Kritis</button>'
+    + outBox("tbsOut") + "</div>";
+};
+function tbsModeChange() { const r = $("#tbsMode").value === "rentang"; $("#tbsRentang").classList.toggle("hidden", !r); $("#tbsSatu").classList.toggle("hidden", r); }
+function tbsCdfT(t, df) { const x = df / (df + t * t); const ib = betainc(x, df / 2, 0.5); return t >= 0 ? 1 - 0.5 * ib : 0.5 * ib; }
+function tbsInvT(df, alpha) { const target = 1 - alpha / 2; let lo = 0, hi = 200; for (let i = 0; i < 80; i++) { const mid = (lo + hi) / 2; if (tbsCdfT(mid, df) < target) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+function tbsInvUpper(fnP, alpha) { let lo = 0, hi = 1; let g = 0; while (fnP(hi) > alpha && g++ < 40) hi *= 2; for (let i = 0; i < 70; i++) { const mid = (lo + hi) / 2; if (fnP(mid) > alpha) lo = mid; else hi = mid; } return (lo + hi) / 2; }
+function tbsInvF(d1, d2, alpha) { return tbsInvUpper((f) => pDariF(f, d1, d2), alpha); }
+function tbsInvChi(df, alpha) { return tbsInvUpper((x) => pChi2(x, df), alpha); }
+function tbsKritis(jenis, d1, d2, alpha) {
+  if (jenis === "r") { const df = d1 - 2; const t = tbsInvT(df, alpha); return t / Math.sqrt(t * t + df); }
+  if (jenis === "t") return tbsInvT(d1, alpha);
+  if (jenis === "f") return tbsInvF(d1, d2, alpha);
+  return tbsInvChi(d1, alpha);
+}
+function tbsBuat() {
+  const jenis = $("#tbsJenis").value, mode = $("#tbsMode").value, out = $("#tbsOut");
+  const namaJ = { r: "r tabel (df = N − 2)", t: "t tabel", f: "F tabel", x2: "χ² tabel" }[jenis];
+  const alphas = [0.10, 0.05, 0.01];
+  const fmtA = (a) => "α " + String(a).replace(".", ",");
+  if (mode === "satu") {
+    const d1 = Number($("#tbsDf1").value), d2 = Number($("#tbsDf2").value);
+    if (!d1 || d1 < 3 || (jenis === "f" && !d2)) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi N/df' + (jenis === "f" ? " dan df2" : "") + " dulu (N minimal 3).</div>"; return; }
+    const hit = parseFloat(($("#tbsHitung").value || "").replace(",", "."));
+    const krit = alphas.map((a) => tbsKritis(jenis, d1, d2, a));
+    window._tbsTeks = namaJ + " (" + (jenis === "r" ? "N=" + d1 : jenis === "f" ? "df1=" + d1 + ", df2=" + d2 : "df=" + d1) + "): " + alphas.map((a, i) => fmtA(a) + " = " + fmtN(krit[i], 3)).join("; ");
+    let banding = "";
+    if (isFinite(hit)) banding = '<div class="mt-3 text-[13.5px] leading-relaxed"><p class="font-extrabold">⚖️ Pembanding — nilai hitungmu: ' + fmtN(hit, 3) + "</p>" + alphas.map((a, i) => { const sig = Math.abs(hit) > krit[i]; return "<p>• Pada " + fmtA(a) + ": " + fmtN(Math.abs(hit), 3) + (sig ? " &gt; " : " ≤ ") + fmtN(krit[i], 3) + " → <b class=\"" + (sig ? "text-emerald-600" : "text-rose-600") + "\">" + (sig ? "SIGNIFIKAN ✅" : "Tidak signifikan ❌") + "</b></p>"; }).join("") + '<p class="text-slate-500">Cara membaca: hasil uji signifikan bila nilai hitung (mutlak) lebih besar dari nilai tabel pada taraf α pilihanmu.</p></div>';
+    out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 ' + namaJ + (jenis === "r" ? " untuk N = " + d1 : jenis === "f" ? " untuk df1 = " + d1 + ", df2 = " + d2 : " untuk df = " + d1) + "</p>"
+      + '<table class="w-full text-[13.5px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Taraf α</th>' + alphas.map((a) => '<th class="py-1 pr-3">' + fmtA(a) + "</th>").join("") + "</tr><tr><td class=\"py-1 pr-3 font-semibold\">Nilai kritis</td>" + krit.map((k) => '<td class="py-1 pr-3 font-bold">' + fmtN(k, 3) + "</td>").join("") + "</tr></table>" + banding
+      + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tbsTeks)">📋 Copy Hasil</button></div></div>';
+    return;
+  }
+  const dari = Number($("#tbsDari").value) || 1, sampai = Number($("#tbsSampai").value) || 30, langkah = Math.max(1, Number($("#tbsLangkah").value) || 1), d2r = Number($("#tbsDf2r").value) || Number($("#tbsDf2").value) || 40;
+  const vals = []; for (let v = dari; v <= sampai && vals.length < 100; v += langkah) vals.push(v);
+  const rows = vals.map((v) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + v + "</td>" + alphas.map((a) => '<td class="py-1 pr-3">' + fmtN(tbsKritis(jenis, v, d2r, a), 3) + "</td>").join("") + "</tr>").join("");
+  window._tbsTeks = namaJ + (jenis === "f" ? " (df2=" + d2r + ")" : "") + "\n" + (jenis === "r" ? "N" : "df") + "\t" + alphas.map(fmtA).join("\t") + "\n" + vals.map((v) => v + "\t" + alphas.map((a) => fmtN(tbsKritis(jenis, v, d2r, a), 3)).join("\t")).join("\n");
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 ' + namaJ + (jenis === "f" ? " (df2 tetap = " + d2r + ")" : "") + '</p><div class="overflow-x-auto"><table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">' + (jenis === "r" ? "N" : jenis === "f" ? "df1" : "df") + "</th>" + alphas.map((a) => '<th class="py-1 pr-3">' + fmtA(a) + "</th>").join("") + "</tr>" + rows + "</table></div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._tbsTeks)">📋 Copy Tabel (TSV)</button></div></div>';
+}
+SHARE_GETTERS.tabelstat = function () { return window._tbsTeks ? "Saya menghitung nilai tabel statistik eksak tanpa buku tabel: " + window._tbsTeks.split("\n")[0] + " — dengan MahasiswaTools." : ""; };
+
+/* ---------- 90. UJI MEDIASI (SOBEL) & MODERASI (MRA) ---------- */
+UI.mediasi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua uji lanjutan Bab 4: <b>Sobel Test</b> untuk membuktikan variabel mediasi (perantara) dan <b>MRA</b> untuk variabel moderasi (memperkuat/memperlemah hubungan).</p>'
+    + '<div class="flex gap-2 mb-4"><button id="medTabS" class="\' + BTN + \'" onclick="medPindah(\'s\')">💧 Tab 1 — Sobel Test (Mediasi)</button><button id="medTabM" class="\' + BTN2 + \'" onclick="medPindah(\'m\')">🎚️ Tab 2 — Moderasi (MRA)</button></div>'
+    + '<div id="medBoxS">'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">' + field("Nama Variabel Bebas (X)", '<input id="medLX" class="\' + IN + \'" placeholder="cth: Kualitas Layanan">') + field("Nama Mediator (Z)", '<input id="medLZ" class="\' + IN + \'" placeholder="cth: Kepuasan">') + field("Nama Variabel Terikat (Y)", '<input id="medLY" class="\' + IN + \'" placeholder="cth: Loyalitas">') + "</div>"
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Koefisien jalur a (X → Z)", '<input id="medA" type="number" step="any" class="\' + IN + \'">') + field("Standard Error a (SEa)", '<input id="medSEa" type="number" step="any" class="\' + IN + \'">')
+    + field("Koefisien jalur b (Z → Y)", '<input id="medB" type="number" step="any" class="\' + IN + \'">') + field("Standard Error b (SEb)", '<input id="medSEb" type="number" step="any" class="\' + IN + \'">')
+    + field("Jalur langsung c′ (X → Y, opsional)", '<input id="medCp" type="number" step="any" class="\' + IN + \'" placeholder="untuk menentukan mediasi penuh/parsial">') + "</div>"
+    + '<button class="\' + BTN + \'" onclick="medSobel()">💧 Hitung Sobel Test</button>'
+    + '<details class="mt-4"><summary class="font-bold cursor-pointer text-[14px]">📥 Atau hitung a, b & SE langsung dari data mentah</summary><div class="grid sm:grid-cols-3 gap-x-4 mt-3">'
+    + field("Data X (satu angka per baris)", '<textarea id="medXd" rows="5" class="\' + IN + \'"></textarea>') + field("Data Z (mediator)", '<textarea id="medZd" rows="5" class="\' + IN + \'"></textarea>') + field("Data Y", '<textarea id="medYd" rows="5" class="\' + IN + \'"></textarea>') + '</div><button class="\' + BTN2 + \'" onclick="medDariData()">Hitung Koefisien dari Data</button></details>'
+    + outBox("medOutS") + "</div>"
+    + '<div id="medBoxM" class="hidden">'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Data X", '<textarea id="medXm" rows="5" class="\' + IN + \'"></textarea>') + field("Data M (moderator)", '<textarea id="medMm" rows="5" class="\' + IN + \'"></textarea>') + field("Data Y", '<textarea id="medYm" rows="5" class="\' + IN + \'"></textarea>') + "</div>"
+    + '<p class="text-[13px] text-slate-500 mb-2">X dan M di-centering (dikurangi rata-rata) sebelum membentuk interaksi X×M — praktik standar MRA.</p>'
+    + '<button class="\' + BTN + \'" onclick="medMra()">🎚️ Jalankan Regresi Moderasi</button>'
+    + outBox("medOutM") + "</div></div>";
+};
+function medPindah(w) { $("#medBoxS").classList.toggle("hidden", w !== "s"); $("#medBoxM").classList.toggle("hidden", w !== "m"); $("#medTabS").className = w === "s" ? BTN : BTN2; $("#medTabM").className = w === "m" ? BTN : BTN2; }
+function medPhi(z) { const t = 1 / (1 + 0.2316419 * Math.abs(z)); const d = 0.3989422804014327 * Math.exp(-z * z / 2); const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429)))); return z > 0 ? 1 - p : p; }
+function medP2(z) { return 2 * (1 - medPhi(Math.abs(z))); }
+function medSobel() {
+  const v = (id) => parseFloat((($("#" + id) || {}).value || "").replace(",", "."));
+  const a = v("medA"), sea = v("medSEa"), b = v("medB"), seb = v("medSEb"), cp = v("medCp");
+  const out = $("#medOutS");
+  if (![a, sea, b, seb].every(isFinite) || sea <= 0 || seb <= 0) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi a, SEa, b, dan SEb dengan benar (SE harus > 0) — atau hitung dari data mentah di bawah.</div>'; return; }
+  const ab = a * b;
+  const seS = Math.sqrt(b * b * sea * sea + a * a * seb * seb);
+  const seA = Math.sqrt(b * b * sea * sea + a * a * seb * seb + sea * sea * seb * seb);
+  const seG = Math.sqrt(Math.max(1e-12, b * b * sea * sea + a * a * seb * seb - sea * sea * seb * seb));
+  const zS = ab / seS, zA = ab / seA, zG = ab / seG, p = medP2(zS);
+  const sig = p < 0.05;
+  const LX = ($("#medLX").value || "X").trim() || "X", LZ = ($("#medLZ").value || "Z").trim() || "Z", LY = ($("#medLY").value || "Y").trim() || "Y";
+  const ketCp = isFinite(cp) ? (Math.abs(cp) >= 1.96 * 0 ? "" : "") : "";
+  const narasi = "Hasil uji Sobel menunjukkan efek tidak langsung " + LX + " terhadap " + LY + " melalui " + LZ + " sebesar ab = " + fmtN(ab, 3) + " dengan nilai z = " + fmtN(zS, 3) + " dan p = " + fmtP(p) + ". Karena " + (sig ? "p < 0,05, efek mediasi dinyatakan <b>signifikan</b> — " + LZ + " terbukti berperan sebagai variabel perantara" : "p ≥ 0,05, efek mediasi <b>tidak signifikan</b> — " + LZ + " tidak terbukti memediasi") + " hubungan " + LX + " → " + LY + (isFinite(cp) ? (sig ? (Math.abs(cp) > 0 ? ". Jalur langsung c′ = " + fmtN(cp, 3) + " masih ada setelah mediator dimasukkan, jadi sifatnya <b>mediasi parsial</b> (bila c′ ikut signifikan) — cek nilai p jalur langsung pada output regresimu untuk memastikan." : ".") : ".") : ".");
+  window._medHasil = { ab, zS, p, sig, narasi };
+  const svg = '<svg viewBox="0 0 560 170" class="w-full max-w-xl mx-auto bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-700"><defs><marker id="medArr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#4F46E5"/></marker></defs>'
+    + '<rect x="20" y="65" width="130" height="46" rx="10" fill="#EEF2FF" stroke="#4F46E5" stroke-width="2"/><text x="85" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LX.slice(0, 16)) + '</text>'
+    + '<rect x="215" y="15" width="130" height="46" rx="10" fill="#ECFDF5" stroke="#059669" stroke-width="2"/><text x="280" y="43" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LZ.slice(0, 16)) + '</text>'
+    + '<rect x="410" y="65" width="130" height="46" rx="10" fill="#FFF7ED" stroke="#EA580C" stroke-width="2"/><text x="475" y="93" text-anchor="middle" font-size="13" font-weight="bold" fill="#1E293B">' + esc(LY.slice(0, 16)) + '</text>'
+    + '<line x1="150" y1="70" x2="212" y2="45" stroke="#4F46E5" stroke-width="2.4" marker-end="url(#medArr)"/><text x="168" y="45" font-size="13" font-weight="bold" fill="#4F46E5">a = ' + fmtN(a, 3) + '</text>'
+    + '<line x1="348" y1="45" x2="407" y2="70" stroke="#4F46E5" stroke-width="2.4" marker-end="url(#medArr)"/><text x="352" y="45" font-size="13" font-weight="bold" fill="#4F46E5">b = ' + fmtN(b, 3) + '</text>'
+    + '<line x1="152" y1="95" x2="407" y2="95" stroke="#64748B" stroke-width="2" stroke-dasharray="5 4" marker-end="url(#medArr)"/><text x="280" y="118" text-anchor="middle" font-size="13" fill="#475569">c′ = ' + (isFinite(cp) ? fmtN(cp, 3) : "—") + ' (langsung)</text></svg>';
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">💧 Hasil Sobel Test</p>' + svg
+    + '<table class="w-full text-[13.5px] mt-3"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Varian</th><th class="py-1 pr-3">SE efek tidak langsung</th><th class="py-1 pr-3">z</th><th class="py-1">p (dua arah)</th></tr>'
+    + [["Sobel", seS, zS], ["Aroian", seA, zA], ["Goodman", seG, zG]].map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + r[0] + "</td><td class=\"py-1 pr-3\">" + fmtN(r[1], 4) + "</td><td class=\"py-1 pr-3 font-bold\">" + fmtN(r[2], 3) + "</td><td class=\"py-1\">" + fmtP(medP2(r[2])) + "</td></tr>").join("") + "</table>"
+    + '<p class="mt-2 font-bold ' + (sig ? "text-emerald-600" : "text-rose-600") + '">Efek tidak langsung ab = ' + fmtN(ab, 3) + " → " + (sig ? "MEDIASI SIGNIFIKAN ✅" : "Mediasi tidak signifikan ❌") + "</p>"
+    + '<p class="mt-2 text-[13.5px] leading-relaxed"><b>Narasi Bab 4:</b> ' + narasi + "</p>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText((window._medHasil||{}).narasi || \'\')">📋 Copy Narasi</button></div></div>';
+}
+function medDariData() {
+  const X = parseNums($("#medXd").value || ""), Z = parseNums($("#medZd").value || ""), Y = parseNums($("#medYd").value || "");
+  const out = $("#medOutS");
+  if (X.length < 4 || X.length !== Z.length || X.length !== Y.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Data X, Z, Y harus sama panjang (minimal 4 baris).</div>'; return; }
+  const f1 = olsFit([X], Z), f2 = olsFit([X, Z], Y), f3 = olsFit([X], Y);
+  $("#medA").value = fmtN(f1.beta[1], 4); $("#medSEa").value = fmtN(f1.se[1], 4);
+  $("#medB").value = fmtN(f2.beta[2], 4); $("#medSEb").value = fmtN(f2.se[2], 4);
+  $("#medCp").value = fmtN(f2.beta[1], 4);
+  window._medTotalC = f3.beta[1];
+  medSobel();
+}
+function medMra() {
+  const X = parseNums($("#medXm").value || ""), M = parseNums($("#medMm").value || ""), Y = parseNums($("#medYm").value || "");
+  const out = $("#medOutM");
+  if (X.length < 6 || X.length !== M.length || X.length !== Y.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Data X, M, Y harus sama panjang (minimal 6 baris).</div>'; return; }
+  const mx = mean(X), mm = mean(M);
+  const Xc = X.map((v) => v - mx), Mc = M.map((v) => v - mm), XM = Xc.map((v, i) => v * Mc[i]);
+  const full = olsFit([Xc, Mc, XM], Y), red = olsFit([Xc, Mc], Y);
+  const n = Y.length, dR2 = full.r2 - red.r2;
+  const fChg = dR2 > 0 ? (dR2 / 1) / ((1 - full.r2) / (n - 4)) : 0;
+  const pChg = fChg > 0 ? pDariF(fChg, 1, n - 4) : 1;
+  const nm = ["Konstanta", "X (terpusat)", "M (terpusat)", "Interaksi X×M"];
+  const rows = nm.map((s, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + s + "</td><td class=\"py-1 pr-3\">" + fmtN(full.beta[i], 4) + "</td><td class=\"py-1 pr-3\">" + fmtN(full.se[i], 4) + "</td><td class=\"py-1 pr-3\">" + fmtN(full.t[i], 3) + "</td><td class=\"py-1\">" + fmtP(full.pv[i]) + "</td></tr>").join("");
+  const sigInt = full.pv[3] < 0.05, sigM = full.pv[2] < 0.05;
+  const jenis = sigInt && !sigM ? "Pure Moderator (moderasi murni)" : sigInt && sigM ? "Quasi Moderator (moderasi semu)" : !sigInt && sigM ? "Predictor Moderator (M berperan sebagai prediktor)" : "Homologizer Moderator (potensi moderasi, belum terbukti)";
+  const arah = full.beta[3] > 0 ? "memperkuat" : "memperlemah";
+  const narasi = "Hasil Moderated Regression Analysis (MRA) menunjukkan R² model penuh = " + fmtN(full.r2, 3) + " dengan tambahan ΔR² = " + fmtN(dR2, 3) + " dari interaksi X×M (F perubahan = " + fmtN(fChg, 3) + ", p = " + fmtP(pChg) + "). Koefisien interaksi b = " + fmtN(full.beta[3], 4) + " (p = " + fmtP(full.pv[3]) + ") sehingga M tergolong <b>" + jenis + "</b>" + (sigInt ? " dan " + arah + " hubungan X terhadap Y" : "") + ".";
+  window._mraNarasi = narasi;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🎚️ Hasil MRA — R² penuh ' + fmtN(full.r2, 3) + " • ΔR² interaksi " + fmtN(dR2, 3) + " (p = " + fmtP(pChg) + ")</p>"
+    + '<table class="w-full text-[13.5px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Koefisien</th><th class="py-1 pr-3">b</th><th class="py-1 pr-3">SE</th><th class="py-1 pr-3">t</th><th class="py-1">p</th></tr>' + rows + "</table>"
+    + '<p class="mt-2 font-bold">Klasifikasi: ' + jenis + "</p>"
+    + '<p class="mt-2 text-[13.5px] leading-relaxed"><b>Narasi Bab 4:</b> ' + narasi + "</p>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._mraNarasi || \'\')">📋 Copy Narasi</button></div></div>';
+}
+SHARE_GETTERS.mediasi = function () { const h = window._medHasil; return h ? "Uji mediasi (Sobel) saya: ab = " + fmtN(h.ab, 3) + ", z = " + fmtN(h.zS, 3) + ", p = " + fmtP(h.p) + " (" + (h.sig ? "signifikan" : "tidak signifikan") + ") — dihitung dengan MahasiswaTools." : (window._mraNarasi || ""); };
+
+/* ---------- 92. KALKULATOR SAMPEL EKSPERIMEN (FEDERER) ---------- */
+UI.federer = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Untuk penelitian eksperimen: hitung <b>ulangan minimal per perlakuan</b> dengan rumus Federer <b>(t − 1)(r − 1) ≥ 15</b>, koreksi drop-out, plus pengacak penempatan sampel (RAL/RAK).</p>'
+    + '<div class="grid sm:grid-cols-3 gap-x-4">'
+    + field("Jumlah Perlakuan (t)", '<input id="fedT" type="number" class="\' + IN + \'" value="4">')
+    + field("Target Derajat Bebas Galat", '<input id="fedTarget" type="number" class="\' + IN + \'" value="15">')
+    + field("Perkiraan Drop-out (%)", '<input id="fedDrop" type="number" class="\' + IN + \'" value="10">')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="fedHitung()">🧪 Hitung Ulangan Minimal</button>'
+    + outBox("fedOut")
+    + '<div class="mt-6"><p class="font-extrabold mb-2">🎲 Pengacak Penempatan Sampel</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Mode Rancangan", '<select id="fedMode" class="\' + IN + \'"><option value="ral">RAL — Rancangan Acak Lengkap</option><option value="rak">RAK — Rancangan Acak Kelompok (blok)</option></select>')
+    + field("Jumlah Blok (untuk RAK)", '<input id="fedBlok" type="number" class="\' + IN + \'" value="6">')
+    + "</div>"
+    + field("Label Unit Sampel (satu per baris — kosongkan untuk nomor otomatis)", '<textarea id="fedUnit" rows="5" class="\' + IN + \'" placeholder="Tikus-01&#10;Tikus-02&#10;Tikus-03"></textarea>')
+    + '<button class="\' + BTN2 + \'" onclick="fedAcak()">🎲 Acak Penempatan</button>'
+    + outBox("fedAcakOut") + "</div></div>";
+};
+function fedHitung() {
+  const t = Math.max(2, Number($("#fedT").value) || 2), target = Math.max(1, Number($("#fedTarget").value) || 15), drop = Math.min(95, Math.max(0, Number($("#fedDrop").value) || 0));
+  const r = Math.ceil(target / (t - 1)) + 1, db = (t - 1) * (r - 1), N = t * r;
+  const rAdj = Math.ceil(r / (1 - drop / 100)), Nadj = t * rAdj;
+  window._fedHasil = { t, r, N, rAdj, Nadj, db };
+  const rows = [0, 1, 2, 3].map((k) => { const rr = r + k; return "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + rr + "</td><td class=\"py-1 pr-3\">" + ((t - 1) * (rr - 1)) + "</td><td class=\"py-1\">" + (t * rr) + "</td></tr>"; }).join("");
+  $("#fedOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🧪 Hasil Rumus Federer</p>'
+    + '<p class="text-[14px] leading-relaxed">Dengan t = ' + t + ' perlakuan: ulangan minimal <b class="text-lg">r = ' + r + '</b> (derajat bebas galat (' + t + ' − 1)(' + r + ' − 1) = <b>' + db + '</b> ≥ ' + target + ' ✅). Total sampel minimal <b>N = ' + N + '</b>. Dengan antisipasi drop-out ' + drop + '%: naikkan menjadi <b>r = ' + rAdj + '</b> per kelompok → <b>N total = ' + Nadj + '</b>.</p>'
+    + '<table class="w-full text-[13px] mt-2 max-w-md"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Ulangan (r)</th><th class="py-1 pr-3">db Galat</th><th class="py-1">N Total</th></tr>' + rows + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">Rumus koreksi drop-out: r\' = r / (1 − d). Cantumkan r final (setelah koreksi) di Bab 3 sebagai jumlah sampel per kelompok.</p></div>';
+}
+function fedAcak() {
+  const t = Math.max(2, Number($("#fedT").value) || 2), mode = $("#fedMode").value, blok = Math.max(1, Number($("#fedBlok").value) || 1);
+  let labels = ($("#fedUnit").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#fedAcakOut");
+  const acakArr = (arr) => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  let html = "", teks = "";
+  if (mode === "ral") {
+    if (!labels.length) { const N = (window._fedHasil && window._fedHasil.t === t) ? window._fedHasil.Nadj : t * 6; labels = Array.from({ length: N }, (_, i) => "Unit-" + (i + 1)); }
+    const acak = acakArr(labels), grup = Array.from({ length: t }, () => []);
+    acak.forEach((u, i) => grup[i % t].push(u));
+    html = '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Kelompok</th><th class="py-1">Unit Sampel</th></tr>' + grup.map((g, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">P" + (i + 1) + " (" + g.length + " unit)</td><td class=\"py-1\">" + g.map(esc).join(", ") + "</td></tr>").join("") + "</table>";
+    teks = grup.map((g, i) => "P" + (i + 1) + ": " + g.join(", ")).join("\n");
+  } else {
+    const need = blok * t;
+    if (labels.length < need) labels = labels.concat(Array.from({ length: need - labels.length }, (_, i) => "Unit-" + (labels.length + i + 1)));
+    labels = labels.slice(0, need);
+    const rowsB = [];
+    for (let b = 0; b < blok; b++) { const chunk = acakArr(labels.slice(b * t, b * t + t)); rowsB.push("<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">Blok " + (b + 1) + "</td>" + chunk.map((u, i) => "<td class=\"py-1 pr-3\">P" + (i + 1) + ": " + esc(u) + "</td>").join("") + "</tr>"); }
+    html = '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Blok</th>' + Array.from({ length: t }, (_, i) => '<th class="py-1 pr-3">Perlakuan ' + (i + 1) + "</th>").join("") + "</tr>" + rowsB.join("") + "</table>";
+    teks = rowsB.map((r) => r.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim()).join("\n");
+  }
+  window._fedAcakTeks = (mode === "ral" ? "RAL" : "RAK") + " — t=" + t + "\n" + teks;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🎲 Hasil Pengacakan (' + (mode === "ral" ? "RAL" : "RAK") + ')</p><div class="overflow-x-auto">' + html + '</div><div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._fedAcakTeks || \'\')">📋 Copy Hasil Acak</button></div></div>';
+}
+SHARE_GETTERS.federer = function () { const h = window._fedHasil; return h ? "Rancangan eksperimen saya (Federer): " + h.t + " perlakuan × " + h.rAdj + " ulangan = " + h.Nadj + " sampel total — dihitung dengan MahasiswaTools." : ""; };
+
+/* ---------- 93. KONVERTER SITASI BIBTEX / RIS ---------- */
+UI.bibtex = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Ubah file sitasi <b>BibTeX (.bib)</b> atau <b>RIS (.ris)</b> dari Mendeley/Zotero/Google Scholar menjadi daftar pustaka terformat (APA 7, IEEE, Vancouver) — atau sebaliknya — tanpa instal software.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Format Sumber", '<select id="bibMode" class="\' + IN + \'"><option value="auto">Otomatis (deteksi)</option><option value="bib">BibTeX (.bib)</option><option value="ris">RIS (.ris)</option></select>')
+    + field("Gaya Daftar Pustaka", '<select id="bibGaya" class="\' + IN + \'"><option value="apa">APA 7</option><option value="ieee">IEEE</option><option value="vancouver">Vancouver</option></select>')
+    + "</div>"
+    + field("Isi File / Teks Sitasi", '<textarea id="bibIn" rows="9" class="\' + IN + \' !text-[12px]" style="font-family:monospace">@article{pranata2024,\n  author = {Pranata, Detta and Sari, Maya},\n  title = {Pengaruh Kualitas Layanan terhadap Kepuasan Pengguna},\n  journal = {Jurnal Ilmu Ekonomi},\n  year = {2024},\n  volume = {12},\n  number = {2},\n  pages = {101--115},\n  doi = {10.1234/jie.2024.101}\n}</textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-1"><button class="\' + BTN + \'" onclick="bibKonversi()">🔄 Konversi ke Daftar Pustaka</button><button class="\' + BTN2 + \'" onclick="bibKeBib()">⬇️ Unduh .bib</button><button class="\' + BTN2 + \'" onclick="bibKeRis()">⬇️ Unduh .ris</button></div>'
+    + outBox("bibOut") + "</div>";
+};
+function bibParsePenulis(s) {
+  return (s || "").split(/\s+and\s+/i).map((x) => x.trim()).filter(Boolean).map((x) => {
+    let last = "", given = "";
+    if (x.includes(",")) { const p = x.split(","); last = p[0].trim(); given = (p[1] || "").trim(); }
+    else { const t = x.split(/\s+/); last = t[t.length - 1]; given = t.slice(0, -1).join(" "); }
+    const inisial = given.split(/[\s.]+/).filter(Boolean).map((w) => w[0].toUpperCase()).join("");
+    return { last, given, inisial };
+  });
+}
+function bibEntries() {
+  const text = $("#bibIn").value || "";
+  let mode = $("#bibMode").value;
+  if (mode === "auto") mode = /^\s*TY\s{2}-/m.test(text) || /\nER\s{2}-/.test(text) ? "ris" : "bib";
+  const out = [];
+  if (mode === "ris") {
+    let cur = null;
+    text.split(/\r?\n/).forEach((ln) => {
+      const m = /^([A-Z][A-Z0-9])\s{2}-\s?(.*)$/.exec(ln);
+      if (!m) return;
+      const tag = m[1], val = m[2].trim();
+      if (tag === "TY") cur = { type: val, authors: [] };
+      else if (tag === "ER") { if (cur) out.push(cur); cur = null; }
+      else if (cur) {
+        if (tag === "AU") cur.authors.push(...bibParsePenulis(val));
+        else if (tag === "TI" || tag === "T1") cur.title = val;
+        else if (tag === "JO" || tag === "JF") cur.journal = val;
+        else if (tag === "T2" && !cur.journal) cur.journal = val;
+        else if (tag === "Y1" || tag === "PY") cur.year = (val.match(/\d{4}/) || [""])[0];
+        else if (tag === "VL") cur.volume = val;
+        else if (tag === "IS") cur.number = val;
+        else if (tag === "SP") cur.p1 = val;
+        else if (tag === "EP") cur.p2 = val;
+        else if (tag === "DO") cur.doi = val;
+        else if (tag === "PB") cur.publisher = val;
+      }
+    });
+    out.forEach((e) => { e.pages = e.p1 ? e.p1 + (e.p2 ? "–" + e.p2 : "") : ""; });
+    return out;
+  }
+  text.split(/(?=@\w+\s*\{)/).forEach((chunk) => {
+    const head = /@(\w+)\s*\{\s*([^,]+),/.exec(chunk);
+    if (!head) return;
+    const e = { type: head[1].toLowerCase(), authors: [] };
+    const re = /(\w+)\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}|(\w+)\s*=\s*"([^"]*)"/g; let m;
+    while ((m = re.exec(chunk))) {
+      const key = (m[1] || m[3] || "").toLowerCase(), val = (m[2] !== undefined && m[2] !== "" ? m[2] : m[4] || "").replace(/[{}]/g, "").replace(/\s+/g, " ").trim();
+      if (key === "author") e.authors = bibParsePenulis(val);
+      else if (key === "title") e.title = val;
+      else if (key === "journal" || key === "booktitle") e.journal = val;
+      else if (key === "year") e.year = val;
+      else if (key === "volume") e.volume = val;
+      else if (key === "number") e.number = val;
+      else if (key === "pages") e.pages = val.replace(/--/g, "–");
+      else if (key === "doi") e.doi = val;
+      else if (key === "publisher") e.publisher = val;
+    }
+    out.push(e);
+  });
+  return out;
+}
+function bibFormat(e, gaya) {
+  const A = e.authors || [];
+  const th = e.year || "n.d.";
+  if (gaya === "ieee") {
+    const au = A.length > 3 ? (A[0].inisial.split("").join(". ") + ". " + A[0].last + " et al.") : A.map((a) => a.inisial.split("").join(". ") + ". " + a.last).join(", ");
+    return au + ", \"" + (e.title || "") + ",\" " + (e.journal || "") + (e.volume ? ", vol. " + e.volume : "") + (e.number ? ", no. " + e.number : "") + (e.pages ? ", pp. " + e.pages : "") + ", " + th + ".";
+  }
+  if (gaya === "vancouver") {
+    const au = A.map((a) => a.last + " " + a.inisial).join(", ");
+    return au + ". " + (e.title || "") + ". " + (e.journal || "") + ". " + th + (e.volume ? ";" + e.volume : "") + (e.number ? "(" + e.number + ")" : "") + (e.pages ? ":" + e.pages : "") + ".";
+  }
+  const au = A.map((a) => a.last + ", " + a.inisial.split("").join(". ") + ".").join(", ").replace(/, ([^,]*)$/, ", &$1");
+  return au + " (" + th + "). " + (e.title || "") + ". " + (e.journal || "") + (e.volume ? ", " + e.volume : "") + (e.number ? "(" + e.number + ")" : "") + (e.pages ? ", " + e.pages : "") + "." + (e.doi ? " https://doi.org/" + e.doi : "");
+}
+function bibKonversi() {
+  const entries = bibEntries(), gaya = $("#bibGaya").value, out = $("#bibOut");
+  if (!entries.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada entri terbaca. Pastikan format BibTeX (@article{...}) atau RIS (TY  - ... ER  -) benar.</div>'; return; }
+  const teks = entries.map((e) => bibFormat(e, gaya)).join("\n");
+  window._bibTeks = teks; window._bibEntries = entries;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📚 ' + entries.length + ' Entri — Gaya ' + ({ apa: "APA 7", ieee: "IEEE", vancouver: "Vancouver" })[gaya] + '</p><ol class="list-decimal ml-5 space-y-2 text-[13.5px] leading-relaxed">' + entries.map((e) => "<li>" + esc(bibFormat(e, gaya)) + "</li>").join("") + '</ol><div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="download(\'Daftar_Pustaka_Konversi.txt\', window._bibTeks || \'\')">⬇️ Unduh .txt</button><button class="\' + BTN2 + \'" onclick="copyText(window._bibTeks || \'\')">📋 Copy Semua</button></div></div>';
+}
+function bibKeBib() {
+  const entries = window._bibEntries || bibEntries();
+  if (!entries.length) { toast("Konversi dulu entrinya 📚"); return; }
+  const t = entries.map((e, i) => {
+    const key = ((e.authors[0] || {}).last || "ref").toLowerCase().replace(/\s+/g, "") + (e.year || "") + (i ? i : "");
+    const f = [["author", e.authors.map((a) => a.last + ", " + a.given).join(" and ")], ["title", e.title], ["journal", e.journal], ["year", e.year], ["volume", e.volume], ["number", e.number], ["pages", (e.pages || "").replace(/–/g, "--")], ["doi", e.doi], ["publisher", e.publisher]].filter((x) => x[1]);
+    return "@" + (e.type && e.type !== "JOUR" ? e.type : "article") + "{" + key + ",\n" + f.map((x) => "  " + x[0] + " = {" + x[1] + "}").join(",\n") + "\n}";
+  }).join("\n\n");
+  download("sitasi_konversi.bib", t, "text/plain");
+}
+function bibKeRis() {
+  const entries = window._bibEntries || bibEntries();
+  if (!entries.length) { toast("Konversi dulu entrinya 📚"); return; }
+  const t = entries.map((e) => {
+    const L = ["TY  - JOUR"];
+    e.authors.forEach((a) => L.push("AU  - " + a.last + ", " + a.given));
+    if (e.title) L.push("TI  - " + e.title);
+    if (e.journal) L.push("JO  - " + e.journal);
+    if (e.year) L.push("Y1  - " + e.year);
+    if (e.volume) L.push("VL  - " + e.volume);
+    if (e.number) L.push("IS  - " + e.number);
+    if (e.pages) { const pp = e.pages.split("–"); L.push("SP  - " + pp[0]); if (pp[1]) L.push("EP  - " + pp[1]); }
+    if (e.doi) L.push("DO  - " + e.doi);
+    if (e.publisher) L.push("PB  - " + e.publisher);
+    L.push("ER  - ");
+    return L.join("\n");
+  }).join("\n\n");
+  download("sitasi_konversi.ris", t, "text/plain");
+}
+SHARE_GETTERS.bibtex = function () { return "Saya mengonversi " + (window._bibEntries || []).length + " sitasi antar-format (BibTeX/RIS/APA/IEEE/Vancouver) langsung di browser dengan MahasiswaTools."; };
+
+/* ---------- 94. PEMBUAT POSTER ILMIAH ---------- */
+const POS_TEMA = [
+  { n: "Indigo Akademik", head: "#4F46E5", dark: "#312E81", soft: "#EEF2FF" },
+  { n: "Zamrud", head: "#059669", dark: "#065F46", soft: "#ECFDF5" },
+  { n: "Marun Klasik", head: "#991B1B", dark: "#7F1D1D", soft: "#FEF2F2" },
+  { n: "Slate Modern", head: "#334155", dark: "#0F172A", soft: "#F1F5F9" }
+];
+UI.poster = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Poster ilmiah siap cetak (kanvas resolusi tinggi ±200 dpi) untuk seminar, PKM, dan konferensi: kop logo institusi, abstrak, metodologi, temuan, kesimpulan, dan QR code otomatis di pojok bawah.</p>'
+    + field("Judul Poster", '<input id="posJudul" class="\' + IN + \'" placeholder="Judul penelitian / pengabdian">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Penulis", '<input id="posPenulis" class="\' + IN + \'" placeholder="Nama penulis 1, penulis 2, ...">')
+    + field("Institusi", '<input id="posInst" class="\' + IN + \'" placeholder="Universitas / Program Studi">')
+    + field("Tema Warna", '<select id="posTema" class="\' + IN + \'">' + POS_TEMA.map((t, i) => '<option value="' + i + '">' + t.n + "</option>").join("") + "</select>")
+    + field("Orientasi", '<select id="posOrientasi" class="\' + IN + \'"><option value="p">Potret (poster berdiri)</option><option value="l">Lanskap</option></select>')
+    + "</div>"
+    + field("Abstrak", '<textarea id="posAbstrak" rows="3" class="\' + IN + \'"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Metodologi", '<textarea id="posMetode" rows="4" class="\' + IN + \'"></textarea>')
+    + field("Temuan Utama (satu per baris, jadi poin)", '<textarea id="posTemuan" rows="4" class="\' + IN + \'"></textarea>')
+    + "</div>"
+    + field("Kesimpulan", '<textarea id="posKesimpulan" rows="2" class="\' + IN + \'"></textarea>')
+    + field("Teks / Link untuk QR Code (pojok bawah)", '<input id="posQr" class="\' + IN + \'" placeholder="cth: https://linktr.ee/penelitianku">')
+    + '<canvas id="posCv" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white"></canvas>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="posUnduh()">⬇️ Download Poster (PNG Resolusi Tinggi)</button></div></div>';
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(posGambar, 300); });
+  el.addEventListener("change", posGambar);
+  posGambar();
+  loadLib("https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js", "qrcode").then(() => posGambar());
+};
+function posWrap(x, text, maxW) {
+  const words = (text || "").split(/\s+/).filter(Boolean); const lines = []; let cur = "";
+  words.forEach((w) => { const coba = cur ? cur + " " + w : w; if (x.measureText(coba).width > maxW && cur) { lines.push(cur); cur = w; } else cur = coba; });
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [""];
+}
+function posSeksi(x, px, py, pw, judul, isi, tema, fs, lh) {
+  x.fillStyle = tema.soft; x.beginPath(); x.roundRect(px, py, pw, 10, 18); x.fill();
+  x.fillStyle = tema.head; x.beginPath(); x.roundRect(px, py, pw, 64, 18); x.fill(); x.fillRect(px, py + 40, pw, 24);
+  x.fillStyle = "#FFFFFF"; x.font = "800 34px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
+  x.fillText(judul.toUpperCase(), px + 28, py + 43);
+  x.fillStyle = "#1E293B"; x.font = "400 " + fs + "px 'Plus Jakarta Sans', sans-serif";
+  let ly = py + 64 + lh;
+  const poin = isi.includes("\n");
+  isi.split(/\n/).forEach((par) => {
+    posWrap(x, (poin ? "• " : "") + par.trim(), pw - 56).forEach((ln) => { x.fillText(ln, px + 28, ly); ly += lh; });
+  });
+  return ly - py + 18;
+}
+function posGambar() {
+  const cv = $("#posCv"); if (!cv) return;
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const tema = POS_TEMA[Number(g("posTema")) || 0];
+  const potret = (g("posOrientasi") || "p") !== "l";
+  const W = potret ? 2000 : 2828, H = potret ? 2828 : 2000;
+  cv.width = W; cv.height = H;
+  const x = cv.getContext("2d");
+  x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
+  const M = 90;
+  x.fillStyle = tema.head; x.fillRect(0, 0, W, 350);
+  x.fillStyle = tema.dark; x.fillRect(0, 350, W, 14);
+  const logo = (typeof getLogoData === "function") ? getLogoData() : "";
+  let tx = M;
+  if (logo) {
+    x.fillStyle = "#FFFFFF"; x.beginPath(); x.roundRect(M, 62, 300, 226, 16); x.fill();
+    const img = new Image();
+    img.onload = () => { if ($("#posCv")) posGambar(); };
+    img.src = logo;
+    if (img.complete && img.naturalWidth) { const s = Math.min(260 / img.naturalWidth, 190 / img.naturalHeight); x.drawImage(img, M + (300 - img.naturalWidth * s) / 2, 62 + (226 - img.naturalHeight * s) / 2, img.naturalWidth * s, img.naturalHeight * s); }
+    tx = M + 340;
+  }
+  x.fillStyle = "#FFFFFF"; x.textAlign = "left";
+  let fs = 82; let lines = [];
+  do { x.font = "800 " + fs + "px 'Plus Jakarta Sans', sans-serif"; lines = posWrap(x, g("posJudul") || "Judul Poster Ilmiah Kamu", W - tx - M); fs -= 6; } while (lines.length > 3 && fs > 44);
+  lines.forEach((ln, i) => x.fillText(ln, tx, 138 + i * (fs + 16)));
+  x.font = "600 42px 'Plus Jakarta Sans', sans-serif"; x.fillStyle = "rgba(255,255,255,.92)";
+  x.fillText(g("posPenulis") || "Nama Penulis", tx, 138 + lines.length * (fs + 16) + 32);
+  x.font = "400 38px 'Plus Jakarta Sans', sans-serif";
+  x.fillText(g("posInst") || "Institusi", tx, 138 + lines.length * (fs + 16) + 88);
+  let y = 350 + 56;
+  const bodyFs = potret ? 37 : 34, lh = Math.round(bodyFs * 1.5);
+  y += posSeksi(x, M, y, W - 2 * M, "Abstrak", g("posAbstrak") || "(Isi abstrakmu di formulir atas — poster langsung ter-update.)", tema, bodyFs, lh) + 36;
+  const colW = (W - 2 * M - 36) / 2;
+  const h1 = posSeksi(x, M, y, colW, "Metodologi", g("posMetode") || "(Metode penelitian)", tema, bodyFs, lh);
+  const h2 = posSeksi(x, M + colW + 36, y, colW, "Temuan Utama", g("posTemuan") || "Temuan 1\nTemuan 2", tema, bodyFs, lh);
+  y += Math.max(h1, h2) + 36;
+  const sisaY = H - 300;
+  if (y < sisaY) y += posSeksi(x, M, y, W - 2 * M, "Kesimpulan", g("posKesimpulan") || "(Kesimpulan)", tema, bodyFs, lh);
+  x.fillStyle = "#64748B"; x.font = "600 32px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
+  x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", M, H - 56);
+  const qrTeks = g("posQr");
+  if (qrTeks && typeof qrcode !== "undefined") {
+    try {
+      const qr = qrcode(0, "M"); qr.addData(qrTeks); qr.make();
+      const n = qr.getModuleCount(), box = 250, cell = box / n, qx = W - M - box, qy = H - 300;
+      x.fillStyle = "#FFFFFF"; x.fillRect(qx - 8, qy - 8, box + 16, box + 16);
+      x.fillStyle = "#0F172A";
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) x.fillRect(qx + c * cell, qy + r * cell, cell + 0.6, cell + 0.6);
+      x.font = "600 26px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "center"; x.fillStyle = "#64748B";
+      x.fillText("Pindai untuk detail", qx + box / 2, qy + box + 34);
+    } catch (e) {}
+  }
+}
+function posUnduh() { const cv = $("#posCv"); if (cv) cv.toBlob((b) => { if (b) download("Poster_Ilmiah.png", b); }, "image/png"); }
+SHARE_GETTERS.poster = function () { return "Poster ilmiah untuk seminar/PKM saya sudah jadi (resolusi tinggi, lengkap dengan QR) — dibuat dengan Pembuat Poster Ilmiah MahasiswaTools."; };
+
+/* ---------- 97. PEER-ASSESSMENT & KONTRIBUSI KELOMPOK ---------- */
+UI.peerassess = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Nilai antar-anggota kelompok secara adil dan buktikan siapa yang benar-benar bekerja: matriks penilaian 4 kriteria menghasilkan <b>bobot kontribusi (%)</b> tiap anggota — siap dilampirkan ke dosen, anti free-rider.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Anggota Kelompok (satu nama per baris)", '<textarea id="perAnggota" rows="4" class="\' + IN + \'">Andi\nBudi\nCitra\nDewi</textarea>')
+    + field("Nilai Kelompok dari Dosen (0–100)", '<input id="perNilai" type="number" class="\' + IN + \'" value="85">')
+    + "</div>"
+    + '<p class="font-bold text-[13.5px] mb-1">Bobot Kriteria (%)</p><div class="grid grid-cols-4 gap-3 mb-3">'
+    + field("Inisiatif", '<input id="perB1" type="number" class="\' + IN + \'" value="25">') + field("Tepat Waktu", '<input id="perB2" type="number" class="\' + IN + \'" value="25">') + field("Kualitas Kerja", '<input id="perB3" type="number" class="\' + IN + \'" value="30">') + field("Kehadiran Rapat", '<input id="perB4" type="number" class="\' + IN + \'" value="20">')
+    + "</div>"
+    + '<button class="\' + BTN2 + \'" onclick="perTemplate()">🧾 Buat Template Matriks Penilaian</button>'
+    + field("Matriks Penilaian — format per baris: Penilai; Dinilai; Inisiatif; Tepat Waktu; Kualitas; Kehadiran (skor 1–5)", '<textarea id="perMatriks" rows="8" class="\' + IN + \' !text-[12.5px]" placeholder="Klik tombol template di atas, lalu ubah skornya"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="perHitung()">⚖️ Hitung Kontribusi</button>'
+    + outBox("perOut") + "</div>";
+};
+function perAnggotaList() { return ($("#perAnggota").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean); }
+function perTemplate() {
+  const A = perAnggotaList();
+  if (A.length < 2) { toast("Isi minimal 2 anggota 👥"); return; }
+  const L = [];
+  A.forEach((p) => A.forEach((d) => { if (p !== d) L.push(p + "; " + d + "; 4; 4; 4; 4"); }));
+  $("#perMatriks").value = L.join("\n");
+  toast("Template " + L.length + " baris dibuat — ubah skornya lalu Hitung ⚖️");
+}
+function perHitung() {
+  const A = perAnggotaList(), out = $("#perOut");
+  if (A.length < 2) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi minimal 2 anggota.</div>'; return; }
+  const bobot = [1, 2, 3, 4].map((i) => Number($("#perB" + i).value) || 0);
+  const totB = bobot.reduce((a, b) => a + b, 0) || 1;
+  const w = bobot.map((b) => b / totB);
+  const skor = {}; A.forEach((a) => skor[a] = [[], [], [], []]);
+  let asing = 0;
+  ($("#perMatriks").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean).forEach((ln) => {
+    const p = ln.split(";").map((s) => s.trim());
+    if (p.length < 6 || !skor[p[1]] || p[0] === p[1]) { asing++; return; }
+    for (let k = 0; k < 4; k++) { const v = parseFloat((p[2 + k] || "").replace(",", ".")); if (isFinite(v)) skor[p[1]][k].push(Math.min(5, Math.max(1, v))); }
+  });
+  const hasil = A.map((a) => {
+    let s = 0, ada = false;
+    for (let k = 0; k < 4; k++) { if (skor[a][k].length) { ada = true; s += w[k] * mean(skor[a][k]); } }
+    return { nama: a, skor: ada ? s : 0, ada };
+  });
+  const totSkor = hasil.reduce((x, h) => x + h.skor, 0);
+  const adil = 100 / A.length, nKel = Number($("#perNilai").value) || 0;
+  hasil.forEach((h) => { h.persen = totSkor ? h.skor / totSkor * 100 : 0; h.rasio = h.persen / adil; h.nilai = Math.min(100, Math.round(nKel * h.rasio)); h.status = !h.ada ? "Belum dinilai" : h.rasio >= 0.95 ? "✅ Kontributor baik" : h.rasio >= 0.8 ? "🟡 Di bawah rata-rata" : "⚠️ Indikasi free-rider"; });
+  hasil.sort((a, b) => b.persen - a.persen);
+  window._perHasil = hasil;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">⚖️ Hasil Peer-Assessment (porsi adil = ' + fmtN(adil, 1) + '% per orang)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Anggota</th><th class="py-1 pr-3">Skor (0–5)</th><th class="py-1 pr-3">Kontribusi</th><th class="py-1 pr-3">Rasio vs Adil</th><th class="py-1 pr-3">Nilai Individu*</th><th class="py-1">Status</th></tr>'
+    + hasil.map((h) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + esc(h.nama) + "</td><td class=\"py-1 pr-3\">" + fmtN(h.skor, 2) + "</td><td class=\"py-1 pr-3 font-bold\">" + fmtN(h.persen, 1) + "%</td><td class=\"py-1 pr-3\">" + fmtN(h.rasio, 2) + "×</td><td class=\"py-1 pr-3 font-bold\">" + h.nilai + "</td><td class=\"py-1\">" + h.status + "</td></tr>").join("") + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">*Nilai individu = nilai kelompok (' + nKel + ') × rasio kontribusi, dibatasi maksimal 100. ' + (asing ? asing + " baris matriks dilewati (format/nama tidak cocok)." : "") + '</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="perUnduhDoc()">⬇️ Download .doc (Lampiran Dosen)</button></div></div>';
+}
+function perUnduhDoc() {
+  const h = window._perHasil || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th>Anggota</th><th>Skor Rata-rata (0–5)</th><th>Kontribusi (%)</th><th>Rasio vs Porsi Adil</th><th>Nilai Individu</th><th>Keterangan</th></tr>'
+    + h.map((x) => "<tr><td>" + esc(x.nama) + "</td><td>" + fmtN(x.skor, 2) + "</td><td>" + fmtN(x.persen, 1) + "%</td><td>" + fmtN(x.rasio, 2) + "×</td><td>" + x.nilai + "</td><td>" + x.status.replace(/✅|🟡|⚠️/g, "").trim() + "</td></tr>").join("") + "</table>";
+  download("Peer_Assessment_Kelompok.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<h3>Hasil Peer-Assessment & Kontribusi Kelompok</h3><p>Penilaian antar-anggota berdasarkan kriteria inisiatif, ketepatan waktu, kualitas kerja, dan kehadiran rapat (skala 1–5). Kontribusi dihitung dari skor tertimbang relatif terhadap porsi adil " + fmtN(100 / (h.length || 1), 1) + "% per anggota.</p>" + tabel + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.peerassess = function () { const h = window._perHasil; return h && h.length ? "Kontribusi kelompok kami terhitung adil: tertinggi " + h[0].nama + " (" + fmtN(h[0].persen, 1) + "%), terendah " + h[h.length - 1].nama + " (" + fmtN(h[h.length - 1].persen, 1) + "%) — via Peer-Assessment MahasiswaTools." : ""; };
+
+/* ---------- 98. SPLITTER TAGIHAN KOS PRO-RATA ---------- */
+UI.prorata = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Bagi tagihan kos/kontrakan <b>seadil harinya</b>: penghuni yang mudik atau masuk tengah bulan hanya membayar hari huninya, dan listrik ditimbang menurut beban alat elektronik tiap kamar.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Periode Mulai", '<input id="proDari" type="date" class="\' + IN + \'" value="2026-10-01">')
+    + field("Periode Selesai", '<input id="proSampai" type="date" class="\' + IN + \'" value="2026-10-31">')
+    + field("Tagihan Listrik (Rp)", '<input id="proListrik" type="number" class="\' + IN + \'" placeholder="0">')
+    + field("Tagihan WiFi (Rp)", '<input id="proWifi" type="number" class="\' + IN + \'" placeholder="0">')
+    + field("Tagihan Air (Rp)", '<input id="proAir" type="number" class="\' + IN + \'" placeholder="0">')
+    + "</div>"
+    + field("Penghuni — format: Nama | Tanggal Masuk | Tanggal Keluar (boleh kosong) | Bobot Alat (boleh kosong, default 1)", '<textarea id="proPenghuni" rows="4" class="\' + IN + \'">Andi | 2026-10-01 |  | 1.5\nBudi | 2026-10-01 | 2026-10-20 | 1\nCitra | 2026-10-16 |  | 0.8</textarea>')
+    + '<button class="\' + BTN + \'" onclick="proHitung()">🧾 Hitung Pembagian</button>'
+    + outBox("proOut") + "</div>";
+};
+function proHitung() {
+  const out = $("#proOut");
+  const dari = new Date(($("#proDari").value || "") + "T00:00:00"), sampai = new Date(($("#proSampai").value || "") + "T00:00:00");
+  const tg = { listrik: Number($("#proListrik").value) || 0, wifi: Number($("#proWifi").value) || 0, air: Number($("#proAir").value) || 0 };
+  if (isNaN(dari) || isNaN(sampai) || sampai < dari) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Periode tanggal tidak valid.</div>'; return; }
+  const HARI = 86400000;
+  const orang = ($("#proPenghuni").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean).map((ln) => {
+    const p = ln.split("|").map((s) => s.trim());
+    let masuk = p[1] ? new Date(p[1] + "T00:00:00") : dari;
+    let keluar = p[2] ? new Date(p[2] + "T00:00:00") : sampai;
+    if (isNaN(masuk)) masuk = dari; if (isNaN(keluar)) keluar = sampai;
+    const m2 = new Date(Math.max(masuk, dari)), k2 = new Date(Math.min(keluar, sampai));
+    const hari = k2 >= m2 ? Math.round((k2 - m2) / HARI) + 1 : 0;
+    return { nama: p[0] || "-", hari, bobot: parseFloat((p[3] || "1").replace(",", ".")) || 1 };
+  }).filter((o) => o.hari > 0);
+  if (!orang.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada penghuni dengan hari huni valid di periode ini.</div>'; return; }
+  const basH = orang.reduce((a, o) => a + o.hari, 0), basL = orang.reduce((a, o) => a + o.hari * o.bobot, 0);
+  orang.forEach((o) => {
+    o.listrik = basL ? Math.round(tg.listrik * (o.hari * o.bobot) / basL) : 0;
+    o.wifi = basH ? Math.round(tg.wifi * o.hari / basH) : 0;
+    o.air = basH ? Math.round(tg.air * o.hari / basH) : 0;
+    o.total = o.listrik + o.wifi + o.air;
+  });
+  const totBayar = orang.reduce((a, o) => a + o.total, 0), totTagihan = tg.listrik + tg.wifi + tg.air;
+  window._proTeks = "Pembagian tagihan kos (" + $("#proDari").value + " s.d. " + $("#proSampai").value + "):\n" + orang.map((o) => "• " + o.nama + " (" + o.hari + " hari): " + fmtRp(o.total) + " — listrik " + fmtRp(o.listrik) + ", WiFi " + fmtRp(o.wifi) + ", air " + fmtRp(o.air)).join("\n") + "\nTotal terkumpul: " + fmtRp(totBayar);
+  window._proTotal = totBayar;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🧾 Hasil Pembagian Pro-Rata (' + fmtN((sampai - dari) / HARI + 1, 0) + ' hari periode)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Penghuni</th><th class="py-1 pr-3">Hari</th><th class="py-1 pr-3">Listrik</th><th class="py-1 pr-3">WiFi</th><th class="py-1 pr-3">Air</th><th class="py-1">Total</th></tr>'
+    + orang.map((o) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + esc(o.nama) + "</td><td class=\"py-1 pr-3\">" + o.hari + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.listrik) + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.wifi) + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.air) + "</td><td class=\"py-1 font-bold\">" + fmtRp(o.total) + "</td></tr>").join("") + "</table>"
+    + '<p class="text-[13px] mt-2">Total terkumpul <b>' + fmtRp(totBayar) + '</b> dari tagihan ' + fmtRp(totTagihan) + (Math.abs(totBayar - totTagihan) > orang.length ? ' (selisih pembulatan ' + fmtRp(Math.abs(totBayar - totTagihan)) + ")" : " — pas ✅") + '. Listrik ditimbang hari × bobot alat; WiFi & air ditimbang hari huni.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._proTeks || \'\')">📋 Copy Ringkasan (untuk grup WA kos)</button></div></div>';
+}
+SHARE_GETTERS.prorata = function () { return window._proTeks ? "Tagihan kos bulan ini terbagi adil pro-rata hari huni — total " + fmtRp(window._proTotal || 0) + ". Dihitung dengan Splitter Tagihan Kos MahasiswaTools." : ""; };
+
 /* ============================================================
    ROUTER — deep-link hash & mode halaman tool (SEO)
    ============================================================ */
@@ -6135,14 +6897,27 @@ function mtBootRouter() {
     return;
   }
   renderRecent(); syncViewBtns();
+  renderTabs(); renderGrid();
   if (location.hash && location.hash.length > 1) {
     const id = location.hash.slice(1);
     if (TOOLS.some((x) => x.id === id)) { try { openTool(id); } catch (e) {} }
   }
-  // Prefetch partisi kategori di latar belakang — muat awal tetap ringan,
-  // dan tool umumnya sudah siap sebelum sempat diklik.
-  const cats = ["anti", "tulis", "data", "present", "kelompok", "dokumen", "karir"];
-  setTimeout(() => { cats.reduce((p, c) => p.then(() => loadCat(c)), Promise.resolve()); }, 600);
+  // Smart Intent Prefetch (putusan Argon): saat boot hanya kategori milik
+  // tool favorit & terakhir dibuka yang dipanaskan, itu pun saat idle dan
+  // tidak saat penghemat data aktif. Sisanya dipanaskan oleh intent
+  // (mouseover/touchstart pada kartu) — lihat mtIntentPrefetch di core.
+  try {
+    if (!(navigator.connection && navigator.connection.saveData)) {
+      const bootCats = new Set();
+      (store.get("mt_recent", []) || []).forEach((id) => { const c = mtCatOf(id); if (c) bootCats.add(c); });
+      favs.forEach((id) => { const c = mtCatOf(id); if (c) bootCats.add(c); });
+      if (bootCats.size) {
+        const run = () => { [...bootCats].reduce((p, c) => p.then(() => loadCat(c)), Promise.resolve()); };
+        if (window.requestIdleCallback) requestIdleCallback(run, { timeout: 2500 });
+        else setTimeout(run, 1200);
+      }
+    }
+  } catch (e) {}
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", mtBootRouter);
 else mtBootRouter();

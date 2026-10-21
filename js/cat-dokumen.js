@@ -540,3 +540,234 @@ async function prosesStamp() {
 /* ============================================================
    TOOL 79 — KALKULATOR TARGET NILAI MATA KULIAH
    ============================================================ */
+;
+/* ---------- 93. KONVERTER SITASI BIBTEX / RIS ---------- */
+UI.bibtex = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Ubah file sitasi <b>BibTeX (.bib)</b> atau <b>RIS (.ris)</b> dari Mendeley/Zotero/Google Scholar menjadi daftar pustaka terformat (APA 7, IEEE, Vancouver) — atau sebaliknya — tanpa instal software.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Format Sumber", '<select id="bibMode" class="\' + IN + \'"><option value="auto">Otomatis (deteksi)</option><option value="bib">BibTeX (.bib)</option><option value="ris">RIS (.ris)</option></select>')
+    + field("Gaya Daftar Pustaka", '<select id="bibGaya" class="\' + IN + \'"><option value="apa">APA 7</option><option value="ieee">IEEE</option><option value="vancouver">Vancouver</option></select>')
+    + "</div>"
+    + field("Isi File / Teks Sitasi", '<textarea id="bibIn" rows="9" class="\' + IN + \' !text-[12px]" style="font-family:monospace">@article{pranata2024,\n  author = {Pranata, Detta and Sari, Maya},\n  title = {Pengaruh Kualitas Layanan terhadap Kepuasan Pengguna},\n  journal = {Jurnal Ilmu Ekonomi},\n  year = {2024},\n  volume = {12},\n  number = {2},\n  pages = {101--115},\n  doi = {10.1234/jie.2024.101}\n}</textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-1"><button class="\' + BTN + \'" onclick="bibKonversi()">🔄 Konversi ke Daftar Pustaka</button><button class="\' + BTN2 + \'" onclick="bibKeBib()">⬇️ Unduh .bib</button><button class="\' + BTN2 + \'" onclick="bibKeRis()">⬇️ Unduh .ris</button></div>'
+    + outBox("bibOut") + "</div>";
+};
+function bibParsePenulis(s) {
+  return (s || "").split(/\s+and\s+/i).map((x) => x.trim()).filter(Boolean).map((x) => {
+    let last = "", given = "";
+    if (x.includes(",")) { const p = x.split(","); last = p[0].trim(); given = (p[1] || "").trim(); }
+    else { const t = x.split(/\s+/); last = t[t.length - 1]; given = t.slice(0, -1).join(" "); }
+    const inisial = given.split(/[\s.]+/).filter(Boolean).map((w) => w[0].toUpperCase()).join("");
+    return { last, given, inisial };
+  });
+}
+function bibEntries() {
+  const text = $("#bibIn").value || "";
+  let mode = $("#bibMode").value;
+  if (mode === "auto") mode = /^\s*TY\s{2}-/m.test(text) || /\nER\s{2}-/.test(text) ? "ris" : "bib";
+  const out = [];
+  if (mode === "ris") {
+    let cur = null;
+    text.split(/\r?\n/).forEach((ln) => {
+      const m = /^([A-Z][A-Z0-9])\s{2}-\s?(.*)$/.exec(ln);
+      if (!m) return;
+      const tag = m[1], val = m[2].trim();
+      if (tag === "TY") cur = { type: val, authors: [] };
+      else if (tag === "ER") { if (cur) out.push(cur); cur = null; }
+      else if (cur) {
+        if (tag === "AU") cur.authors.push(...bibParsePenulis(val));
+        else if (tag === "TI" || tag === "T1") cur.title = val;
+        else if (tag === "JO" || tag === "JF") cur.journal = val;
+        else if (tag === "T2" && !cur.journal) cur.journal = val;
+        else if (tag === "Y1" || tag === "PY") cur.year = (val.match(/\d{4}/) || [""])[0];
+        else if (tag === "VL") cur.volume = val;
+        else if (tag === "IS") cur.number = val;
+        else if (tag === "SP") cur.p1 = val;
+        else if (tag === "EP") cur.p2 = val;
+        else if (tag === "DO") cur.doi = val;
+        else if (tag === "PB") cur.publisher = val;
+      }
+    });
+    out.forEach((e) => { e.pages = e.p1 ? e.p1 + (e.p2 ? "–" + e.p2 : "") : ""; });
+    return out;
+  }
+  text.split(/(?=@\w+\s*\{)/).forEach((chunk) => {
+    const head = /@(\w+)\s*\{\s*([^,]+),/.exec(chunk);
+    if (!head) return;
+    const e = { type: head[1].toLowerCase(), authors: [] };
+    const re = /(\w+)\s*=\s*\{((?:[^{}]|\{[^{}]*\})*)\}|(\w+)\s*=\s*"([^"]*)"/g; let m;
+    while ((m = re.exec(chunk))) {
+      const key = (m[1] || m[3] || "").toLowerCase(), val = (m[2] !== undefined && m[2] !== "" ? m[2] : m[4] || "").replace(/[{}]/g, "").replace(/\s+/g, " ").trim();
+      if (key === "author") e.authors = bibParsePenulis(val);
+      else if (key === "title") e.title = val;
+      else if (key === "journal" || key === "booktitle") e.journal = val;
+      else if (key === "year") e.year = val;
+      else if (key === "volume") e.volume = val;
+      else if (key === "number") e.number = val;
+      else if (key === "pages") e.pages = val.replace(/--/g, "–");
+      else if (key === "doi") e.doi = val;
+      else if (key === "publisher") e.publisher = val;
+    }
+    out.push(e);
+  });
+  return out;
+}
+function bibFormat(e, gaya) {
+  const A = e.authors || [];
+  const th = e.year || "n.d.";
+  if (gaya === "ieee") {
+    const au = A.length > 3 ? (A[0].inisial.split("").join(". ") + ". " + A[0].last + " et al.") : A.map((a) => a.inisial.split("").join(". ") + ". " + a.last).join(", ");
+    return au + ", \"" + (e.title || "") + ",\" " + (e.journal || "") + (e.volume ? ", vol. " + e.volume : "") + (e.number ? ", no. " + e.number : "") + (e.pages ? ", pp. " + e.pages : "") + ", " + th + ".";
+  }
+  if (gaya === "vancouver") {
+    const au = A.map((a) => a.last + " " + a.inisial).join(", ");
+    return au + ". " + (e.title || "") + ". " + (e.journal || "") + ". " + th + (e.volume ? ";" + e.volume : "") + (e.number ? "(" + e.number + ")" : "") + (e.pages ? ":" + e.pages : "") + ".";
+  }
+  const au = A.map((a) => a.last + ", " + a.inisial.split("").join(". ") + ".").join(", ").replace(/, ([^,]*)$/, ", &$1");
+  return au + " (" + th + "). " + (e.title || "") + ". " + (e.journal || "") + (e.volume ? ", " + e.volume : "") + (e.number ? "(" + e.number + ")" : "") + (e.pages ? ", " + e.pages : "") + "." + (e.doi ? " https://doi.org/" + e.doi : "");
+}
+function bibKonversi() {
+  const entries = bibEntries(), gaya = $("#bibGaya").value, out = $("#bibOut");
+  if (!entries.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada entri terbaca. Pastikan format BibTeX (@article{...}) atau RIS (TY  - ... ER  -) benar.</div>'; return; }
+  const teks = entries.map((e) => bibFormat(e, gaya)).join("\n");
+  window._bibTeks = teks; window._bibEntries = entries;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📚 ' + entries.length + ' Entri — Gaya ' + ({ apa: "APA 7", ieee: "IEEE", vancouver: "Vancouver" })[gaya] + '</p><ol class="list-decimal ml-5 space-y-2 text-[13.5px] leading-relaxed">' + entries.map((e) => "<li>" + esc(bibFormat(e, gaya)) + "</li>").join("") + '</ol><div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="download(\'Daftar_Pustaka_Konversi.txt\', window._bibTeks || \'\')">⬇️ Unduh .txt</button><button class="\' + BTN2 + \'" onclick="copyText(window._bibTeks || \'\')">📋 Copy Semua</button></div></div>';
+}
+function bibKeBib() {
+  const entries = window._bibEntries || bibEntries();
+  if (!entries.length) { toast("Konversi dulu entrinya 📚"); return; }
+  const t = entries.map((e, i) => {
+    const key = ((e.authors[0] || {}).last || "ref").toLowerCase().replace(/\s+/g, "") + (e.year || "") + (i ? i : "");
+    const f = [["author", e.authors.map((a) => a.last + ", " + a.given).join(" and ")], ["title", e.title], ["journal", e.journal], ["year", e.year], ["volume", e.volume], ["number", e.number], ["pages", (e.pages || "").replace(/–/g, "--")], ["doi", e.doi], ["publisher", e.publisher]].filter((x) => x[1]);
+    return "@" + (e.type && e.type !== "JOUR" ? e.type : "article") + "{" + key + ",\n" + f.map((x) => "  " + x[0] + " = {" + x[1] + "}").join(",\n") + "\n}";
+  }).join("\n\n");
+  download("sitasi_konversi.bib", t, "text/plain");
+}
+function bibKeRis() {
+  const entries = window._bibEntries || bibEntries();
+  if (!entries.length) { toast("Konversi dulu entrinya 📚"); return; }
+  const t = entries.map((e) => {
+    const L = ["TY  - JOUR"];
+    e.authors.forEach((a) => L.push("AU  - " + a.last + ", " + a.given));
+    if (e.title) L.push("TI  - " + e.title);
+    if (e.journal) L.push("JO  - " + e.journal);
+    if (e.year) L.push("Y1  - " + e.year);
+    if (e.volume) L.push("VL  - " + e.volume);
+    if (e.number) L.push("IS  - " + e.number);
+    if (e.pages) { const pp = e.pages.split("–"); L.push("SP  - " + pp[0]); if (pp[1]) L.push("EP  - " + pp[1]); }
+    if (e.doi) L.push("DO  - " + e.doi);
+    if (e.publisher) L.push("PB  - " + e.publisher);
+    L.push("ER  - ");
+    return L.join("\n");
+  }).join("\n\n");
+  download("sitasi_konversi.ris", t, "text/plain");
+}
+SHARE_GETTERS.bibtex = function () { return "Saya mengonversi " + (window._bibEntries || []).length + " sitasi antar-format (BibTeX/RIS/APA/IEEE/Vancouver) langsung di browser dengan MahasiswaTools."; };
+
+;
+/* ---------- 94. PEMBUAT POSTER ILMIAH ---------- */
+const POS_TEMA = [
+  { n: "Indigo Akademik", head: "#4F46E5", dark: "#312E81", soft: "#EEF2FF" },
+  { n: "Zamrud", head: "#059669", dark: "#065F46", soft: "#ECFDF5" },
+  { n: "Marun Klasik", head: "#991B1B", dark: "#7F1D1D", soft: "#FEF2F2" },
+  { n: "Slate Modern", head: "#334155", dark: "#0F172A", soft: "#F1F5F9" }
+];
+UI.poster = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Poster ilmiah siap cetak (kanvas resolusi tinggi ±200 dpi) untuk seminar, PKM, dan konferensi: kop logo institusi, abstrak, metodologi, temuan, kesimpulan, dan QR code otomatis di pojok bawah.</p>'
+    + field("Judul Poster", '<input id="posJudul" class="\' + IN + \'" placeholder="Judul penelitian / pengabdian">')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Penulis", '<input id="posPenulis" class="\' + IN + \'" placeholder="Nama penulis 1, penulis 2, ...">')
+    + field("Institusi", '<input id="posInst" class="\' + IN + \'" placeholder="Universitas / Program Studi">')
+    + field("Tema Warna", '<select id="posTema" class="\' + IN + \'">' + POS_TEMA.map((t, i) => '<option value="' + i + '">' + t.n + "</option>").join("") + "</select>")
+    + field("Orientasi", '<select id="posOrientasi" class="\' + IN + \'"><option value="p">Potret (poster berdiri)</option><option value="l">Lanskap</option></select>')
+    + "</div>"
+    + field("Abstrak", '<textarea id="posAbstrak" rows="3" class="\' + IN + \'"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Metodologi", '<textarea id="posMetode" rows="4" class="\' + IN + \'"></textarea>')
+    + field("Temuan Utama (satu per baris, jadi poin)", '<textarea id="posTemuan" rows="4" class="\' + IN + \'"></textarea>')
+    + "</div>"
+    + field("Kesimpulan", '<textarea id="posKesimpulan" rows="2" class="\' + IN + \'"></textarea>')
+    + field("Teks / Link untuk QR Code (pojok bawah)", '<input id="posQr" class="\' + IN + \'" placeholder="cth: https://linktr.ee/penelitianku">')
+    + '<canvas id="posCv" class="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-white"></canvas>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="posUnduh()">⬇️ Download Poster (PNG Resolusi Tinggi)</button></div></div>';
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(posGambar, 300); });
+  el.addEventListener("change", posGambar);
+  posGambar();
+  loadLib("https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js", "qrcode").then(() => posGambar());
+};
+function posWrap(x, text, maxW) {
+  const words = (text || "").split(/\s+/).filter(Boolean); const lines = []; let cur = "";
+  words.forEach((w) => { const coba = cur ? cur + " " + w : w; if (x.measureText(coba).width > maxW && cur) { lines.push(cur); cur = w; } else cur = coba; });
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [""];
+}
+function posSeksi(x, px, py, pw, judul, isi, tema, fs, lh) {
+  x.fillStyle = tema.soft; x.beginPath(); x.roundRect(px, py, pw, 10, 18); x.fill();
+  x.fillStyle = tema.head; x.beginPath(); x.roundRect(px, py, pw, 64, 18); x.fill(); x.fillRect(px, py + 40, pw, 24);
+  x.fillStyle = "#FFFFFF"; x.font = "800 34px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
+  x.fillText(judul.toUpperCase(), px + 28, py + 43);
+  x.fillStyle = "#1E293B"; x.font = "400 " + fs + "px 'Plus Jakarta Sans', sans-serif";
+  let ly = py + 64 + lh;
+  const poin = isi.includes("\n");
+  isi.split(/\n/).forEach((par) => {
+    posWrap(x, (poin ? "• " : "") + par.trim(), pw - 56).forEach((ln) => { x.fillText(ln, px + 28, ly); ly += lh; });
+  });
+  return ly - py + 18;
+}
+function posGambar() {
+  const cv = $("#posCv"); if (!cv) return;
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const tema = POS_TEMA[Number(g("posTema")) || 0];
+  const potret = (g("posOrientasi") || "p") !== "l";
+  const W = potret ? 2000 : 2828, H = potret ? 2828 : 2000;
+  cv.width = W; cv.height = H;
+  const x = cv.getContext("2d");
+  x.fillStyle = "#FFFFFF"; x.fillRect(0, 0, W, H);
+  const M = 90;
+  x.fillStyle = tema.head; x.fillRect(0, 0, W, 350);
+  x.fillStyle = tema.dark; x.fillRect(0, 350, W, 14);
+  const logo = (typeof getLogoData === "function") ? getLogoData() : "";
+  let tx = M;
+  if (logo) {
+    x.fillStyle = "#FFFFFF"; x.beginPath(); x.roundRect(M, 62, 300, 226, 16); x.fill();
+    const img = new Image();
+    img.onload = () => { if ($("#posCv")) posGambar(); };
+    img.src = logo;
+    if (img.complete && img.naturalWidth) { const s = Math.min(260 / img.naturalWidth, 190 / img.naturalHeight); x.drawImage(img, M + (300 - img.naturalWidth * s) / 2, 62 + (226 - img.naturalHeight * s) / 2, img.naturalWidth * s, img.naturalHeight * s); }
+    tx = M + 340;
+  }
+  x.fillStyle = "#FFFFFF"; x.textAlign = "left";
+  let fs = 82; let lines = [];
+  do { x.font = "800 " + fs + "px 'Plus Jakarta Sans', sans-serif"; lines = posWrap(x, g("posJudul") || "Judul Poster Ilmiah Kamu", W - tx - M); fs -= 6; } while (lines.length > 3 && fs > 44);
+  lines.forEach((ln, i) => x.fillText(ln, tx, 138 + i * (fs + 16)));
+  x.font = "600 42px 'Plus Jakarta Sans', sans-serif"; x.fillStyle = "rgba(255,255,255,.92)";
+  x.fillText(g("posPenulis") || "Nama Penulis", tx, 138 + lines.length * (fs + 16) + 32);
+  x.font = "400 38px 'Plus Jakarta Sans', sans-serif";
+  x.fillText(g("posInst") || "Institusi", tx, 138 + lines.length * (fs + 16) + 88);
+  let y = 350 + 56;
+  const bodyFs = potret ? 37 : 34, lh = Math.round(bodyFs * 1.5);
+  y += posSeksi(x, M, y, W - 2 * M, "Abstrak", g("posAbstrak") || "(Isi abstrakmu di formulir atas — poster langsung ter-update.)", tema, bodyFs, lh) + 36;
+  const colW = (W - 2 * M - 36) / 2;
+  const h1 = posSeksi(x, M, y, colW, "Metodologi", g("posMetode") || "(Metode penelitian)", tema, bodyFs, lh);
+  const h2 = posSeksi(x, M + colW + 36, y, colW, "Temuan Utama", g("posTemuan") || "Temuan 1\nTemuan 2", tema, bodyFs, lh);
+  y += Math.max(h1, h2) + 36;
+  const sisaY = H - 300;
+  if (y < sisaY) y += posSeksi(x, M, y, W - 2 * M, "Kesimpulan", g("posKesimpulan") || "(Kesimpulan)", tema, bodyFs, lh);
+  x.fillStyle = "#64748B"; x.font = "600 32px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
+  x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", M, H - 56);
+  const qrTeks = g("posQr");
+  if (qrTeks && typeof qrcode !== "undefined") {
+    try {
+      const qr = qrcode(0, "M"); qr.addData(qrTeks); qr.make();
+      const n = qr.getModuleCount(), box = 250, cell = box / n, qx = W - M - box, qy = H - 300;
+      x.fillStyle = "#FFFFFF"; x.fillRect(qx - 8, qy - 8, box + 16, box + 16);
+      x.fillStyle = "#0F172A";
+      for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) x.fillRect(qx + c * cell, qy + r * cell, cell + 0.6, cell + 0.6);
+      x.font = "600 26px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "center"; x.fillStyle = "#64748B";
+      x.fillText("Pindai untuk detail", qx + box / 2, qy + box + 34);
+    } catch (e) {}
+  }
+}
+function posUnduh() { const cv = $("#posCv"); if (cv) cv.toBlob((b) => { if (b) download("Poster_Ilmiah.png", b); }, "image/png"); }
+SHARE_GETTERS.poster = function () { return "Poster ilmiah untuk seminar/PKM saya sudah jadi (resolusi tinggi, lengkap dengan QR) — dibuat dengan Pembuat Poster Ilmiah MahasiswaTools."; };
+

@@ -1254,3 +1254,194 @@ function unduhBimbingan() {
 }
 SHARE_GETTERS.bimbingan = function () { return "Saya sudah " + (window._bimCount || 0) + " kali bimbingan skripsi. Kartu kendali tercatat rapi di MahasiswaTools."; };
 
+;
+/* ---------- 86. KONVERTER SKRIPSI KE JURNAL (IMRAD) ---------- */
+UI.imrad = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Tempel ringkasan tiap bab skripsimu — tool menyusunnya jadi draf artikel jurnal format <b>IMRAD</b> (Pendahuluan–Metode–Hasil & Pembahasan–Kesimpulan) sekaligus mengecek proporsi kata idealnya: Pendahuluan 15%, Metode 20%, Hasil & Pembahasan 55%, Kesimpulan 10%.</p>'
+    + field("Judul Artikel", '<input id="imrJudul" class="\' + IN + \'" placeholder="Judul artikel jurnal (boleh sama dengan judul skripsi)">')
+    + field("Penulis & Institusi", '<input id="imrPenulis" class="\' + IN + \'" placeholder="cth: Detta Pranata — Universitas PGRI Palembang">')
+    + field("Bab I — Pendahuluan", '<textarea id="imrB1" rows="4" class="\' + IN + \'" placeholder="Ringkasan latar belakang, rumusan masalah, dan tujuan penelitian"></textarea>')
+    + field("Bab II — Tinjauan Pustaka (masuk Pendahuluan)", '<textarea id="imrB2" rows="3" class="\' + IN + \'" placeholder="Ringkasan teori & penelitian terdahulu yang paling relevan"></textarea>')
+    + field("Bab III — Metode Penelitian", '<textarea id="imrB3" rows="4" class="\' + IN + \'" placeholder="Jenis penelitian, populasi & sampel, instrumen, teknik analisis"></textarea>')
+    + field("Bab IV — Hasil & Pembahasan", '<textarea id="imrB4" rows="5" class="\' + IN + \'" placeholder="Temuan utama, tabel/grafik penting, dan pembahasannya"></textarea>')
+    + field("Bab V — Kesimpulan & Saran", '<textarea id="imrB5" rows="3" class="\' + IN + \'" placeholder="Kesimpulan dan saran penelitian"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Target Total Kata Artikel (opsional)", '<input id="imrTarget" type="number" class="\' + IN + \'" placeholder="cth: 5000 — kosongkan = total kata naskahmu">')
+    + field("Tata Letak .doc", '<select id="imrKolom" class="\' + IN + \'"><option value="1">1 kolom</option><option value="2">2 kolom (gaya jurnal SINTA)</option></select>')
+    + "</div>"
+    + '<button class="\' + BTN + \'" onclick="imrSusun()">📐 Susun Draf IMRAD & Cek Proporsi</button>'
+    + outBox("imrOut") + "</div>";
+};
+function imrKata(t) { const m = (t || "").trim().match(/\S+/g); return m ? m.length : 0; }
+function imrSusun() {
+  const g = (id) => ($("#" + id) || {}).value || "";
+  const judul = g("imrJudul").trim(), penulis = g("imrPenulis").trim();
+  const b1 = g("imrB1").trim(), b2 = g("imrB2").trim(), b3 = g("imrB3").trim(), b4 = g("imrB4").trim(), b5 = g("imrB5").trim();
+  const secs = [
+    { n: "Pendahuluan (Bab I + II)", isi: [b1, b2].filter(Boolean).join("\n\n"), pct: 15 },
+    { n: "Metode (Bab III)", isi: b3, pct: 20 },
+    { n: "Hasil & Pembahasan (Bab IV)", isi: b4, pct: 55 },
+    { n: "Kesimpulan (Bab V)", isi: b5, pct: 10 }
+  ];
+  const totalIsi = secs.reduce((a, s) => a + imrKata(s.isi), 0);
+  const target = Number(g("imrTarget")) || totalIsi;
+  if (!totalIsi) { $("#imrOut").innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu minimal satu bab.</div>'; return; }
+  const baris = secs.map((s) => {
+    const k = imrKata(s.isi), tk = Math.round(target * s.pct / 100), sel = k - tk;
+    const st = k === 0 ? '<span class="font-bold text-rose-600">Kosong</span>' : Math.abs(sel) <= Math.max(30, tk * 0.15) ? '<span class="font-bold text-emerald-600">Pas ✅</span>' : sel < 0 ? '<span class="font-bold text-amber-600">Kurang ' + fmtN(-sel, 0) + ' kata</span>' : '<span class="font-bold text-amber-600">Lebih ' + fmtN(sel, 0) + ' kata</span>';
+    return "<tr><td class=\"py-1.5 pr-3 font-semibold\">" + s.n + "</td><td class=\"py-1.5 pr-3\">" + fmtN(k, 0) + "</td><td class=\"py-1.5 pr-3\">" + fmtN(tk, 0) + " (" + s.pct + "%)</td><td class=\"py-1.5\">" + st + "</td></tr>";
+  }).join("");
+  const draf = (judul || "(Judul Artikel)") + "\n" + (penulis || "(Penulis — Institusi)") + "\n\nABSTRAK\n(Tulis abstrak 150–250 kata: latar singkat, tujuan, metode, hasil utama, kesimpulan — susun setelah draf ini rampung.)\n\n1. PENDAHULUAN\n" + (secs[0].isi || "(kosong)") + "\n\n2. METODE\n" + (b3 || "(kosong)") + "\n\n3. HASIL DAN PEMBAHASAN\n" + (b4 || "(kosong)") + "\n\n4. KESIMPULAN\n" + (b5 || "(kosong)") + "\n\nDAFTAR PUSTAKA\n(Salin dari daftar pustaka skripsimu, sesuaikan dengan gaya selingkung jurnal tujuan.)";
+  window._imrad = draf; window._imradSecs = secs; window._imradJudul = judul; window._imradPenulis = penulis;
+  $("#imrOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">📊 Cek Proporsi Kata (total acuan: ' + fmtN(target, 0) + ' kata)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Bagian</th><th class="py-1 pr-3">Kata Saat Ini</th><th class="py-1 pr-3">Target Ideal</th><th class="py-1">Status</th></tr>' + baris + "</table>"
+    + '<p class="font-extrabold mt-4 mb-2">📄 Draf Artikel (IMRAD)</p><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[14px]" style="font-family:Georgia,serif">' + esc(draf) + "</div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="imrUnduhDoc()">⬇️ Download .doc (IMRAD)</button><button class="\' + BTN2 + \'" onclick="copyText(window._imrad)">📋 Copy Draf</button></div></div>';
+}
+function imrUnduhDoc() {
+  const s = window._imradSecs || [];
+  const h = (t) => '<h3 style="font-family:serif">' + t + "</h3>";
+  const p = (t) => (t || "(kosong)").split(/\n+/).map((x) => '<p style="font-family:serif;font-size:11pt;text-align:justify">' + esc(x) + "</p>").join("");
+  let body = '<h2 style="text-align:center;font-family:serif">' + esc(window._imradJudul || "Judul Artikel") + '</h2><p style="text-align:center;font-family:serif">' + esc(window._imradPenulis || "") + "</p>"
+    + h("ABSTRAK") + '<p style="font-family:serif;font-size:11pt;text-align:justify">(Tulis abstrak 150–250 kata: latar singkat, tujuan, metode, hasil utama, kesimpulan.)</p>'
+    + h("1. PENDAHULUAN") + p(s[0] && s[0].isi) + h("2. METODE") + p(s[1] && s[1].isi) + h("3. HASIL DAN PEMBAHASAN") + p(s[2] && s[2].isi) + h("4. KESIMPULAN") + p(s[3] && s[3].isi) + h("DAFTAR PUSTAKA") + '<p style="font-family:serif;font-size:11pt">(Salin dari daftar pustaka skripsi, sesuaikan gaya selingkung jurnal tujuan.)</p>';
+  if (($("#imrKolom") || {}).value === "2") body = '<table width="100%" cellspacing="0" cellpadding="10"><tr><td width="50%" valign="top">' + h("ABSTRAK") + '<p style="font-family:serif;font-size:11pt">(Abstrak 150–250 kata.)</p>' + h("1. PENDAHULUAN") + p(s[0] && s[0].isi) + h("2. METODE") + p(s[1] && s[1].isi) + '</td><td width="50%" valign="top">' + h("3. HASIL DAN PEMBAHASAN") + p(s[2] && s[2].isi) + h("4. KESIMPULAN") + p(s[3] && s[3].isi) + h("DAFTAR PUSTAKA") + '<p style="font-family:serif;font-size:11pt">(Sesuaikan gaya selingkung jurnal.)</p></td></tr></table><h2 style="text-align:center;font-family:serif">' + esc(window._imradJudul || "") + '</h2><p style="text-align:center;font-family:serif">' + esc(window._imradPenulis || "") + "</p>";
+  download("Artikel_IMRAD.doc", "<html><body>" + kopLogoHtml("center") + body + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.imrad = function () { return window._imrad ? "Saya sedang mengubah skripsi jadi artikel jurnal format IMRAD (" + imrKata(window._imrad) + " kata) dengan Konverter IMRAD MahasiswaTools." : ""; };
+
+;
+/* ---------- 87. OJS KIT: COVER LETTER & MATRIKS REVIEWER ---------- */
+UI.ojskit = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua senjata submit jurnal via OJS: <b>surat pengantar (cover letter)</b> untuk editor dan <b>matriks tanggapan reviewer</b> untuk revisimu. Isi sekali, keduanya langsung jadi.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Jurnal Tujuan", '<input id="ojJurnal" class="\' + IN + \'" placeholder="cth: Jurnal Ilmu Ekonomi & Studi Pembangunan">')
+    + field("Bahasa Surat", '<select id="ojBahasa" class="\' + IN + \'"><option value="id">Bahasa Indonesia</option><option value="en">English</option></select>')
+    + field("Judul Artikel", '<input id="ojJudul" class="\' + IN + \'" placeholder="Judul artikel yang disubmit">')
+    + field("Nama Penulis Korespondensi", '<input id="ojPenulis" class="\' + IN + \'" placeholder="Nama kamu">')
+    + field("Institusi", '<input id="ojInst" class="\' + IN + \'" placeholder="cth: Universitas PGRI Palembang">')
+    + field("Email Korespondensi", '<input id="ojEmail" class="\' + IN + \'" placeholder="email@kamu.ac.id">')
+    + "</div>"
+    + field("Komentar Reviewer (satu komentar per baris, untuk matriks tanggapan)", '<textarea id="ojKomentar" rows="5" class="\' + IN + \'" placeholder="Reviewer 1: Perjelas kebaruan penelitian di pendahuluan&#10;Reviewer 1: Tambahkan uji asumsi klasik&#10;Reviewer 2: Perbaiki format tabel 3"></textarea>')
+    + outBox("ojOut") + "</div>";
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(ojsBuat, 350); });
+  ojsBuat();
+};
+function ojsBuat() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  const jurnal = g("ojJurnal") || "(Nama Jurnal)", judul = g("ojJudul") || "(Judul Artikel)", penulis = g("ojPenulis") || "(Nama Penulis)", inst = g("ojInst") || "(Institusi)", email = g("ojEmail") || "(email)";
+  let surat;
+  if (g("ojBahasa") === "en") surat = "Dear Editor-in-Chief of " + jurnal + ",\n\nWe are pleased to submit our manuscript entitled \"" + judul + "\" for consideration for publication in " + jurnal + ".\n\nThis manuscript is original, has not been published previously, and is not under consideration by any other journal. All authors have read and approved the submitted version, and there are no conflicts of interest to declare. The study contributes empirical evidence and practical implications that we believe will be of interest to the readers of " + jurnal + ".\n\nThank you for your time and consideration. We look forward to your response.\n\nSincerely,\n" + penulis + "\n" + inst + "\nCorresponding author: " + email;
+  else surat = "Kepada Yth.\nEditor-in-Chief " + jurnal + "\ndi tempat\n\nDengan hormat,\n\nBersama ini kami mengajukan naskah artikel berjudul \"" + judul + "\" untuk dipertimbangkan penerbitannya di " + jurnal + ".\n\nKami menyatakan bahwa naskah ini orisinal, belum pernah diterbitkan, dan tidak sedang diajukan ke jurnal lain. Seluruh penulis telah membaca dan menyetujui versi yang diajukan, serta tidak terdapat konflik kepentingan. Penelitian ini menyumbang bukti empiris dan implikasi praktis yang kami yakini bermanfaat bagi pembaca " + jurnal + ".\n\nDemikian surat pengantar ini kami sampaikan. Atas perhatian dan pertimbangan Bapak/Ibu Editor, kami ucapkan terima kasih.\n\nHormat kami,\n" + penulis + "\n" + inst + "\nPenulis korespondensi: " + email;
+  if (!$("#ojOut")) return;
+  const koms = g("ojKomentar").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  window._ojSurat = surat; window._ojKoms = koms; window._ojJurnal = jurnal;
+  const matriks = koms.length ? '<table class="w-full text-[12.5px] mt-2"><tr class="text-left bg-slate-100 dark:bg-slate-800"><th class="p-2">No</th><th class="p-2">Komentar Reviewer</th><th class="p-2">Tanggapan & Perbaikan Penulis</th><th class="p-2">Hal/Baris</th></tr>' + koms.map((k, i) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"p-2\">" + (i + 1) + "</td><td class=\"p-2\">" + esc(k) + "</td><td class=\"p-2 text-slate-400\">(isi tanggapan & perbaikanmu)</td><td class=\"p-2 text-slate-400\">(hal/baris)</td></tr>").join("") + "</table>" : '<p class="text-sm text-slate-500 mt-2">Isi komentar reviewer di atas untuk membangkitkan matriks tanggapan.</p>';
+  $("#ojOut").innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">✉️ Cover Letter</p><div class="bg-white dark:bg-slate-900 rounded-lg p-5 border border-slate-200 dark:border-slate-700 whitespace-pre-wrap leading-relaxed text-[14px]" style="font-family:Georgia,serif">' + esc(surat) + '</div>'
+    + '<p class="font-extrabold mt-4">🧾 Matriks Tanggapan Reviewer (' + koms.length + ' komentar)</p>' + matriks
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="ojsUnduhDoc()">⬇️ Download .doc (Surat + Matriks)</button><button class="\' + BTN2 + \'" onclick="copyText(window._ojSurat)">📋 Copy Surat</button></div></div>';
+}
+function ojsUnduhDoc() {
+  const koms = window._ojKoms || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th style="width:5%">No</th><th style="width:35%">Komentar Reviewer</th><th style="width:42%">Tanggapan & Perbaikan Penulis</th><th style="width:18%">Hal/Baris</th></tr>' + koms.map((k, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(k) + "</td><td></td><td></td></tr>").join("") + "</table>";
+  download("OJS_Kit.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<div style='white-space:pre-wrap'>" + esc(window._ojSurat || "") + "</div><br><h3>Matriks Tanggapan Reviewer — " + esc(window._ojJurnal || "") + "</h3>" + tabel + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.ojskit = function () { return "Saya menyiapkan submit jurnal ke " + (window._ojJurnal || "jurnal tujuan") + " (cover letter + matriks tanggapan " + (window._ojKoms || []).length + " komentar reviewer) dengan OJS Kit MahasiswaTools."; };
+
+;
+/* ---------- 91. GENERATOR KISI-KISI & OPERASIONALISASI VARIABEL ---------- */
+UI.kisikisi = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Susun tabel kisi-kisi instrumen Bab 3 tanpa mengetik ulang nomor item. Satu variabel per baris, format:<br><code class="text-[12px]">Variabel | Definisi Operasional | Dimensi | Indikator 1, Indikator 2 | 2F/1U | Likert 5</code><br>Kolom 5 = jumlah item per indikator (F = favorable, U = unfavorable). Nomor item dihitung otomatis berurutan.</p>'
+    + field("Data Variabel & Indikator", '<textarea id="kkiIn" rows="7" class="\' + IN + \'" placeholder="Motivasi Belajar | Keinginan dan dorongan untuk belajar | Intrinsik | Hasrat berhasil, Dorongan kebutuhan belajar | 2F/1U | Likert 5"></textarea>')
+    + '<div class="flex flex-wrap gap-2 mb-1"><button class="\' + BTN + \'" onclick="kkiSusun()">🧩 Susun Tabel Kisi-Kisi</button><button class="\' + BTN2 + \'" onclick="kkiContoh()">Contoh Isian</button></div>'
+    + outBox("kkiOut") + "</div>";
+};
+function kkiContoh() {
+  $("#kkiIn").value = "Motivasi Belajar | Keinginan dan dorongan dalam diri untuk belajar | Intrinsik | Hasrat untuk berhasil, Dorongan kebutuhan belajar | 2F/1U | Likert 5\nMotivasi Belajar | Keinginan dan dorongan dalam diri untuk belajar | Ekstrinsik | Penghargaan, Lingkungan belajar kondusif | 2F/0U | Likert 5\nPrestasi Belajar | Hasil yang dicapai dari kegiatan belajar | Kognitif | Nilai ujian, Pemahaman materi | 1F/1U | Tes";
+  kkiSusun();
+}
+function kkiSusun() {
+  const lines = ($("#kkiIn").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const out = $("#kkiOut");
+  if (!lines.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi dulu data variabelnya.</div>'; return; }
+  let no = 0; const rows = []; const rekap = {}; let totInd = 0;
+  lines.forEach((ln) => {
+    const p = ln.split("|").map((s) => s.trim());
+    const [vari, def, dim, inds, fu, skala] = [p[0] || "-", p[1] || "-", p[2] || "-", p[3] || "-", p[4] || "1F/0U", p[5] || "Likert 5"];
+    const mf = /(\d+)\s*F/i.exec(fu), mu = /(\d+)\s*U/i.exec(fu);
+    const nf = mf ? Number(mf[1]) : 1, nu = mu ? Number(mu[1]) : 0;
+    (inds.split(",").map((s) => s.trim()).filter(Boolean)).forEach((ind) => {
+      totInd++;
+      const fNums = [], uNums = [];
+      for (let i = 0; i < nf; i++) fNums.push(++no);
+      for (let i = 0; i < nu; i++) uNums.push(++no);
+      rows.push({ vari, def, dim, ind, f: fNums.join(", "), u: uNums.join(", ") || "—", skala });
+      rekap[vari] = (rekap[vari] || 0) + nf + nu;
+    });
+  });
+  window._kkiRows = rows; window._kkiTotal = no;
+  const tabel = '<table class="w-full text-[12.5px]"><tr class="text-left bg-slate-100 dark:bg-slate-800"><th class="p-2">Variabel</th><th class="p-2">Definisi Operasional</th><th class="p-2">Dimensi</th><th class="p-2">Indikator</th><th class="p-2">No. Item (F/U)</th><th class="p-2">Skala</th></tr>'
+    + rows.map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"p-2 font-semibold\">" + esc(r.vari) + "</td><td class=\"p-2\">" + esc(r.def) + "</td><td class=\"p-2\">" + esc(r.dim) + "</td><td class=\"p-2\">" + esc(r.ind) + "</td><td class=\"p-2\">F: " + r.f + "<br>U: " + r.u + "</td><td class=\"p-2\">" + esc(r.skala) + "</td></tr>").join("") + "</table>";
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-1">🧩 Tabel Kisi-Kisi Instrumen</p><p class="text-[13px] mb-2">Rekap: ' + Object.entries(rekap).map(([v, n]) => "<b>" + esc(v) + "</b> = " + n + " item").join(" • ") + ' — <b>Total ' + no + ' item</b> dari ' + totInd + ' indikator.</p>' + tabel
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="kkiUnduhDoc()">⬇️ Download .doc (Tabel Bab 3)</button></div></div>';
+}
+function kkiUnduhDoc() {
+  const rows = window._kkiRows || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th>Variabel</th><th>Definisi Operasional</th><th>Dimensi</th><th>Indikator</th><th>No. Item Favorable</th><th>No. Item Unfavorable</th><th>Skala</th></tr>'
+    + rows.map((r) => "<tr><td>" + esc(r.vari) + "</td><td>" + esc(r.def) + "</td><td>" + esc(r.dim) + "</td><td>" + esc(r.ind) + "</td><td>" + r.f + "</td><td>" + r.u + "</td><td>" + esc(r.skala) + "</td></tr>").join("") + "</table>";
+  download("Kisi_Kisi_Instrumen.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<h3>Kisi-Kisi Instrumen Penelitian</h3>" + tabel + "<p>Total item: " + (window._kkiTotal || 0) + "</p></body></html>", "application/msword");
+}
+SHARE_GETTERS.kisikisi = function () { return "Kisi-kisi instrumen penelitian saya: total " + (window._kkiTotal || 0) + " item terpetakan rapi per variabel, dimensi, dan indikator — dibuat dengan MahasiswaTools."; };
+
+;
+/* ---------- 96. LEMBAR PENGESAHAN & PERNYATAAN BEBAS PLAGIAT ---------- */
+UI.pengesahan = function (el) {
+  const f2 = (label, inner) => field(label, inner);
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Dua lembar resmi penutup skripsi: <b>Lembar Pengesahan</b> (tanda tangan pembimbing, penguji, kaprodi & dekan sejajar rapi) dan <b>Surat Pernyataan Keaslian</b> dengan kotak materai Rp10.000. Unduh sebagai satu .doc berkop institusi.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + f2("Nama Mahasiswa", '<input id="pgNama" class="\' + IN + \'">') + f2("NIM", '<input id="pgNim" class="\' + IN + \'">')
+    + f2("Program Studi", '<input id="pgProdi" class="\' + IN + \'">') + f2("Fakultas", '<input id="pgFak" class="\' + IN + \'">')
+    + f2("Universitas", '<input id="pgUniv" class="\' + IN + \'">') + f2("Kota & Tanggal", '<input id="pgTanggal" class="\' + IN + \'" placeholder="cth: Palembang, 21 Oktober 2026">')
+    + f2("Pembimbing 1 (nama + NIP)", '<input id="pgP1" class="\' + IN + \'" placeholder="Nama, gelar — NIP. ...">') + f2("Pembimbing 2 (opsional)", '<input id="pgP2" class="\' + IN + \'">')
+    + f2("Penguji 1", '<input id="pgU1" class="\' + IN + \'">') + f2("Penguji 2", '<input id="pgU2" class="\' + IN + \'">')
+    + f2("Ketua Prodi/Jurusan", '<input id="pgKap" class="\' + IN + \'">') + f2("Dekan (Mengetahui)", '<input id="pgDekan" class="\' + IN + \'">')
+    + "</div>"
+    + field("Judul Skripsi", '<textarea id="pgJudul" rows="2" class="\' + IN + \'"></textarea>')
+    + outBox("pgOut") + "</div>";
+  el.addEventListener("input", () => { clearTimeout(el._t); el._t = setTimeout(pgsBuat, 350); });
+  pgsBuat();
+};
+function pgsData() {
+  const g = (id) => (($("#" + id) || {}).value || "").trim();
+  return { nama: g("pgNama"), nim: g("pgNim"), prodi: g("pgProdi"), fak: g("pgFak"), univ: g("pgUniv"), tgl: g("pgTanggal"), judul: g("pgJudul"), p1: g("pgP1"), p2: g("pgP2"), u1: g("pgU1"), u2: g("pgU2"), kap: g("pgKap"), dekan: g("pgDekan") };
+}
+function pgsHtml() {
+  const d = pgsData();
+  const ttd = (peran, nama) => '<td style="width:50%;vertical-align:top;padding:10px"><p style="font-family:serif;font-size:12pt">' + peran + ',</p><br><br><br><p style="font-family:serif;font-size:12pt"><b><u>' + esc(nama || "........................") + "</u></b></p></td>";
+  const sah = '<h2 style="text-align:center;font-family:serif">LEMBAR PENGESAHAN</h2>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:center">Skripsi dengan judul:</p><p style="text-align:center;font-family:serif;font-size:12pt"><b>"' + esc(d.judul || "—") + '"</b></p>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:center">Oleh:<br><b>' + esc(d.nama || "—") + "</b><br>NIM. " + esc(d.nim || "—") + "<br>Program Studi " + esc(d.prodi || "—") + ", " + esc(d.fak || "") + ", " + esc(d.univ || "") + "</p>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">telah dipertahankan di hadapan tim penguji dan diterima sebagai bagian persyaratan yang diperlukan untuk memperoleh gelar Sarjana pada Program Studi ' + esc(d.prodi || "—") + ", " + esc(d.fak || "") + ", " + esc(d.univ || "") + ".</p>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:right">' + esc(d.tgl || "—") + "</p>"
+    + '<table width="100%" cellspacing="0" cellpadding="0"><tr>' + ttd("Dosen Pembimbing 1", d.p1) + ttd("Dosen Pembimbing 2", d.p2) + "</tr><tr>" + ttd("Dosen Penguji 1", d.u1) + ttd("Dosen Penguji 2", d.u2) + "</tr></table>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:center;margin-top:12px">Mengetahui,</p><table width="100%" cellspacing="0" cellpadding="0"><tr>' + ttd("Dekan " + (d.fak || ""), d.dekan) + ttd("Ketua Program Studi " + (d.prodi || ""), d.kap) + "</tr></table>";
+  const per = '<h2 style="text-align:center;font-family:serif">SURAT PERNYATAAN KEASLIAN KARYA</h2>'
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">Saya yang bertanda tangan di bawah ini:</p>'
+    + '<table cellspacing="0" cellpadding="2" style="font-family:serif;font-size:12pt"><tr><td>Nama</td><td>: ' + esc(d.nama || "—") + "</td></tr><tr><td>NIM</td><td>: " + esc(d.nim || "—") + "</td></tr><tr><td>Program Studi</td><td>: " + esc(d.prodi || "—") + "</td></tr></table>"
+    + '<p style="font-family:serif;font-size:12pt;text-align:justify">menyatakan dengan sesungguhnya bahwa skripsi berjudul <b>"' + esc(d.judul || "—") + '"</b> adalah benar-benar karya saya sendiri dan bukan merupakan plagiat atau saduran dari karya orang lain, kecuali bagian-bagian yang dirujuk sumbernya sebagaimana tercantum dalam daftar pustaka. Apabila di kemudian hari terbukti pernyataan ini tidak benar, saya bersedia menerima sanksi akademik sesuai ketentuan yang berlaku.</p>'
+    + '<table width="100%" cellspacing="0" cellpadding="0"><tr><td style="width:55%"></td><td style="font-family:serif;font-size:12pt">' + esc(d.tgl || "—") + '<br>Yang menyatakan,<br><table border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse;margin:8px 0"><tr><td style="font-size:10pt;text-align:center">MATERAI<br>Rp10.000</td></tr></table><br><b><u>' + esc(d.nama || "........................") + "</u></b><br>NIM. " + esc(d.nim || "—") + "</td></tr></table>";
+  return { sah, per };
+}
+function pgsBuat() {
+  if (!$("#pgOut")) return;
+  const h = pgsHtml();
+  window._pgsSah = h.sah; window._pgsPer = h.per;
+  $("#pgOut").innerHTML = '<div class="\' + OUT + \'"><div class="bg-white text-slate-900 rounded-lg p-6 border border-slate-200 mb-4 overflow-x-auto"><div style="min-width:520px">' + h.sah + '</div></div>'
+    + '<div class="bg-white text-slate-900 rounded-lg p-6 border border-slate-200 overflow-x-auto"><div style="min-width:520px">' + h.per + "</div></div>"
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="pgsUnduhDoc()">⬇️ Download .doc (Pengesahan + Pernyataan)</button></div></div>';
+}
+function pgsUnduhDoc() {
+  download("Lembar_Pengesahan_Pernyataan.doc", "<html><body>" + kopLogoHtml("center") + window._pgsSah + '<br style="page-break-after:always">' + window._pgsPer + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.pengesahan = function () { return "Lembar pengesahan & surat pernyataan bebas plagiat untuk skripsi saya sudah rapi (tinggal tanda tangan + materai) — dibuat dengan MahasiswaTools."; };
+

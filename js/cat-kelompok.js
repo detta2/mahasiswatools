@@ -349,6 +349,7 @@ function buatOrg() {
     anggota.forEach((a, ai) => { svg += '<text x="' + (dx + dw / 2) + '" y="' + (402 + ai * 17) + '" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#475569">' + xe(a) + "</text>"; });
     dx += dw + 14;
   });
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
   svg += "</svg>";
   $("#ogOut").innerHTML = '<div class="' + OUT + '">' + svg
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'ogSvg\', \'Struktur_Organisasi.png\')">⬇️ Download Bagan (PNG)</button>'
@@ -663,4 +664,115 @@ SHARE_GETTERS.lpj = function () { const L = window._lpj || {}; return "LPJ " + (
 
 ;
 
+
+;
+/* ---------- 97. PEER-ASSESSMENT & KONTRIBUSI KELOMPOK ---------- */
+UI.peerassess = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Nilai antar-anggota kelompok secara adil dan buktikan siapa yang benar-benar bekerja: matriks penilaian 4 kriteria menghasilkan <b>bobot kontribusi (%)</b> tiap anggota — siap dilampirkan ke dosen, anti free-rider.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Anggota Kelompok (satu nama per baris)", '<textarea id="perAnggota" rows="4" class="\' + IN + \'">Andi\nBudi\nCitra\nDewi</textarea>')
+    + field("Nilai Kelompok dari Dosen (0–100)", '<input id="perNilai" type="number" class="\' + IN + \'" value="85">')
+    + "</div>"
+    + '<p class="font-bold text-[13.5px] mb-1">Bobot Kriteria (%)</p><div class="grid grid-cols-4 gap-3 mb-3">'
+    + field("Inisiatif", '<input id="perB1" type="number" class="\' + IN + \'" value="25">') + field("Tepat Waktu", '<input id="perB2" type="number" class="\' + IN + \'" value="25">') + field("Kualitas Kerja", '<input id="perB3" type="number" class="\' + IN + \'" value="30">') + field("Kehadiran Rapat", '<input id="perB4" type="number" class="\' + IN + \'" value="20">')
+    + "</div>"
+    + '<button class="\' + BTN2 + \'" onclick="perTemplate()">🧾 Buat Template Matriks Penilaian</button>'
+    + field("Matriks Penilaian — format per baris: Penilai; Dinilai; Inisiatif; Tepat Waktu; Kualitas; Kehadiran (skor 1–5)", '<textarea id="perMatriks" rows="8" class="\' + IN + \' !text-[12.5px]" placeholder="Klik tombol template di atas, lalu ubah skornya"></textarea>')
+    + '<button class="\' + BTN + \'" onclick="perHitung()">⚖️ Hitung Kontribusi</button>'
+    + outBox("perOut") + "</div>";
+};
+function perAnggotaList() { return ($("#perAnggota").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean); }
+function perTemplate() {
+  const A = perAnggotaList();
+  if (A.length < 2) { toast("Isi minimal 2 anggota 👥"); return; }
+  const L = [];
+  A.forEach((p) => A.forEach((d) => { if (p !== d) L.push(p + "; " + d + "; 4; 4; 4; 4"); }));
+  $("#perMatriks").value = L.join("\n");
+  toast("Template " + L.length + " baris dibuat — ubah skornya lalu Hitung ⚖️");
+}
+function perHitung() {
+  const A = perAnggotaList(), out = $("#perOut");
+  if (A.length < 2) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Isi minimal 2 anggota.</div>'; return; }
+  const bobot = [1, 2, 3, 4].map((i) => Number($("#perB" + i).value) || 0);
+  const totB = bobot.reduce((a, b) => a + b, 0) || 1;
+  const w = bobot.map((b) => b / totB);
+  const skor = {}; A.forEach((a) => skor[a] = [[], [], [], []]);
+  let asing = 0;
+  ($("#perMatriks").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean).forEach((ln) => {
+    const p = ln.split(";").map((s) => s.trim());
+    if (p.length < 6 || !skor[p[1]] || p[0] === p[1]) { asing++; return; }
+    for (let k = 0; k < 4; k++) { const v = parseFloat((p[2 + k] || "").replace(",", ".")); if (isFinite(v)) skor[p[1]][k].push(Math.min(5, Math.max(1, v))); }
+  });
+  const hasil = A.map((a) => {
+    let s = 0, ada = false;
+    for (let k = 0; k < 4; k++) { if (skor[a][k].length) { ada = true; s += w[k] * mean(skor[a][k]); } }
+    return { nama: a, skor: ada ? s : 0, ada };
+  });
+  const totSkor = hasil.reduce((x, h) => x + h.skor, 0);
+  const adil = 100 / A.length, nKel = Number($("#perNilai").value) || 0;
+  hasil.forEach((h) => { h.persen = totSkor ? h.skor / totSkor * 100 : 0; h.rasio = h.persen / adil; h.nilai = Math.min(100, Math.round(nKel * h.rasio)); h.status = !h.ada ? "Belum dinilai" : h.rasio >= 0.95 ? "✅ Kontributor baik" : h.rasio >= 0.8 ? "🟡 Di bawah rata-rata" : "⚠️ Indikasi free-rider"; });
+  hasil.sort((a, b) => b.persen - a.persen);
+  window._perHasil = hasil;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">⚖️ Hasil Peer-Assessment (porsi adil = ' + fmtN(adil, 1) + '% per orang)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Anggota</th><th class="py-1 pr-3">Skor (0–5)</th><th class="py-1 pr-3">Kontribusi</th><th class="py-1 pr-3">Rasio vs Adil</th><th class="py-1 pr-3">Nilai Individu*</th><th class="py-1">Status</th></tr>'
+    + hasil.map((h) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + esc(h.nama) + "</td><td class=\"py-1 pr-3\">" + fmtN(h.skor, 2) + "</td><td class=\"py-1 pr-3 font-bold\">" + fmtN(h.persen, 1) + "%</td><td class=\"py-1 pr-3\">" + fmtN(h.rasio, 2) + "×</td><td class=\"py-1 pr-3 font-bold\">" + h.nilai + "</td><td class=\"py-1\">" + h.status + "</td></tr>").join("") + "</table>"
+    + '<p class="text-[12.5px] text-slate-500 mt-2">*Nilai individu = nilai kelompok (' + nKel + ') × rasio kontribusi, dibatasi maksimal 100. ' + (asing ? asing + " baris matriks dilewati (format/nama tidak cocok)." : "") + '</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN + \'" onclick="perUnduhDoc()">⬇️ Download .doc (Lampiran Dosen)</button></div></div>';
+}
+function perUnduhDoc() {
+  const h = window._perHasil || [];
+  const tabel = '<table border="1" cellspacing="0" cellpadding="6" style="border-collapse:collapse;width:100%;font-family:serif;font-size:11pt"><tr><th>Anggota</th><th>Skor Rata-rata (0–5)</th><th>Kontribusi (%)</th><th>Rasio vs Porsi Adil</th><th>Nilai Individu</th><th>Keterangan</th></tr>'
+    + h.map((x) => "<tr><td>" + esc(x.nama) + "</td><td>" + fmtN(x.skor, 2) + "</td><td>" + fmtN(x.persen, 1) + "%</td><td>" + fmtN(x.rasio, 2) + "×</td><td>" + x.nilai + "</td><td>" + x.status.replace(/✅|🟡|⚠️/g, "").trim() + "</td></tr>").join("") + "</table>";
+  download("Peer_Assessment_Kelompok.doc", "<html><body style='font-family:serif;font-size:12pt'>" + kopLogoHtml("center") + "<h3>Hasil Peer-Assessment & Kontribusi Kelompok</h3><p>Penilaian antar-anggota berdasarkan kriteria inisiatif, ketepatan waktu, kualitas kerja, dan kehadiran rapat (skala 1–5). Kontribusi dihitung dari skor tertimbang relatif terhadap porsi adil " + fmtN(100 / (h.length || 1), 1) + "% per anggota.</p>" + tabel + "</body></html>", "application/msword");
+}
+SHARE_GETTERS.peerassess = function () { const h = window._perHasil; return h && h.length ? "Kontribusi kelompok kami terhitung adil: tertinggi " + h[0].nama + " (" + fmtN(h[0].persen, 1) + "%), terendah " + h[h.length - 1].nama + " (" + fmtN(h[h.length - 1].persen, 1) + "%) — via Peer-Assessment MahasiswaTools." : ""; };
+
+;
+/* ---------- 98. SPLITTER TAGIHAN KOS PRO-RATA ---------- */
+UI.prorata = function (el) {
+  el.innerHTML = '<div class="fadein"><p class="text-sm text-slate-500 mb-3">Bagi tagihan kos/kontrakan <b>seadil harinya</b>: penghuni yang mudik atau masuk tengah bulan hanya membayar hari huninya, dan listrik ditimbang menurut beban alat elektronik tiap kamar.</p>'
+    + '<div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Periode Mulai", '<input id="proDari" type="date" class="\' + IN + \'" value="2026-10-01">')
+    + field("Periode Selesai", '<input id="proSampai" type="date" class="\' + IN + \'" value="2026-10-31">')
+    + field("Tagihan Listrik (Rp)", '<input id="proListrik" type="number" class="\' + IN + \'" placeholder="0">')
+    + field("Tagihan WiFi (Rp)", '<input id="proWifi" type="number" class="\' + IN + \'" placeholder="0">')
+    + field("Tagihan Air (Rp)", '<input id="proAir" type="number" class="\' + IN + \'" placeholder="0">')
+    + "</div>"
+    + field("Penghuni — format: Nama | Tanggal Masuk | Tanggal Keluar (boleh kosong) | Bobot Alat (boleh kosong, default 1)", '<textarea id="proPenghuni" rows="4" class="\' + IN + \'">Andi | 2026-10-01 |  | 1.5\nBudi | 2026-10-01 | 2026-10-20 | 1\nCitra | 2026-10-16 |  | 0.8</textarea>')
+    + '<button class="\' + BTN + \'" onclick="proHitung()">🧾 Hitung Pembagian</button>'
+    + outBox("proOut") + "</div>";
+};
+function proHitung() {
+  const out = $("#proOut");
+  const dari = new Date(($("#proDari").value || "") + "T00:00:00"), sampai = new Date(($("#proSampai").value || "") + "T00:00:00");
+  const tg = { listrik: Number($("#proListrik").value) || 0, wifi: Number($("#proWifi").value) || 0, air: Number($("#proAir").value) || 0 };
+  if (isNaN(dari) || isNaN(sampai) || sampai < dari) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Periode tanggal tidak valid.</div>'; return; }
+  const HARI = 86400000;
+  const orang = ($("#proPenghuni").value || "").split(/\n/).map((s) => s.trim()).filter(Boolean).map((ln) => {
+    const p = ln.split("|").map((s) => s.trim());
+    let masuk = p[1] ? new Date(p[1] + "T00:00:00") : dari;
+    let keluar = p[2] ? new Date(p[2] + "T00:00:00") : sampai;
+    if (isNaN(masuk)) masuk = dari; if (isNaN(keluar)) keluar = sampai;
+    const m2 = new Date(Math.max(masuk, dari)), k2 = new Date(Math.min(keluar, sampai));
+    const hari = k2 >= m2 ? Math.round((k2 - m2) / HARI) + 1 : 0;
+    return { nama: p[0] || "-", hari, bobot: parseFloat((p[3] || "1").replace(",", ".")) || 1 };
+  }).filter((o) => o.hari > 0);
+  if (!orang.length) { out.innerHTML = '<div class="\' + OUT + \' text-rose-600 font-semibold">⚠️ Tidak ada penghuni dengan hari huni valid di periode ini.</div>'; return; }
+  const basH = orang.reduce((a, o) => a + o.hari, 0), basL = orang.reduce((a, o) => a + o.hari * o.bobot, 0);
+  orang.forEach((o) => {
+    o.listrik = basL ? Math.round(tg.listrik * (o.hari * o.bobot) / basL) : 0;
+    o.wifi = basH ? Math.round(tg.wifi * o.hari / basH) : 0;
+    o.air = basH ? Math.round(tg.air * o.hari / basH) : 0;
+    o.total = o.listrik + o.wifi + o.air;
+  });
+  const totBayar = orang.reduce((a, o) => a + o.total, 0), totTagihan = tg.listrik + tg.wifi + tg.air;
+  window._proTeks = "Pembagian tagihan kos (" + $("#proDari").value + " s.d. " + $("#proSampai").value + "):\n" + orang.map((o) => "• " + o.nama + " (" + o.hari + " hari): " + fmtRp(o.total) + " — listrik " + fmtRp(o.listrik) + ", WiFi " + fmtRp(o.wifi) + ", air " + fmtRp(o.air)).join("\n") + "\nTotal terkumpul: " + fmtRp(totBayar);
+  window._proTotal = totBayar;
+  out.innerHTML = '<div class="\' + OUT + \'"><p class="font-extrabold mb-2">🧾 Hasil Pembagian Pro-Rata (' + fmtN((sampai - dari) / HARI + 1, 0) + ' hari periode)</p>'
+    + '<table class="w-full text-[13px]"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Penghuni</th><th class="py-1 pr-3">Hari</th><th class="py-1 pr-3">Listrik</th><th class="py-1 pr-3">WiFi</th><th class="py-1 pr-3">Air</th><th class="py-1">Total</th></tr>'
+    + orang.map((o) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3 font-semibold\">" + esc(o.nama) + "</td><td class=\"py-1 pr-3\">" + o.hari + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.listrik) + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.wifi) + "</td><td class=\"py-1 pr-3\">" + fmtRp(o.air) + "</td><td class=\"py-1 font-bold\">" + fmtRp(o.total) + "</td></tr>").join("") + "</table>"
+    + '<p class="text-[13px] mt-2">Total terkumpul <b>' + fmtRp(totBayar) + '</b> dari tagihan ' + fmtRp(totTagihan) + (Math.abs(totBayar - totTagihan) > orang.length ? ' (selisih pembulatan ' + fmtRp(Math.abs(totBayar - totTagihan)) + ")" : " — pas ✅") + '. Listrik ditimbang hari × bobot alat; WiFi & air ditimbang hari huni.</p>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="\' + BTN2 + \'" onclick="copyText(window._proTeks || \'\')">📋 Copy Ringkasan (untuk grup WA kos)</button></div></div>';
+}
+SHARE_GETTERS.prorata = function () { return window._proTeks ? "Tagihan kos bulan ini terbagi adil pro-rata hari huni — total " + fmtRp(window._proTotal || 0) + ". Dihitung dengan Splitter Tagihan Kos MahasiswaTools." : ""; };
 
