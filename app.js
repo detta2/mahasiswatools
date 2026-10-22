@@ -18,37 +18,27 @@ const CATS = [
 const CATNAME = { anti: "Kit Anti-AI & Keaslian", tulis: "Penulisan & Skripsi", data: "Olah Data & Penelitian", present: "Presentasi & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Dokumen, PDF & Gambar", karir: "Akademik, Karir & Harian" };
 
 const TOOLS = [
-  { id: "validitas", n: "Uji Validitas Pearson & Reliabilitas Alpha", c: "data", i: "📊", d: "Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.", aktif: 1 },
-  { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
-  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac & Lemeshow)", c: "data", i: "🧮", d: "Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.", aktif: 1 },
   { id: "aidetect", n: "Pendeteksi Gaya Tulisan AI (Burstiness)", c: "anti", i: "🤖", d: "Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.", aktif: 1 },
-  { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", aktif: 1 },
-  { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", aktif: 1 },
-  { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
+  { id: "humanizer", n: "Humanizer & Editor Variasi Kalimat", c: "anti", i: "🪶", d: "Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.", aktif: 1 },
+  { id: "scrubber", n: "Pembersih Jejak & Karakter Tersembunyi AI", c: "anti", i: "🧽", d: "Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.", aktif: 1 },
+  { id: "sitasi", n: "Verifikator Keaslian Daftar Pustaka (Crossref)", c: "anti", i: "🔎", d: "Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.", aktif: 1 },
+  { id: "ceksitasi", n: "Pengecek Sitasi In-Text vs Daftar Pustaka", c: "anti", i: "🔍", d: "Cek dua arah: sitasi yang kamu kutip di teks tapi tidak ada di daftar pustaka (dan sebaliknya) langsung ketahuan.", aktif: 1 },
+  { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
+  { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
+  { id: "dapus", n: "Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)", c: "tulis", i: "📚", d: "Format sitasi instan, italic otomatis, urut A–Z, tersimpan.", aktif: 1 },
+  { id: "k16", n: "Template Makalah & Skripsi (.docx)", c: "tulis", i: "📄", d: "Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.", fmt: "DOCX", aktif: 1 },
+  { id: "proposal", n: "Generator Proposal", c: "tulis", i: "📑", d: "Proposal penelitian/kegiatan/magang: cover berlogo, RAB otomatis, .docx asli.", fmt: "DOCX", aktif: 1 },
   { id: "similarity", n: "Pre-Turnitin Similarity Checker (Lokal)", c: "tulis", i: "🔍", d: "Jaccard 3-gram: bandingkan teks asli vs parafrase + highlight.", aktif: 1 },
-  { id: "regresi", n: "Regresi Berganda & Uji Asumsi Klasik", c: "data", i: "📈", d: "Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.", aktif: 1 },
-  { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
-  { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
-  { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
   { id: "jurnal", n: "Pencari & Rak Jurnal", c: "tulis", i: "📚", d: "Cari jurnal (OpenAlex), sitasi dari DOI, rak referensi APA & BibTeX.", aktif: 1 },
   { id: "kisikisi", n: "Generator Kisi-Kisi & Operasionalisasi Variabel", c: "tulis", i: "🧩", d: "Susun tabel kisi-kisi instrumen Bab 3 (variabel–indikator–nomor item favorable/unfavorable) otomatis.", aktif: 1 },
   { id: "imrad", n: "Konverter Skripsi ke Jurnal (IMRAD)", c: "tulis", i: "📰", d: "Ubah ringkasan skripsimu (Bab 1–5) jadi draf artikel jurnal format IMRAD + cek proporsi kata ideal tiap bagian.", aktif: 1 },
-  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.", aktif: 1 },
   { id: "judul", n: "Generator Ide Judul Skripsi", c: "tulis", i: "💡", d: "Puluhan pola judul dari variabel X, Y, lokasi & metode.", aktif: 1 },
   { id: "singkatan", n: "Pembuat Daftar Singkatan Otomatis", c: "tulis", i: "🔤", d: "Ekstrak akronim dari naskah jadi daftar singkatan A–Z.", aktif: 1 },
   { id: "k17", n: "Matriks Sintesis Jurnal Bab 2", c: "tulis", i: "🧾", d: "Tabel perbandingan jurnal untuk tinjauan pustaka, ekspor .doc/CSV.", aktif: 1 },
-  { id: "tabelstat", n: "Generator Tabel Statistik Eksak (r, t, F, χ²)", c: "data", i: "📊", d: "Nilai tabel r/t/F/χ² eksak untuk N atau df berapa pun (misal N=137) + pembanding nilai hitungmu.", aktif: 1 },
-  { id: "mediasi", n: "Uji Mediasi (Sobel) & Moderasi (MRA)", c: "data", i: "💧", d: "Uji Sobel untuk mediasi + regresi moderasi (MRA) dengan diagram jalur & narasi Bab 4 otomatis.", aktif: 1 },
   { id: "pengesahan", n: "Lembar Pengesahan & Pernyataan Bebas Plagiat", c: "tulis", i: "🖋️", d: "Buat lembar pengesahan skripsi & surat pernyataan bebas plagiat (ada kotak materai) — tinggal tanda tangan.", aktif: 1 },
   { id: "ojskit", n: "OJS Kit: Cover Letter & Matriks Reviewer Jurnal", c: "tulis", i: "✉️", d: "Siap submit jurnal: buat cover letter untuk editor OJS & matriks tanggapan reviewer dalam satu .doc.", aktif: 1 },
   { id: "bimbingan", n: "Lembar Bimbingan Skripsi", c: "tulis", i: "📔", d: "Kartu kendali konsultasi dosen, ekspor .doc berkop logo.", aktif: 1 },
   { id: "revisi", n: "Manajer Revisi Pasca-Sidang", c: "tulis", i: "🖊️", d: "Checklist revisi per penguji, progres, ekspor Lembar Revisi resmi.", aktif: 1 },
-  { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
-  { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
-  { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 },
-  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
-  { id: "transkrip", n: "Kalkulator IPK Transkrip & Cek Cum Laude", c: "karir", i: "🎓", d: "Tempel nilai mata kuliahmu — keluar IPK, IPS per semester, predikat kelulusan, dan cek syarat cum laude.", aktif: 1 },
-  { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
   { id: "pdffix", n: "Pembersih Teks Copy-Paste PDF", c: "tulis", i: "🧹", d: "Hapus enter terpotong & spasi ganda dari teks jurnal PDF.", aktif: 1 },
   { id: "italic", n: "Auto-Italic Kata Asing & Latin", c: "tulis", i: "🇮", d: "Deteksi kata asing/ilmiah lalu miringkan sesuai kaidah.", aktif: 1 },
   { id: "eydcase", n: "Case Converter EYD Judul", c: "tulis", i: "🔠", d: "Title Case Bahasa Indonesia: kata hubung tetap huruf kecil.", aktif: 1 },
@@ -60,6 +50,19 @@ const TOOLS = [
   { id: "kerangkabab", n: "Generator Kerangka Bab & Sub-Bab Skripsi", c: "tulis", i: "🗂️", d: "Kerangka Bab I–V sesuai metode penelitianmu + panduan isi.", aktif: 1 },
   { id: "k20", n: "Kalkulator Target Kata & Deadline Skripsi", c: "tulis", i: "🎯", d: "Target kata per hari realistis + milestone tanggal per bab.", aktif: 1 },
   { id: "bacawaktu", n: "Kalkulator Waktu Baca Presentasi", c: "tulis", i: "⏱️", d: "Jumlah kata naskah → estimasi durasi bicara + saran potong kata.", aktif: 1 },
+  { id: "gformclean", n: "Pembersih & Perapih Excel Google Form", c: "data", i: "🧹", d: "Upload hasil Google Form: header panjang jadi kode X1_1, jawaban teks jadi skor 1–5, total per variabel — unduh .xlsx siap olah.", fmt: "XLSX", aktif: 1 },
+  { id: "validitas", n: "Uji Validitas Pearson & Reliabilitas Alpha", c: "data", i: "📊", d: "Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "regresi", n: "Regresi Berganda & Uji Asumsi Klasik", c: "data", i: "📈", d: "Regresi 2–4 variabel X + VIF, Glejser, normalitas residual.", aktif: 1 },
+  { id: "deskriptif", n: "Statistik Deskriptif & Distribusi Frekuensi", c: "data", i: "📊", d: "Mean, median, kuartil, tabel frekuensi & kategorisasi skor + narasi.", aktif: 1 },
+  { id: "formulabldr", n: "Generator Rumus Excel Bahasa Manusia", c: "data", i: "ƒx", d: "Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.", fmt: "XLSX", aktif: 1 },
+  { id: "xlstemplate", n: "Generator Template Excel Ber-Rumus Hidup", c: "data", i: "📐", d: "Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.", fmt: "XLSX", aktif: 1 },
+  { id: "sampel", n: "Kalkulator Sampel (Slovin, Isaac & Lemeshow)", c: "data", i: "🧮", d: "Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.", aktif: 1 },
+  { id: "kuesioner", n: "Pembuat Kuesioner Penelitian", c: "data", i: "📝", d: "Susun angket Likert/PG/terbuka, ekspor .doc & teks Google Form.", aktif: 1 },
+  { id: "inferens", n: "Uji Statistik Inferensial", c: "data", i: "📈", d: "Normalitas, uji-t, ANOVA, regresi + narasi Bab 4 otomatis.", aktif: 1 },
+  { id: "nonpar", n: "Uji Statistik Non-Parametrik", c: "data", i: "📉", d: "Mann-Whitney, Wilcoxon, Kruskal-Wallis, Spearman + narasi Bab 4.", aktif: 1 },
+  { id: "likert", n: "Konverter Skala Likert Massal", c: "data", i: "🔢", d: "Teks jawaban kuesioner ↔ skor angka 1–5 secara massal.", aktif: 1 },
+  { id: "tabelstat", n: "Generator Tabel Statistik Eksak (r, t, F, χ²)", c: "data", i: "📊", d: "Nilai tabel r/t/F/χ² eksak untuk N atau df berapa pun (misal N=137) + pembanding nilai hitungmu.", aktif: 1 },
+  { id: "mediasi", n: "Uji Mediasi (Sobel) & Moderasi (MRA)", c: "data", i: "💧", d: "Uji Sobel untuk mediasi + regresi moderasi (MRA) dengan diagram jalur & narasi Bab 4 otomatis.", aktif: 1 },
   { id: "k25", n: "Pembuat Bagan Kerangka Berpikir (X → Y)", c: "data", i: "🗺️", d: "Kotak variabel + panah hubungan + narasi, ekspor PNG.", aktif: 1 },
   { id: "k26", n: "Generator Grafik Bab 4 Arsiran (Batang & Pie)", c: "data", i: "📈", d: "Diagram arsiran hitam-putih, tetap jelas saat difotokopi.", aktif: 1 },
   { id: "k23", n: "Dummy Data Kuesioner Generator (Auto-Valid)", c: "data", i: "🧪", d: "Data simulasi latihan yang diverifikasi lolos Alpha target.", aktif: 1 },
@@ -67,20 +70,21 @@ const TOOLS = [
   { id: "koding", n: "Koding Kualitatif Transkrip", c: "data", i: "🏷️", d: "Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.", aktif: 1 },
   { id: "consent", n: "Lembar Persetujuan Responden", c: "data", i: "🤝", d: "Informed consent etika penelitian, berkop logo, siap tanda tangan.", aktif: 1 },
   { id: "federer", n: "Kalkulator Sampel Eksperimen (Federer)", c: "data", i: "🧪", d: "Hitung sampel eksperimen (rumus Federer) + koreksi drop-out + pengacak kelompok perlakuan RAL/RAK.", aktif: 1 },
-  { id: "bibtex", n: "Konverter Sitasi BibTeX/RIS ↔ APA/IEEE", c: "dokumen", i: "🔄", d: "Ubah file sitasi BibTeX/RIS (Mendeley/Zotero) jadi daftar pustaka APA/IEEE/Vancouver — dan sebaliknya.", aktif: 1 },
-  { id: "poster", n: "Pembuat Poster Ilmiah Seminar/PKM", c: "dokumen", i: "🖼️", d: "Buat poster ilmiah seminar/PKM resolusi tinggi: abstrak, metode, temuan, QR code — unduh PNG siap cetak.", aktif: 1 },
-  { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", aktif: 1 },
+  { id: "decksidang", n: "Generator Deck PPT Sidang Skripsi (Bab 1–5)", c: "present", i: "🎓", d: "Isi terstruktur Bab 1–5 → deck .pptx 11 slide: cover berlogo, badge agenda, tabel hasil, 5 tema akademik + catatan pembicara otomatis.", fmt: "PPTX", aktif: 1 },
+  { id: "pptxextract", n: "Pengekstrak Materi PPT Dosen", c: "present", i: "📤", d: "Upload .pptx dosen → rangkuman .doc, handout PDF berkollom catatan, dan kuis latihan otomatis dari isi slide.", fmt: "PPTX", aktif: 1 },
+  { id: "xls2chart", n: "Konverter Data Excel ke Slide Grafik PPT", c: "present", i: "📊", d: "Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.", fmt: "PPTX", aktif: 1 },
+  { id: "pptxpress", n: "Kompresor Ukuran File PowerPoint", c: "present", i: "🗜️", d: "Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.", fmt: "PPTX", aktif: 1 },
+  { id: "k27", n: "Outline Makalah ke PowerPoint (.pptx)", c: "present", i: "🖥️", d: "Poin makalah → file presentasi .pptx asli per bab.", fmt: "PPTX", aktif: 1 },
   { id: "teleprompter", n: "Teleprompter & Timer Sidang", c: "present", i: "🎤", d: "Teks berjalan otomatis + estimasi kata per menit.", aktif: 1 },
   { id: "k28", n: "Simulasi Pertanyaan Penguji Sidang (18+ Soal)", c: "present", i: "🎓", d: "Bank soal jebakan penguji + kerangka jawaban + timer.", aktif: 1 },
   { id: "tanyajawab", n: "Prediksi Pertanyaan Sidang dari Abstrak", c: "present", i: "🎯", d: "Tempel abstrak skripsimu — keluar daftar pertanyaan yang paling mungkin ditanya penguji + kerangka cara menjawabnya.", aktif: 1 },
-  { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
-  { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", aktif: 1 },
-  { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
-  { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", aktif: 1 },
-  { id: "k44", n: "Kompresor File (Gambar / PDF / DOCX)", c: "dokumen", i: "🗜️", d: "Perkecil gambar, PDF, dan .docx langsung di browser.", aktif: 1 },
-  { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", aktif: 1 },
-  { id: "k41", n: "Generator QR Code Permanen (+ Logo)", c: "dokumen", i: "🔳", d: "QR link kuesioner ECC-H, bisa sisip logo di tengah.", aktif: 1 },
-  { id: "k42", n: "OCR Gambar Buku / Catatan ke Teks", c: "dokumen", i: "🔍", d: "Foto halaman → teks bisa copy (Tesseract.js, ID/EN).", aktif: 1 },
+  { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
+  { id: "k47", n: "Kuis Pilihan Ganda & Flashcard Otomatis", c: "present", i: "🎯", d: "Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.", aktif: 1 },
+  { id: "k48", n: "Cornell Notes Generator", c: "present", i: "📓", d: "Catatan metode Cornell: isyarat, catatan, ringkasan.", aktif: 1 },
+  { id: "k49", n: "Pomodoro Timer + Suara Fokus Web Audio", c: "present", i: "🍅", d: "Timer 25/5 + white/brown noise & hujan prosedural.", aktif: 1 },
+  { id: "k29", n: "Roda Undian Urutan Presentasi", c: "present", i: "🎡", d: "Spin wheel pengundi giliran kelompok presentasi.", aktif: 1 },
+  { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
+  { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 },
   { id: "k35", n: "Generator Sertifikat Massal (ZIP)", c: "kelompok", i: "🏆", d: "Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.", aktif: 1 },
   { id: "k31", n: "Logbook Harian Magang / KKN", c: "kelompok", i: "📓", d: "Catatan harian formal, ekspor .doc berkop paraf & DPL.", aktif: 1 },
   { id: "kelompok", n: "Smart Group Generator (Pengacak Adil)", c: "kelompok", i: "👥", d: "Bagi nama ke kelompok merata, seimbang gender bila ditandai.", aktif: 1 },
@@ -94,9 +98,30 @@ const TOOLS = [
   { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
   { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
   { id: "k36", n: "Desain Plang Jalan & Edukasi Desa (Bonus)", c: "kelompok", i: "🪧", d: "Desain plang canvas 4 tema untuk program fisik KKN.", aktif: 1 },
+  { id: "pdfsign", n: "Penanda Tangan & Stempel PDF", c: "dokumen", i: "✍️", d: "Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.", fmt: "PDF", aktif: 1 },
+  { id: "pdforg", n: "Pengatur Ulang, Pemutar & Penghapus Halaman PDF", c: "dokumen", i: "📑", d: "Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.", fmt: "PDF", aktif: 1 },
+  { id: "pdftab2xls", n: "Ekstraktor Tabel PDF ke Excel", c: "dokumen", i: "🧾", d: "Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.", fmt: "PDF", aktif: 1 },
+  { id: "xlsmerger", n: "Penggabung Banyak File Excel / CSV", c: "dokumen", i: "🗂️", d: "Gabung banyak file: tumpuk baris jadi 1 sheet master, atau satukan jadi 1 workbook multi-tab.", fmt: "XLSX", aktif: 1 },
+  { id: "xls2pdf", n: "Konverter Excel ke PDF Siap Cetak (Fit-Page)", c: "dokumen", i: "🖨️", d: "Tabel Excel jadi PDF yang 100% pas 1 lebar halaman A4/F4 — tanpa kolom kanan terpotong, header berulang tiap halaman.", fmt: "XLSX", aktif: 1 },
+  { id: "bibtex", n: "Konverter Sitasi BibTeX/RIS ↔ APA/IEEE", c: "dokumen", i: "🔄", d: "Ubah file sitasi BibTeX/RIS (Mendeley/Zotero) jadi daftar pustaka APA/IEEE/Vancouver — dan sebaliknya.", aktif: 1 },
+  { id: "poster", n: "Pembuat Poster Ilmiah Seminar/PKM", c: "dokumen", i: "🖼️", d: "Buat poster ilmiah seminar/PKM resolusi tinggi: abstrak, metode, temuan, QR code — unduh PNG siap cetak.", aktif: 1 },
+  { id: "k37", n: "Pas Foto & Ganti Background", c: "dokumen", i: "🖼️", d: "Background merah #DB1514 / biru #0054A6, ukuran 300 DPI.", aktif: 1 },
+  { id: "k43", n: "Penggabung PDF (Merger)", c: "dokumen", i: "🔗", d: "Gabungkan banyak PDF berkas jadi satu file utuh.", fmt: "PDF", aktif: 1 },
+  { id: "splitpdf", n: "Ekstrak Halaman PDF Tertentu", c: "dokumen", i: "✂️", d: "Ambil halaman pilihan (mis. 1-3,5) dari PDF besar.", aktif: 1 },
+  { id: "imgpdf", n: "Konverter Gambar ke PDF", c: "dokumen", i: "🖨️", d: "Kumpulan foto dokumen → satu PDF A4 rapi per halaman.", fmt: "PDF", aktif: 1 },
+  { id: "k44", n: "Kompresor File (Gambar / PDF / DOCX)", c: "dokumen", i: "🗜️", d: "Perkecil gambar, PDF, dan .docx langsung di browser.", aktif: 1 },
+  { id: "pdfstamp", n: "Nomor Halaman & Watermark PDF", c: "dokumen", i: "🔢", d: "Beri nomor halaman & cap watermark pada PDF yang di-upload.", fmt: "PDF", aktif: 1 },
+  { id: "k41", n: "Generator QR Code Permanen (+ Logo)", c: "dokumen", i: "🔳", d: "QR link kuesioner ECC-H, bisa sisip logo di tengah.", aktif: 1 },
+  { id: "k42", n: "OCR Gambar Buku / Catatan ke Teks", c: "dokumen", i: "🔍", d: "Foto halaman → teks bisa copy (Tesseract.js, ID/EN).", aktif: 1 },
   { id: "k39", n: "Grid Foto Dokumentasi Lampiran", c: "dokumen", i: "🧩", d: "Banyak foto + caption → satu gambar lampiran rapi.", aktif: 1 },
   { id: "k40", n: "Timestamp & Geotagging Foto", c: "dokumen", i: "🕒", d: "Tempel waktu & lokasi ala kamera lapangan ke foto tugas.", aktif: 1 },
   { id: "k38", n: "Pembuat Tanda Tangan Transparan PNG", c: "dokumen", i: "✍️", d: "Buang latar kertas via luminansi → PNG transparan.", aktif: 1 },
+  { id: "k53", n: "CV ATS-Friendly Builder + Skor Struktural", c: "karir", i: "📄", d: "CV 1 kolom aman ATS + skor cek struktur instan.", aktif: 1 },
+  { id: "k50", n: "Pembuat Surat Resmi & Motivation Letter", c: "karir", i: "✉️", d: "15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.", aktif: 1 },
+  { id: "chatdosen", n: "Generator Chat & Surat Izin Dosen (Bonus)", c: "karir", i: "💬", d: "Template chat sopan ke dosen + surat izin resmi.", aktif: 1 },
+  { id: "ipk", n: "Simulator Target IPK (GPA Planner)", c: "karir", i: "🎓", d: "Proyeksi IP semester depan untuk target cumlaude.", aktif: 1 },
+  { id: "transkrip", n: "Kalkulator IPK Transkrip & Cek Cum Laude", c: "karir", i: "🎓", d: "Tempel nilai mata kuliahmu — keluar IPK, IPS per semester, predikat kelulusan, dan cek syarat cum laude.", aktif: 1 },
+  { id: "targetnilai", n: "Kalkulator Target Nilai Mata Kuliah", c: "karir", i: "🎯", d: "Hitung nilai UAS minimal untuk target A/B/C dari bobot penilaian.", aktif: 1 },
   { id: "k45", n: "Wallpaper Jadwal Kuliah / KRS (Bonus)", c: "karir", i: "📱", d: "Jadwal kuliah jadi wallpaper HP 1080×1920.", aktif: 1 },
   { id: "k54", n: "Checklist Syarat Yudisium & Sidang", c: "karir", i: "✅", d: "14+ syarat kelulusan, progres tersimpan otomatis.", aktif: 1 },
   { id: "k52", n: "Kalender Akademik & Pengingat Deadline (Bonus)", c: "karir", i: "📆", d: "Kalender + hitung mundur H-x + ekspor .ics.", aktif: 1 },
@@ -104,34 +129,8 @@ const TOOLS = [
   { id: "sks", n: "Konverter SKS MBKM / Kampus Merdeka", c: "karir", i: "🔄", d: "Konversi jam magang/KKN/studi independen ke penyetaraan SKS.", aktif: 1 },
   { id: "biaya", n: "Kalkulator Target Biaya Kuliah", c: "karir", i: "🎯", d: "Total sisa biaya kuliah jadi target tabungan per bulan.", aktif: 1 },
   { id: "combo55", n: "Budget Anak Kos + Terbilang & Romawi", c: "karir", i: "💰", d: "Jatah aman makan harian + konverter terbilang & angka Romawi.", aktif: 1 },
-  { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 },
-  { id: "humanizer", n: "Humanizer & Editor Variasi Kalimat", c: "anti", i: "🪶", d: "Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.", aktif: 1 },
-  { id: "scrubber", n: "Pembersih Jejak & Karakter Tersembunyi AI", c: "anti", i: "🧽", d: "Hapus zero-width, NBSP, markdown sisa & artefak copy-paste LLM dalam 1 klik.", aktif: 1 },
-  { id: "sitasi", n: "Verifikator Keaslian Daftar Pustaka (Crossref)", c: "anti", i: "🔎", d: "Cek tiap sitasi ke Crossref: jurnal asli atau potensi halusinasi AI.", aktif: 1 },
-  { id: "ceksitasi", n: "Pengecek Sitasi In-Text vs Daftar Pustaka", c: "anti", i: "🔍", d: "Cek dua arah: sitasi yang kamu kutip di teks tapi tidak ada di daftar pustaka (dan sebaliknya) langsung ketahuan.", aktif: 1 },
-  { id: "deklarasi", n: "Generator Deklarasi Penggunaan AI", c: "anti", i: "📜", d: "Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.", aktif: 1 },
-  { id: "buktiketik", n: "Editor Bukti Ketikan Mandiri (Authorship Proof)", c: "anti", i: "⌨️", d: "Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.", aktif: 1 },
-  { id: "k46", n: "Mind Map Generator (SVG Radial)", c: "present", i: "🧠", d: "Topik + sub-topik → peta konsep bercabang warna, unduh PNG.", aktif: 1 },
-  { id: "k47", n: "Kuis Pilihan Ganda & Flashcard Otomatis", c: "present", i: "🎯", d: "Catatan → kuis berpengecoh otomatis + flashcard bolak-balik.", aktif: 1 },
-  { id: "k48", n: "Cornell Notes Generator", c: "present", i: "📓", d: "Catatan metode Cornell: isyarat, catatan, ringkasan.", aktif: 1 },
-  { id: "k49", n: "Pomodoro Timer + Suara Fokus Web Audio", c: "present", i: "🍅", d: "Timer 25/5 + white/brown noise & hujan prosedural.", aktif: 1 },
-  { id: "k29", n: "Roda Undian Urutan Presentasi", c: "present", i: "🎡", d: "Spin wheel pengundi giliran kelompok presentasi.", aktif: 1 },
-  { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
-  { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 }
-
-,
-  { id: "gformclean", n: "Pembersih & Perapih Excel Google Form", c: "data", i: "🧹", d: "Upload hasil Google Form: header panjang jadi kode X1_1, jawaban teks jadi skor 1–5, total per variabel — unduh .xlsx siap olah.", aktif: 1 },
-  { id: "formulabldr", n: "Generator Rumus Excel Bahasa Manusia", c: "data", i: "ƒx", d: "Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.", aktif: 1 },
-  { id: "xlstemplate", n: "Generator Template Excel Ber-Rumus Hidup", c: "data", i: "📐", d: "Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.", aktif: 1 },
-  { id: "pdftab2xls", n: "Ekstraktor Tabel PDF ke Excel", c: "dokumen", i: "🧾", d: "Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.", aktif: 1 },
-  { id: "xlsmerger", n: "Penggabung Banyak File Excel / CSV", c: "dokumen", i: "🗂️", d: "Gabung banyak file: tumpuk baris jadi 1 sheet master, atau satukan jadi 1 workbook multi-tab.", aktif: 1 },
-  { id: "decksidang", n: "Generator Deck PPT Sidang Skripsi (Bab 1–5)", c: "present", i: "🎓", d: "Isi terstruktur Bab 1–5 → deck .pptx 11 slide: cover berlogo, badge agenda, tabel hasil, 5 tema akademik + catatan pembicara otomatis.", aktif: 1 },
-  { id: "pptxextract", n: "Pengekstrak Materi PPT Dosen", c: "present", i: "📤", d: "Upload .pptx dosen → rangkuman .doc, handout PDF berkollom catatan, dan kuis latihan otomatis dari isi slide.", aktif: 1 },
-  { id: "xls2chart", n: "Konverter Data Excel ke Slide Grafik PPT", c: "present", i: "📊", d: "Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.", aktif: 1 },
-  { id: "pptxpress", n: "Kompresor Ukuran File PowerPoint", c: "present", i: "🗜️", d: "Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.", aktif: 1 },
-  { id: "xls2pdf", n: "Konverter Excel ke PDF Siap Cetak (Fit-Page)", c: "dokumen", i: "🖨️", d: "Tabel Excel jadi PDF yang 100% pas 1 lebar halaman A4/F4 — tanpa kolom kanan terpotong, header berulang tiap halaman.", aktif: 1 },
-  { id: "pdfsign", n: "Penanda Tangan & Stempel PDF", c: "dokumen", i: "✍️", d: "Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.", aktif: 1 },
-  { id: "pdforg", n: "Pengatur Ulang, Pemutar & Penghapus Halaman PDF", c: "dokumen", i: "📑", d: "Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.", aktif: 1 }];
+  { id: "k51", n: "Simulasi Wawancara Kerja (Metode STAR)", c: "karir", i: "🤝", d: "Latihan wawancara + timer 90 detik + kerangka STAR.", aktif: 1 }
+];
 
 /* ---------------- state & helper ---------------- */
 const $ = (s, r) => (r || document).querySelector(s);
@@ -308,7 +307,7 @@ if (typeof renderRecent === "function") { const _rrI = renderRecent; renderRecen
 if (typeof showRoadmap === "function") { const _srI = showRoadmap; showRoadmap = function () { _srI(); paintTics(); }; }
 
 /* ---------------- tampilan grid/ringkas, recent, peta jalan ---------------- */
-let viewMode = store.get("mt_view", "grid");
+let viewMode = store.get("mt_view", "bento"); if (!["bento", "periodik", "situasi"].includes(viewMode)) viewMode = "bento";
 let roadmapOn = false;
 function toolRow(t) {
   const fav = favs.has(t.id);
@@ -316,17 +315,20 @@ function toolRow(t) {
     + '<div class="tic tic-sm shrink-0">' + iconOf(t) + "</div>"
     + '<div class="flex-1 min-w-0"><h3 class="font-bold text-[13.5px] leading-tight truncate text-slate-900 dark:text-white">' + esc(t.n) + "</h3>"
     + '<p class="text-[12px] text-slate-500 dark:text-slate-400 truncate mt-0.5">' + esc(t.d) + "</p></div>"
+    + fmtBadge(t)
     + '<span class="text-[10.5px] font-semibold text-slate-400 dark:text-slate-500 hidden md:block shrink-0">' + CATNAME[t.c] + "</span>"
     + '<button onclick="event.stopPropagation();toggleFav(\'' + t.id + '\')" title="Pin ke Favorit" class="shrink-0 w-7 h-7 grid place-items-center ' + (fav ? "text-amber-500" : "text-slate-300 dark:text-slate-600 hover:text-amber-500") + ' transition">' + (fav ? "★" : "☆") + "</button></article>";
 }
+const FMT_CLS = { XLSX: "text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40", PPTX: "text-orange-700 bg-orange-100 dark:text-orange-300 dark:bg-orange-900/40", PDF: "text-rose-700 bg-rose-100 dark:text-rose-300 dark:bg-rose-900/40", DOCX: "text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/40" };
+function fmtBadge(t, big) { if (!t.fmt) return ""; return '<span class="font-extrabold tracking-wide rounded-md ' + (big ? "text-[11px] px-2 py-1" : "text-[9.5px] px-1.5 py-0.5") + " " + (FMT_CLS[t.fmt] || "") + '">' + t.fmt + "</span>"; }
 function setView(v) { viewMode = v; store.set("mt_view", v); syncViewBtns(); renderGrid(); }
 function syncViewBtns() {
-  const g = $("#viewGridBtn"), l = $("#viewListBtn"); if (!g || !l) return;
+  const map = { bento: "#viewBentoBtn", periodik: "#viewPeriodikBtn", situasi: "#viewSituasiBtn" };
   const base = "text-[11.5px] font-semibold px-2.5 py-1.5 rounded-lg border transition ";
   const on = "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white";
   const off = "bg-white text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700";
-  g.className = base + (viewMode === "grid" ? on : off);
-  l.className = base + (viewMode === "list" ? on : off);
+  Object.entries(map).forEach(([k, sel]) => { const el = $(sel); if (el) el.className = base + (viewMode === k ? on : off); });
+  document.querySelectorAll("[data-dockmode]").forEach((el) => { el.classList.toggle("dock-on", el.dataset.dockmode === viewMode); });
 }
 function scrollToGrid() { const el = $("#catTabs"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
 function quickSearch(q) { const inp = $("#searchInput"); if (inp) inp.value = q; curQuery = q; hideRoadmap(); renderGrid(); scrollToGrid(); }
@@ -377,6 +379,7 @@ function toolCard(t) {
     + '<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">' + esc(t.d) + "</p>"
     + '<div class="mt-4 flex items-center gap-2">'
     + '<span class="text-[10px] font-bold tracking-wide text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/50 rounded-full px-2 py-0.5">● AKTIF</span>'
+    + fmtBadge(t)
     + '<span class="text-[11px] font-semibold text-slate-400 dark:text-slate-500">' + CATNAME[t.c] + "</span></div></article>";
 }
 function renderGrid() {
@@ -388,7 +391,10 @@ function renderGrid() {
   list.sort((a, b) => (favs.has(b.id) - favs.has(a.id)) || ((b.aktif || 0) - (a.aktif || 0)));
   const cardFn = viewMode === "list" ? toolRow : toolCard;
   const wrapCls = viewMode === "list" ? "flex flex-col gap-2" : "grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5";
-  if (curCat === "all" && !curQuery) {
+  if (curCat === "all" && !curQuery && viewMode === "bento") { $("#grid").innerHTML = renderBento(list); }
+  else if (curCat === "all" && !curQuery && viewMode === "periodik") { $("#grid").innerHTML = renderPeriodik(list); }
+  else if (curCat === "all" && !curQuery && viewMode === "situasi") { $("#grid").innerHTML = renderSituasi(list); }
+  else if (curCat === "all" && !curQuery) {
     $("#grid").innerHTML = CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => {
       const items = list.filter((t) => t.c === c.k);
       if (!items.length) return "";
@@ -398,8 +404,116 @@ function renderGrid() {
     $("#grid").innerHTML = '<div class="' + wrapCls + '">' + list.map(cardFn).join("") + "</div>";
   }
   $("#gridEmpty").classList.toggle("hidden", list.length > 0);
-  $("#gridInfo").textContent = curCat === "fav" && !favs.size ? "Belum ada favorit — klik ikon ☆ pada kartu tool untuk mem-pin di sini." : "Menampilkan " + list.length + " dari " + TOOLS.length + " tools" + (curQuery ? ' untuk pencarian "' + curQuery + '"' : "") + ". Semua tool berstatus AKTIF dan siap dipakai.";
+  $("#gridInfo").textContent = curCat === "fav" && !favs.size ? "Belum ada favorit — klik ikon ☆ pada kartu tool untuk mem-pin di sini." : (curCat === "all" && !curQuery && viewMode === "bento" ? " 🧩 Mode Bento: 7 rak kategori — 3 flagship tampil besar, sisanya pill yang bisa digeser ↔ atau dibentangkan. Tanpa scroll panjang!" : curCat === "all" && !curQuery && viewMode === "periodik" ? " 🧪 Mode Tabel Periodik: " + TOOLS.length + " unsur dalam 1 layar — arahkan/ketuk unsur untuk inspeksi, klik ke-2 / tombol Buka untuk menjalankan." : curCat === "all" && !curQuery && viewMode === "situasi" ? " 🧭 Mode Meja Situasi: pilih situasimu, kerjakan tool-nya berurutan langkah demi langkah." : "Menampilkan " + list.length + " dari " + TOOLS.length + " tools" + (curQuery ? ' untuk pencarian "' + curQuery + '"' : "") + ". Semua tool berstatus AKTIF dan siap dipakai.");
 }
+
+/* ===== SMART ACADEMIC OS: Bento Swimlanes, Tabel Periodik, Meja Situasi, Dock, Dropzone ===== */
+const CAT_ACCENT = { anti: "#E11D48", tulis: "#2563EB", data: "#059669", present: "#D97706", kelompok: "#7C3AED", dokumen: "#0284C7", karir: "#4F46E5" };
+function pillHTML(t) {
+  return '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition snap-start"><span class="tic tic-xs">' + iconOf(t) + "</span>" + esc(t.n) + (t.fmt ? ' <span class="text-[8.5px] font-extrabold px-1 py-px rounded ' + (FMT_CLS[t.fmt] || "") + '">' + t.fmt + "</span>" : "") + "</button>";
+}
+function renderBento(list) {
+  return CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => {
+    const items = list.filter((t) => t.c === c.k);
+    if (!items.length) return "";
+    const flag = items.slice(0, 3), rest = items.slice(3);
+    return '<section class="mb-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 sm:p-5">'
+      + '<div class="flex items-center gap-2.5 mb-3.5"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:' + CAT_ACCENT[c.k] + '"></span><h2 class="text-[14px] font-extrabold tracking-wide text-slate-800 dark:text-slate-100">' + c.n + '</h2><span class="text-[11px] font-bold text-slate-400">' + items.length + ' tool</span><span class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></span>'
+      + (rest.length ? '<button onclick="laneScroll(\'' + c.k + '\',-1)" class="w-7 h-7 grid place-items-center rounded-full border border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-white dark:hover:bg-slate-800 transition" title="Geser kiri">‹</button><button onclick="laneScroll(\'' + c.k + '\',1)" class="w-7 h-7 grid place-items-center rounded-full border border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-white dark:hover:bg-slate-800 transition" title="Geser kanan">›</button>' : "")
+      + '</div>'
+      + '<div class="grid sm:grid-cols-3 gap-3.5">' + flag.map(toolCard).join("") + '</div>'
+      + (rest.length ? '<div id="lane-' + c.k + '" class="flex gap-2 overflow-x-auto pb-1.5 mt-3.5 noscroll snap-x">' + rest.map(pillHTML).join("") + '</div>'
+        + '<button id="laneBtn-' + c.k + '" onclick="laneExpand(\'' + c.k + '\')" class="mt-2 text-[12px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline">▾ Bentangkan Semua ' + items.length + ' Tool ' + c.n.replace(/^[^A-Za-z]+/, "") + '</button>'
+        + '<div id="laneAll-' + c.k + '" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 mt-3.5">' + items.map(toolCard).join("") + '</div>' : "")
+      + '</section>';
+  }).join("");
+}
+function laneScroll(cat, dir) { const el = document.getElementById("lane-" + cat); if (el) el.scrollBy({ left: dir * 340, behavior: "smooth" }); }
+function laneExpand(cat) {
+  const box = document.getElementById("laneAll-" + cat), btn = document.getElementById("laneBtn-" + cat);
+  if (!box) return;
+  const openNow = box.classList.toggle("hidden");
+  if (btn) btn.textContent = openNow ? btn.textContent.replace("▴ Tutup", "▾ Bentangkan") : btn.textContent.replace(/▾ Bentangkan Semua \d+ Tool/, "▴ Tutup");
+  if (!openNow) paintTics();
+}
+let ptSel = null;
+function ptInspectorHTML(t) {
+  if (!t) return '<p class="text-sm text-slate-400">Arahkan kursor / ketuk satu unsur untuk menginspeksinya di sini.</p>';
+  return '<div class="flex items-start gap-3.5"><span class="tic shrink-0">' + iconOf(t) + '</span><div class="min-w-0 flex-1"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-extrabold text-[16px] text-slate-900 dark:text-white leading-tight">' + esc(t.n) + '</h3>' + fmtBadge(t, 1) + '</div>'
+    + '<p class="text-[11px] font-bold tracking-wide mt-0.5" style="color:' + CAT_ACCENT[t.c] + '">' + CATNAME[t.c].toUpperCase() + " • UNSUR #" + (TOOLS.indexOf(t) + 1) + '</p>'
+    + '<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">' + esc(t.d) + '</p></div>'
+    + '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 bg-indigo-600 hover:bg-indigo-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-xl transition">🚀 Buka Tool</button></div>';
+}
+function renderPeriodik(list) {
+  if (!ptSel || !list.some((t) => t.id === ptSel)) ptSel = list[0] ? list[0].id : null;
+  const sel = list.find((t) => t.id === ptSel);
+  return '<section class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5">'
+    + '<div id="ptInspector" class="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-4 py-3.5 mb-4 min-h-[86px]">' + ptInspectorHTML(sel) + '</div>'
+    + '<div class="pgrid">' + list.map((t) => { const n = TOOLS.indexOf(t) + 1; return '<button class="ptile pt-' + t.c + (t.id === ptSel ? " pt-on" : "") + '" data-pt="' + t.id + '" title="' + esc(t.n) + '" onmouseenter="ptHover(\'' + t.id + '\')" onclick="ptTap(\'' + t.id + '\')"><span class="pt-num">' + n + '</span><span class="pt-mono">' + monoOf(t) + '</span>' + (t.fmt ? '<span class="pt-fmt">' + t.fmt + '</span>' : "") + '</button>'; }).join("") + '</div>'
+    + '<div class="flex flex-wrap gap-x-3 gap-y-1.5 mt-3.5">' + CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => '<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded" style="background:' + CAT_ACCENT[c.k] + '"></span>' + c.n.replace(/^[^A-Za-z]+/, "") + '</span>').join("") + '</div>'
+    + '</section>';
+}
+function ptHover(id) { const t = TOOLS.find((x) => x.id === id); const box = document.getElementById("ptInspector"); if (t && box) box.innerHTML = ptInspectorHTML(t); paintTic(box ? box.querySelector(".tic") : null, t); }
+function ptTap(id) { if (ptSel === id) { openTool(id); return; } ptSel = id; document.querySelectorAll(".ptile").forEach((el) => el.classList.toggle("pt-on", el.dataset.pt === id)); ptHover(id); }
+const SITUATIONS = [
+  { e: "🔥", n: "Kebut Bab 1–3 & Proposal", d: "Dari judul sampai proposal siap diajukan ke pembimbing.", ids: ["judul", "kisikisi", "proposal", "dapus", "k16"] },
+  { e: "📊", n: "Olah Data Kuesioner & Bab 4", d: "Alur SPSS killer: bersihkan → uji → regresi → mediasi → grafik.", ids: ["gformclean", "validitas", "regresi", "mediasi", "xls2chart"] },
+  { e: "🤖", n: "Sterilisasi AI & Cek Jurnal", d: "Pastikan naskahmu aman dari jejak AI dan sitasi halusinasi.", ids: ["aidetect", "humanizer", "scrubber", "sitasi", "similarity", "dapus"] },
+  { e: "🎤", n: "Persiapan Sempro & Sidang", d: "Deck otomatis, latihan ditanya penguji, sampai revisi beres.", ids: ["decksidang", "tanyajawab", "teleprompter", "revisi", "k27"] },
+  { e: "📄", n: "Beresin File PDF, Excel & PPT", d: "Segitiga Emas: tanda tangan, atur halaman, ekstrak, konversi.", ids: ["pdfsign", "pdforg", "pptxextract", "xls2pdf", "pdftab2xls"] },
+  { e: "⛺", n: "Urusan KKN, Kelompok & UKM", d: "Logbook, proposal & RAB, LPJ, kwitansi, sertifikat, absensi.", ids: ["k31", "proposal", "lpj", "k32", "k35", "hadir"] },
+  { e: "🎓", n: "Persiapan Yudisium & Karir", d: "Pas foto, ceklis yudisium, IPK, CV ATS, sampai wawancara.", ids: ["k37", "k54", "transkrip", "k53", "k50", "k51"] }
+];
+let sitIdx = 0;
+function setSituasi(i) { sitIdx = i; renderGrid(); }
+function renderSituasi() {
+  const sit = SITUATIONS[sitIdx];
+  const chips = '<div class="flex gap-2 overflow-x-auto pb-2 mb-4 noscroll">' + SITUATIONS.map((x2, i) => '<button onclick="setSituasi(' + i + ')" class="shrink-0 px-3.5 py-2 rounded-full text-[12.5px] font-bold border transition ' + (i === sitIdx ? "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900" : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300") + '">' + x2.e + " " + x2.n + "</button>").join("") + "</div>";
+  const steps = sit.ids.map((id, i) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return (i ? '<div class="self-center text-slate-300 dark:text-slate-600 font-black text-lg shrink-0 px-0.5">→</div>' : "")
+    + '<button onclick="openTool(\'' + id + '\')" class="relative shrink-0 w-[218px] text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg transition"><span class="absolute -top-2.5 left-3 text-[10px] font-extrabold tracking-wide bg-indigo-600 text-white rounded-full px-2 py-0.5">LANGKAH ' + (i + 1) + '</span><span class="tic tic-sm mb-2">' + iconOf(t) + '</span><span class="block font-bold text-[13.5px] leading-snug text-slate-900 dark:text-white">' + esc(t.n) + '</span><span class="block text-[12px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">' + esc(t.d) + "</span>" + (t.fmt ? '<span class="block mt-2">' + fmtBadge(t) + "</span>" : "") + "</button>"; }).join("");
+  return chips + '<section class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 sm:p-5"><h3 class="font-extrabold text-[16px]">' + sit.e + " " + sit.n + '</h3><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 mb-4">' + sit.d + ' Kerjakan berurutan dari Langkah 1 — klik kartu untuk membuka tool-nya.</p><div class="flex gap-2 overflow-x-auto pb-2 pt-2 noscroll">' + steps + "</div></section>";
+}
+function mtDockInit() {
+  if (document.getElementById("mtDock") || !document.getElementById("grid")) return;
+  const d = document.createElement("div");
+  d.id = "mtDock";
+  d.className = "fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 bg-slate-900/90 dark:bg-white/95 backdrop-blur-md rounded-full pl-2 pr-2 py-1.5 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.45)]";
+  const btn = "flex flex-col items-center gap-px px-3 py-1 rounded-full text-[15px] leading-none transition ";
+  const lbl = "text-[9px] font-bold tracking-wide";
+  d.innerHTML = '<button class="' + btn + 'text-slate-200 dark:text-slate-600" data-dockmode="bento" onclick="setView(\'bento\');window.scrollTo({top:0,behavior:\'smooth\'})">🏠<span class="' + lbl + '">Bento</span></button>'
+    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" data-dockmode="periodik" onclick="setView(\'periodik\');scrollToGrid()">🧪<span class="' + lbl + '">Periodik</span></button>'
+    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="showRoadmap()">🧭<span class="' + lbl + '">Peta</span></button>'
+    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="setCat(\'fav\');scrollToGrid()">⭐<span class="' + lbl + '">Favorit</span></button>'
+    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="focusSearch()">🔍<span class="' + lbl + '">Cari</span></button>';
+  document.body.appendChild(d);
+  document.body.style.paddingBottom = "84px";
+  syncViewBtns();
+}
+function dzHandleFile(f) {
+  if (!f) return;
+  const ext = (f.name.split(".").pop() || "").toLowerCase();
+  const box = document.getElementById("dzResult");
+  const act = (label, id) => '<button onclick="openTool(\'' + id + '\')" class="text-[12.5px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-3.5 py-2 transition">' + label + "</button>";
+  let acts = null;
+  if (["xlsx", "xls", "csv"].includes(ext)) acts = [["🧹 Bersihkan GForm", "gformclean"], ["🖨️ Ubah ke PDF Anti-Potong", "xls2pdf"], ["📊 Buat Grafik PPT", "xls2chart"], ["🧪 Uji Validitas", "validitas"], ["📈 Regresi", "regresi"]];
+  else if (ext === "pptx") acts = [["📤 Ekstrak jadi Catatan/Kuis", "pptxextract"], ["🗜️ Kompres Ukuran PPTX", "pptxpress"], ["🎓 Buat Deck Sidang", "decksidang"]];
+  else if (ext === "pdf") acts = [["✍️ Tanda Tangan & Stempel", "pdfsign"], ["🧾 Ekstrak Tabel ke Excel", "pdftab2xls"], ["📑 Putar/Urutkan Halaman", "pdforg"], ["🔢 Nomor Halaman & Watermark", "pdfstamp"], ["🧩 Gabung PDF", "k43"]];
+  else if (["bib", "ris"].includes(ext)) { openTool("bibtex"); toast("File ." + ext + " terdeteksi — Konverter Sitasi BibTeX/RIS dibuka."); return; }
+  if (!acts) { toast("Format ." + ext + " belum didukung dropzone — coba .xlsx, .pptx, .pdf, atau .bib ya."); return; }
+  if (box) { box.classList.remove("hidden"); box.innerHTML = '<p class="text-[13px] text-slate-300 mb-2.5">📄 <b class="text-white">' + esc(f.name) + '</b> (' + ext.toUpperCase() + ') — mau diapakan? Klik aksi, lalu upload file-nya di dalam tool:</p><div class="flex flex-wrap gap-2">' + acts.map((a) => act(a[0], a[1])).join("") + "</div>"; box.scrollIntoView({ behavior: "smooth", block: "center" }); }
+}
+function dzInit() {
+  const z = document.getElementById("dropZone"); if (!z || z.dataset.init) return; z.dataset.init = "1";
+  const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
+  ["dragenter", "dragover"].forEach((ev) => z.addEventListener(ev, (e) => { stop(e); z.classList.add("dz-on"); }));
+  ["dragleave", "drop"].forEach((ev) => z.addEventListener(ev, (e) => { stop(e); z.classList.remove("dz-on"); }));
+  z.addEventListener("drop", (e) => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; dzHandleFile(f); });
+  z.addEventListener("click", () => { const inp = document.getElementById("dzFile"); if (inp) inp.click(); });
+  const inp = document.getElementById("dzFile");
+  if (inp) inp.addEventListener("change", () => { dzHandleFile(inp.files[0]); inp.value = ""; });
+}
+document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => { mtDockInit(); dzInit(); }) : (mtDockInit(), dzInit());
+
 function toggleFav(id) {
   if (favs.has(id)) { favs.delete(id); toast("Dihapus dari Favorit"); } else { favs.add(id); toast("Dipin ke Favorit ⭐"); }
   saveFavs(); renderTabs(); renderGrid();

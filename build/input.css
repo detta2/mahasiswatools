@@ -30,3 +30,18 @@
   table{font-variant-numeric:tabular-nums}
   ::selection{background:#4F46E5;color:#fff}
   ::-webkit-scrollbar{width:9px;height:9px}::-webkit-scrollbar-thumb{background:#C7CEDA;border-radius:99px}.dark ::-webkit-scrollbar-thumb{background:#3F4756}
+
+/* ===== Smart Academic OS ===== */
+.noscroll{scrollbar-width:none}.noscroll::-webkit-scrollbar{display:none}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(54px,1fr));gap:6px}
+.ptile{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:1;border-radius:12px;border:1.5px solid transparent;cursor:pointer;transition:transform .12s, box-shadow .12s;font-family:inherit}
+.ptile:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 18px -6px rgba(15,23,42,.25);z-index:2}
+.ptile .pt-num{position:absolute;top:3px;left:5px;font-size:8.5px;font-weight:800;opacity:.55}
+.ptile .pt-mono{font-size:16px;font-weight:800;letter-spacing:.02em}
+.ptile .pt-fmt{position:absolute;bottom:3px;right:4px;font-size:7px;font-weight:800;opacity:.65}
+.pt-on{border-color:#4F46E5!important;box-shadow:0 0 0 2px rgba(79,70,229,.35)}
+.pt-anti{background:#FFF1F2;color:#E11D48}.pt-tulis{background:#EFF6FF;color:#2563EB}.pt-data{background:#ECFDF5;color:#059669}.pt-present{background:#FFFBEB;color:#D97706}.pt-kelompok{background:#F5F3FF;color:#7C3AED}.pt-dokumen{background:#F0F9FF;color:#0284C7}.pt-karir{background:#EEF2FF;color:#4F46E5}
+.dark .pt-anti{background:rgba(225,29,72,.16);color:#FDA4AF}.dark .pt-tulis{background:rgba(37,99,235,.20);color:#93C5FD}.dark .pt-data{background:rgba(5,150,105,.20);color:#6EE7B7}.dark .pt-present{background:rgba(217,119,6,.20);color:#FCD34D}.dark .pt-kelompok{background:rgba(124,58,237,.22);color:#C4B5FD}.dark .pt-dokumen{background:rgba(2,132,199,.20);color:#7DD3FC}.dark .pt-karir{background:rgba(79,70,229,.22);color:#A5B4FC}
+#dropZone.dz-on{border-color:#818CF8;background:rgba(99,102,241,.14);transform:scale(1.01)}
+#mtDock .dock-on{background:rgba(99,102,241,.35)}
+.dark #mtDock .dock-on{background:rgba(79,70,229,.18)}
