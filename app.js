@@ -119,7 +119,19 @@ const TOOLS = [
   { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
   { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 }
 
-];
+,
+  { id: "gformclean", n: "Pembersih & Perapih Excel Google Form", c: "data", i: "🧹", d: "Upload hasil Google Form: header panjang jadi kode X1_1, jawaban teks jadi skor 1–5, total per variabel — unduh .xlsx siap olah.", aktif: 1 },
+  { id: "formulabldr", n: "Generator Rumus Excel Bahasa Manusia", c: "data", i: "ƒx", d: "Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.", aktif: 1 },
+  { id: "xlstemplate", n: "Generator Template Excel Ber-Rumus Hidup", c: "data", i: "📐", d: "Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.", aktif: 1 },
+  { id: "pdftab2xls", n: "Ekstraktor Tabel PDF ke Excel", c: "dokumen", i: "🧾", d: "Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.", aktif: 1 },
+  { id: "xlsmerger", n: "Penggabung Banyak File Excel / CSV", c: "dokumen", i: "🗂️", d: "Gabung banyak file: tumpuk baris jadi 1 sheet master, atau satukan jadi 1 workbook multi-tab.", aktif: 1 },
+  { id: "decksidang", n: "Generator Deck PPT Sidang Skripsi (Bab 1–5)", c: "present", i: "🎓", d: "Isi terstruktur Bab 1–5 → deck .pptx 11 slide: cover berlogo, badge agenda, tabel hasil, 5 tema akademik + catatan pembicara otomatis.", aktif: 1 },
+  { id: "pptxextract", n: "Pengekstrak Materi PPT Dosen", c: "present", i: "📤", d: "Upload .pptx dosen → rangkuman .doc, handout PDF berkollom catatan, dan kuis latihan otomatis dari isi slide.", aktif: 1 },
+  { id: "xls2chart", n: "Konverter Data Excel ke Slide Grafik PPT", c: "present", i: "📊", d: "Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.", aktif: 1 },
+  { id: "pptxpress", n: "Kompresor Ukuran File PowerPoint", c: "present", i: "🗜️", d: "Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.", aktif: 1 },
+  { id: "xls2pdf", n: "Konverter Excel ke PDF Siap Cetak (Fit-Page)", c: "dokumen", i: "🖨️", d: "Tabel Excel jadi PDF yang 100% pas 1 lebar halaman A4/F4 — tanpa kolom kanan terpotong, header berulang tiap halaman.", aktif: 1 },
+  { id: "pdfsign", n: "Penanda Tangan & Stempel PDF", c: "dokumen", i: "✍️", d: "Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.", aktif: 1 },
+  { id: "pdforg", n: "Pengatur Ulang, Pemutar & Penghapus Halaman PDF", c: "dokumen", i: "📑", d: "Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.", aktif: 1 }];
 
 /* ---------------- state & helper ---------------- */
 const $ = (s, r) => (r || document).querySelector(s);
@@ -496,6 +508,142 @@ function loadLib(url, globalName) {
     document.head.appendChild(s);
   });
   return _libs[url];
+}
+
+/* ===== SEGITIGA EMAS: XLSX + PDF.js LAZY & HELPER GLOBAL ===== */
+function head(icon, title, desc) { return '<div class="fadein"><p class="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">' + desc + '</p>'; }
+const LIB_XLSX = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+const LIB_PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+function loadXLSX() { return loadLib(LIB_XLSX, "XLSX"); }
+async function loadPdfJs() {
+  const ok = await loadLib(LIB_PDFJS, "pdfjsLib");
+  if (ok && !pdfjsLib.GlobalWorkerOptions.workerSrc) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  return ok;
+}
+async function mtReadExcelFile(file) {
+  if (!await loadXLSX()) throw new Error("Library Excel gagal dimuat — periksa koneksi internet.");
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", raw: true });
+  while (rows.length && rows[rows.length - 1].every((c) => c === "")) rows.pop();
+  return { rows, sheetNames: wb.SheetNames, wb };
+}
+function mtRowsToTSV(rows) { return rows.map((r) => r.map((c) => c == null ? "" : String(c)).join("\t")).join("\n"); }
+async function mtExportExcel(sheetsData, filename) {
+  if (!await loadXLSX()) { toast("Library Excel gagal dimuat — periksa koneksi."); return false; }
+  const wb = XLSX.utils.book_new();
+  sheetsData.forEach((sh) => {
+    const rows = (sh.rows || []).map((r) => r.map((c) => c === undefined ? "" : c));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const widths = [];
+    rows.forEach((r) => r.forEach((c, i) => { const L = String(c == null ? "" : c).length; widths[i] = Math.min(55, Math.max(widths[i] || 10, L + 2)); }));
+    ws["!cols"] = widths.map((w) => ({ wch: w || 12 }));
+    XLSX.utils.book_append_sheet(wb, ws, String(sh.name || "Sheet").slice(0, 31));
+  });
+  XLSX.writeFile(wb, "MahasiswaTools_" + filename + ".xlsx");
+  return true;
+}
+function mtCellText(td) {
+  const inp = td.querySelector("input, textarea, select");
+  if (inp) return inp.value;
+  return td.textContent.trim().replace(/\s+/g, " ");
+}
+function mtScrapeTables(root) {
+  const out = [];
+  (root || document).querySelectorAll("table").forEach((tb, ti) => {
+    let title = "Tabel " + (ti + 1);
+    let el = tb;
+    for (let k = 0; k < 4 && el; k++) { el = el.parentElement; if (!el) break; const h = el.querySelector(":scope > h3, :scope > h4, :scope > .font-bold, :scope > p.font-semibold"); if (h && h.textContent.trim()) { title = h.textContent.trim().slice(0, 60); break; } }
+    const rows = [];
+    tb.querySelectorAll("tr").forEach((tr) => { const cells = [...tr.children].map(mtCellText); if (cells.some((c) => c !== "")) rows.push(cells); });
+    if (rows.length) out.push({ title, rows });
+  });
+  return out;
+}
+function mtScrapeNarrative(root) {
+  const texts = [];
+  (root || document).querySelectorAll("p, .whitespace-pre-line").forEach((p) => {
+    const t = p.textContent.trim().replace(/\s+/g, " ");
+    if (t.length > 70 && !/Contoh format|pisahkan kolom/i.test(t)) texts.push(t);
+  });
+  return [...new Set(texts)].slice(0, 6);
+}
+async function mtTablesToPPT(toolName, tables, narrative) {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat — periksa koneksi."); return; }
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const ACC = "4F46E5", DARK = "0B0F19";
+  let s = pptx.addSlide(); s.background = { color: DARK };
+  s.addText(toolName, { x: 0.7, y: 2.6, w: 12, fontSize: 34, bold: true, color: "FFFFFF" });
+  s.addText("Hasil Olah Data • MahasiswaTools • " + new Date().toLocaleDateString("id-ID"), { x: 0.7, y: 3.5, w: 12, fontSize: 15, color: "A5B4FC" });
+  tables.slice(0, 6).forEach((tb) => {
+    const sl = pptx.addSlide();
+    sl.addText(tb.title, { x: 0.5, y: 0.3, w: 12.3, fontSize: 19, bold: true, color: DARK });
+    const rows = tb.rows.map((r, ri) => r.map((c) => ({ text: String(c), options: ri === 0 ? { bold: true, fill: { color: "E0E7FF" } } : {} })));
+    sl.addTable(rows, { x: 0.5, y: 0.95, w: 12.3, fontSize: 11, border: { pt: 0.5, color: "CBD5E1" }, colW: tb.rows[0].map(() => 12.3 / tb.rows[0].length) });
+  });
+  if (narrative && narrative.length) {
+    const sl = pptx.addSlide();
+    sl.addText("Kesimpulan (Narasi Bab 4)", { x: 0.5, y: 0.3, w: 12.3, fontSize: 19, bold: true, color: DARK });
+    sl.addText(narrative.join("\n\n"), { x: 0.5, y: 1.0, w: 12.3, h: 6, fontSize: 13, color: "334155", valign: "top" });
+  }
+  await pptx.writeFile({ fileName: "MahasiswaTools_" + toolName.replace(/[^a-zA-Z0-9]+/g, "-") + ".pptx" });
+  toast("Slide PPT terunduh 🎉");
+}
+/* Enhancer Segitiga Emas: tombol Upload Excel / Unduh Excel / Jadikan PPT di tool statistik & keuangan */
+const MT_XLS_TOOLS = { validitas: 1, deskriptif: 1, inferens: 1, nonparam: 1, regresi: 1, likert: 1, k23: 1, proposal: 1, lpj: 1 };
+const MT_XLS_NOFILL = { proposal: 1, lpj: 1 };
+function mtEnhanceExcel(toolId) {
+  if (!MT_XLS_TOOLS[toolId]) return;
+  const body = document.getElementById("wsBody"); if (!body || body.dataset.mtxls) return;
+  body.dataset.mtxls = "1";
+  const ta = body.querySelector("textarea");
+  const bar = document.createElement("div");
+  bar.className = "flex flex-wrap gap-2 mb-3";
+  let html = "";
+  if (ta && !MT_XLS_NOFILL[toolId]) html += '<label class="' + BTN2 + ' cursor-pointer">📥 Upload File Excel (.xlsx / .csv)<input type="file" accept=".xlsx,.xls,.csv" class="hidden" onchange="mtXlsFill(this)"></label>';
+  html += '<button class="' + BTN2 + '" onclick="mtXlsExport(\'' + toolId + '\')">📗 Unduh Hasil ke Excel (.xlsx)</button>';
+  html += '<button class="' + BTN2 + '" onclick="mtXlsPPT(\'' + toolId + '\')">📊 Jadikan Slide PPT (.pptx)</button>';
+  bar.innerHTML = html;
+  const anchorEl = ta ? (ta.closest(".mb-4") || ta.parentElement) : body.firstElementChild;
+  if (anchorEl && anchorEl.parentElement === body) body.insertBefore(bar, anchorEl); else body.prepend(bar);
+  if (ta && !MT_XLS_NOFILL[toolId]) bar.dataset.taId = ta.id || "";
+}
+async function mtXlsFill(input) {
+  const f = input.files[0]; if (!f) return;
+  try {
+    const { rows } = await mtReadExcelFile(f);
+    const body = document.getElementById("wsBody");
+    const ta = body ? body.querySelector("textarea") : null;
+    if (!ta) { toast("Kotak data tidak ditemukan di tool ini."); return; }
+    ta.value = mtRowsToTSV(rows);
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+    toast("Data dari " + f.name + " terisi (" + rows.length + " baris) — klik tombol Hitung/Uji-nya ya.");
+  } catch (e) { toast("Gagal membaca file: " + e.message); }
+  input.value = "";
+}
+async function mtXlsExport(toolId) {
+  const body = document.getElementById("wsBody"); if (!body) return;
+  const ta = body.querySelector("textarea");
+  const sheets = [];
+  if (ta && ta.value.trim()) sheets.push({ name: "Data Input", rows: ta.value.trim().split("\n").map((l) => l.split(/\t|;|,/)) });
+  const tables = mtScrapeTables(body);
+  const trows = [];
+  tables.forEach((tb) => { trows.push([tb.title]); tb.rows.forEach((r) => trows.push(r)); trows.push([]); });
+  sheets.push({ name: "Tabel Hasil", rows: trows.length ? trows : [["Belum ada hasil — jalankan dulu perhitungan/ujinya, lalu klik tombol ini lagi."]] });
+  const narr = mtScrapeNarrative(body);
+  sheets.push({ name: "Kesimpulan Bab 4", rows: narr.length ? narr.map((t) => [t]) : [["Narasi kesimpulan akan muncul di sini setelah hasil perhitungan tampil."]] });
+  const t = TOOLS.find((x) => x.id === toolId);
+  await mtExportExcel(sheets, "Hasil_" + (t ? t.n.replace(/[^a-zA-Z0-9]+/g, "-") : toolId));
+  toast("File Excel hasil terunduh 📗");
+}
+async function mtXlsPPT(toolId) {
+  const body = document.getElementById("wsBody"); if (!body) return;
+  const tables = mtScrapeTables(body);
+  if (!tables.length) { toast("Belum ada tabel hasil — jalankan dulu perhitungan/ujinya ya."); return; }
+  const t = TOOLS.find((x) => x.id === toolId);
+  await mtTablesToPPT(t ? t.n : toolId, tables, mtScrapeNarrative(body));
 }
 const xe = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
@@ -3626,6 +3774,7 @@ openTool = function (id) {
   if (!wsHistPushed) { try { history.pushState({ mtws: 1 }, ""); wsHistPushed = true; } catch (e) {} }
   const sb = document.getElementById("wsShareBtn");
   if (sb) sb.style.display = SHARE_GETTERS[id] ? "" : "none";
+  setTimeout(() => { try { mtEnhanceExcel(id); } catch (e) {} }, 260);
 };
 const _closeWSReal = closeWS;
 closeWS = function () {
@@ -7179,6 +7328,797 @@ function trHitung() {
     + '<details class="mt-2"><summary class="font-bold cursor-pointer text-[13.5px]">Rincian per mata kuliah (' + rows.length + ')</summary><table class="w-full text-[12.5px] mt-2"><tr class="text-left text-slate-500"><th class="py-1 pr-3">Mata Kuliah</th><th class="py-1 pr-3">SKS</th><th class="py-1 pr-3">Nilai</th><th class="py-1 pr-3">Bobot</th><th class="py-1">Poin</th></tr>' + rows.map((r) => "<tr class=\"border-t border-slate-200 dark:border-slate-700\"><td class=\"py-1 pr-3\">" + esc(r.mk) + "</td><td class=\"py-1 pr-3\">" + r.sks + "</td><td class=\"py-1 pr-3\">" + esc(r.nilai) + "</td><td class=\"py-1 pr-3\">" + fmtN(r.bobot, 1) + "</td><td class=\"py-1\">" + fmtN(r.poin, 1) + "</td></tr>").join("") + "</table></details></div>";
 }
 SHARE_GETTERS.transkrip = function () { const h = window._trHasil; return h ? "IPK transkrip saya " + fmtN(h.ipk, 2) + " dari " + fmtN(h.totSks, 0) + " SKS — predikat " + h.predikat + (h.lulusCumlaude ? " dan memenuhi syarat cum laude!" : ".") + " Dihitung dengan MahasiswaTools." : ""; };
+
+/* ---------- 101. Pembersih Excel Google Form ---------- */
+UI.gformclean = function (b) {
+  window._gf = null;
+  b.innerHTML = head("🧹", "Bersihkan Hasil Google Form Jadi Siap Olah", "Upload file unduhan Google Form (.xlsx/.csv): kolom Timestamp/Email dibuang, header pertanyaan panjang jadi kode rapi (X1_1, X1_2, …), jawaban teks Likert jadi skor 1–5, dan skor total tiap variabel dihitung. Kamus pertanyaan asli tersimpan di Sheet 2.")
+    + field("1️⃣ Upload File Google Form", '<input type="file" id="gfFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + '<div id="gfOpt" class="hidden">'
+    + field("2️⃣ Pengaturan", '<label class="flex items-center gap-2 text-sm mb-2"><input type="checkbox" id="gfDrop" checked class="w-4 h-4 accent-indigo-600"> Buang kolom Timestamp & Email</label>'
+      + '<div class="flex flex-wrap items-center gap-2 text-sm"><span>Pengelompokan item:</span><select id="gfMode" class="' + IN + ' !w-auto"><option value="satu">Semua item = 1 variabel (X1)</option><option value="per">Bagi per jumlah item</option></select><input type="number" id="gfPer" value="5" min="1" max="50" class="' + IN + ' !w-20"> <span>item per variabel</span></div>', "Kolom jawaban yang isinya teks Likert (Sangat Setuju…Sangat Tidak Setuju) atau angka 1–5 otomatis dianggap item.")
+    + '<div id="gfItems"></div>'
+    + '<button class="' + BTN + ' w-full" onclick="gfProcess()">✨ Bersihkan & Unduh .xlsx Siap Olah</button>'
+    + '<div id="gfPrev" class="mt-4"></div></div>';
+  document.getElementById("gfFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const { rows } = await mtReadExcelFile(f);
+      if (rows.length < 2) { toast("File terbaca tapi baris datanya kurang dari 2."); return; }
+      window._gf = { rows, name: f.name };
+      document.getElementById("gfOpt").classList.remove("hidden");
+      gfRenderItems();
+      toast("File terbaca: " + (rows.length - 1) + " responden, " + rows[0].length + " kolom.");
+    } catch (err) { toast("Gagal membaca file: " + err.message); }
+  });
+};
+function gfLikertScore(v) {
+  const t = String(v == null ? "" : v).trim().toLowerCase();
+  const map = { "sangat setuju": 5, "sangatsetuju": 5, "strongly agree": 5, "setuju": 4, "agree": 4, "netral": 3, "ragu-ragu": 3, "ragu ragu": 3, "neutral": 3, "kurang setuju": 2, "tidak setuju": 2, "disagree": 2, "sangat tidak setuju": 1, "strongly disagree": 1, "ss": 5, "s": 4, "n": 3, "ts": 2, "sts": 1 };
+  if (map[t] !== undefined) return map[t];
+  const n = parseFloat(t.replace(",", "."));
+  if (!isNaN(n) && n >= 1 && n <= 5) return n;
+  return null;
+}
+function gfIsLikertCol(rows, ci) {
+  let scored = 0, total = 0;
+  for (let r = 1; r < rows.length; r++) { const v = rows[r][ci]; if (v === "" || v == null) continue; total++; if (gfLikertScore(v) !== null) scored++; }
+  return total > 0 && scored / total >= 0.8;
+}
+function gfRenderItems() {
+  const { rows } = window._gf; const head = rows[0];
+  const items = [];
+  head.forEach((h, ci) => { if (gfIsLikertCol(rows, ci)) items.push(ci); });
+  window._gf.items = items;
+  document.getElementById("gfItems").innerHTML = items.length
+    ? field("3️⃣ Item Terbalik (Unfavorable) — centang yang skornya harus dibalik", items.map((ci) => '<label class="flex items-start gap-2 text-[13px] mb-1.5"><input type="checkbox" class="gf-unfav mt-0.5 w-4 h-4 accent-rose-600" value="' + ci + '"><span><b>' + esc(String(head[ci]).slice(0, 60)) + '</b></span></label>').join(""), "Item unfavorable biasanya berbunyi negatif, mis. “Saya kesulitan…”. Skor dibalik: 5↔1, 4↔2, 3 tetap.")
+    : '<p class="text-sm text-amber-600 dark:text-amber-400 mb-3">⚠️ Tidak ada kolom Likert terdeteksi — semua kolom akan dipertahankan apa adanya dengan kode Kol_1, Kol_2, …</p>';
+}
+async function gfProcess() {
+  const G = window._gf; if (!G) return;
+  const { rows, items } = G; const head = rows[0];
+  const drop = document.getElementById("gfDrop").checked;
+  const mode = document.getElementById("gfMode").value;
+  const per = Math.max(1, parseInt(document.getElementById("gfPer").value) || 5);
+  const unfav = new Set([...document.querySelectorAll(".gf-unfav:checked")].map((c) => +c.value));
+  const isDrop = (ci) => drop && /timestamp|waktu|email|e-mail|alamat email/i.test(String(head[ci]));
+  const itemSet = new Set(items);
+  const codes = {}, kamus = [];
+  let varIdx = 0, itemIdx = 0;
+  head.forEach((h, ci) => {
+    if (isDrop(ci)) return;
+    if (itemSet.has(ci)) {
+      if (mode === "satu") { varIdx = 1; itemIdx++; }
+      else { varIdx = Math.floor(itemIdx / per) + 1; itemIdx++; }
+      const no = mode === "satu" ? itemIdx : (itemIdx - 1) % per + 1;
+      codes[ci] = "X" + varIdx + "_" + no;
+      kamus.push([codes[ci], String(h), unfav.has(ci) ? "Item Likert — Unfavorable (skor dibalik)" : "Item Likert — Favorable"]);
+    } else {
+      codes[ci] = "Kol_" + (ci + 1);
+      kamus.push([codes[ci], String(h), "Kolom lain (dipertahankan)"]);
+    }
+  });
+  const keepCols = head.map((_, ci) => ci).filter((ci) => !isDrop(ci));
+  const varOf = {};
+  items.forEach((ci) => { if (codes[ci]) varOf[ci] = codes[ci].split("_")[0]; });
+  const varList = [...new Set(Object.values(varOf))];
+  const outHead = keepCols.map((ci) => codes[ci]);
+  varList.forEach((v) => outHead.push("Total_" + v));
+  const out = [outHead];
+  for (let r = 1; r < rows.length; r++) {
+    const row = []; const totals = {};
+    keepCols.forEach((ci) => {
+      let v = rows[r][ci];
+      if (itemSet.has(ci)) { let sc = gfLikertScore(v); if (sc !== null && unfav.has(ci)) sc = 6 - sc; v = sc === null ? "" : sc; if (sc !== null) totals[varOf[ci]] = (totals[varOf[ci]] || 0) + sc; }
+      row.push(v);
+    });
+    varList.forEach((v) => row.push(totals[v] === undefined ? "" : totals[v]));
+    out.push(row);
+  }
+  await mtExportExcel([{ name: "Data Bersih", rows: out }, { name: "Kamus Variabel", rows: [["Kode", "Pertanyaan / Kolom Asli", "Jenis"], ...kamus] }], "GForm-Bersih_" + G.name.replace(/\.[^.]+$/, ""));
+  document.getElementById("gfPrev").innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>Selesai!</b> ' + (out.length - 1) + ' responden • ' + items.length + ' item Likert • ' + varList.length + ' variabel (' + varList.join(", ") + '). File berisi Sheet 1 "Data Bersih" + Sheet 2 "Kamus Variabel" — siap ditempel ke tool statistik MahasiswaTools atau SPSS.</div>';
+}
+
+/* ---------- 102. Generator Rumus Excel ---------- */
+UI.formulabldr = function (b) {
+  b.innerHTML = head("ƒx", "Rumus Excel dari Bahasa Manusia", "Pilih kasusmu, isi parameternya — rumusnya jadi seketika, lengkap dengan penjelasan dan simulasi uji. Tinggal salin ke Excel.")
+    + field("Skenario", '<select id="fxCase" class="' + IN + '" onchange="fxRender()"><option value="nilai">🎓 Nilai Angka → Huruf Mutu (A/AB/B/BC/C/D/E)</option><option value="lookup">🔎 Pencarian Data Antar-Tabel (VLOOKUP/XLOOKUP/INDEX-MATCH)</option><option value="ifs">🧮 Rekap Bersyarat (COUNTIFS & AVERAGEIFS)</option><option value="kategori">📊 Kategorisasi Skor (Tinggi/Sedang/Rendah dari Mean & SD)</option></select>')
+    + '<div id="fxForm"></div><div id="fxOut" class="mt-4"></div>';
+  fxRender();
+};
+function fxSep() { const el = document.getElementById("fxSep"); return el ? el.value : ";"; }
+function fxRender() {
+  const c = document.getElementById("fxCase").value;
+  const sepRow = '<div class="flex items-center gap-2 mb-3 text-sm"><span class="font-semibold">Pemisah rumus:</span><select id="fxSep" class="' + IN + ' !w-auto" onchange="fxBuild()"><option value=";">Titik koma ( ; ) — Excel Indonesia</option><option value=",">Koma ( , ) — Excel Inggris</option></select></div>';
+  let form = "";
+  if (c === "nilai") form = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">' + [["A", 85], ["AB", 78], ["B", 70], ["BC", 62], ["C", 55], ["D", 40]].map((g) => '<label class="text-xs font-semibold">' + g[0] + ' minimal<input type="number" id="fxT_' + g[0] + '" value="' + g[1] + '" class="' + IN + ' mt-1" oninput="fxBuild()"></label>').join("") + '<label class="text-xs font-semibold">Sel nilai<input type="text" id="fxCell" value="B2" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  if (c === "lookup") form = '<div class="grid grid-cols-2 gap-2 mb-3"><label class="text-xs font-semibold">Sel kunci (NIM)<input id="fxKey" value="A2" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Rentang tabel sumber<input id="fxTbl" value="Data!$A$2:$D$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Ambil kolom ke-<input type="number" id="fxCol" value="2" min="1" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Fungsi<select id="fxFn" class="' + IN + ' mt-1" onchange="fxBuild()"><option value="vlookup">VLOOKUP (semua versi)</option><option value="xlookup">XLOOKUP (Excel 365)</option><option value="index">INDEX + MATCH (paling fleksibel)</option></select></label></div>';
+  if (c === "ifs") form = '<div class="grid grid-cols-2 gap-2 mb-3"><label class="text-xs font-semibold">Kolom kriteria 1 (mis. Status)<input id="fxR1" value="$C$2:$C$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Nilai kriteria 1<input id="fxC1" value="&quot;Lulus&quot;" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Kolom kriteria 2 (opsional)<input id="fxR2" value="$D$2:$D$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Nilai kriteria 2 (opsional)<input id="fxC2" value="&quot;P&quot;" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Kolom nilai (untuk AVERAGEIFS)<input id="fxRV" value="$B$2:$B$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  if (c === "kategori") form = '<div class="grid grid-cols-3 gap-2 mb-3"><label class="text-xs font-semibold">Sel skor<input id="fxKCell" value="B2" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Rentang semua skor<input id="fxKRange" value="$B$2:$B$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Pengali SD<input type="number" id="fxKSD" value="1" step="0.1" min="0.1" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  document.getElementById("fxForm").innerHTML = sepRow + form;
+  fxBuild();
+}
+function fxOutBox(formula, explain, simHTML) {
+  document.getElementById("fxOut").innerHTML = '<div class="p-4 rounded-xl bg-slate-900 text-slate-100 mb-3"><div class="text-[11px] font-bold tracking-wider text-indigo-300 mb-1.5">RUMUS JADI — SALIN KE EXCEL</div><code class="text-[13px] break-all whitespace-pre-wrap">' + esc(formula) + '</code><button class="' + BTN2 + ' mt-3 !bg-white/10 !text-white !border-white/20" onclick="copyText(' + JSON.stringify(formula) + '); toast(\'Rumus tersalin 📋\')">📋 Salin Rumus</button></div>'
+    + '<p class="text-sm text-slate-600 dark:text-slate-300 mb-3">' + explain + '</p>'
+    + (simHTML ? '<div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800"><div class="text-xs font-bold tracking-wider text-indigo-500 mb-2">🧪 SIMULASI UJI LANGSUNG</div>' + simHTML + '</div>' : "");
+}
+function fxBuild() {
+  const c = document.getElementById("fxCase").value, S = fxSep();
+  const v = (id, d) => { const el = document.getElementById(id); return el ? el.value : d; };
+  if (c === "nilai") {
+    const cell = v("fxCell", "B2") || "B2";
+    const grades = ["A", "AB", "B", "BC", "C", "D"].map((g) => [g, parseFloat(v("fxT_" + g, 0)) || 0]);
+    const ifs = "=IFS(" + grades.map((g) => cell + ">=" + g[1] + S + '"'+ g[0] + '"').join(S) + S + 'TRUE' + S + '"E")';
+    const nested = grades.reduceRight((acc, g) => "=IF(" + cell + ">=" + g[1] + S + '"' + g[0] + '"' + S + acc + ")", '"E"');
+    const sim = '<div class="flex items-center gap-2 text-sm"><span>Coba nilai:</span><input type="number" id="fxSimN" value="82" class="' + IN + ' !w-24" oninput="fxSimNilai()"><span class="font-bold">→ <span id="fxSimR">AB</span></span></div>';
+    fxOutBox(ifs + "\n\nAlternatif IF bertingkat (Excel lama):\n" + nested, "IFS berhenti di syarat pertama yang terpenuhi — urutan dari tertinggi. Di bawah batas terendah hasilnya E. Sesuaikan ambangnya dengan pedoman penilaian kampusmu.", sim);
+    window._fxGrades = grades; fxSimNilai();
+  }
+  if (c === "lookup") {
+    const key = v("fxKey", "A2"), tbl = v("fxTbl", "Data!$A$2:$D$101"), col = parseInt(v("fxCol", 2)) || 2, fn = v("fxFn", "vlookup");
+    let f = "", ex = "";
+    const tblSheet = tbl.split("!")[0], tblRange = tbl.includes("!") ? tbl.split("!")[1] : tbl;
+    if (fn === "vlookup") { f = "=VLOOKUP(" + key + S + tbl + S + col + S + "FALSE)"; ex = "VLOOKUP mencari kunci di kolom PERTAMA tabel sumber, lalu mengambil nilai dari kolom ke-" + col + ". FALSE = harus sama persis."; }
+    if (fn === "xlookup") { f = "=XLOOKUP(" + key + S + tblSheet + "!" + tblRange.split(":")[0].replace(/\d+/g, (m, off) => off === 0 ? m : m) + ":" + tblRange.split(":")[0].replace(/\$\w+\$/, (m) => m) + S + "kolom-hasil)"; f = "=XLOOKUP(" + key + S + "KOLOM_KUNCI" + S + "KOLOM_HASIL" + S + '"Tidak ditemukan")'; ex = "XLOOKUP (Excel 365): ganti KOLOM_KUNCI dengan kolom tempat NIM berada (mis. Data!$A$2:$A$101) dan KOLOM_HASIL dengan kolom yang mau diambil (mis. Data!$B$2:$B$101). Lebih aman dari VLOOKUP karena tidak tergantung nomor kolom."; }
+    if (fn === "index") { f = "=INDEX(KOLOM_HASIL" + S + "MATCH(" + key + S + "KOLOM_KUNCI" + S + "0))"; ex = "INDEX+MATCH: MATCH menemukan posisi baris kunci (0 = sama persis), INDEX mengambil nilai di posisi itu dari KOLOM_HASIL. Ganti KOLOM_KUNCI (mis. Data!$A$2:$A$101) dan KOLOM_HASIL (mis. Data!$C$2:$C$101) — kolom hasil boleh di kiri kolom kunci."; }
+    fxOutBox(f, ex, '<p class="text-sm">💡 Tempel rumus di sel kosong di samping data utamamu, lalu tarik (drag) ke bawah. Kunci rentang tabel dengan $ agar tidak bergeser saat ditarik.</p>');
+  }
+  if (c === "ifs") {
+    const r1 = v("fxR1", ""), c1 = v("fxC1", ""), r2 = v("fxR2", ""), c2 = v("fxC2", ""), rv = v("fxRV", "");
+    const crit = [r1 + S + c1]; if (r2 && c2) crit.push(r2 + S + c2);
+    const f = "=COUNTIFS(" + crit.join(S) + ")\n=AVERAGEIFS(" + rv + S + crit.join(S) + ")";
+    fxOutBox(f, "COUNTIFS menghitung baris yang memenuhi SEMUA kriteria; AVERAGEIFS merata-ratakan kolom nilai pada baris yang sama. Kriteria teks pakai tanda kutip, mis. \"Lulus\"; kriteria angka bisa langsung atau \">=60\".", '<div class="flex items-center gap-2 text-sm"><span>Contoh data mini: 8 siswa (5 Lulus, 3 Tidak). COUNTIFS Status="Lulus" →</span><b>5</b></div>');
+  }
+  if (c === "kategori") {
+    const cell = v("fxKCell", "B2"), rg = v("fxKRange", "$B$2:$B$101"), k = v("fxKSD", "1");
+    const mean = "AVERAGE(" + rg + ")", sd = "STDEV(" + rg + ")";
+    const f = "=IF(" + cell + ">=" + mean + "+" + k + "*" + sd + S + '"Tinggi"' + S + "IF(" + cell + ">=" + mean + "-" + k + "*" + sd + S + '"Sedang"' + S + '"Rendah"))';
+    const sim = '<div class="flex flex-wrap items-center gap-2 text-sm"><span>Mean</span><input type="number" id="fxSimM" value="70" class="' + IN + ' !w-20" oninput="fxSimKat()"><span>SD</span><input type="number" id="fxSimSD" value="10" class="' + IN + ' !w-20" oninput="fxSimKat()"><span>Skor</span><input type="number" id="fxSimV" value="84" class="' + IN + ' !w-20" oninput="fxSimKat()"><span class="font-bold">→ <span id="fxSimKR">Tinggi</span></span></div>';
+    fxOutBox(f, "Kategorisasi empiris: Tinggi bila skor ≥ Mean + " + k + "·SD, Rendah bila &lt; Mean − " + k + "·SD, sisanya Sedang. Mean & SD dihitung langsung dari rentang datamu, jadi kategori ikut berubah bila data berubah.", sim);
+    fxSimKat();
+  }
+}
+function fxSimNilai() { const el = document.getElementById("fxSimN"), out = document.getElementById("fxSimR"); if (!el || !out || !window._fxGrades) return; const n = parseFloat(el.value) || 0; let g = "E"; for (const [gr, t] of window._fxGrades) { if (n >= t) { g = gr; break; } } out.textContent = g; }
+function fxSimKat() { const m = parseFloat((document.getElementById("fxSimM") || {}).value) || 0, sd = parseFloat((document.getElementById("fxSimSD") || {}).value) || 0, v = parseFloat((document.getElementById("fxSimV") || {}).value) || 0, out = document.getElementById("fxSimKR"); if (!out) return; out.textContent = v >= m + sd ? "Tinggi" : (v >= m - sd ? "Sedang" : "Rendah"); }
+
+/* ---------- 103. Template Excel Rumus Hidup ---------- */
+UI.xlstemplate = function (b) {
+  b.innerHTML = head("📐", "Template Excel Ber-Rumus Hidup", "File .xlsx yang selnya berisi RUMUS ASLI Excel — begitu dibuka, semua total, r-hitung, saldo, dan nilai akhir langsung terhitung dan ikut berubah saat datamu diganti.")
+    + '<div class="grid sm:grid-cols-2 gap-3">'
+    + [["tabulasi", "🧪 Tabulasi Kuesioner + r-Hitung", "10 responden × 5 item, total per responden, r-hitung tiap item (CORREL) + cek valid vs r-tabel."], ["kas", "💰 Pembukuan Kas UKM / KKN", "Masuk, keluar, dan saldo berjalan otomatis + total periode."], ["amortisasi", "🏦 Tabel Amortisasi & Anggaran", "Angsuran PMT, bunga, pokok, sisa pinjaman per bulan."], ["rekap", "🎓 Rekap Nilai Kelas Asisten Dosen", "Bobot Tugas/UTS/UAS, nilai akhir, huruf mutu, status lulus + rata-rata kelas."]].map((t) => '<label class="flex gap-2.5 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-400"><input type="radio" name="xtKind" value="' + t[0] + '" class="mt-1 accent-indigo-600" ' + (t[0] === "tabulasi" ? "checked" : "") + '><span><b class="text-sm">' + t[1] + '</b><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">' + t[2] + '</span></span></label>').join("")
+    + '</div>'
+    + '<div class="grid grid-cols-3 gap-2 mt-4">' + field("Pokok pinjaman (utk amortisasi)", '<input type="number" id="xtPokok" value="12000000" class="' + IN + '">') + field("Bunga % /tahun", '<input type="number" id="xtBunga" value="12" step="0.1" class="' + IN + '">') + field("Tenor (bulan)", '<input type="number" id="xtTenor" value="12" class="' + IN + '">') + '</div>'
+    + '<button class="' + BTN + ' w-full mt-2" onclick="xtGenerate()">📗 Buat & Unduh Template .xlsx</button>'
+    + '<p class="text-xs text-slate-400 mt-3">Semua rumus memakai pemisah titik koma? Tidak — di dalam file .xlsx, rumus selalu disimpan format internasional; Excel-mu yang menampilkannya sesuai bahasa. Aman dibuka di Excel Indonesia maupun Inggris.</p>';
+};
+async function xtGenerate() {
+  if (!await loadXLSX()) { toast("Library Excel gagal dimuat."); return; }
+  const kind = (document.querySelector("input[name=xtKind]:checked") || {}).value || "tabulasi";
+  const wb = XLSX.utils.book_new();
+  const F = (f) => ({ t: "n", f });
+  if (kind === "tabulasi") {
+    const rows = [["Responden", "I1", "I2", "I3", "I4", "I5", "TOTAL"]];
+    const seed = [[4, 5, 4, 5, 4], [5, 5, 4, 4, 5], [3, 4, 3, 4, 3], [5, 4, 5, 5, 4], [4, 4, 4, 3, 4], [2, 3, 2, 3, 2], [5, 5, 5, 4, 5], [4, 3, 4, 4, 3], [3, 3, 4, 3, 4], [5, 4, 4, 5, 5]];
+    seed.forEach((r, i) => rows.push(["R" + (i + 1), ...r, 0]));
+    rows.push([]); rows.push(["r-hitung (CORREL vs TOTAL)", "", "", "", "", "", ""]);
+    rows.push(["r-tabel 5% (n=10)", 0.632, "", "", "", "", ""]);
+    rows.push(["Status", "", "", "", "", "", ""]);
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    for (let r = 2; r <= 11; r++) ws["G" + r] = F("SUM(B" + r + ":F" + r + ")");
+    ["B", "C", "D", "E", "F"].forEach((col) => { ws[col + "13"] = F("CORREL(" + col + "2:" + col + "11,$G$2:$G$11)"); ws[col + "15"] = { t: "s", f: 'IF(' + col + '13>$B$14,"Valid","Tidak Valid")' }; });
+    ws["!cols"] = [{ wch: 26 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Tabulasi");
+  }
+  if (kind === "kas") {
+    const rows = [["Tanggal", "Keterangan", "Masuk (Rp)", "Keluar (Rp)", "Saldo (Rp)"], ["2026-01-05", "Iuran anggota", 500000, 0, 0], ["2026-01-07", "Beli ATK", 0, 75000, 0], ["2026-01-10", "Sponsor", 250000, 0, 0], ["2026-01-12", "Konsumsi rapat", 0, 60000, 0], [], ["TOTAL", "", 0, 0, ""]];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["E2"] = F("C2-D2");
+    for (let r = 3; r <= 5; r++) ws["E" + r] = F("E" + (r - 1) + "+C" + r + "-D" + r);
+    ws["C7"] = F("SUM(C2:C5)"); ws["D7"] = F("SUM(D2:D5)"); ws["E7"] = F("E5");
+    ws["!cols"] = [{ wch: 12 }, { wch: 30 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Kas");
+  }
+  if (kind === "amortisasi") {
+    const pokok = parseFloat(document.getElementById("xtPokok").value) || 12000000;
+    const bunga = (parseFloat(document.getElementById("xtBunga").value) || 12) / 100;
+    const tenor = Math.min(60, Math.max(1, parseInt(document.getElementById("xtTenor").value) || 12));
+    const rows = [["Pokok Pinjaman", pokok], ["Bunga per Tahun", bunga], ["Tenor (bulan)", tenor], ["Angsuran per Bulan", 0], [], ["Bulan", "Angsuran", "Bunga", "Pokok", "Sisa Pinjaman"]];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["B2"] = { t: "n", v: bunga }; ws["B4"] = F("PMT(B2/12,B3,-B1)");
+    for (let m = 1; m <= tenor; m++) {
+      const r = 6 + m;
+      const sisaPrev = m === 1 ? "$B$1" : "E" + (r - 1);
+      ws["A" + r] = { t: "n", v: m };
+      ws["B" + r] = F("$B$4");
+      ws["C" + r] = F(sisaPrev + "*$B$2/12");
+      ws["D" + r] = F("B" + r + "-C" + r);
+      ws["E" + r] = F(sisaPrev + "-D" + r);
+    }
+    ws["!ref"] = "A1:E" + (6 + tenor);
+    ws["!cols"] = [{ wch: 18 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Amortisasi");
+  }
+  if (kind === "rekap") {
+    const rows = [["Bobot Tugas", 0.3], ["Bobot UTS", 0.3], ["Bobot UAS", 0.4], [], ["Nama", "Tugas", "UTS", "UAS", "Nilai Akhir", "Huruf", "Status"]];
+    const names = ["Andi", "Budi", "Citra", "Dewi", "Eko", "Fitri", "Gilang", "Hana"];
+    names.forEach((n, i) => rows.push([n, 70 + i * 3, 65 + i * 4, 72 + i * 3, 0, "", ""]));
+    rows.push([]); rows.push(["Rata-rata Kelas", "", "", "", 0, "", ""]);
+    rows.push(["Jumlah Lulus", "", "", "", "", "", 0]);
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const last = 5 + names.length;
+    for (let r = 6; r <= last; r++) {
+      ws["E" + r] = F("B" + r + "*$B$1+C" + r + "*$B$2+D" + r + "*$B$3");
+      ws["F" + r] = { t: "s", f: 'IF(E' + r + '>=85,"A",IF(E' + r + '>=70,"B",IF(E' + r + '>=55,"C",IF(E' + r + '>=40,"D","E"))))' };
+      ws["G" + r] = { t: "s", f: 'IF(E' + r + '>=55,"Lulus","Tidak Lulus")' };
+    }
+    ws["E" + (last + 2)] = F("AVERAGE(E6:E" + last + ")");
+    ws["G" + (last + 3)] = F('COUNTIF(G6:G' + last + ',"Lulus")');
+    ws["!cols"] = [{ wch: 18 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 12 }, { wch: 8 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap Nilai");
+  }
+  XLSX.writeFile(wb, "MahasiswaTools_Template-" + kind + ".xlsx");
+  toast("Template .xlsx ber-rumus hidup terunduh 📗");
+}
+
+/* ---------- 104. Ekstraktor Tabel PDF ke Excel ---------- */
+UI.pdftab2xls = function (b) {
+  window._pt = null;
+  b.innerHTML = head("🧾", "Tarik Tabel dari PDF Jadi Excel", "Upload PDF berisi tabel (laporan keuangan, publikasi BPS, jurnal): teks dibaca per koordinat, dikelompokkan jadi baris & kolom, lalu diunduh sebagai .xlsx. Angka format Indonesia — (12.500.000), titik ribuan — dibersihkan jadi angka numerik asli yang bisa di-SUM.")
+    + field("File PDF", '<input type="file" id="ptFile" accept=".pdf" class="' + IN + '">')
+    + '<div class="grid grid-cols-3 gap-2">' + field("Halaman dari", '<input type="number" id="ptFrom" value="1" min="1" class="' + IN + '">') + field("Sampai", '<input type="number" id="ptTo" value="1" min="1" class="' + IN + '">') + field("Opsi", '<label class="flex items-center gap-2 text-[13px] mt-2"><input type="checkbox" id="ptClean" checked class="w-4 h-4 accent-indigo-600"> Bersihkan angka ID/akuntansi</label>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="ptExtract()">🔍 Ekstrak Tabel</button>'
+    + '<div id="ptOut" class="mt-4"></div>';
+};
+function ptCleanNum(v) {
+  let t = String(v == null ? "" : v).trim();
+  if (!t) return "";
+  let neg = false;
+  if (/^\(.*\)$/.test(t)) { neg = true; t = t.slice(1, -1); }
+  t = t.replace(/rp\.?/i, "").trim();
+  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) { const n = parseFloat(t.replace(/\./g, "").replace(",", ".")); return neg ? -n : n; }
+  if (/^-?\d+(,\d+)?$/.test(t)) { const n = parseFloat(t.replace(",", ".")); return neg ? -n : n; }
+  if (/^-?\d+$/.test(t)) { const n = parseInt(t); return neg ? -n : n; }
+  return v;
+}
+async function ptExtract() {
+  const f = document.getElementById("ptFile").files[0];
+  const out = document.getElementById("ptOut");
+  if (!f) { toast("Pilih file PDF dulu ya."); return; }
+  if (!await loadPdfJs()) { toast("Library PDF.js gagal dimuat — periksa koneksi."); return; }
+  out.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca PDF…</p>';
+  try {
+    const buf = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const from = Math.max(1, parseInt(document.getElementById("ptFrom").value) || 1);
+    const to = Math.min(pdf.numPages, parseInt(document.getElementById("ptTo").value) || pdf.numPages);
+    const clean = document.getElementById("ptClean").checked;
+    const allRows = [];
+    for (let p = from; p <= to; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      const byY = new Map();
+      tc.items.forEach((it) => {
+        const y = Math.round(it.transform[5] / 4) * 4;
+        if (!byY.has(y)) byY.set(y, []);
+        byY.get(y).push({ x: it.transform[4], str: it.str });
+      });
+      const ys = [...byY.keys()].sort((a, b2) => b2 - a);
+      ys.forEach((y) => {
+        const items = byY.get(y).sort((a, b2) => a.x - b2.x);
+        const cells = [];
+        items.forEach((it) => {
+          if (cells.length && it.x - cells[cells.length - 1].endX < 7) { cells[cells.length - 1].str += " " + it.str; cells[cells.length - 1].endX = it.x + (it.str.length * 4); }
+          else cells.push({ str: it.str, endX: it.x + (it.str.length * 4) });
+        });
+        const row = cells.map((c) => c.str.trim()).filter((x) => x !== "");
+        if (row.length) allRows.push(clean ? row.map(ptCleanNum) : row);
+      });
+    }
+    window._pt = { rows: allRows, name: f.name };
+    const preview = allRows.slice(0, 25).map((r) => "<tr>" + r.map((c) => '<td class="border border-slate-200 dark:border-slate-700 px-2 py-1">' + esc(String(c)) + "</td>").join("") + "</tr>").join("");
+    out.innerHTML = '<p class="text-sm mb-2">✅ Terbaca <b>' + allRows.length + ' baris</b> dari halaman ' + from + '–' + to + ' (total PDF ' + pdf.numPages + ' halaman).</p>'
+      + '<div class="overflow-x-auto mb-3"><table class="text-xs border-collapse">' + preview + '</table></div>'
+      + '<button class="' + BTN + ' w-full" onclick="ptDownload()">📗 Unduh sebagai .xlsx</button>'
+      + '<p class="text-xs text-slate-400 mt-2">Catatan: PDF hasil scan (gambar) tidak berisi teks — gunakan tool OCR bila perlu. Susunan kolom mengikuti posisi teks di PDF; cek pratinjau sebelum mengunduh.</p>';
+  } catch (e) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal mengekstrak: ' + esc(e.message) + '</p>'; }
+}
+async function ptDownload() { if (window._pt) { await mtExportExcel([{ name: "Tabel", rows: window._pt.rows }], "Tabel-dari-PDF_" + window._pt.name.replace(/\.[^.]+$/, "")); toast("File Excel terunduh 📗"); } }
+
+/* ---------- 105. Penggabung Banyak File Excel ---------- */
+UI.xlsmerger = function (b) {
+  window._xm = [];
+  b.innerHTML = head("🗂️", "Gabung Banyak File Excel / CSV", "Untuk data kelompok: survei 5 anggota, rekap per kelas, laporan per cabang — satukan semuanya jadi satu file rapi.")
+    + field("Pilih banyak file sekaligus", '<input type="file" id="xmFiles" accept=".xlsx,.xls,.csv" multiple class="' + IN + '">')
+    + '<div id="xmList" class="mb-3"></div>'
+    + field("Mode Penggabungan", '<label class="flex gap-2 text-sm mb-1.5"><input type="radio" name="xmMode" value="append" checked class="mt-0.5 accent-indigo-600"><span><b>Gabung Baris (Append)</b> — semua baris ditumpuk jadi 1 Sheet Master; kolom disamakan dari header, plus kolom "Sumber File".</span></label><label class="flex gap-2 text-sm"><input type="radio" name="xmMode" value="sheets" class="mt-0.5 accent-indigo-600"><span><b>Gabung Sheet (Multi-Tab)</b> — tiap file jadi tab sheet sendiri dalam 1 workbook.</span></label>')
+    + '<button class="' + BTN + ' w-full" onclick="xmMerge()">🗂️ Gabungkan & Unduh .xlsx</button>';
+  document.getElementById("xmFiles").addEventListener("change", async (e) => {
+    window._xm = [];
+    const list = document.getElementById("xmList");
+    list.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca file…</p>';
+    for (const f of e.target.files) {
+      try { const { rows } = await mtReadExcelFile(f); window._xm.push({ name: f.name, rows }); }
+      catch (err) { toast("Gagal membaca " + f.name + ": " + err.message); }
+    }
+    list.innerHTML = window._xm.map((x) => '<div class="flex justify-between text-sm py-1.5 border-b border-slate-100 dark:border-slate-800"><span>📄 ' + esc(x.name) + '</span><b>' + x.rows.length + ' baris</b></div>').join("") || '<p class="text-sm text-slate-400">Belum ada file terbaca.</p>';
+  });
+};
+async function xmMerge() {
+  const files = window._xm;
+  if (!files.length) { toast("Pilih file dulu ya."); return; }
+  const mode = (document.querySelector("input[name=xmMode]:checked") || {}).value || "append";
+  if (mode === "sheets") {
+    const used = new Set();
+    const sheets = files.map((x) => {
+      let nm = x.name.replace(/\.[^.]+$/, "").replace(/[\\/*?:[\]]/g, " ").trim().slice(0, 28) || "Sheet";
+      let base = nm, k = 2; while (used.has(nm)) { nm = base.slice(0, 25) + " " + (k++); } used.add(nm);
+      return { name: nm, rows: x.rows };
+    });
+    await mtExportExcel(sheets, "Gabungan-Multi-Sheet");
+  } else {
+    const headers = [];
+    files.forEach((x) => { (x.rows[0] || []).forEach((h) => { const H = String(h); if (!headers.includes(H)) headers.push(H); }); });
+    const out = [[...headers, "Sumber File"]];
+    files.forEach((x) => {
+      const head = (x.rows[0] || []).map(String);
+      for (let r = 1; r < x.rows.length; r++) {
+        const row = headers.map((H) => { const ci = head.indexOf(H); return ci >= 0 ? x.rows[r][ci] : ""; });
+        row.push(x.name); out.push(row);
+      }
+    });
+    await mtExportExcel([{ name: "Master", rows: out }], "Gabungan-Baris");
+  }
+  toast("File gabungan terunduh 🗂️");
+}
+
+/* ---------- 106. Deck PPT Sidang Bab 1-5 ---------- */
+UI.decksidang = function (b) {
+  const F = (label, inner) => field(label, inner);
+  b.innerHTML = head("🎓", "Deck Sidang Skripsi Otomatis (Bab 1–5)", "Isi ringkasan tiap bab — jadi deck .pptx 11 slide siap sidang/sempro: cover berlogo, badge agenda per slide, tabel hasil uji, 5 tema warna akademik, dan catatan pembicara otomatis berisi kalimat pembuka tiap slide.")
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("Judul Skripsi", '<input id="dsJudul" class="' + IN + '" placeholder="Pengaruh … terhadap …">') + F("Nama & NIM", '<input id="dsNama" class="' + IN + '" placeholder="Nama Kamu — 12345678">') + F("Program Studi / Universitas", '<input id="dsProdi" class="' + IN + '" placeholder="S1 Ekonomi — Universitas …">') + F("Dosen Pembimbing", '<input id="dsPemb" class="' + IN + '" placeholder="Dr. …, M.Si.">') + '</div>'
+    + F("Logo kampus untuk cover (opsional)", '<input type="file" id="dsLogo" accept="image/*" class="' + IN + '">')
+    + F("Tema Warna", '<select id="dsTema" class="' + IN + '"><option value="navy">🔵 Navy Formal</option><option value="emerald">🟢 Emerald Sains</option><option value="maroon">🔴 Maroon Hukum</option><option value="slate">⚪ Slate Modern</option><option value="gold">🟡 Gold Ekonomika</option></select>')
+    + F("BAB 1 — Fenomena & Data Masalah", '<textarea id="dsFenomena" rows="3" class="' + IN + '" placeholder="Fakta/data yang menunjukkan adanya masalah…"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("BAB 1 — Rumusan Masalah", '<textarea id="dsRumusan" rows="2" class="' + IN + '"></textarea>') + F("BAB 1 — Tujuan Penelitian", '<textarea id="dsTujuan" rows="2" class="' + IN + '"></textarea>') + F("BAB 2 — Kerangka Pemikiran", '<textarea id="dsKerangka" rows="2" class="' + IN + '"></textarea>') + F("BAB 2 — Hipotesis", '<textarea id="dsHipotesis" rows="2" class="' + IN + '"></textarea>') + F("BAB 3 — Desain & Metode", '<textarea id="dsMetode" rows="2" class="' + IN + '"></textarea>') + F("BAB 3 — Populasi & Sampel", '<textarea id="dsSampel" rows="2" class="' + IN + '"></textarea>') + '</div>'
+    + F("BAB 4 — Hasil Uji (satu baris = satu uji)", '<textarea id="dsHasil" rows="4" class="' + IN + ' font-mono text-[13px]" placeholder="Uji Validitas: Semua item r-hitung > 0,361 — Valid&#10;Uji-t X1: t = 3,42; sig 0,002 — Berpengaruh signifikan"></textarea>', "Format per baris: Nama Uji: hasil — kesimpulan. Akan jadi tabel rapi di slide.")
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("BAB 5 — Kesimpulan", '<textarea id="dsKesimpulan" rows="3" class="' + IN + '"></textarea>') + F("BAB 5 — Saran", '<textarea id="dsSaran" rows="3" class="' + IN + '"></textarea>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="dsGenerate()">🎓 Buat Deck .pptx Sidang</button>';
+  window._dsLogo = null;
+  document.getElementById("dsLogo").addEventListener("change", (e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { window._dsLogo = r.result; toast("Logo siap dipasang di cover."); }; r.readAsDataURL(f); });
+};
+async function dsGenerate() {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat — periksa koneksi."); return; }
+  const g = (id) => (document.getElementById(id) || {}).value || "";
+  const TEMAS = { navy: { p: "1E3A5F", a: "2563EB", dark: "0F2233" }, emerald: { p: "065F46", a: "059669", dark: "052E22" }, maroon: { p: "7F1D1D", a: "B91C1C", dark: "2A0A0A" }, slate: { p: "0B0F19", a: "4F46E5", dark: "0B0F19" }, gold: { p: "92400E", a: "D97706", dark: "291303" } };
+  const T = TEMAS[g("dsTema")] || TEMAS.navy;
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const lines = (t) => t.split("\n").map((x) => x.trim()).filter(Boolean);
+  const bullets = (t) => lines(t).map((x) => ({ text: x.replace(/^[-•]\s*/, ""), options: { bullet: true, breakLine: true } }));
+  function slide(title, badge, body, notes) {
+    const s = pptx.addSlide();
+    s.addShape("rect", { x: 0, y: 0, w: 13.33, h: 1.0, fill: { color: T.p } });
+    s.addText(title, { x: 0.6, y: 0.18, w: 9.6, fontSize: 23, bold: true, color: "FFFFFF" });
+    if (badge) s.addText(badge, { x: 10.1, y: 0.3, w: 2.7, h: 0.42, fontSize: 11.5, bold: true, color: "FFFFFF", fill: { color: T.a }, align: "center", rectRadius: 0.08 });
+    if (body) s.addText(body, { x: 0.6, y: 1.35, w: 12.1, h: 5.6, fontSize: 16, color: "1E293B", valign: "top", lineSpacingMultiple: 1.25 });
+    if (notes && s.addNotes) s.addNotes(notes);
+    s.addText("MahasiswaTools • Deck Sidang", { x: 0.6, y: 7.08, w: 6, fontSize: 9.5, color: "94A3B8" });
+    return s;
+  }
+  const judul = g("dsJudul") || "(Judul Skripsi)";
+  const cov = pptx.addSlide(); cov.background = { color: T.dark };
+  if (window._dsLogo) cov.addImage({ data: window._dsLogo, x: 5.9, y: 0.7, w: 1.5, h: 1.5 });
+  cov.addText(judul, { x: 1, y: 2.5, w: 11.33, fontSize: 32, bold: true, color: "FFFFFF", align: "center" });
+  cov.addText((g("dsNama") || "Nama — NIM") + "\n" + (g("dsProdi") || "") + "\nPembimbing: " + (g("dsPemb") || "—"), { x: 1, y: 4.3, w: 11.33, fontSize: 16, color: "CBD5E1", align: "center", lineSpacingMultiple: 1.4 });
+  if (cov.addNotes) cov.addNotes("Assalamu'alaikum warahmatullahi wabarakatuh. Yang terhormat Bapak/Ibu penguji, perkenalkan saya " + (g("dsNama") || "") + ". Hari ini saya akan mempresentasikan hasil penelitian skripsi saya yang berjudul: " + judul + ".");
+  slide("Agenda Presentasi", "", bullets("Bab 1 — Pendahuluan\nBab 2 — Tinjauan Pustaka & Hipotesis\nBab 3 — Metode Penelitian\nBab 4 — Hasil & Pembahasan\nBab 5 — Kesimpulan & Saran"), "Saya akan menyampaikan presentasi dalam lima bagian sesuai struktur skripsi, dimulai dari pendahuluan hingga kesimpulan dan saran.");
+  slide("Latar Belakang & Fenomena", "BAB 1", bullets(g("dsFenomena")), "Pada latar belakang, saya menyoroti fenomena berikut. Jelaskan data/fakta masalahnya secara singkat dan tegas, lalu arahkan ke celah penelitian (research gap).");
+  slide("Rumusan Masalah & Tujuan", "BAB 1", [...bullets(g("dsRumusan")), { text: "Tujuan: " + g("dsTujuan"), options: { bullet: true } }], "Rumusan masalah penelitian ini adalah sebagaimana tampil di slide, dan tujuannya selaras satu-satu dengan rumusan tersebut.");
+  slide("Kerangka Pemikiran & Hipotesis", "BAB 2", [...bullets(g("dsKerangka")), { text: "Hipotesis: " + g("dsHipotesis"), options: { bullet: true } }], "Berdasarkan teori dan penelitian terdahulu, kerangka pemikiran penelitian ini menghubungkan variabel sebagaimana bagan berikut, dengan hipotesis yang akan diuji.");
+  slide("Metode Penelitian", "BAB 3", bullets(g("dsMetode")), "Penelitian ini menggunakan desain dan metode sebagaimana slide. Jelaskan alasan pemilihan metode dan teknik analisisnya secara ringkas.");
+  slide("Populasi & Sampel", "BAB 3", bullets(g("dsSampel")), "Populasi dan sampel penelitian ditentukan dengan teknik yang tertera; sebutkan jumlah responden/sampel akhir yang berhasil diolah.");
+  const hs = pptx.addSlide();
+  hs.addShape("rect", { x: 0, y: 0, w: 13.33, h: 1.0, fill: { color: T.p } });
+  hs.addText("Hasil Penelitian", { x: 0.6, y: 0.18, w: 9.6, fontSize: 23, bold: true, color: "FFFFFF" });
+  hs.addText("BAB 4", { x: 10.1, y: 0.3, w: 2.7, h: 0.42, fontSize: 11.5, bold: true, color: "FFFFFF", fill: { color: T.a }, align: "center" });
+  const hrows = [[{ text: "Pengujian", options: { bold: true, fill: { color: "E2E8F0" } } }, { text: "Hasil", options: { bold: true, fill: { color: "E2E8F0" } } }, { text: "Kesimpulan", options: { bold: true, fill: { color: "E2E8F0" } } }]];
+  lines(g("dsHasil")).forEach((ln) => { const p1 = ln.split(":"); const rest = (p1.slice(1).join(":") || "").split("—"); hrows.push([p1[0].trim(), (rest[0] || "").trim(), (rest.slice(1).join("—") || "").trim()]); });
+  if (hrows.length === 1) hrows.push(["(isi hasil uji di formulir)", "", ""]);
+  hs.addTable(hrows, { x: 0.6, y: 1.35, w: 12.1, fontSize: 13.5, border: { pt: 0.5, color: "CBD5E1" }, colW: [3.6, 4.7, 3.8] });
+  if (hs.addNotes) hs.addNotes("Memasuki hasil penelitian: sampaikan tiap pengujian dengan pola yang sama — sebutkan uji, nilai statistik & signifikansinya, lalu kesimpulan hipotesisnya. Jangan membaca tabel kata per kata.");
+  slide("Kesimpulan", "BAB 5", bullets(g("dsKesimpulan")), "Berdasarkan hasil pengujian, kesimpulan penelitian ini adalah sebagai berikut. Pastikan tiap kesimpulan menjawab satu rumusan masalah.");
+  slide("Saran", "BAB 5", bullets(g("dsSaran")), "Saran saya bagi pihak terkait dan peneliti selanjutnya adalah sebagaimana slide ini.");
+  const end = pptx.addSlide(); end.background = { color: T.dark };
+  end.addText("Terima Kasih", { x: 1, y: 2.9, w: 11.33, fontSize: 40, bold: true, color: "FFFFFF", align: "center" });
+  end.addText("Mohon arahan, kritik, dan saran dari Bapak/Ibu Penguji.", { x: 1, y: 4.0, w: 11.33, fontSize: 16, color: "CBD5E1", align: "center" });
+  if (end.addNotes) end.addNotes("Demikian presentasi saya. Saya mengucapkan terima kasih atas perhatian Bapak/Ibu penguji; saya siap menerima pertanyaan dan masukan.");
+  await pptx.writeFile({ fileName: "MahasiswaTools_Deck-Sidang.pptx" });
+  toast("Deck sidang 11 slide terunduh 🎓");
+}
+
+/* ---------- 107. Pengekstrak Materi PPT Dosen ---------- */
+UI.pptxextract = function (b) {
+  window._px = null;
+  b.innerHTML = head("📤", "Sulap PPT Dosen Jadi Rangkuman & Kuis", "Upload file .pptx materi kuliah: seluruh judul, poin, dan catatan dosen diekstrak. Unduh sebagai rangkuman Word, handout PDF berkollom catatan tangan, atau langsung jadi kuis latihan.")
+    + field("File .pptx dari Dosen", '<input type="file" id="pxFile" accept=".pptx" class="' + IN + '">')
+    + '<div id="pxOut" class="mt-3"></div>';
+  document.getElementById("pxFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const out = document.getElementById("pxOut");
+    out.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca struktur PPTX…</p>';
+    try {
+      if (!await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip")) throw new Error("Library JSZip gagal dimuat.");
+      const zip = await JSZip.loadAsync(await f.arrayBuffer());
+      const slideFiles = Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b2) => parseInt(a.match(/\d+/)[0]) - parseInt(b2.match(/\d+/)[0]));
+      const slides = [];
+      for (const name of slideFiles) {
+        const xml = await zip.files[name].async("string");
+        const texts = [...xml.matchAll(/<a:t>([^<]*)<\/a:t>/g)].map((m) => m[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()).filter(Boolean);
+        const num = name.match(/\d+/)[0];
+        let notes = "";
+        const nf = zip.files["ppt/notesSlides/notesSlide" + num + ".xml"];
+        if (nf) { const nxml = await nf.async("string"); notes = [...nxml.matchAll(/<a:t>([^<]*)<\/a:t>/g)].map((m) => m[1].trim()).filter((t) => t && !/^\d+$/.test(t)).join(" "); }
+        slides.push({ title: texts[0] || "Slide " + num, points: texts.slice(1), notes });
+      }
+      window._px = { slides, name: f.name };
+      out.innerHTML = '<p class="text-sm mb-3">✅ Terbaca <b>' + slides.length + ' slide</b> • total ' + slides.reduce((a, s) => a + s.points.length, 0) + ' poin materi.</p>'
+        + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN2 + '" onclick="pxDoc()">📄 Rangkuman Word (.doc)</button><button class="' + BTN2 + '" onclick="pxHandout()">📝 Handout PDF (kolom catatan)</button><button class="' + BTN2 + '" onclick="pxQuiz()">🧠 Buat Kuis dari Materi Ini</button></div>'
+        + '<div class="space-y-2 max-h-96 overflow-y-auto pr-1">' + slides.map((s, i) => '<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60"><b class="text-sm">' + (i + 1) + '. ' + esc(s.title) + '</b><ul class="text-[13px] text-slate-600 dark:text-slate-300 list-disc ml-5 mt-1">' + s.points.map((p) => '<li>' + esc(p) + '</li>').join("") + '</ul>' + (s.notes ? '<p class="text-xs text-slate-400 mt-1">🗒️ Catatan: ' + esc(s.notes) + '</p>' : "") + '</div>').join("") + '</div>'
+        + '<div id="pxQuiz" class="mt-4"></div>';
+    } catch (err) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal membaca PPTX: ' + esc(err.message) + '</p>'; }
+  });
+};
+function pxDoc() {
+  if (!window._px) return;
+  const html = "<h1>Rangkuman Materi — " + esc(window._px.name.replace(/\.pptx$/i, "")) + "</h1>" + window._px.slides.map((s, i) => "<h2>Slide " + (i + 1) + ": " + esc(s.title) + "</h2><ul>" + s.points.map((p) => "<li>" + esc(p) + "</li>").join("") + "</ul>" + (s.notes ? "<p><i>Catatan dosen: " + esc(s.notes) + "</i></p>" : "")).join("");
+  downloadDoc("Rangkuman_" + window._px.name.replace(/\.pptx$/i, "") + ".doc", html);
+}
+async function pxHandout() {
+  if (!window._px) return;
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const W = 595, H = 842, M = 42;
+  let page = doc.addPage([W, H]), y = H - M;
+  const wrap = (text, f, size, maxW) => { const words = String(text).split(/\s+/); const out = []; let cur = ""; words.forEach((w) => { const t = cur ? cur + " " + w : w; if (f.widthOfTextAtSize(t, size) > maxW && cur) { out.push(cur); cur = w; } else cur = t; }); if (cur) out.push(cur); return out; };
+  window._px.slides.forEach((s, i) => {
+    const linesNeeded = 30 + wrap(s.title, bold, 12, 250).length * 15 + s.points.reduce((a, p) => a + wrap(p, font, 10, 250).length, 0) * 13 + 26;
+    if (y - linesNeeded < M + 20) { page = doc.addPage([W, H]); y = H - M; }
+    page.drawText("Slide " + (i + 1) + " — Catatan Tangan →", { x: W / 2 + 10, y, size: 9, font, color: rgb(0.55, 0.58, 0.65) });
+    wrap(s.title, bold, 12, 250).forEach((ln) => { page.drawText(ln, { x: M, y, size: 12, font: bold, color: rgb(0.1, 0.1, 0.25) }); y -= 15; });
+    y -= 2;
+    s.points.forEach((p) => { wrap("• " + p, font, 10, 250).forEach((ln) => { page.drawText(ln, { x: M, y, size: 10, font, color: rgb(0.2, 0.2, 0.25) }); y -= 13; }); });
+    const topY = y + 30 + s.points.length * 4;
+    for (let ly = Math.min(topY, H - M); ly > y - 4; ly -= 18) page.drawLine({ start: { x: W / 2 + 10, y: ly }, end: { x: W - M, y: ly }, thickness: 0.5, color: rgb(0.8, 0.82, 0.88) });
+    y -= 24;
+  });
+  const bytes = await doc.save();
+  download("Handout_" + window._px.name.replace(/\.pptx$/i, "") + ".pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("Handout PDF terunduh 📝");
+}
+function pxQuiz() {
+  if (!window._px) return;
+  const pool = [];
+  window._px.slides.forEach((s) => s.points.forEach((p) => { if (p.length > 12) pool.push({ title: s.title, point: p }); }));
+  if (pool.length < 4) { toast("Poin materi kurang dari 4 — kuis belum bisa dibuat."); return; }
+  const qs = pool.slice(0, 10).map((q) => {
+    const wrong = pool.filter((x) => x.point !== q.point).sort(() => Math.random() - 0.5).slice(0, 3).map((x) => x.point);
+    const opts = [...wrong, q.point].sort(() => Math.random() - 0.5);
+    return { q: 'Manakah pernyataan yang termasuk poin dari slide "' + q.title + '"?', opts, ans: q.point };
+  });
+  window._pxq = { qs, score: 0, done: 0 };
+  document.getElementById("pxQuiz").innerHTML = '<h4 class="font-bold text-sm mb-2">🧠 Kuis Latihan dari Materi Dosen (' + qs.length + ' soal)</h4>' + qs.map((q, i) => '<div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2.5"><p class="text-sm font-semibold mb-2">' + (i + 1) + '. ' + esc(q.q) + '</p>' + q.opts.map((o) => '<button class="block w-full text-left text-[13px] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 mb-1.5" onclick="pxAnswer(this, ' + i + ', ' + JSON.stringify(esc(o)).replace(/"/g, "&quot;") + ')">' + esc(o) + '</button>').join("") + '</div>').join("") + '<p id="pxScore" class="font-bold text-sm"></p>';
+}
+function pxAnswer(btn, qi, val) {
+  const Q = window._pxq; if (!Q) return;
+  const wrap = btn.parentElement; if (wrap.dataset.done) return; wrap.dataset.done = "1";
+  const correct = Q.qs[qi].ans;
+  [...wrap.querySelectorAll("button")].forEach((x) => { x.disabled = true; if (x.textContent === correct) x.classList.add("!bg-emerald-100", "dark:!bg-emerald-900/40"); });
+  if (val === correct) { Q.score++; btn.classList.add("!bg-emerald-100"); } else btn.classList.add("!bg-rose-100", "dark:!bg-rose-900/40");
+  Q.done++;
+  document.getElementById("pxScore").textContent = "Skor sementara: " + Q.score + " / " + Q.done + " terjawab (total " + Q.qs.length + " soal)";
+}
+
+/* ---------- 108. Excel ke Slide Grafik PPT ---------- */
+UI.xls2chart = function (b) {
+  b.innerHTML = head("📊", "Data Excel Jadi Slide Grafik PowerPoint", "Tempel tabel (atau upload .xlsx/.csv): kolom pertama = label, kolom berikutnya = seri angka. Pilih jenis grafik — keluar slide .pptx dengan grafik vektor asli yang bisa diedit di PowerPoint.")
+    + field("Upload file (opsional, mengisi tabel di bawah)", '<input type="file" id="xcFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + field("Tabel Data", '<textarea id="xcData" rows="7" class="' + IN + ' font-mono text-[13px]">Bulan\tPengunjung\tUnduhan\nJan\t120\t340\nFeb\t180\t420\nMar\t260\t510\nApr\t310\t640</textarea>', "Baris pertama = header. Copy langsung dari Excel.")
+    + '<div class="grid sm:grid-cols-3 gap-2">' + field("Jenis Grafik", '<select id="xcType" class="' + IN + '"><option value="bar">📊 Batang (Bar)</option><option value="line">📈 Garis (Line)</option><option value="pie">🥧 Lingkaran (Pie)</option><option value="doughnut">🍩 Donat (Doughnut)</option></select>') + field("Judul Slide", '<input id="xcTitle" class="' + IN + '" value="Hasil Penelitian">') + field("Kesimpulan Temuan", '<input id="xcConc" class="' + IN + '" placeholder="Ketik kesimpulan singkat temuanmu…">') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="xcGenerate()">📊 Buat Slide .pptx</button>';
+  document.getElementById("xcFile").addEventListener("change", async (e) => { const f = e.target.files[0]; if (!f) return; try { const { rows } = await mtReadExcelFile(f); document.getElementById("xcData").value = mtRowsToTSV(rows); toast("Data dari " + f.name + " terisi."); } catch (err) { toast("Gagal membaca: " + err.message); } });
+};
+async function xcGenerate() {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat."); return; }
+  const lines = document.getElementById("xcData").value.trim().split("\n").map((l) => l.split(/\t|;|,/).map((c) => c.trim()));
+  if (lines.length < 2) { toast("Tabelnya minimal 2 baris ya."); return; }
+  const head = lines[0], labels = lines.slice(1).map((r) => r[0]);
+  const type = document.getElementById("xcType").value;
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const s = pptx.addSlide();
+  s.addText(document.getElementById("xcTitle").value || "Hasil Penelitian", { x: 0.6, y: 0.3, w: 12, fontSize: 24, bold: true, color: "0B0F19" });
+  const series = [];
+  for (let c = 1; c < head.length; c++) series.push({ name: head[c], labels, values: lines.slice(1).map((r) => parseFloat(String(r[c]).replace(/\./g, "").replace(",", ".")) || 0) });
+  if (type === "pie" || type === "doughnut") s.addChart(type, [{ name: series[0].name, labels, values: series[0].values }], { x: 0.8, y: 1.2, w: 7.6, h: 5.4, showLegend: true, legendPos: "r", showPercent: true });
+  else s.addChart(type, series, { x: 0.6, y: 1.2, w: 8.2, h: 5.4, showLegend: true, legendPos: "b", catAxisTitle: head[0], showValue: type === "bar" });
+  const trows = lines.map((r, ri) => r.map((c) => ({ text: String(c), options: ri === 0 ? { bold: true, fill: { color: "E0E7FF" } } : {} })));
+  s.addTable(trows, { x: 9.1, y: 1.2, w: 3.7, fontSize: 10.5, border: { pt: 0.5, color: "CBD5E1" } });
+  const conc = document.getElementById("xcConc").value.trim();
+  if (conc) s.addText("Kesimpulan: " + conc, { x: 0.6, y: 6.85, w: 12.1, fontSize: 12.5, italic: true, color: "475569" });
+  await pptx.writeFile({ fileName: "MahasiswaTools_Slide-Grafik.pptx" });
+  toast("Slide grafik terunduh 📊");
+}
+
+/* ---------- 109. Kompresor PPTX ---------- */
+UI.pptxpress = function (b) {
+  window._ppFile = null;
+  b.innerHTML = head("🗜️", "Kompres PowerPoint Bengkak Jadi Ringan", "PPT 20 MB gara-gara foto? Tool ini men-downscale & mengompresi ulang semua gambar di dalam .pptx via canvas — teks, tabel, dan animasi tidak berubah. Target lolos batas upload SIAKAD/LMS 2–5 MB.")
+    + field("File .pptx", '<input type="file" id="ppFile" accept=".pptx" class="' + IN + '">')
+    + '<div id="ppInfo" class="mb-3"></div>'
+    + '<div class="grid grid-cols-2 gap-2">' + field("Resolusi maks gambar", '<select id="ppMax" class="' + IN + '"><option value="1920">1920px (tajam)</option><option value="1280" selected>1280px (seimbang)</option><option value="960">960px (paling ringan)</option></select>') + field("Kualitas JPEG", '<select id="ppQ" class="' + IN + '"><option value="0.85">85% (tajam)</option><option value="0.75" selected>75% (seimbang)</option><option value="0.6">60% (ringan)</option></select>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="ppCompress()">🗜️ Kompres Sekarang</button><div id="ppOut" class="mt-3"></div>';
+  document.getElementById("ppFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return; window._ppFile = f;
+    document.getElementById("ppInfo").innerHTML = '<p class="text-sm">📄 ' + esc(f.name) + ' — <b>' + (f.size / 1048576).toFixed(2) + ' MB</b>. Klik Kompres untuk memproses.</p>';
+  });
+};
+function ppLoadImg(blob) { return new Promise((res, rej) => { const url = URL.createObjectURL(blob); const img = new Image(); img.onload = () => res({ img, url }); img.onerror = rej; img.src = url; }); }
+async function ppCompress() {
+  const f = window._ppFile; const out = document.getElementById("ppOut");
+  if (!f) { toast("Pilih file .pptx dulu ya."); return; }
+  if (!await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip")) { toast("Library JSZip gagal dimuat."); return; }
+  out.innerHTML = '<p class="text-sm text-slate-5 00">⏳ Memindai gambar di dalam PPTX…</p>'.replace(" 00", "00");
+  try {
+    const zip = await JSZip.loadAsync(await f.arrayBuffer());
+    const media = Object.keys(zip.files).filter((n) => /^ppt\/media\/.+\.(png|jpe?g)$/i.test(n));
+    const maxDim = parseInt(document.getElementById("ppMax").value) || 1280;
+    const q = parseFloat(document.getElementById("ppQ").value) || 0.75;
+    let done = 0, savedBytes = 0;
+    for (const name of media) {
+      const blob = await zip.files[name].async("blob");
+      if (blob.size < 120000) continue;
+      try {
+        const { img, url } = await ppLoadImg(blob);
+        const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+        const w = Math.round(img.naturalWidth * scale), h = Math.round(img.naturalHeight * scale);
+        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        const ctx = cv.getContext("2d"); ctx.drawImage(img, 0, 0, w, h);
+        let hasAlpha = false;
+        if (/\.png$/i.test(name)) { try { const d = ctx.getImageData(0, 0, Math.min(w, 60), Math.min(h, 60)).data; for (let i = 3; i < d.length; i += 4) if (d[i] < 250) { hasAlpha = true; break; } } catch (e) {} }
+        const nb = await new Promise((r) => cv.toBlob(r, hasAlpha ? "image/png" : "image/jpeg", q));
+        URL.revokeObjectURL(url);
+        if (nb && nb.size < blob.size) { zip.file(name, nb); savedBytes += blob.size - nb.size; done++; }
+      } catch (e) { /* gambar rusak dilewati */ }
+    }
+    const outBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } });
+    download(f.name.replace(/\.pptx$/i, "") + "_kompres.pptx", outBlob);
+    const pct = Math.max(0, Math.round((1 - outBlob.size / f.size) * 100));
+    out.innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>Selesai!</b> ' + done + ' gambar dikompresi (hemat ' + (savedBytes / 1048576).toFixed(2) + ' MB dari gambar). Ukuran file: <b>' + (f.size / 1048576).toFixed(2) + ' MB → ' + (outBlob.size / 1048576).toFixed(2) + ' MB</b> (turun ' + pct + '%). Buka file hasilnya di PowerPoint untuk memastikan tampilannya tetap bagus sebelum dikumpulkan.</div>';
+  } catch (e) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal: ' + esc(e.message) + '</p>'; }
+}
+
+/* ---------- 110. Excel ke PDF Fit-Page ---------- */
+UI.xls2pdf = function (b) {
+  window._xp = null;
+  b.innerHTML = head("🖨️", "Excel ke PDF — Pas 1 Halaman, Anti Terpotong", "Upload .xlsx: lebar semua kolom dihitung proporsional lalu diskalakan agar 100% muat selebar kertas A4/F4. Header tabel berulang di setiap halaman. Tidak ada lagi kolom kanan hilang saat dicetak.")
+    + field("File Excel", '<input type="file" id="xpFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + '<div class="grid grid-cols-3 gap-2">' + field("Kertas", '<select id="xpPaper" class="' + IN + '"><option value="a4">A4 (210×297mm)</option><option value="f4">F4 / Folio (215×330mm)</option></select>') + field("Orientasi", '<select id="xpOri" class="' + IN + '"><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select>') + field("Judul Tabel", '<input id="xpTitle" class="' + IN + '" placeholder="mis. Rekap Data Responden">') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="xpMake()">🖨️ Buat PDF Siap Cetak</button><div id="xpOut" class="mt-3"></div>';
+  document.getElementById("xpFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const { rows } = await mtReadExcelFile(f); window._xp = { rows, name: f.name }; document.getElementById("xpOut").innerHTML = '<p class="text-sm">✅ Terbaca <b>' + rows.length + ' baris × ' + (rows[0] || []).length + ' kolom</b> dari ' + esc(f.name) + '. Klik Buat PDF.</p>'; }
+    catch (err) { toast("Gagal membaca: " + err.message); }
+  });
+};
+async function xpMake() {
+  const D = window._xp; const out = document.getElementById("xpOut");
+  if (!D) { toast("Upload file Excel dulu ya."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+  const rows = D.rows.map((r) => r.map((c) => String(c == null ? "" : c)));
+  const ncol = Math.max(...rows.map((r) => r.length));
+  const paper = document.getElementById("xpPaper").value, ori = document.getElementById("xpOri").value;
+  const dims = paper === "f4" ? [609, 935] : [595, 842];
+  const W = ori === "landscape" ? dims[1] : dims[0], H = ori === "landscape" ? dims[0] : dims[1];
+  const M = 36, usable = W - M * 2;
+  const weights = [];
+  for (let c = 0; c < ncol; c++) { let mx = 3; rows.forEach((r) => { mx = Math.max(mx, (r[c] || "").length); }); weights.push(Math.min(mx, 42)); }
+  const totW = weights.reduce((a, b2) => a + b2, 0);
+  let fontSize = 10;
+  const colW = weights.map((w) => usable * w / totW);
+  const charW = (fs) => fs * 0.52;
+  const needShrink = colW.some((w, c) => (weights[c] * charW(10)) > w);
+  if (needShrink) fontSize = Math.max(6.5, 10 * Math.min(...colW.map((w, c) => w / (weights[c] * charW(10)))));
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const rowH = fontSize + 6;
+  const title = document.getElementById("xpTitle").value.trim();
+  let page = doc.addPage([W, H]), y = H - M;
+  let pageNo = 1;
+  const drawHeader = () => {
+    if (title && pageNo === 1) { page.drawText(title.slice(0, 90), { x: M, y, size: 13, font: bold, color: rgb(0.08, 0.1, 0.2) }); y -= 22; }
+    let x = M;
+    page.drawRectangle({ x: M, y: y - rowH + 4, width: usable, height: rowH, color: rgb(0.88, 0.9, 0.98) });
+    rows[0].forEach((c, ci) => { page.drawText(String(c).slice(0, 60), { x: x + 3, y: y - rowH + 8, size: fontSize, font: bold, color: rgb(0.1, 0.1, 0.2) }); x += colW[ci]; });
+    y -= rowH + 2;
+  };
+  drawHeader();
+  for (let r = 1; r < rows.length; r++) {
+    if (y - rowH < M + 14) { page.drawText("MahasiswaTools • hal. " + pageNo, { x: M, y: M - 16, size: 8, font, color: rgb(0.6, 0.62, 0.68) }); page = doc.addPage([W, H]); y = H - M; pageNo++; drawHeader(); }
+    let x = M;
+    rows[r].forEach((c, ci) => { const txt = String(c); const maxCh = Math.floor((colW[ci] - 5) / charW(fontSize)); page.drawText(txt.slice(0, Math.max(3, maxCh)), { x: x + 3, y: y - rowH + 8, size: fontSize, font, color: rgb(0.15, 0.16, 0.2) }); x += colW[ci]; });
+    page.drawLine({ start: { x: M, y: y - rowH + 3 }, end: { x: M + usable, y: y - rowH + 3 }, thickness: 0.4, color: rgb(0.85, 0.86, 0.9) });
+    y -= rowH;
+  }
+  page.drawText("MahasiswaTools • hal. " + pageNo, { x: M, y: M - 16, size: 8, font, color: rgb(0.6, 0.62, 0.68) });
+  const bytes = await doc.save();
+  download("Siap-Cetak_" + D.name.replace(/\.[^.]+$/, "") + ".pdf", new Blob([bytes], { type: "application/pdf" }));
+  out.innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>PDF selesai</b> — ' + pageNo + ' halaman, kertas ' + (paper === "f4" ? "F4" : "A4") + ' ' + ori + ', ukuran huruf ' + fontSize.toFixed(1) + 'pt (diskalakan agar semua ' + ncol + ' kolom muat selebar halaman).</div>';
+}
+
+/* ---------- 111. Tanda Tangan & Stempel PDF ---------- */
+UI.pdfsign = function (b) {
+  window._ps = { bytes: null, page: 1, items: { ttd: null, stamp: null, materai: null }, pos: { ttd: { x: 0.68, y: 0.78 }, stamp: { x: 0.5, y: 0.8 }, materai: { x: 0.2, y: 0.78 } }, target: "ttd", scale: 130 };
+  b.innerHTML = head("✍️", "Tanda Tangani & Stempel PDF di Browser", "Upload PDF (surat izin, lembar pengesahan, kontrak magang): gambar tanda tanganmu, buat stempel teks, atau kotak materai — klik di pratinjau untuk meletakkannya, lalu unduh PDF final. Semua diproses lokal.")
+    + field("File PDF", '<input type="file" id="psFile" accept=".pdf" class="' + IN + '">')
+    + '<div class="grid sm:grid-cols-2 gap-3"><div>' + field("Halaman tujuan", '<select id="psPage" class="' + IN + '" onchange="psRenderPage()"></select>')
+    + field("Geser target penempatan", '<div class="flex gap-2"><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="ttd" checked onchange="window._ps.target=this.value"> ✍️ TTD</label><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="stamp" onchange="window._ps.target=this.value"> 🔵 Stempel</label><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="materai" onchange="window._ps.target=this.value"> 🧾 Materai</label></div>', "Klik pada pratinjau halaman untuk memindahkan item terpilih ke titik itu.")
+    + field("Ukuran item (% lebar halaman)", '<input type="range" id="psScale" min="60" max="220" value="130" oninput="window._ps.scale=+this.value; psDrawOverlay()">')
+    + field("Teks stempel (nama organisasi/panitia)", '<input id="psStampText" class="' + IN + '" value="PANITIA KKN 2026" oninput="psMakeStamp()">')
+    + '<div class="flex flex-wrap gap-2 mt-1"><button class="' + BTN2 + '" onclick="psMakeStamp()">🔵 Buat/Perbarui Stempel</button><button class="' + BTN2 + '" onclick="psMakeMaterai()">🧾 Buat Kotak Materai</button></div>'
+    + '</div><div>' + field("Gambar Tanda Tangan di Sini", '<canvas id="psPad" width="340" height="150" class="w-full rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white touch-none cursor-crosshair"></canvas>')
+    + '<div class="flex gap-2 mt-2"><button class="' + BTN2 + '" onclick="psPadClear()">🧹 Hapus Coretan</button><button class="' + BTN2 + '" onclick="psPadSave()">✅ Pakai TTD Ini</button></div>'
+    + field("atau upload gambar TTD transparan", '<input type="file" id="psTtdFile" accept="image/*" class="' + IN + '">')
+    + '</div></div>'
+    + field("Pratinjau Halaman (klik untuk meletakkan item)", '<div id="psPreview" class="relative inline-block max-w-full border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden bg-white"><canvas id="psCanvas" class="max-w-full block"></canvas><div id="psOverlay" class="absolute inset-0 pointer-events-none"></div></div>')
+    + '<button class="' + BTN + ' w-full mt-2" onclick="psApply()">📥 Terapkan & Unduh PDF Bertanda Tangan</button>';
+  document.getElementById("psFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    window._ps.bytes = await f.arrayBuffer(); window._ps.name = f.name;
+    if (!await loadPdfJs()) { toast("PDF.js gagal dimuat."); return; }
+    const pdf = await pdfjsLib.getDocument({ data: window._ps.bytes.slice(0) }).promise;
+    window._ps.numPages = pdf.numPages;
+    document.getElementById("psPage").innerHTML = Array.from({ length: pdf.numPages }, (_, i) => '<option value="' + (i + 1) + '">Halaman ' + (i + 1) + '</option>').join("");
+    psPadInit(); psRenderPage();
+  });
+  document.getElementById("psTtdFile").addEventListener("change", (e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { window._ps.items.ttd = r.result; psDrawOverlay(); toast("Gambar TTD terpasang."); }; r.readAsDataURL(f); });
+  psPadInit();
+};
+async function psRenderPage() {
+  const S = window._ps; if (!S.bytes) return;
+  const pdf = await pdfjsLib.getDocument({ data: S.bytes.slice(0) }).promise;
+  const page = await pdf.getPage(+document.getElementById("psPage").value || 1);
+  const vp = page.getViewport({ scale: 1.25 });
+  const cv = document.getElementById("psCanvas"); cv.width = vp.width; cv.height = vp.height;
+  await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+  S.pageDims = { w: vp.width, h: vp.height };
+  const pv = document.getElementById("psPreview");
+  pv.onclick = (e) => { const r = pv.getBoundingClientRect(); const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height; S.pos[S.target] = { x: fx, y: fy }; psDrawOverlay(); };
+  psDrawOverlay();
+}
+function psDrawOverlay() {
+  const S = window._ps, ov = document.getElementById("psOverlay"); if (!ov) return;
+  const mk = (key, border) => { const it = S.items[key]; if (!it) return ""; const p = S.pos[key]; const wPct = (key === "ttd" ? 0.20 : key === "stamp" ? 0.24 : 0.13) * (S.scale / 130); return '<img src="' + it + '" style="position:absolute;left:' + (p.x * 100) + '%;top:' + (p.y * 100) + '%;width:' + (wPct * 100) + '%;transform:translate(-50%,-50%);border:1.5px dashed ' + border + ';border-radius:6px">'; };
+  ov.innerHTML = mk("materai", "#94A3B8") + mk("stamp", "#2563EB") + mk("ttd", "#059669");
+}
+function psPadInit() {
+  const pad = document.getElementById("psPad"); if (!pad || pad.dataset.init) return; pad.dataset.init = "1";
+  const ctx = pad.getContext("2d"); ctx.lineWidth = 2.4; ctx.lineCap = "round"; ctx.strokeStyle = "#111827";
+  let drawing = false;
+  const pt = (e) => { const r = pad.getBoundingClientRect(); const src = e.touches ? e.touches[0] : e; return { x: (src.clientX - r.left) * pad.width / r.width, y: (src.clientY - r.top) * pad.height / r.height }; };
+  const start = (e) => { drawing = true; const p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); };
+  const move = (e) => { if (!drawing) return; const p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); };
+  pad.addEventListener("mousedown", start); pad.addEventListener("mousemove", move); window.addEventListener("mouseup", () => drawing = false);
+  pad.addEventListener("touchstart", start, { passive: false }); pad.addEventListener("touchmove", move, { passive: false });
+}
+function psPadClear() { const pad = document.getElementById("psPad"); pad.getContext("2d").clearRect(0, 0, pad.width, pad.height); }
+function psPadSave() { window._ps.items.ttd = document.getElementById("psPad").toDataURL("image/png"); psDrawOverlay(); toast("Tanda tangan siap — klik pratinjau untuk meletakkannya."); }
+function psMakeStamp() {
+  const txt = (document.getElementById("psStampText").value || "STEMPEL").toUpperCase();
+  const cv = document.createElement("canvas"); cv.width = 420; cv.height = 420; const x = cv.getContext("2d");
+  x.strokeStyle = "#1D4ED8"; x.lineWidth = 10; x.beginPath(); x.arc(210, 210, 190, 0, Math.PI * 2); x.stroke();
+  x.lineWidth = 3; x.beginPath(); x.arc(210, 210, 160, 0, Math.PI * 2); x.stroke();
+  x.fillStyle = "#1D4ED8"; x.textAlign = "center"; x.textBaseline = "middle";
+  const words = txt.split(" "); let fs = 44; x.font = "bold " + fs + "px Arial";
+  while (x.measureText(txt).width > 280 && fs > 16) { fs -= 4; x.font = "bold " + fs + "px Arial"; }
+  if (words.length > 1 && x.measureText(txt).width > 280) { const mid = Math.ceil(words.length / 2); x.fillText(words.slice(0, mid).join(" "), 210, 185); x.fillText(words.slice(mid).join(" "), 210, 235); }
+  else x.fillText(txt, 210, 210);
+  x.font = "bold 30px Arial"; x.fillText("★ ★ ★", 210, 300);
+  window._ps.items.stamp = cv.toDataURL("image/png"); psDrawOverlay();
+}
+function psMakeMaterai() {
+  const cv = document.createElement("canvas"); cv.width = 220; cv.height = 300; const x = cv.getContext("2d");
+  x.strokeStyle = "#0F766E"; x.lineWidth = 5; x.strokeRect(8, 8, 204, 284);
+  x.fillStyle = "#0F766E"; x.textAlign = "center"; x.font = "bold 24px Arial";
+  x.fillText("MATERAI", 110, 110); x.fillText("TEMPEL", 110, 145);
+  x.font = "bold 20px Arial"; x.fillText("Rp10.000", 110, 195);
+  x.font = "13px Arial"; x.fillText("Tanda tangan di atas", 110, 245); x.fillText("materai", 110, 265);
+  window._ps.items.materai = cv.toDataURL("image/png"); psDrawOverlay(); toast("Kotak materai dibuat — klik pratinjau untuk meletakkannya.");
+}
+async function psApply() {
+  const S = window._ps;
+  if (!S.bytes) { toast("Upload PDF dulu ya."); return; }
+  if (!S.items.ttd && !S.items.stamp && !S.items.materai) { toast("Buat dulu minimal satu item: tanda tangan, stempel, atau materai."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument } = PDFLib;
+  const doc = await PDFDocument.load(S.bytes.slice(0));
+  const pageIdx = (+document.getElementById("psPage").value || 1) - 1;
+  const page = doc.getPages()[pageIdx];
+  const { width: W, height: H } = page.getSize();
+  const place = async (key, baseW) => {
+    const dataUrl = S.items[key]; if (!dataUrl) return;
+    const png = await doc.embedPng(dataUrl);
+    const w = baseW * (S.scale / 130), h = w * png.height / png.width;
+    const p = S.pos[key];
+    page.drawImage(png, { x: p.x * W - w / 2, y: H - p.y * H - h / 2, width: w, height: h });
+  };
+  await place("materai", W * 0.13); await place("stamp", W * 0.24); await place("ttd", W * 0.20);
+  const bytes = await doc.save();
+  download((S.name || "dokumen.pdf").replace(/\.pdf$/i, "") + "_berttd.pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("PDF bertanda tangan terunduh ✍️");
+}
+
+/* ---------- 112. Pengatur Halaman PDF Visual ---------- */
+UI.pdforg = function (b) {
+  window._po = null;
+  b.innerHTML = head("📑", "Atur Ulang Halaman PDF Secara Visual", "Lihat semua halaman sebagai thumbnail: putar halaman scan yang miring, geser urutannya, hapus halaman kosong — lalu unduh PDF yang sudah rapi.")
+    + field("File PDF", '<input type="file" id="poFile" accept=".pdf" class="' + IN + '">')
+    + '<div id="poGrid" class="mt-2"></div>'
+    + '<button class="' + BTN + ' w-full mt-3" onclick="poApply()">📥 Unduh PDF Hasil Pengaturan</button>';
+  document.getElementById("poFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const grid = document.getElementById("poGrid");
+    grid.innerHTML = '<p class="text-sm text-slate-500">⏳ Membuat thumbnail semua halaman…</p>';
+    try {
+      const bytes = await f.arrayBuffer();
+      if (!await loadPdfJs()) throw new Error("PDF.js gagal dimuat.");
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+      window._po = { bytes, name: f.name, order: [] };
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale: 0.32 });
+        const cv = document.createElement("canvas"); cv.width = vp.width; cv.height = vp.height;
+        await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+        window._po.order.push({ src: p - 1, rot: 0, del: false, thumb: cv.toDataURL("image/jpeg", 0.72) });
+      }
+      poRenderGrid();
+    } catch (err) { grid.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal: ' + esc(err.message) + '</p>'; }
+  });
+};
+function poRenderGrid() {
+  const O = window._po; if (!O) return;
+  document.getElementById("poGrid").innerHTML = '<p class="text-sm mb-2">📄 <b>' + O.order.length + ' halaman</b> — ' + O.order.filter((x) => x.del).length + ' ditandai hapus.</p>'
+    + '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">' + O.order.map((pg, i) => '<div class="rounded-xl border ' + (pg.del ? "border-rose-300 opacity-50" : "border-slate-200 dark:border-slate-700") + ' bg-white dark:bg-slate-900 p-1.5 text-center">'
+      + '<div class="overflow-hidden rounded-md mb-1.5" style="height:110px;display:flex;align-items:center;justify-content:center;background:#F8FAFC"><img src="' + pg.thumb + '" style="max-height:110px;transform:rotate(' + pg.rot + 'deg);transition:transform .2s"></div>'
+      + '<div class="text-[11px] font-bold mb-1">Posisi ' + (i + 1) + ' • asal hal. ' + (pg.src + 1) + (pg.rot ? ' • ↻' + pg.rot + '°' : '') + '</div>'
+      + '<div class="flex justify-center gap-1"><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poMove(' + i + ',-1)">◀</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poMove(' + i + ',1)">▶</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poRot(' + i + ')">⟳ Putar</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poDel(' + i + ')">' + (pg.del ? "↩️ Urungkan" : "🗑️ Hapus") + '</button></div></div>').join("") + '</div>';
+}
+function poMove(i, d) { const O = window._po; const j = i + d; if (j < 0 || j >= O.order.length) return; [O.order[i], O.order[j]] = [O.order[j], O.order[i]]; poRenderGrid(); }
+function poRot(i) { window._po.order[i].rot = (window._po.order[i].rot + 90) % 360; poRenderGrid(); }
+function poDel(i) { window._po.order[i].del = !window._po.order[i].del; poRenderGrid(); }
+async function poApply() {
+  const O = window._po; if (!O) { toast("Upload PDF dulu ya."); return; }
+  const keep = O.order.filter((x) => !x.del);
+  if (!keep.length) { toast("Semua halaman dihapus — tidak ada yang bisa diunduh."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, degrees } = PDFLib;
+  const src = await PDFDocument.load(O.bytes.slice(0));
+  const out = await PDFDocument.create();
+  const pages = await out.copyPages(src, keep.map((k) => k.src));
+  pages.forEach((p, i) => { const add = keep[i].rot; if (add) p.setRotation(degrees(((p.getRotation().angle || 0) + add) % 360)); out.addPage(p); });
+  const bytes = await out.save();
+  download(O.name.replace(/\.pdf$/i, "") + "_rapi.pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("PDF rapi terunduh 📑 (" + keep.length + " halaman)");
+}
 
 /* ============================================================
    ROUTER — deep-link hash & mode halaman tool (SEO)

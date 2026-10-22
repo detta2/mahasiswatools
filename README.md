@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="docs/banner.png" alt="MahasiswaTools — 100 Tool Gratis untuk Mahasiswa & Pejuang Skripsi" width="100%">
+  <img src="docs/banner.png" alt="MahasiswaTools — 112 Tool Gratis untuk Mahasiswa & Pejuang Skripsi" width="100%">
 </p>
 
 <p align="center">
   <a href="https://mahasiswatools.web.id"><img src="https://img.shields.io/badge/Live-mahasiswatools.web.id-4F46E5?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Site"></a>
-  <img src="https://img.shields.io/badge/Tool_Aktif-100-059669?style=for-the-badge" alt="100 Tool">
+  <img src="https://img.shields.io/badge/Tool_Aktif-112-059669?style=for-the-badge" alt="100 Tool">
   <img src="https://img.shields.io/badge/100%25_Client--Side-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Client-Side">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-0B0F19?style=for-the-badge" alt="MIT License"></a>
 </p>
 
-<p align="center"><b>Dari Mahasiswa, Untuk Mahasiswa.</b> Satu portal berisi 100 alat bantu kuliah & skripsi — gratis, tanpa login, tanpa watermark, dan berjalan 100% di browser. Tidak ada data yang dikirim ke server mana pun.</p>
+<p align="center"><b>Dari Mahasiswa, Untuk Mahasiswa.</b> Satu portal berisi 112 alat bantu kuliah & skripsi — gratis, tanpa login, tanpa watermark, dan berjalan 100% di browser. Tidak ada data yang dikirim ke server mana pun.</p>
 
 <p align="center">
   <a href="https://mahasiswatools.web.id"><b>🌐 Buka Situsnya</b></a> •
@@ -22,7 +22,7 @@
 
 ## ✨ Kenapa MahasiswaTools?
 
-- **Gratis total** — 100 tool, tanpa paywall, tanpa watermark di hasil unduhan.
+- **Gratis total** — 112 tool, tanpa paywall, tanpa watermark di hasil unduhan.
 - **Privasi mutlak** — semua perhitungan & dokumen dibuat di perangkatmu. Matikan internet setelah halaman terbuka, tool tetap bekerja.
 - **Bahasa manusia** — antarmuka Bahasa Indonesia sederhana + tombol "Isi Data Contoh" di tool-tool utama.
 - **Cepat** — arsitektur partisi lazy per kategori: muatan JavaScript awal hanya ±73 KB, tool dimuat saat dibutuhkan.
@@ -48,7 +48,7 @@
 - **📄 Ekspor nyata** — .docx asli (OOXML), PDF (pdf-lib), PPTX, PNG, CSV, dan .txt — bukan sekadar pratinjau.
 - **🎓 Statistik terverifikasi** — nilai kritis r/t/F/χ² dihitung dari fungsi distribusi (beta & gamma inkomplet) dan terverifikasi terhadap tabel resmi & hitungan manual.
 
-## 📚 Direktori 100 Tool
+## 📚 Direktori 112 Tool
 
 ### 🤖 Kit Anti-AI & Keaslian (7 tool)
 
@@ -88,7 +88,7 @@
 - **[Kalkulator Target Kata & Deadline Skripsi](https://mahasiswatools.web.id/tools/kalkulator-target-kata-dan-deadline-skripsi/)** — Target kata per hari realistis + milestone tanggal per bab.
 - **[Kalkulator Waktu Baca Presentasi](https://mahasiswatools.web.id/tools/kalkulator-waktu-baca-presentasi/)** — Jumlah kata naskah → estimasi durasi bicara + saran potong kata.
 
-### 📊 Olah Data & Penelitian (17 tool)
+### 📊 Olah Data & Penelitian (20 tool)
 
 - **[Uji Validitas Pearson & Reliabilitas Alpha](https://mahasiswatools.web.id/tools/uji-validitas-pearson-dan-reliabilitas-alpha/)** — Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.
 - **[Kalkulator Sampel (Slovin, Isaac & Lemeshow)](https://mahasiswatools.web.id/tools/kalkulator-sampel-slovin-isaac-dan-lemeshow/)** — Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.
@@ -107,8 +107,11 @@
 - **[Koding Kualitatif Transkrip](https://mahasiswatools.web.id/tools/koding-kualitatif-transkrip/)** — Beri kode segmen wawancara, hitung frekuensi tema, ekspor tabel.
 - **[Lembar Persetujuan Responden](https://mahasiswatools.web.id/tools/lembar-persetujuan-responden/)** — Informed consent etika penelitian, berkop logo, siap tanda tangan.
 - **[Kalkulator Sampel Eksperimen (Federer)](https://mahasiswatools.web.id/tools/kalkulator-sampel-eksperimen-federer/)** — Hitung sampel eksperimen (rumus Federer) + koreksi drop-out + pengacak kelompok perlakuan RAL/RAK.
+- **[Pembersih & Perapih Excel Google Form](https://mahasiswatools.web.id/tools/pembersih-dan-perapih-excel-google-form/)** — Upload hasil Google Form: header panjang jadi kode X1_1, jawaban teks jadi skor 1–5, total per variabel — unduh .xlsx siap olah.
+- **[Generator Rumus Excel Bahasa Manusia](https://mahasiswatools.web.id/tools/generator-rumus-excel-bahasa-manusia/)** — Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.
+- **[Generator Template Excel Ber-Rumus Hidup](https://mahasiswatools.web.id/tools/generator-template-excel-ber-rumus-hidup/)** — Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.
 
-### 🎤 Presentasi & Sidang (11 tool)
+### 🎤 Presentasi & Sidang (15 tool)
 
 - **[Outline Makalah ke PowerPoint (.pptx)](https://mahasiswatools.web.id/tools/outline-makalah-ke-powerpoint-pptx/)** — Poin makalah → file presentasi .pptx asli per bab.
 - **[Teleprompter & Timer Sidang](https://mahasiswatools.web.id/tools/teleprompter-dan-timer-sidang/)** — Teks berjalan otomatis + estimasi kata per menit.
@@ -121,6 +124,10 @@
 - **[Roda Undian Urutan Presentasi](https://mahasiswatools.web.id/tools/roda-undian-urutan-presentasi/)** — Spin wheel pengundi giliran kelompok presentasi.
 - **[Flashcard Cetak (Duplex A4)](https://mahasiswatools.web.id/tools/flashcard-cetak-duplex-a4/)** — Lembar A4 depan–belakang tercermin, siap cetak & gunting.
 - **[Generator Soal Rumpang (Cloze)](https://mahasiswatools.web.id/tools/generator-soal-rumpang-cloze/)** — Soal isian titik-titik otomatis dari teks materi + kunci.
+- **[Generator Deck PPT Sidang Skripsi (Bab 1–5)](https://mahasiswatools.web.id/tools/generator-deck-ppt-sidang-skripsi-bab-1-5/)** — Isi terstruktur Bab 1–5 → deck .pptx 11 slide: cover berlogo, badge agenda, tabel hasil, 5 tema akademik + catatan pembicara otomatis.
+- **[Pengekstrak Materi PPT Dosen](https://mahasiswatools.web.id/tools/pengekstrak-materi-ppt-dosen/)** — Upload .pptx dosen → rangkuman .doc, handout PDF berkollom catatan, dan kuis latihan otomatis dari isi slide.
+- **[Konverter Data Excel ke Slide Grafik PPT](https://mahasiswatools.web.id/tools/konverter-data-excel-ke-slide-grafik-ppt/)** — Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.
+- **[Kompresor Ukuran File PowerPoint](https://mahasiswatools.web.id/tools/kompresor-ukuran-file-powerpoint/)** — Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.
 
 ### 👥 Tugas Kelompok & KKN (13 tool)
 
@@ -138,7 +145,7 @@
 - **[Bagan Struktur Organisasi Posko KKN](https://mahasiswatools.web.id/tools/bagan-struktur-organisasi-posko-kkn/)** — Hierarki posko/desa dari pembina sampai divisi, PNG.
 - **[Desain Plang Jalan & Edukasi Desa (Bonus)](https://mahasiswatools.web.id/tools/desain-plang-jalan-dan-edukasi-desa-bonus/)** — Desain plang canvas 4 tema untuk program fisik KKN.
 
-### 📄 Dokumen, PDF & Gambar (13 tool)
+### 📄 Dokumen, PDF & Gambar (18 tool)
 
 - **[Konverter Sitasi BibTeX/RIS ↔ APA/IEEE](https://mahasiswatools.web.id/tools/konverter-sitasi-bibtex-ris-apa-ieee/)** — Ubah file sitasi BibTeX/RIS (Mendeley/Zotero) jadi daftar pustaka APA/IEEE/Vancouver — dan sebaliknya.
 - **[Pembuat Poster Ilmiah Seminar/PKM](https://mahasiswatools.web.id/tools/pembuat-poster-ilmiah-seminar-pkm/)** — Buat poster ilmiah seminar/PKM resolusi tinggi: abstrak, metode, temuan, QR code — unduh PNG siap cetak.
@@ -153,6 +160,11 @@
 - **[Grid Foto Dokumentasi Lampiran](https://mahasiswatools.web.id/tools/grid-foto-dokumentasi-lampiran/)** — Banyak foto + caption → satu gambar lampiran rapi.
 - **[Timestamp & Geotagging Foto](https://mahasiswatools.web.id/tools/timestamp-dan-geotagging-foto/)** — Tempel waktu & lokasi ala kamera lapangan ke foto tugas.
 - **[Pembuat Tanda Tangan Transparan PNG](https://mahasiswatools.web.id/tools/pembuat-tanda-tangan-transparan-png/)** — Buang latar kertas via luminansi → PNG transparan.
+- **[Ekstraktor Tabel PDF ke Excel](https://mahasiswatools.web.id/tools/ekstraktor-tabel-pdf-ke-excel/)** — Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.
+- **[Penggabung Banyak File Excel / CSV](https://mahasiswatools.web.id/tools/penggabung-banyak-file-excel-csv/)** — Gabung banyak file: tumpuk baris jadi 1 sheet master, atau satukan jadi 1 workbook multi-tab.
+- **[Konverter Excel ke PDF Siap Cetak (Fit-Page)](https://mahasiswatools.web.id/tools/konverter-excel-ke-pdf-siap-cetak-fit-page/)** — Tabel Excel jadi PDF yang 100% pas 1 lebar halaman A4/F4 — tanpa kolom kanan terpotong, header berulang tiap halaman.
+- **[Penanda Tangan & Stempel PDF](https://mahasiswatools.web.id/tools/penanda-tangan-dan-stempel-pdf/)** — Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.
+- **[Pengatur Ulang, Pemutar & Penghapus Halaman PDF](https://mahasiswatools.web.id/tools/pengatur-ulang-pemutar-dan-penghapus-halaman-pdf/)** — Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.
 
 ### 🎓 Akademik, Karir & Harian (14 tool)
 
@@ -204,6 +216,7 @@ node build/build-seo.js    # halaman tool + sitemap + direktori beranda
 ## 🗓️ Riwayat Singkat
 
 - **21 Okt 2026** — Rilis & **Milestone 100 Tool** tercapai dalam satu hari (arsitektur partisi, tema Slate Pro, ikon SVG per tool, SEO 101 URL).
+- **22 Okt 2026 (sore)** — **Segitiga Emas PPT ↔ Excel ↔ PDF**: 12 tool baru (total 112) + SheetJS & PDF.js lazy-load + enhancer Upload/Export Excel & PPT di tool statistik dan keuangan.
 - **22 Okt 2026** — Migrasi ke domain kustom **mahasiswatools.web.id** + direktori tautan statis untuk perayapan Google.
 
 ## 📄 Lisensi

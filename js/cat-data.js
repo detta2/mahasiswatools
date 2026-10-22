@@ -1133,3 +1133,238 @@ function fedAcak() {
 }
 SHARE_GETTERS.federer = function () { const h = window._fedHasil; return h ? "Rancangan eksperimen saya (Federer): " + h.t + " perlakuan × " + h.rAdj + " ulangan = " + h.Nadj + " sampel total — dihitung dengan MahasiswaTools." : ""; };
 
+;
+/* ---------- 101. Pembersih Excel Google Form ---------- */
+UI.gformclean = function (b) {
+  window._gf = null;
+  b.innerHTML = head("🧹", "Bersihkan Hasil Google Form Jadi Siap Olah", "Upload file unduhan Google Form (.xlsx/.csv): kolom Timestamp/Email dibuang, header pertanyaan panjang jadi kode rapi (X1_1, X1_2, …), jawaban teks Likert jadi skor 1–5, dan skor total tiap variabel dihitung. Kamus pertanyaan asli tersimpan di Sheet 2.")
+    + field("1️⃣ Upload File Google Form", '<input type="file" id="gfFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + '<div id="gfOpt" class="hidden">'
+    + field("2️⃣ Pengaturan", '<label class="flex items-center gap-2 text-sm mb-2"><input type="checkbox" id="gfDrop" checked class="w-4 h-4 accent-indigo-600"> Buang kolom Timestamp & Email</label>'
+      + '<div class="flex flex-wrap items-center gap-2 text-sm"><span>Pengelompokan item:</span><select id="gfMode" class="' + IN + ' !w-auto"><option value="satu">Semua item = 1 variabel (X1)</option><option value="per">Bagi per jumlah item</option></select><input type="number" id="gfPer" value="5" min="1" max="50" class="' + IN + ' !w-20"> <span>item per variabel</span></div>', "Kolom jawaban yang isinya teks Likert (Sangat Setuju…Sangat Tidak Setuju) atau angka 1–5 otomatis dianggap item.")
+    + '<div id="gfItems"></div>'
+    + '<button class="' + BTN + ' w-full" onclick="gfProcess()">✨ Bersihkan & Unduh .xlsx Siap Olah</button>'
+    + '<div id="gfPrev" class="mt-4"></div></div>';
+  document.getElementById("gfFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try {
+      const { rows } = await mtReadExcelFile(f);
+      if (rows.length < 2) { toast("File terbaca tapi baris datanya kurang dari 2."); return; }
+      window._gf = { rows, name: f.name };
+      document.getElementById("gfOpt").classList.remove("hidden");
+      gfRenderItems();
+      toast("File terbaca: " + (rows.length - 1) + " responden, " + rows[0].length + " kolom.");
+    } catch (err) { toast("Gagal membaca file: " + err.message); }
+  });
+};
+function gfLikertScore(v) {
+  const t = String(v == null ? "" : v).trim().toLowerCase();
+  const map = { "sangat setuju": 5, "sangatsetuju": 5, "strongly agree": 5, "setuju": 4, "agree": 4, "netral": 3, "ragu-ragu": 3, "ragu ragu": 3, "neutral": 3, "kurang setuju": 2, "tidak setuju": 2, "disagree": 2, "sangat tidak setuju": 1, "strongly disagree": 1, "ss": 5, "s": 4, "n": 3, "ts": 2, "sts": 1 };
+  if (map[t] !== undefined) return map[t];
+  const n = parseFloat(t.replace(",", "."));
+  if (!isNaN(n) && n >= 1 && n <= 5) return n;
+  return null;
+}
+function gfIsLikertCol(rows, ci) {
+  let scored = 0, total = 0;
+  for (let r = 1; r < rows.length; r++) { const v = rows[r][ci]; if (v === "" || v == null) continue; total++; if (gfLikertScore(v) !== null) scored++; }
+  return total > 0 && scored / total >= 0.8;
+}
+function gfRenderItems() {
+  const { rows } = window._gf; const head = rows[0];
+  const items = [];
+  head.forEach((h, ci) => { if (gfIsLikertCol(rows, ci)) items.push(ci); });
+  window._gf.items = items;
+  document.getElementById("gfItems").innerHTML = items.length
+    ? field("3️⃣ Item Terbalik (Unfavorable) — centang yang skornya harus dibalik", items.map((ci) => '<label class="flex items-start gap-2 text-[13px] mb-1.5"><input type="checkbox" class="gf-unfav mt-0.5 w-4 h-4 accent-rose-600" value="' + ci + '"><span><b>' + esc(String(head[ci]).slice(0, 60)) + '</b></span></label>').join(""), "Item unfavorable biasanya berbunyi negatif, mis. “Saya kesulitan…”. Skor dibalik: 5↔1, 4↔2, 3 tetap.")
+    : '<p class="text-sm text-amber-600 dark:text-amber-400 mb-3">⚠️ Tidak ada kolom Likert terdeteksi — semua kolom akan dipertahankan apa adanya dengan kode Kol_1, Kol_2, …</p>';
+}
+async function gfProcess() {
+  const G = window._gf; if (!G) return;
+  const { rows, items } = G; const head = rows[0];
+  const drop = document.getElementById("gfDrop").checked;
+  const mode = document.getElementById("gfMode").value;
+  const per = Math.max(1, parseInt(document.getElementById("gfPer").value) || 5);
+  const unfav = new Set([...document.querySelectorAll(".gf-unfav:checked")].map((c) => +c.value));
+  const isDrop = (ci) => drop && /timestamp|waktu|email|e-mail|alamat email/i.test(String(head[ci]));
+  const itemSet = new Set(items);
+  const codes = {}, kamus = [];
+  let varIdx = 0, itemIdx = 0;
+  head.forEach((h, ci) => {
+    if (isDrop(ci)) return;
+    if (itemSet.has(ci)) {
+      if (mode === "satu") { varIdx = 1; itemIdx++; }
+      else { varIdx = Math.floor(itemIdx / per) + 1; itemIdx++; }
+      const no = mode === "satu" ? itemIdx : (itemIdx - 1) % per + 1;
+      codes[ci] = "X" + varIdx + "_" + no;
+      kamus.push([codes[ci], String(h), unfav.has(ci) ? "Item Likert — Unfavorable (skor dibalik)" : "Item Likert — Favorable"]);
+    } else {
+      codes[ci] = "Kol_" + (ci + 1);
+      kamus.push([codes[ci], String(h), "Kolom lain (dipertahankan)"]);
+    }
+  });
+  const keepCols = head.map((_, ci) => ci).filter((ci) => !isDrop(ci));
+  const varOf = {};
+  items.forEach((ci) => { if (codes[ci]) varOf[ci] = codes[ci].split("_")[0]; });
+  const varList = [...new Set(Object.values(varOf))];
+  const outHead = keepCols.map((ci) => codes[ci]);
+  varList.forEach((v) => outHead.push("Total_" + v));
+  const out = [outHead];
+  for (let r = 1; r < rows.length; r++) {
+    const row = []; const totals = {};
+    keepCols.forEach((ci) => {
+      let v = rows[r][ci];
+      if (itemSet.has(ci)) { let sc = gfLikertScore(v); if (sc !== null && unfav.has(ci)) sc = 6 - sc; v = sc === null ? "" : sc; if (sc !== null) totals[varOf[ci]] = (totals[varOf[ci]] || 0) + sc; }
+      row.push(v);
+    });
+    varList.forEach((v) => row.push(totals[v] === undefined ? "" : totals[v]));
+    out.push(row);
+  }
+  await mtExportExcel([{ name: "Data Bersih", rows: out }, { name: "Kamus Variabel", rows: [["Kode", "Pertanyaan / Kolom Asli", "Jenis"], ...kamus] }], "GForm-Bersih_" + G.name.replace(/\.[^.]+$/, ""));
+  document.getElementById("gfPrev").innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>Selesai!</b> ' + (out.length - 1) + ' responden • ' + items.length + ' item Likert • ' + varList.length + ' variabel (' + varList.join(", ") + '). File berisi Sheet 1 "Data Bersih" + Sheet 2 "Kamus Variabel" — siap ditempel ke tool statistik MahasiswaTools atau SPSS.</div>';
+}
+
+;
+/* ---------- 102. Generator Rumus Excel ---------- */
+UI.formulabldr = function (b) {
+  b.innerHTML = head("ƒx", "Rumus Excel dari Bahasa Manusia", "Pilih kasusmu, isi parameternya — rumusnya jadi seketika, lengkap dengan penjelasan dan simulasi uji. Tinggal salin ke Excel.")
+    + field("Skenario", '<select id="fxCase" class="' + IN + '" onchange="fxRender()"><option value="nilai">🎓 Nilai Angka → Huruf Mutu (A/AB/B/BC/C/D/E)</option><option value="lookup">🔎 Pencarian Data Antar-Tabel (VLOOKUP/XLOOKUP/INDEX-MATCH)</option><option value="ifs">🧮 Rekap Bersyarat (COUNTIFS & AVERAGEIFS)</option><option value="kategori">📊 Kategorisasi Skor (Tinggi/Sedang/Rendah dari Mean & SD)</option></select>')
+    + '<div id="fxForm"></div><div id="fxOut" class="mt-4"></div>';
+  fxRender();
+};
+function fxSep() { const el = document.getElementById("fxSep"); return el ? el.value : ";"; }
+function fxRender() {
+  const c = document.getElementById("fxCase").value;
+  const sepRow = '<div class="flex items-center gap-2 mb-3 text-sm"><span class="font-semibold">Pemisah rumus:</span><select id="fxSep" class="' + IN + ' !w-auto" onchange="fxBuild()"><option value=";">Titik koma ( ; ) — Excel Indonesia</option><option value=",">Koma ( , ) — Excel Inggris</option></select></div>';
+  let form = "";
+  if (c === "nilai") form = '<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">' + [["A", 85], ["AB", 78], ["B", 70], ["BC", 62], ["C", 55], ["D", 40]].map((g) => '<label class="text-xs font-semibold">' + g[0] + ' minimal<input type="number" id="fxT_' + g[0] + '" value="' + g[1] + '" class="' + IN + ' mt-1" oninput="fxBuild()"></label>').join("") + '<label class="text-xs font-semibold">Sel nilai<input type="text" id="fxCell" value="B2" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  if (c === "lookup") form = '<div class="grid grid-cols-2 gap-2 mb-3"><label class="text-xs font-semibold">Sel kunci (NIM)<input id="fxKey" value="A2" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Rentang tabel sumber<input id="fxTbl" value="Data!$A$2:$D$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Ambil kolom ke-<input type="number" id="fxCol" value="2" min="1" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Fungsi<select id="fxFn" class="' + IN + ' mt-1" onchange="fxBuild()"><option value="vlookup">VLOOKUP (semua versi)</option><option value="xlookup">XLOOKUP (Excel 365)</option><option value="index">INDEX + MATCH (paling fleksibel)</option></select></label></div>';
+  if (c === "ifs") form = '<div class="grid grid-cols-2 gap-2 mb-3"><label class="text-xs font-semibold">Kolom kriteria 1 (mis. Status)<input id="fxR1" value="$C$2:$C$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Nilai kriteria 1<input id="fxC1" value="&quot;Lulus&quot;" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Kolom kriteria 2 (opsional)<input id="fxR2" value="$D$2:$D$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Nilai kriteria 2 (opsional)<input id="fxC2" value="&quot;P&quot;" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Kolom nilai (untuk AVERAGEIFS)<input id="fxRV" value="$B$2:$B$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  if (c === "kategori") form = '<div class="grid grid-cols-3 gap-2 mb-3"><label class="text-xs font-semibold">Sel skor<input id="fxKCell" value="B2" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Rentang semua skor<input id="fxKRange" value="$B$2:$B$101" class="' + IN + ' mt-1" oninput="fxBuild()"></label><label class="text-xs font-semibold">Pengali SD<input type="number" id="fxKSD" value="1" step="0.1" min="0.1" class="' + IN + ' mt-1" oninput="fxBuild()"></label></div>';
+  document.getElementById("fxForm").innerHTML = sepRow + form;
+  fxBuild();
+}
+function fxOutBox(formula, explain, simHTML) {
+  document.getElementById("fxOut").innerHTML = '<div class="p-4 rounded-xl bg-slate-900 text-slate-100 mb-3"><div class="text-[11px] font-bold tracking-wider text-indigo-300 mb-1.5">RUMUS JADI — SALIN KE EXCEL</div><code class="text-[13px] break-all whitespace-pre-wrap">' + esc(formula) + '</code><button class="' + BTN2 + ' mt-3 !bg-white/10 !text-white !border-white/20" onclick="copyText(' + JSON.stringify(formula) + '); toast(\'Rumus tersalin 📋\')">📋 Salin Rumus</button></div>'
+    + '<p class="text-sm text-slate-600 dark:text-slate-300 mb-3">' + explain + '</p>'
+    + (simHTML ? '<div class="p-4 rounded-xl bg-indigo-50 dark:bg-indigo-900/20 border border-indigo-100 dark:border-indigo-800"><div class="text-xs font-bold tracking-wider text-indigo-500 mb-2">🧪 SIMULASI UJI LANGSUNG</div>' + simHTML + '</div>' : "");
+}
+function fxBuild() {
+  const c = document.getElementById("fxCase").value, S = fxSep();
+  const v = (id, d) => { const el = document.getElementById(id); return el ? el.value : d; };
+  if (c === "nilai") {
+    const cell = v("fxCell", "B2") || "B2";
+    const grades = ["A", "AB", "B", "BC", "C", "D"].map((g) => [g, parseFloat(v("fxT_" + g, 0)) || 0]);
+    const ifs = "=IFS(" + grades.map((g) => cell + ">=" + g[1] + S + '"'+ g[0] + '"').join(S) + S + 'TRUE' + S + '"E")';
+    const nested = grades.reduceRight((acc, g) => "=IF(" + cell + ">=" + g[1] + S + '"' + g[0] + '"' + S + acc + ")", '"E"');
+    const sim = '<div class="flex items-center gap-2 text-sm"><span>Coba nilai:</span><input type="number" id="fxSimN" value="82" class="' + IN + ' !w-24" oninput="fxSimNilai()"><span class="font-bold">→ <span id="fxSimR">AB</span></span></div>';
+    fxOutBox(ifs + "\n\nAlternatif IF bertingkat (Excel lama):\n" + nested, "IFS berhenti di syarat pertama yang terpenuhi — urutan dari tertinggi. Di bawah batas terendah hasilnya E. Sesuaikan ambangnya dengan pedoman penilaian kampusmu.", sim);
+    window._fxGrades = grades; fxSimNilai();
+  }
+  if (c === "lookup") {
+    const key = v("fxKey", "A2"), tbl = v("fxTbl", "Data!$A$2:$D$101"), col = parseInt(v("fxCol", 2)) || 2, fn = v("fxFn", "vlookup");
+    let f = "", ex = "";
+    const tblSheet = tbl.split("!")[0], tblRange = tbl.includes("!") ? tbl.split("!")[1] : tbl;
+    if (fn === "vlookup") { f = "=VLOOKUP(" + key + S + tbl + S + col + S + "FALSE)"; ex = "VLOOKUP mencari kunci di kolom PERTAMA tabel sumber, lalu mengambil nilai dari kolom ke-" + col + ". FALSE = harus sama persis."; }
+    if (fn === "xlookup") { f = "=XLOOKUP(" + key + S + tblSheet + "!" + tblRange.split(":")[0].replace(/\d+/g, (m, off) => off === 0 ? m : m) + ":" + tblRange.split(":")[0].replace(/\$\w+\$/, (m) => m) + S + "kolom-hasil)"; f = "=XLOOKUP(" + key + S + "KOLOM_KUNCI" + S + "KOLOM_HASIL" + S + '"Tidak ditemukan")'; ex = "XLOOKUP (Excel 365): ganti KOLOM_KUNCI dengan kolom tempat NIM berada (mis. Data!$A$2:$A$101) dan KOLOM_HASIL dengan kolom yang mau diambil (mis. Data!$B$2:$B$101). Lebih aman dari VLOOKUP karena tidak tergantung nomor kolom."; }
+    if (fn === "index") { f = "=INDEX(KOLOM_HASIL" + S + "MATCH(" + key + S + "KOLOM_KUNCI" + S + "0))"; ex = "INDEX+MATCH: MATCH menemukan posisi baris kunci (0 = sama persis), INDEX mengambil nilai di posisi itu dari KOLOM_HASIL. Ganti KOLOM_KUNCI (mis. Data!$A$2:$A$101) dan KOLOM_HASIL (mis. Data!$C$2:$C$101) — kolom hasil boleh di kiri kolom kunci."; }
+    fxOutBox(f, ex, '<p class="text-sm">💡 Tempel rumus di sel kosong di samping data utamamu, lalu tarik (drag) ke bawah. Kunci rentang tabel dengan $ agar tidak bergeser saat ditarik.</p>');
+  }
+  if (c === "ifs") {
+    const r1 = v("fxR1", ""), c1 = v("fxC1", ""), r2 = v("fxR2", ""), c2 = v("fxC2", ""), rv = v("fxRV", "");
+    const crit = [r1 + S + c1]; if (r2 && c2) crit.push(r2 + S + c2);
+    const f = "=COUNTIFS(" + crit.join(S) + ")\n=AVERAGEIFS(" + rv + S + crit.join(S) + ")";
+    fxOutBox(f, "COUNTIFS menghitung baris yang memenuhi SEMUA kriteria; AVERAGEIFS merata-ratakan kolom nilai pada baris yang sama. Kriteria teks pakai tanda kutip, mis. \"Lulus\"; kriteria angka bisa langsung atau \">=60\".", '<div class="flex items-center gap-2 text-sm"><span>Contoh data mini: 8 siswa (5 Lulus, 3 Tidak). COUNTIFS Status="Lulus" →</span><b>5</b></div>');
+  }
+  if (c === "kategori") {
+    const cell = v("fxKCell", "B2"), rg = v("fxKRange", "$B$2:$B$101"), k = v("fxKSD", "1");
+    const mean = "AVERAGE(" + rg + ")", sd = "STDEV(" + rg + ")";
+    const f = "=IF(" + cell + ">=" + mean + "+" + k + "*" + sd + S + '"Tinggi"' + S + "IF(" + cell + ">=" + mean + "-" + k + "*" + sd + S + '"Sedang"' + S + '"Rendah"))';
+    const sim = '<div class="flex flex-wrap items-center gap-2 text-sm"><span>Mean</span><input type="number" id="fxSimM" value="70" class="' + IN + ' !w-20" oninput="fxSimKat()"><span>SD</span><input type="number" id="fxSimSD" value="10" class="' + IN + ' !w-20" oninput="fxSimKat()"><span>Skor</span><input type="number" id="fxSimV" value="84" class="' + IN + ' !w-20" oninput="fxSimKat()"><span class="font-bold">→ <span id="fxSimKR">Tinggi</span></span></div>';
+    fxOutBox(f, "Kategorisasi empiris: Tinggi bila skor ≥ Mean + " + k + "·SD, Rendah bila &lt; Mean − " + k + "·SD, sisanya Sedang. Mean & SD dihitung langsung dari rentang datamu, jadi kategori ikut berubah bila data berubah.", sim);
+    fxSimKat();
+  }
+}
+function fxSimNilai() { const el = document.getElementById("fxSimN"), out = document.getElementById("fxSimR"); if (!el || !out || !window._fxGrades) return; const n = parseFloat(el.value) || 0; let g = "E"; for (const [gr, t] of window._fxGrades) { if (n >= t) { g = gr; break; } } out.textContent = g; }
+function fxSimKat() { const m = parseFloat((document.getElementById("fxSimM") || {}).value) || 0, sd = parseFloat((document.getElementById("fxSimSD") || {}).value) || 0, v = parseFloat((document.getElementById("fxSimV") || {}).value) || 0, out = document.getElementById("fxSimKR"); if (!out) return; out.textContent = v >= m + sd ? "Tinggi" : (v >= m - sd ? "Sedang" : "Rendah"); }
+
+;
+/* ---------- 103. Template Excel Rumus Hidup ---------- */
+UI.xlstemplate = function (b) {
+  b.innerHTML = head("📐", "Template Excel Ber-Rumus Hidup", "File .xlsx yang selnya berisi RUMUS ASLI Excel — begitu dibuka, semua total, r-hitung, saldo, dan nilai akhir langsung terhitung dan ikut berubah saat datamu diganti.")
+    + '<div class="grid sm:grid-cols-2 gap-3">'
+    + [["tabulasi", "🧪 Tabulasi Kuesioner + r-Hitung", "10 responden × 5 item, total per responden, r-hitung tiap item (CORREL) + cek valid vs r-tabel."], ["kas", "💰 Pembukuan Kas UKM / KKN", "Masuk, keluar, dan saldo berjalan otomatis + total periode."], ["amortisasi", "🏦 Tabel Amortisasi & Anggaran", "Angsuran PMT, bunga, pokok, sisa pinjaman per bulan."], ["rekap", "🎓 Rekap Nilai Kelas Asisten Dosen", "Bobot Tugas/UTS/UAS, nilai akhir, huruf mutu, status lulus + rata-rata kelas."]].map((t) => '<label class="flex gap-2.5 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-indigo-400"><input type="radio" name="xtKind" value="' + t[0] + '" class="mt-1 accent-indigo-600" ' + (t[0] === "tabulasi" ? "checked" : "") + '><span><b class="text-sm">' + t[1] + '</b><span class="block text-xs text-slate-500 dark:text-slate-400 mt-0.5">' + t[2] + '</span></span></label>').join("")
+    + '</div>'
+    + '<div class="grid grid-cols-3 gap-2 mt-4">' + field("Pokok pinjaman (utk amortisasi)", '<input type="number" id="xtPokok" value="12000000" class="' + IN + '">') + field("Bunga % /tahun", '<input type="number" id="xtBunga" value="12" step="0.1" class="' + IN + '">') + field("Tenor (bulan)", '<input type="number" id="xtTenor" value="12" class="' + IN + '">') + '</div>'
+    + '<button class="' + BTN + ' w-full mt-2" onclick="xtGenerate()">📗 Buat & Unduh Template .xlsx</button>'
+    + '<p class="text-xs text-slate-400 mt-3">Semua rumus memakai pemisah titik koma? Tidak — di dalam file .xlsx, rumus selalu disimpan format internasional; Excel-mu yang menampilkannya sesuai bahasa. Aman dibuka di Excel Indonesia maupun Inggris.</p>';
+};
+async function xtGenerate() {
+  if (!await loadXLSX()) { toast("Library Excel gagal dimuat."); return; }
+  const kind = (document.querySelector("input[name=xtKind]:checked") || {}).value || "tabulasi";
+  const wb = XLSX.utils.book_new();
+  const F = (f) => ({ t: "n", f });
+  if (kind === "tabulasi") {
+    const rows = [["Responden", "I1", "I2", "I3", "I4", "I5", "TOTAL"]];
+    const seed = [[4, 5, 4, 5, 4], [5, 5, 4, 4, 5], [3, 4, 3, 4, 3], [5, 4, 5, 5, 4], [4, 4, 4, 3, 4], [2, 3, 2, 3, 2], [5, 5, 5, 4, 5], [4, 3, 4, 4, 3], [3, 3, 4, 3, 4], [5, 4, 4, 5, 5]];
+    seed.forEach((r, i) => rows.push(["R" + (i + 1), ...r, 0]));
+    rows.push([]); rows.push(["r-hitung (CORREL vs TOTAL)", "", "", "", "", "", ""]);
+    rows.push(["r-tabel 5% (n=10)", 0.632, "", "", "", "", ""]);
+    rows.push(["Status", "", "", "", "", "", ""]);
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    for (let r = 2; r <= 11; r++) ws["G" + r] = F("SUM(B" + r + ":F" + r + ")");
+    ["B", "C", "D", "E", "F"].forEach((col) => { ws[col + "13"] = F("CORREL(" + col + "2:" + col + "11,$G$2:$G$11)"); ws[col + "15"] = { t: "s", f: 'IF(' + col + '13>$B$14,"Valid","Tidak Valid")' }; });
+    ws["!cols"] = [{ wch: 26 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 8 }, { wch: 10 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Tabulasi");
+  }
+  if (kind === "kas") {
+    const rows = [["Tanggal", "Keterangan", "Masuk (Rp)", "Keluar (Rp)", "Saldo (Rp)"], ["2026-01-05", "Iuran anggota", 500000, 0, 0], ["2026-01-07", "Beli ATK", 0, 75000, 0], ["2026-01-10", "Sponsor", 250000, 0, 0], ["2026-01-12", "Konsumsi rapat", 0, 60000, 0], [], ["TOTAL", "", 0, 0, ""]];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["E2"] = F("C2-D2");
+    for (let r = 3; r <= 5; r++) ws["E" + r] = F("E" + (r - 1) + "+C" + r + "-D" + r);
+    ws["C7"] = F("SUM(C2:C5)"); ws["D7"] = F("SUM(D2:D5)"); ws["E7"] = F("E5");
+    ws["!cols"] = [{ wch: 12 }, { wch: 30 }, { wch: 14 }, { wch: 14 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Kas");
+  }
+  if (kind === "amortisasi") {
+    const pokok = parseFloat(document.getElementById("xtPokok").value) || 12000000;
+    const bunga = (parseFloat(document.getElementById("xtBunga").value) || 12) / 100;
+    const tenor = Math.min(60, Math.max(1, parseInt(document.getElementById("xtTenor").value) || 12));
+    const rows = [["Pokok Pinjaman", pokok], ["Bunga per Tahun", bunga], ["Tenor (bulan)", tenor], ["Angsuran per Bulan", 0], [], ["Bulan", "Angsuran", "Bunga", "Pokok", "Sisa Pinjaman"]];
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    ws["B2"] = { t: "n", v: bunga }; ws["B4"] = F("PMT(B2/12,B3,-B1)");
+    for (let m = 1; m <= tenor; m++) {
+      const r = 6 + m;
+      const sisaPrev = m === 1 ? "$B$1" : "E" + (r - 1);
+      ws["A" + r] = { t: "n", v: m };
+      ws["B" + r] = F("$B$4");
+      ws["C" + r] = F(sisaPrev + "*$B$2/12");
+      ws["D" + r] = F("B" + r + "-C" + r);
+      ws["E" + r] = F(sisaPrev + "-D" + r);
+    }
+    ws["!ref"] = "A1:E" + (6 + tenor);
+    ws["!cols"] = [{ wch: 18 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Amortisasi");
+  }
+  if (kind === "rekap") {
+    const rows = [["Bobot Tugas", 0.3], ["Bobot UTS", 0.3], ["Bobot UAS", 0.4], [], ["Nama", "Tugas", "UTS", "UAS", "Nilai Akhir", "Huruf", "Status"]];
+    const names = ["Andi", "Budi", "Citra", "Dewi", "Eko", "Fitri", "Gilang", "Hana"];
+    names.forEach((n, i) => rows.push([n, 70 + i * 3, 65 + i * 4, 72 + i * 3, 0, "", ""]));
+    rows.push([]); rows.push(["Rata-rata Kelas", "", "", "", 0, "", ""]);
+    rows.push(["Jumlah Lulus", "", "", "", "", "", 0]);
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const last = 5 + names.length;
+    for (let r = 6; r <= last; r++) {
+      ws["E" + r] = F("B" + r + "*$B$1+C" + r + "*$B$2+D" + r + "*$B$3");
+      ws["F" + r] = { t: "s", f: 'IF(E' + r + '>=85,"A",IF(E' + r + '>=70,"B",IF(E' + r + '>=55,"C",IF(E' + r + '>=40,"D","E"))))' };
+      ws["G" + r] = { t: "s", f: 'IF(E' + r + '>=55,"Lulus","Tidak Lulus")' };
+    }
+    ws["E" + (last + 2)] = F("AVERAGE(E6:E" + last + ")");
+    ws["G" + (last + 3)] = F('COUNTIF(G6:G' + last + ',"Lulus")');
+    ws["!cols"] = [{ wch: 18 }, { wch: 9 }, { wch: 9 }, { wch: 9 }, { wch: 12 }, { wch: 8 }, { wch: 14 }];
+    XLSX.utils.book_append_sheet(wb, ws, "Rekap Nilai");
+  }
+  XLSX.writeFile(wb, "MahasiswaTools_Template-" + kind + ".xlsx");
+  toast("Template .xlsx ber-rumus hidup terunduh 📗");
+}
+

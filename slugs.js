@@ -98,5 +98,17 @@ window.TOOL_SLUGS = {
  "k49": "pomodoro-timer-suara-fokus-web-audio",
  "k29": "roda-undian-urutan-presentasi",
  "k55": "flashcard-cetak-duplex-a4",
- "cloze": "generator-soal-rumpang-cloze"
+ "cloze": "generator-soal-rumpang-cloze",
+ "gformclean": "pembersih-dan-perapih-excel-google-form",
+ "formulabldr": "generator-rumus-excel-bahasa-manusia",
+ "xlstemplate": "generator-template-excel-ber-rumus-hidup",
+ "pdftab2xls": "ekstraktor-tabel-pdf-ke-excel",
+ "xlsmerger": "penggabung-banyak-file-excel-csv",
+ "decksidang": "generator-deck-ppt-sidang-skripsi-bab-1-5",
+ "pptxextract": "pengekstrak-materi-ppt-dosen",
+ "xls2chart": "konverter-data-excel-ke-slide-grafik-ppt",
+ "pptxpress": "kompresor-ukuran-file-powerpoint",
+ "xls2pdf": "konverter-excel-ke-pdf-siap-cetak-fit-page",
+ "pdfsign": "penanda-tangan-dan-stempel-pdf",
+ "pdforg": "pengatur-ulang-pemutar-dan-penghapus-halaman-pdf"
 };

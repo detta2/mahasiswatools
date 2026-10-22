@@ -120,7 +120,19 @@ const TOOLS = [
   { id: "k55", n: "Flashcard Cetak (Duplex A4)", c: "present", i: "🃏", d: "Lembar A4 depan–belakang tercermin, siap cetak & gunting.", aktif: 1 },
   { id: "cloze", n: "Generator Soal Rumpang (Cloze)", c: "present", i: "✏️", d: "Soal isian titik-titik otomatis dari teks materi + kunci.", aktif: 1 }
 
-];
+,
+  { id: "gformclean", n: "Pembersih & Perapih Excel Google Form", c: "data", i: "🧹", d: "Upload hasil Google Form: header panjang jadi kode X1_1, jawaban teks jadi skor 1–5, total per variabel — unduh .xlsx siap olah.", aktif: 1 },
+  { id: "formulabldr", n: "Generator Rumus Excel Bahasa Manusia", c: "data", i: "ƒx", d: "Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.", aktif: 1 },
+  { id: "xlstemplate", n: "Generator Template Excel Ber-Rumus Hidup", c: "data", i: "📐", d: "Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.", aktif: 1 },
+  { id: "pdftab2xls", n: "Ekstraktor Tabel PDF ke Excel", c: "dokumen", i: "🧾", d: "Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.", aktif: 1 },
+  { id: "xlsmerger", n: "Penggabung Banyak File Excel / CSV", c: "dokumen", i: "🗂️", d: "Gabung banyak file: tumpuk baris jadi 1 sheet master, atau satukan jadi 1 workbook multi-tab.", aktif: 1 },
+  { id: "decksidang", n: "Generator Deck PPT Sidang Skripsi (Bab 1–5)", c: "present", i: "🎓", d: "Isi terstruktur Bab 1–5 → deck .pptx 11 slide: cover berlogo, badge agenda, tabel hasil, 5 tema akademik + catatan pembicara otomatis.", aktif: 1 },
+  { id: "pptxextract", n: "Pengekstrak Materi PPT Dosen", c: "present", i: "📤", d: "Upload .pptx dosen → rangkuman .doc, handout PDF berkollom catatan, dan kuis latihan otomatis dari isi slide.", aktif: 1 },
+  { id: "xls2chart", n: "Konverter Data Excel ke Slide Grafik PPT", c: "present", i: "📊", d: "Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.", aktif: 1 },
+  { id: "pptxpress", n: "Kompresor Ukuran File PowerPoint", c: "present", i: "🗜️", d: "Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.", aktif: 1 },
+  { id: "xls2pdf", n: "Konverter Excel ke PDF Siap Cetak (Fit-Page)", c: "dokumen", i: "🖨️", d: "Tabel Excel jadi PDF yang 100% pas 1 lebar halaman A4/F4 — tanpa kolom kanan terpotong, header berulang tiap halaman.", aktif: 1 },
+  { id: "pdfsign", n: "Penanda Tangan & Stempel PDF", c: "dokumen", i: "✍️", d: "Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.", aktif: 1 },
+  { id: "pdforg", n: "Pengatur Ulang, Pemutar & Penghapus Halaman PDF", c: "dokumen", i: "📑", d: "Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.", aktif: 1 }];
 
 /* ---------------- state & helper ---------------- */
 const $ = (s, r) => (r || document).querySelector(s);
@@ -498,6 +510,142 @@ function loadLib(url, globalName) {
   });
   return _libs[url];
 }
+
+/* ===== SEGITIGA EMAS: XLSX + PDF.js LAZY & HELPER GLOBAL ===== */
+function head(icon, title, desc) { return '<div class="fadein"><p class="text-sm text-slate-500 dark:text-slate-400 mb-4 leading-relaxed">' + desc + '</p>'; }
+const LIB_XLSX = "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js";
+const LIB_PDFJS = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+function loadXLSX() { return loadLib(LIB_XLSX, "XLSX"); }
+async function loadPdfJs() {
+  const ok = await loadLib(LIB_PDFJS, "pdfjsLib");
+  if (ok && !pdfjsLib.GlobalWorkerOptions.workerSrc) pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  return ok;
+}
+async function mtReadExcelFile(file) {
+  if (!await loadXLSX()) throw new Error("Library Excel gagal dimuat — periksa koneksi internet.");
+  const buf = await file.arrayBuffer();
+  const wb = XLSX.read(buf, { type: "array" });
+  const ws = wb.Sheets[wb.SheetNames[0]];
+  const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "", raw: true });
+  while (rows.length && rows[rows.length - 1].every((c) => c === "")) rows.pop();
+  return { rows, sheetNames: wb.SheetNames, wb };
+}
+function mtRowsToTSV(rows) { return rows.map((r) => r.map((c) => c == null ? "" : String(c)).join("\t")).join("\n"); }
+async function mtExportExcel(sheetsData, filename) {
+  if (!await loadXLSX()) { toast("Library Excel gagal dimuat — periksa koneksi."); return false; }
+  const wb = XLSX.utils.book_new();
+  sheetsData.forEach((sh) => {
+    const rows = (sh.rows || []).map((r) => r.map((c) => c === undefined ? "" : c));
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    const widths = [];
+    rows.forEach((r) => r.forEach((c, i) => { const L = String(c == null ? "" : c).length; widths[i] = Math.min(55, Math.max(widths[i] || 10, L + 2)); }));
+    ws["!cols"] = widths.map((w) => ({ wch: w || 12 }));
+    XLSX.utils.book_append_sheet(wb, ws, String(sh.name || "Sheet").slice(0, 31));
+  });
+  XLSX.writeFile(wb, "MahasiswaTools_" + filename + ".xlsx");
+  return true;
+}
+function mtCellText(td) {
+  const inp = td.querySelector("input, textarea, select");
+  if (inp) return inp.value;
+  return td.textContent.trim().replace(/\s+/g, " ");
+}
+function mtScrapeTables(root) {
+  const out = [];
+  (root || document).querySelectorAll("table").forEach((tb, ti) => {
+    let title = "Tabel " + (ti + 1);
+    let el = tb;
+    for (let k = 0; k < 4 && el; k++) { el = el.parentElement; if (!el) break; const h = el.querySelector(":scope > h3, :scope > h4, :scope > .font-bold, :scope > p.font-semibold"); if (h && h.textContent.trim()) { title = h.textContent.trim().slice(0, 60); break; } }
+    const rows = [];
+    tb.querySelectorAll("tr").forEach((tr) => { const cells = [...tr.children].map(mtCellText); if (cells.some((c) => c !== "")) rows.push(cells); });
+    if (rows.length) out.push({ title, rows });
+  });
+  return out;
+}
+function mtScrapeNarrative(root) {
+  const texts = [];
+  (root || document).querySelectorAll("p, .whitespace-pre-line").forEach((p) => {
+    const t = p.textContent.trim().replace(/\s+/g, " ");
+    if (t.length > 70 && !/Contoh format|pisahkan kolom/i.test(t)) texts.push(t);
+  });
+  return [...new Set(texts)].slice(0, 6);
+}
+async function mtTablesToPPT(toolName, tables, narrative) {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat — periksa koneksi."); return; }
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const ACC = "4F46E5", DARK = "0B0F19";
+  let s = pptx.addSlide(); s.background = { color: DARK };
+  s.addText(toolName, { x: 0.7, y: 2.6, w: 12, fontSize: 34, bold: true, color: "FFFFFF" });
+  s.addText("Hasil Olah Data • MahasiswaTools • " + new Date().toLocaleDateString("id-ID"), { x: 0.7, y: 3.5, w: 12, fontSize: 15, color: "A5B4FC" });
+  tables.slice(0, 6).forEach((tb) => {
+    const sl = pptx.addSlide();
+    sl.addText(tb.title, { x: 0.5, y: 0.3, w: 12.3, fontSize: 19, bold: true, color: DARK });
+    const rows = tb.rows.map((r, ri) => r.map((c) => ({ text: String(c), options: ri === 0 ? { bold: true, fill: { color: "E0E7FF" } } : {} })));
+    sl.addTable(rows, { x: 0.5, y: 0.95, w: 12.3, fontSize: 11, border: { pt: 0.5, color: "CBD5E1" }, colW: tb.rows[0].map(() => 12.3 / tb.rows[0].length) });
+  });
+  if (narrative && narrative.length) {
+    const sl = pptx.addSlide();
+    sl.addText("Kesimpulan (Narasi Bab 4)", { x: 0.5, y: 0.3, w: 12.3, fontSize: 19, bold: true, color: DARK });
+    sl.addText(narrative.join("\n\n"), { x: 0.5, y: 1.0, w: 12.3, h: 6, fontSize: 13, color: "334155", valign: "top" });
+  }
+  await pptx.writeFile({ fileName: "MahasiswaTools_" + toolName.replace(/[^a-zA-Z0-9]+/g, "-") + ".pptx" });
+  toast("Slide PPT terunduh 🎉");
+}
+/* Enhancer Segitiga Emas: tombol Upload Excel / Unduh Excel / Jadikan PPT di tool statistik & keuangan */
+const MT_XLS_TOOLS = { validitas: 1, deskriptif: 1, inferens: 1, nonparam: 1, regresi: 1, likert: 1, k23: 1, proposal: 1, lpj: 1 };
+const MT_XLS_NOFILL = { proposal: 1, lpj: 1 };
+function mtEnhanceExcel(toolId) {
+  if (!MT_XLS_TOOLS[toolId]) return;
+  const body = document.getElementById("wsBody"); if (!body || body.dataset.mtxls) return;
+  body.dataset.mtxls = "1";
+  const ta = body.querySelector("textarea");
+  const bar = document.createElement("div");
+  bar.className = "flex flex-wrap gap-2 mb-3";
+  let html = "";
+  if (ta && !MT_XLS_NOFILL[toolId]) html += '<label class="' + BTN2 + ' cursor-pointer">📥 Upload File Excel (.xlsx / .csv)<input type="file" accept=".xlsx,.xls,.csv" class="hidden" onchange="mtXlsFill(this)"></label>';
+  html += '<button class="' + BTN2 + '" onclick="mtXlsExport(\'' + toolId + '\')">📗 Unduh Hasil ke Excel (.xlsx)</button>';
+  html += '<button class="' + BTN2 + '" onclick="mtXlsPPT(\'' + toolId + '\')">📊 Jadikan Slide PPT (.pptx)</button>';
+  bar.innerHTML = html;
+  const anchorEl = ta ? (ta.closest(".mb-4") || ta.parentElement) : body.firstElementChild;
+  if (anchorEl && anchorEl.parentElement === body) body.insertBefore(bar, anchorEl); else body.prepend(bar);
+  if (ta && !MT_XLS_NOFILL[toolId]) bar.dataset.taId = ta.id || "";
+}
+async function mtXlsFill(input) {
+  const f = input.files[0]; if (!f) return;
+  try {
+    const { rows } = await mtReadExcelFile(f);
+    const body = document.getElementById("wsBody");
+    const ta = body ? body.querySelector("textarea") : null;
+    if (!ta) { toast("Kotak data tidak ditemukan di tool ini."); return; }
+    ta.value = mtRowsToTSV(rows);
+    ta.dispatchEvent(new Event("input", { bubbles: true }));
+    toast("Data dari " + f.name + " terisi (" + rows.length + " baris) — klik tombol Hitung/Uji-nya ya.");
+  } catch (e) { toast("Gagal membaca file: " + e.message); }
+  input.value = "";
+}
+async function mtXlsExport(toolId) {
+  const body = document.getElementById("wsBody"); if (!body) return;
+  const ta = body.querySelector("textarea");
+  const sheets = [];
+  if (ta && ta.value.trim()) sheets.push({ name: "Data Input", rows: ta.value.trim().split("\n").map((l) => l.split(/\t|;|,/)) });
+  const tables = mtScrapeTables(body);
+  const trows = [];
+  tables.forEach((tb) => { trows.push([tb.title]); tb.rows.forEach((r) => trows.push(r)); trows.push([]); });
+  sheets.push({ name: "Tabel Hasil", rows: trows.length ? trows : [["Belum ada hasil — jalankan dulu perhitungan/ujinya, lalu klik tombol ini lagi."]] });
+  const narr = mtScrapeNarrative(body);
+  sheets.push({ name: "Kesimpulan Bab 4", rows: narr.length ? narr.map((t) => [t]) : [["Narasi kesimpulan akan muncul di sini setelah hasil perhitungan tampil."]] });
+  const t = TOOLS.find((x) => x.id === toolId);
+  await mtExportExcel(sheets, "Hasil_" + (t ? t.n.replace(/[^a-zA-Z0-9]+/g, "-") : toolId));
+  toast("File Excel hasil terunduh 📗");
+}
+async function mtXlsPPT(toolId) {
+  const body = document.getElementById("wsBody"); if (!body) return;
+  const tables = mtScrapeTables(body);
+  if (!tables.length) { toast("Belum ada tabel hasil — jalankan dulu perhitungan/ujinya ya."); return; }
+  const t = TOOLS.find((x) => x.id === toolId);
+  await mtTablesToPPT(t ? t.n : toolId, tables, mtScrapeNarrative(body));
+}
 const xe = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
 function alphaOf(data) {
@@ -750,6 +898,7 @@ openTool = function (id) {
   if (!wsHistPushed) { try { history.pushState({ mtws: 1 }, ""); wsHistPushed = true; } catch (e) {} }
   const sb = document.getElementById("wsShareBtn");
   if (sb) sb.style.display = SHARE_GETTERS[id] ? "" : "none";
+  setTimeout(() => { try { mtEnhanceExcel(id); } catch (e) {} }, 260);
 };
 const _closeWSReal = closeWS;
 closeWS = function () {

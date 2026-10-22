@@ -679,3 +679,237 @@ function tjBuat() {
 }
 SHARE_GETTERS.tanyajawab = function () { return "Saya sedang latihan sidang dengan " + (window._tjJumlah || 0) + " prediksi pertanyaan penguji dari abstrak saya sendiri — disusun oleh MahasiswaTools."; };
 
+;
+/* ---------- 106. Deck PPT Sidang Bab 1-5 ---------- */
+UI.decksidang = function (b) {
+  const F = (label, inner) => field(label, inner);
+  b.innerHTML = head("🎓", "Deck Sidang Skripsi Otomatis (Bab 1–5)", "Isi ringkasan tiap bab — jadi deck .pptx 11 slide siap sidang/sempro: cover berlogo, badge agenda per slide, tabel hasil uji, 5 tema warna akademik, dan catatan pembicara otomatis berisi kalimat pembuka tiap slide.")
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("Judul Skripsi", '<input id="dsJudul" class="' + IN + '" placeholder="Pengaruh … terhadap …">') + F("Nama & NIM", '<input id="dsNama" class="' + IN + '" placeholder="Nama Kamu — 12345678">') + F("Program Studi / Universitas", '<input id="dsProdi" class="' + IN + '" placeholder="S1 Ekonomi — Universitas …">') + F("Dosen Pembimbing", '<input id="dsPemb" class="' + IN + '" placeholder="Dr. …, M.Si.">') + '</div>'
+    + F("Logo kampus untuk cover (opsional)", '<input type="file" id="dsLogo" accept="image/*" class="' + IN + '">')
+    + F("Tema Warna", '<select id="dsTema" class="' + IN + '"><option value="navy">🔵 Navy Formal</option><option value="emerald">🟢 Emerald Sains</option><option value="maroon">🔴 Maroon Hukum</option><option value="slate">⚪ Slate Modern</option><option value="gold">🟡 Gold Ekonomika</option></select>')
+    + F("BAB 1 — Fenomena & Data Masalah", '<textarea id="dsFenomena" rows="3" class="' + IN + '" placeholder="Fakta/data yang menunjukkan adanya masalah…"></textarea>')
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("BAB 1 — Rumusan Masalah", '<textarea id="dsRumusan" rows="2" class="' + IN + '"></textarea>') + F("BAB 1 — Tujuan Penelitian", '<textarea id="dsTujuan" rows="2" class="' + IN + '"></textarea>') + F("BAB 2 — Kerangka Pemikiran", '<textarea id="dsKerangka" rows="2" class="' + IN + '"></textarea>') + F("BAB 2 — Hipotesis", '<textarea id="dsHipotesis" rows="2" class="' + IN + '"></textarea>') + F("BAB 3 — Desain & Metode", '<textarea id="dsMetode" rows="2" class="' + IN + '"></textarea>') + F("BAB 3 — Populasi & Sampel", '<textarea id="dsSampel" rows="2" class="' + IN + '"></textarea>') + '</div>'
+    + F("BAB 4 — Hasil Uji (satu baris = satu uji)", '<textarea id="dsHasil" rows="4" class="' + IN + ' font-mono text-[13px]" placeholder="Uji Validitas: Semua item r-hitung > 0,361 — Valid&#10;Uji-t X1: t = 3,42; sig 0,002 — Berpengaruh signifikan"></textarea>', "Format per baris: Nama Uji: hasil — kesimpulan. Akan jadi tabel rapi di slide.")
+    + '<div class="grid sm:grid-cols-2 gap-2">' + F("BAB 5 — Kesimpulan", '<textarea id="dsKesimpulan" rows="3" class="' + IN + '"></textarea>') + F("BAB 5 — Saran", '<textarea id="dsSaran" rows="3" class="' + IN + '"></textarea>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="dsGenerate()">🎓 Buat Deck .pptx Sidang</button>';
+  window._dsLogo = null;
+  document.getElementById("dsLogo").addEventListener("change", (e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { window._dsLogo = r.result; toast("Logo siap dipasang di cover."); }; r.readAsDataURL(f); });
+};
+async function dsGenerate() {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat — periksa koneksi."); return; }
+  const g = (id) => (document.getElementById(id) || {}).value || "";
+  const TEMAS = { navy: { p: "1E3A5F", a: "2563EB", dark: "0F2233" }, emerald: { p: "065F46", a: "059669", dark: "052E22" }, maroon: { p: "7F1D1D", a: "B91C1C", dark: "2A0A0A" }, slate: { p: "0B0F19", a: "4F46E5", dark: "0B0F19" }, gold: { p: "92400E", a: "D97706", dark: "291303" } };
+  const T = TEMAS[g("dsTema")] || TEMAS.navy;
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const lines = (t) => t.split("\n").map((x) => x.trim()).filter(Boolean);
+  const bullets = (t) => lines(t).map((x) => ({ text: x.replace(/^[-•]\s*/, ""), options: { bullet: true, breakLine: true } }));
+  function slide(title, badge, body, notes) {
+    const s = pptx.addSlide();
+    s.addShape("rect", { x: 0, y: 0, w: 13.33, h: 1.0, fill: { color: T.p } });
+    s.addText(title, { x: 0.6, y: 0.18, w: 9.6, fontSize: 23, bold: true, color: "FFFFFF" });
+    if (badge) s.addText(badge, { x: 10.1, y: 0.3, w: 2.7, h: 0.42, fontSize: 11.5, bold: true, color: "FFFFFF", fill: { color: T.a }, align: "center", rectRadius: 0.08 });
+    if (body) s.addText(body, { x: 0.6, y: 1.35, w: 12.1, h: 5.6, fontSize: 16, color: "1E293B", valign: "top", lineSpacingMultiple: 1.25 });
+    if (notes && s.addNotes) s.addNotes(notes);
+    s.addText("MahasiswaTools • Deck Sidang", { x: 0.6, y: 7.08, w: 6, fontSize: 9.5, color: "94A3B8" });
+    return s;
+  }
+  const judul = g("dsJudul") || "(Judul Skripsi)";
+  const cov = pptx.addSlide(); cov.background = { color: T.dark };
+  if (window._dsLogo) cov.addImage({ data: window._dsLogo, x: 5.9, y: 0.7, w: 1.5, h: 1.5 });
+  cov.addText(judul, { x: 1, y: 2.5, w: 11.33, fontSize: 32, bold: true, color: "FFFFFF", align: "center" });
+  cov.addText((g("dsNama") || "Nama — NIM") + "\n" + (g("dsProdi") || "") + "\nPembimbing: " + (g("dsPemb") || "—"), { x: 1, y: 4.3, w: 11.33, fontSize: 16, color: "CBD5E1", align: "center", lineSpacingMultiple: 1.4 });
+  if (cov.addNotes) cov.addNotes("Assalamu'alaikum warahmatullahi wabarakatuh. Yang terhormat Bapak/Ibu penguji, perkenalkan saya " + (g("dsNama") || "") + ". Hari ini saya akan mempresentasikan hasil penelitian skripsi saya yang berjudul: " + judul + ".");
+  slide("Agenda Presentasi", "", bullets("Bab 1 — Pendahuluan\nBab 2 — Tinjauan Pustaka & Hipotesis\nBab 3 — Metode Penelitian\nBab 4 — Hasil & Pembahasan\nBab 5 — Kesimpulan & Saran"), "Saya akan menyampaikan presentasi dalam lima bagian sesuai struktur skripsi, dimulai dari pendahuluan hingga kesimpulan dan saran.");
+  slide("Latar Belakang & Fenomena", "BAB 1", bullets(g("dsFenomena")), "Pada latar belakang, saya menyoroti fenomena berikut. Jelaskan data/fakta masalahnya secara singkat dan tegas, lalu arahkan ke celah penelitian (research gap).");
+  slide("Rumusan Masalah & Tujuan", "BAB 1", [...bullets(g("dsRumusan")), { text: "Tujuan: " + g("dsTujuan"), options: { bullet: true } }], "Rumusan masalah penelitian ini adalah sebagaimana tampil di slide, dan tujuannya selaras satu-satu dengan rumusan tersebut.");
+  slide("Kerangka Pemikiran & Hipotesis", "BAB 2", [...bullets(g("dsKerangka")), { text: "Hipotesis: " + g("dsHipotesis"), options: { bullet: true } }], "Berdasarkan teori dan penelitian terdahulu, kerangka pemikiran penelitian ini menghubungkan variabel sebagaimana bagan berikut, dengan hipotesis yang akan diuji.");
+  slide("Metode Penelitian", "BAB 3", bullets(g("dsMetode")), "Penelitian ini menggunakan desain dan metode sebagaimana slide. Jelaskan alasan pemilihan metode dan teknik analisisnya secara ringkas.");
+  slide("Populasi & Sampel", "BAB 3", bullets(g("dsSampel")), "Populasi dan sampel penelitian ditentukan dengan teknik yang tertera; sebutkan jumlah responden/sampel akhir yang berhasil diolah.");
+  const hs = pptx.addSlide();
+  hs.addShape("rect", { x: 0, y: 0, w: 13.33, h: 1.0, fill: { color: T.p } });
+  hs.addText("Hasil Penelitian", { x: 0.6, y: 0.18, w: 9.6, fontSize: 23, bold: true, color: "FFFFFF" });
+  hs.addText("BAB 4", { x: 10.1, y: 0.3, w: 2.7, h: 0.42, fontSize: 11.5, bold: true, color: "FFFFFF", fill: { color: T.a }, align: "center" });
+  const hrows = [[{ text: "Pengujian", options: { bold: true, fill: { color: "E2E8F0" } } }, { text: "Hasil", options: { bold: true, fill: { color: "E2E8F0" } } }, { text: "Kesimpulan", options: { bold: true, fill: { color: "E2E8F0" } } }]];
+  lines(g("dsHasil")).forEach((ln) => { const p1 = ln.split(":"); const rest = (p1.slice(1).join(":") || "").split("—"); hrows.push([p1[0].trim(), (rest[0] || "").trim(), (rest.slice(1).join("—") || "").trim()]); });
+  if (hrows.length === 1) hrows.push(["(isi hasil uji di formulir)", "", ""]);
+  hs.addTable(hrows, { x: 0.6, y: 1.35, w: 12.1, fontSize: 13.5, border: { pt: 0.5, color: "CBD5E1" }, colW: [3.6, 4.7, 3.8] });
+  if (hs.addNotes) hs.addNotes("Memasuki hasil penelitian: sampaikan tiap pengujian dengan pola yang sama — sebutkan uji, nilai statistik & signifikansinya, lalu kesimpulan hipotesisnya. Jangan membaca tabel kata per kata.");
+  slide("Kesimpulan", "BAB 5", bullets(g("dsKesimpulan")), "Berdasarkan hasil pengujian, kesimpulan penelitian ini adalah sebagai berikut. Pastikan tiap kesimpulan menjawab satu rumusan masalah.");
+  slide("Saran", "BAB 5", bullets(g("dsSaran")), "Saran saya bagi pihak terkait dan peneliti selanjutnya adalah sebagaimana slide ini.");
+  const end = pptx.addSlide(); end.background = { color: T.dark };
+  end.addText("Terima Kasih", { x: 1, y: 2.9, w: 11.33, fontSize: 40, bold: true, color: "FFFFFF", align: "center" });
+  end.addText("Mohon arahan, kritik, dan saran dari Bapak/Ibu Penguji.", { x: 1, y: 4.0, w: 11.33, fontSize: 16, color: "CBD5E1", align: "center" });
+  if (end.addNotes) end.addNotes("Demikian presentasi saya. Saya mengucapkan terima kasih atas perhatian Bapak/Ibu penguji; saya siap menerima pertanyaan dan masukan.");
+  await pptx.writeFile({ fileName: "MahasiswaTools_Deck-Sidang.pptx" });
+  toast("Deck sidang 11 slide terunduh 🎓");
+}
+
+;
+/* ---------- 107. Pengekstrak Materi PPT Dosen ---------- */
+UI.pptxextract = function (b) {
+  window._px = null;
+  b.innerHTML = head("📤", "Sulap PPT Dosen Jadi Rangkuman & Kuis", "Upload file .pptx materi kuliah: seluruh judul, poin, dan catatan dosen diekstrak. Unduh sebagai rangkuman Word, handout PDF berkollom catatan tangan, atau langsung jadi kuis latihan.")
+    + field("File .pptx dari Dosen", '<input type="file" id="pxFile" accept=".pptx" class="' + IN + '">')
+    + '<div id="pxOut" class="mt-3"></div>';
+  document.getElementById("pxFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const out = document.getElementById("pxOut");
+    out.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca struktur PPTX…</p>';
+    try {
+      if (!await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip")) throw new Error("Library JSZip gagal dimuat.");
+      const zip = await JSZip.loadAsync(await f.arrayBuffer());
+      const slideFiles = Object.keys(zip.files).filter((n) => /^ppt\/slides\/slide\d+\.xml$/.test(n)).sort((a, b2) => parseInt(a.match(/\d+/)[0]) - parseInt(b2.match(/\d+/)[0]));
+      const slides = [];
+      for (const name of slideFiles) {
+        const xml = await zip.files[name].async("string");
+        const texts = [...xml.matchAll(/<a:t>([^<]*)<\/a:t>/g)].map((m) => m[1].replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").trim()).filter(Boolean);
+        const num = name.match(/\d+/)[0];
+        let notes = "";
+        const nf = zip.files["ppt/notesSlides/notesSlide" + num + ".xml"];
+        if (nf) { const nxml = await nf.async("string"); notes = [...nxml.matchAll(/<a:t>([^<]*)<\/a:t>/g)].map((m) => m[1].trim()).filter((t) => t && !/^\d+$/.test(t)).join(" "); }
+        slides.push({ title: texts[0] || "Slide " + num, points: texts.slice(1), notes });
+      }
+      window._px = { slides, name: f.name };
+      out.innerHTML = '<p class="text-sm mb-3">✅ Terbaca <b>' + slides.length + ' slide</b> • total ' + slides.reduce((a, s) => a + s.points.length, 0) + ' poin materi.</p>'
+        + '<div class="flex flex-wrap gap-2 mb-4"><button class="' + BTN2 + '" onclick="pxDoc()">📄 Rangkuman Word (.doc)</button><button class="' + BTN2 + '" onclick="pxHandout()">📝 Handout PDF (kolom catatan)</button><button class="' + BTN2 + '" onclick="pxQuiz()">🧠 Buat Kuis dari Materi Ini</button></div>'
+        + '<div class="space-y-2 max-h-96 overflow-y-auto pr-1">' + slides.map((s, i) => '<div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60"><b class="text-sm">' + (i + 1) + '. ' + esc(s.title) + '</b><ul class="text-[13px] text-slate-600 dark:text-slate-300 list-disc ml-5 mt-1">' + s.points.map((p) => '<li>' + esc(p) + '</li>').join("") + '</ul>' + (s.notes ? '<p class="text-xs text-slate-400 mt-1">🗒️ Catatan: ' + esc(s.notes) + '</p>' : "") + '</div>').join("") + '</div>'
+        + '<div id="pxQuiz" class="mt-4"></div>';
+    } catch (err) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal membaca PPTX: ' + esc(err.message) + '</p>'; }
+  });
+};
+function pxDoc() {
+  if (!window._px) return;
+  const html = "<h1>Rangkuman Materi — " + esc(window._px.name.replace(/\.pptx$/i, "")) + "</h1>" + window._px.slides.map((s, i) => "<h2>Slide " + (i + 1) + ": " + esc(s.title) + "</h2><ul>" + s.points.map((p) => "<li>" + esc(p) + "</li>").join("") + "</ul>" + (s.notes ? "<p><i>Catatan dosen: " + esc(s.notes) + "</i></p>" : "")).join("");
+  downloadDoc("Rangkuman_" + window._px.name.replace(/\.pptx$/i, "") + ".doc", html);
+}
+async function pxHandout() {
+  if (!window._px) return;
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const W = 595, H = 842, M = 42;
+  let page = doc.addPage([W, H]), y = H - M;
+  const wrap = (text, f, size, maxW) => { const words = String(text).split(/\s+/); const out = []; let cur = ""; words.forEach((w) => { const t = cur ? cur + " " + w : w; if (f.widthOfTextAtSize(t, size) > maxW && cur) { out.push(cur); cur = w; } else cur = t; }); if (cur) out.push(cur); return out; };
+  window._px.slides.forEach((s, i) => {
+    const linesNeeded = 30 + wrap(s.title, bold, 12, 250).length * 15 + s.points.reduce((a, p) => a + wrap(p, font, 10, 250).length, 0) * 13 + 26;
+    if (y - linesNeeded < M + 20) { page = doc.addPage([W, H]); y = H - M; }
+    page.drawText("Slide " + (i + 1) + " — Catatan Tangan →", { x: W / 2 + 10, y, size: 9, font, color: rgb(0.55, 0.58, 0.65) });
+    wrap(s.title, bold, 12, 250).forEach((ln) => { page.drawText(ln, { x: M, y, size: 12, font: bold, color: rgb(0.1, 0.1, 0.25) }); y -= 15; });
+    y -= 2;
+    s.points.forEach((p) => { wrap("• " + p, font, 10, 250).forEach((ln) => { page.drawText(ln, { x: M, y, size: 10, font, color: rgb(0.2, 0.2, 0.25) }); y -= 13; }); });
+    const topY = y + 30 + s.points.length * 4;
+    for (let ly = Math.min(topY, H - M); ly > y - 4; ly -= 18) page.drawLine({ start: { x: W / 2 + 10, y: ly }, end: { x: W - M, y: ly }, thickness: 0.5, color: rgb(0.8, 0.82, 0.88) });
+    y -= 24;
+  });
+  const bytes = await doc.save();
+  download("Handout_" + window._px.name.replace(/\.pptx$/i, "") + ".pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("Handout PDF terunduh 📝");
+}
+function pxQuiz() {
+  if (!window._px) return;
+  const pool = [];
+  window._px.slides.forEach((s) => s.points.forEach((p) => { if (p.length > 12) pool.push({ title: s.title, point: p }); }));
+  if (pool.length < 4) { toast("Poin materi kurang dari 4 — kuis belum bisa dibuat."); return; }
+  const qs = pool.slice(0, 10).map((q) => {
+    const wrong = pool.filter((x) => x.point !== q.point).sort(() => Math.random() - 0.5).slice(0, 3).map((x) => x.point);
+    const opts = [...wrong, q.point].sort(() => Math.random() - 0.5);
+    return { q: 'Manakah pernyataan yang termasuk poin dari slide "' + q.title + '"?', opts, ans: q.point };
+  });
+  window._pxq = { qs, score: 0, done: 0 };
+  document.getElementById("pxQuiz").innerHTML = '<h4 class="font-bold text-sm mb-2">🧠 Kuis Latihan dari Materi Dosen (' + qs.length + ' soal)</h4>' + qs.map((q, i) => '<div class="p-3.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 mb-2.5"><p class="text-sm font-semibold mb-2">' + (i + 1) + '. ' + esc(q.q) + '</p>' + q.opts.map((o) => '<button class="block w-full text-left text-[13px] px-3 py-2 rounded-lg bg-slate-50 dark:bg-slate-800 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 mb-1.5" onclick="pxAnswer(this, ' + i + ', ' + JSON.stringify(esc(o)).replace(/"/g, "&quot;") + ')">' + esc(o) + '</button>').join("") + '</div>').join("") + '<p id="pxScore" class="font-bold text-sm"></p>';
+}
+function pxAnswer(btn, qi, val) {
+  const Q = window._pxq; if (!Q) return;
+  const wrap = btn.parentElement; if (wrap.dataset.done) return; wrap.dataset.done = "1";
+  const correct = Q.qs[qi].ans;
+  [...wrap.querySelectorAll("button")].forEach((x) => { x.disabled = true; if (x.textContent === correct) x.classList.add("!bg-emerald-100", "dark:!bg-emerald-900/40"); });
+  if (val === correct) { Q.score++; btn.classList.add("!bg-emerald-100"); } else btn.classList.add("!bg-rose-100", "dark:!bg-rose-900/40");
+  Q.done++;
+  document.getElementById("pxScore").textContent = "Skor sementara: " + Q.score + " / " + Q.done + " terjawab (total " + Q.qs.length + " soal)";
+}
+
+;
+/* ---------- 108. Excel ke Slide Grafik PPT ---------- */
+UI.xls2chart = function (b) {
+  b.innerHTML = head("📊", "Data Excel Jadi Slide Grafik PowerPoint", "Tempel tabel (atau upload .xlsx/.csv): kolom pertama = label, kolom berikutnya = seri angka. Pilih jenis grafik — keluar slide .pptx dengan grafik vektor asli yang bisa diedit di PowerPoint.")
+    + field("Upload file (opsional, mengisi tabel di bawah)", '<input type="file" id="xcFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + field("Tabel Data", '<textarea id="xcData" rows="7" class="' + IN + ' font-mono text-[13px]">Bulan\tPengunjung\tUnduhan\nJan\t120\t340\nFeb\t180\t420\nMar\t260\t510\nApr\t310\t640</textarea>', "Baris pertama = header. Copy langsung dari Excel.")
+    + '<div class="grid sm:grid-cols-3 gap-2">' + field("Jenis Grafik", '<select id="xcType" class="' + IN + '"><option value="bar">📊 Batang (Bar)</option><option value="line">📈 Garis (Line)</option><option value="pie">🥧 Lingkaran (Pie)</option><option value="doughnut">🍩 Donat (Doughnut)</option></select>') + field("Judul Slide", '<input id="xcTitle" class="' + IN + '" value="Hasil Penelitian">') + field("Kesimpulan Temuan", '<input id="xcConc" class="' + IN + '" placeholder="Ketik kesimpulan singkat temuanmu…">') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="xcGenerate()">📊 Buat Slide .pptx</button>';
+  document.getElementById("xcFile").addEventListener("change", async (e) => { const f = e.target.files[0]; if (!f) return; try { const { rows } = await mtReadExcelFile(f); document.getElementById("xcData").value = mtRowsToTSV(rows); toast("Data dari " + f.name + " terisi."); } catch (err) { toast("Gagal membaca: " + err.message); } });
+};
+async function xcGenerate() {
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+  if (!ok) { toast("Library PPT gagal dimuat."); return; }
+  const lines = document.getElementById("xcData").value.trim().split("\n").map((l) => l.split(/\t|;|,/).map((c) => c.trim()));
+  if (lines.length < 2) { toast("Tabelnya minimal 2 baris ya."); return; }
+  const head = lines[0], labels = lines.slice(1).map((r) => r[0]);
+  const type = document.getElementById("xcType").value;
+  const pptx = new PptxGenJS(); pptx.defineLayout({ name: "W", width: 13.33, height: 7.5 }); pptx.layout = "W";
+  const s = pptx.addSlide();
+  s.addText(document.getElementById("xcTitle").value || "Hasil Penelitian", { x: 0.6, y: 0.3, w: 12, fontSize: 24, bold: true, color: "0B0F19" });
+  const series = [];
+  for (let c = 1; c < head.length; c++) series.push({ name: head[c], labels, values: lines.slice(1).map((r) => parseFloat(String(r[c]).replace(/\./g, "").replace(",", ".")) || 0) });
+  if (type === "pie" || type === "doughnut") s.addChart(type, [{ name: series[0].name, labels, values: series[0].values }], { x: 0.8, y: 1.2, w: 7.6, h: 5.4, showLegend: true, legendPos: "r", showPercent: true });
+  else s.addChart(type, series, { x: 0.6, y: 1.2, w: 8.2, h: 5.4, showLegend: true, legendPos: "b", catAxisTitle: head[0], showValue: type === "bar" });
+  const trows = lines.map((r, ri) => r.map((c) => ({ text: String(c), options: ri === 0 ? { bold: true, fill: { color: "E0E7FF" } } : {} })));
+  s.addTable(trows, { x: 9.1, y: 1.2, w: 3.7, fontSize: 10.5, border: { pt: 0.5, color: "CBD5E1" } });
+  const conc = document.getElementById("xcConc").value.trim();
+  if (conc) s.addText("Kesimpulan: " + conc, { x: 0.6, y: 6.85, w: 12.1, fontSize: 12.5, italic: true, color: "475569" });
+  await pptx.writeFile({ fileName: "MahasiswaTools_Slide-Grafik.pptx" });
+  toast("Slide grafik terunduh 📊");
+}
+
+;
+/* ---------- 109. Kompresor PPTX ---------- */
+UI.pptxpress = function (b) {
+  window._ppFile = null;
+  b.innerHTML = head("🗜️", "Kompres PowerPoint Bengkak Jadi Ringan", "PPT 20 MB gara-gara foto? Tool ini men-downscale & mengompresi ulang semua gambar di dalam .pptx via canvas — teks, tabel, dan animasi tidak berubah. Target lolos batas upload SIAKAD/LMS 2–5 MB.")
+    + field("File .pptx", '<input type="file" id="ppFile" accept=".pptx" class="' + IN + '">')
+    + '<div id="ppInfo" class="mb-3"></div>'
+    + '<div class="grid grid-cols-2 gap-2">' + field("Resolusi maks gambar", '<select id="ppMax" class="' + IN + '"><option value="1920">1920px (tajam)</option><option value="1280" selected>1280px (seimbang)</option><option value="960">960px (paling ringan)</option></select>') + field("Kualitas JPEG", '<select id="ppQ" class="' + IN + '"><option value="0.85">85% (tajam)</option><option value="0.75" selected>75% (seimbang)</option><option value="0.6">60% (ringan)</option></select>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="ppCompress()">🗜️ Kompres Sekarang</button><div id="ppOut" class="mt-3"></div>';
+  document.getElementById("ppFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return; window._ppFile = f;
+    document.getElementById("ppInfo").innerHTML = '<p class="text-sm">📄 ' + esc(f.name) + ' — <b>' + (f.size / 1048576).toFixed(2) + ' MB</b>. Klik Kompres untuk memproses.</p>';
+  });
+};
+function ppLoadImg(blob) { return new Promise((res, rej) => { const url = URL.createObjectURL(blob); const img = new Image(); img.onload = () => res({ img, url }); img.onerror = rej; img.src = url; }); }
+async function ppCompress() {
+  const f = window._ppFile; const out = document.getElementById("ppOut");
+  if (!f) { toast("Pilih file .pptx dulu ya."); return; }
+  if (!await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip")) { toast("Library JSZip gagal dimuat."); return; }
+  out.innerHTML = '<p class="text-sm text-slate-5 00">⏳ Memindai gambar di dalam PPTX…</p>'.replace(" 00", "00");
+  try {
+    const zip = await JSZip.loadAsync(await f.arrayBuffer());
+    const media = Object.keys(zip.files).filter((n) => /^ppt\/media\/.+\.(png|jpe?g)$/i.test(n));
+    const maxDim = parseInt(document.getElementById("ppMax").value) || 1280;
+    const q = parseFloat(document.getElementById("ppQ").value) || 0.75;
+    let done = 0, savedBytes = 0;
+    for (const name of media) {
+      const blob = await zip.files[name].async("blob");
+      if (blob.size < 120000) continue;
+      try {
+        const { img, url } = await ppLoadImg(blob);
+        const scale = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+        const w = Math.round(img.naturalWidth * scale), h = Math.round(img.naturalHeight * scale);
+        const cv = document.createElement("canvas"); cv.width = w; cv.height = h;
+        const ctx = cv.getContext("2d"); ctx.drawImage(img, 0, 0, w, h);
+        let hasAlpha = false;
+        if (/\.png$/i.test(name)) { try { const d = ctx.getImageData(0, 0, Math.min(w, 60), Math.min(h, 60)).data; for (let i = 3; i < d.length; i += 4) if (d[i] < 250) { hasAlpha = true; break; } } catch (e) {} }
+        const nb = await new Promise((r) => cv.toBlob(r, hasAlpha ? "image/png" : "image/jpeg", q));
+        URL.revokeObjectURL(url);
+        if (nb && nb.size < blob.size) { zip.file(name, nb); savedBytes += blob.size - nb.size; done++; }
+      } catch (e) { /* gambar rusak dilewati */ }
+    }
+    const outBlob = await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 9 } });
+    download(f.name.replace(/\.pptx$/i, "") + "_kompres.pptx", outBlob);
+    const pct = Math.max(0, Math.round((1 - outBlob.size / f.size) * 100));
+    out.innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>Selesai!</b> ' + done + ' gambar dikompresi (hemat ' + (savedBytes / 1048576).toFixed(2) + ' MB dari gambar). Ukuran file: <b>' + (f.size / 1048576).toFixed(2) + ' MB → ' + (outBlob.size / 1048576).toFixed(2) + ' MB</b> (turun ' + pct + '%). Buka file hasilnya di PowerPoint untuk memastikan tampilannya tetap bagus sebelum dikumpulkan.</div>';
+  } catch (e) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal: ' + esc(e.message) + '</p>'; }
+}
+

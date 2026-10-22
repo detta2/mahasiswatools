@@ -771,3 +771,337 @@ function posGambar() {
 function posUnduh() { const cv = $("#posCv"); if (cv) cv.toBlob((b) => { if (b) download("Poster_Ilmiah.png", b); }, "image/png"); }
 SHARE_GETTERS.poster = function () { return "Poster ilmiah untuk seminar/PKM saya sudah jadi (resolusi tinggi, lengkap dengan QR) — dibuat dengan Pembuat Poster Ilmiah MahasiswaTools."; };
 
+;
+/* ---------- 104. Ekstraktor Tabel PDF ke Excel ---------- */
+UI.pdftab2xls = function (b) {
+  window._pt = null;
+  b.innerHTML = head("🧾", "Tarik Tabel dari PDF Jadi Excel", "Upload PDF berisi tabel (laporan keuangan, publikasi BPS, jurnal): teks dibaca per koordinat, dikelompokkan jadi baris & kolom, lalu diunduh sebagai .xlsx. Angka format Indonesia — (12.500.000), titik ribuan — dibersihkan jadi angka numerik asli yang bisa di-SUM.")
+    + field("File PDF", '<input type="file" id="ptFile" accept=".pdf" class="' + IN + '">')
+    + '<div class="grid grid-cols-3 gap-2">' + field("Halaman dari", '<input type="number" id="ptFrom" value="1" min="1" class="' + IN + '">') + field("Sampai", '<input type="number" id="ptTo" value="1" min="1" class="' + IN + '">') + field("Opsi", '<label class="flex items-center gap-2 text-[13px] mt-2"><input type="checkbox" id="ptClean" checked class="w-4 h-4 accent-indigo-600"> Bersihkan angka ID/akuntansi</label>') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="ptExtract()">🔍 Ekstrak Tabel</button>'
+    + '<div id="ptOut" class="mt-4"></div>';
+};
+function ptCleanNum(v) {
+  let t = String(v == null ? "" : v).trim();
+  if (!t) return "";
+  let neg = false;
+  if (/^\(.*\)$/.test(t)) { neg = true; t = t.slice(1, -1); }
+  t = t.replace(/rp\.?/i, "").trim();
+  if (/^-?\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) { const n = parseFloat(t.replace(/\./g, "").replace(",", ".")); return neg ? -n : n; }
+  if (/^-?\d+(,\d+)?$/.test(t)) { const n = parseFloat(t.replace(",", ".")); return neg ? -n : n; }
+  if (/^-?\d+$/.test(t)) { const n = parseInt(t); return neg ? -n : n; }
+  return v;
+}
+async function ptExtract() {
+  const f = document.getElementById("ptFile").files[0];
+  const out = document.getElementById("ptOut");
+  if (!f) { toast("Pilih file PDF dulu ya."); return; }
+  if (!await loadPdfJs()) { toast("Library PDF.js gagal dimuat — periksa koneksi."); return; }
+  out.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca PDF…</p>';
+  try {
+    const buf = await f.arrayBuffer();
+    const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+    const from = Math.max(1, parseInt(document.getElementById("ptFrom").value) || 1);
+    const to = Math.min(pdf.numPages, parseInt(document.getElementById("ptTo").value) || pdf.numPages);
+    const clean = document.getElementById("ptClean").checked;
+    const allRows = [];
+    for (let p = from; p <= to; p++) {
+      const page = await pdf.getPage(p);
+      const tc = await page.getTextContent();
+      const byY = new Map();
+      tc.items.forEach((it) => {
+        const y = Math.round(it.transform[5] / 4) * 4;
+        if (!byY.has(y)) byY.set(y, []);
+        byY.get(y).push({ x: it.transform[4], str: it.str });
+      });
+      const ys = [...byY.keys()].sort((a, b2) => b2 - a);
+      ys.forEach((y) => {
+        const items = byY.get(y).sort((a, b2) => a.x - b2.x);
+        const cells = [];
+        items.forEach((it) => {
+          if (cells.length && it.x - cells[cells.length - 1].endX < 7) { cells[cells.length - 1].str += " " + it.str; cells[cells.length - 1].endX = it.x + (it.str.length * 4); }
+          else cells.push({ str: it.str, endX: it.x + (it.str.length * 4) });
+        });
+        const row = cells.map((c) => c.str.trim()).filter((x) => x !== "");
+        if (row.length) allRows.push(clean ? row.map(ptCleanNum) : row);
+      });
+    }
+    window._pt = { rows: allRows, name: f.name };
+    const preview = allRows.slice(0, 25).map((r) => "<tr>" + r.map((c) => '<td class="border border-slate-200 dark:border-slate-700 px-2 py-1">' + esc(String(c)) + "</td>").join("") + "</tr>").join("");
+    out.innerHTML = '<p class="text-sm mb-2">✅ Terbaca <b>' + allRows.length + ' baris</b> dari halaman ' + from + '–' + to + ' (total PDF ' + pdf.numPages + ' halaman).</p>'
+      + '<div class="overflow-x-auto mb-3"><table class="text-xs border-collapse">' + preview + '</table></div>'
+      + '<button class="' + BTN + ' w-full" onclick="ptDownload()">📗 Unduh sebagai .xlsx</button>'
+      + '<p class="text-xs text-slate-400 mt-2">Catatan: PDF hasil scan (gambar) tidak berisi teks — gunakan tool OCR bila perlu. Susunan kolom mengikuti posisi teks di PDF; cek pratinjau sebelum mengunduh.</p>';
+  } catch (e) { out.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal mengekstrak: ' + esc(e.message) + '</p>'; }
+}
+async function ptDownload() { if (window._pt) { await mtExportExcel([{ name: "Tabel", rows: window._pt.rows }], "Tabel-dari-PDF_" + window._pt.name.replace(/\.[^.]+$/, "")); toast("File Excel terunduh 📗"); } }
+
+;
+/* ---------- 105. Penggabung Banyak File Excel ---------- */
+UI.xlsmerger = function (b) {
+  window._xm = [];
+  b.innerHTML = head("🗂️", "Gabung Banyak File Excel / CSV", "Untuk data kelompok: survei 5 anggota, rekap per kelas, laporan per cabang — satukan semuanya jadi satu file rapi.")
+    + field("Pilih banyak file sekaligus", '<input type="file" id="xmFiles" accept=".xlsx,.xls,.csv" multiple class="' + IN + '">')
+    + '<div id="xmList" class="mb-3"></div>'
+    + field("Mode Penggabungan", '<label class="flex gap-2 text-sm mb-1.5"><input type="radio" name="xmMode" value="append" checked class="mt-0.5 accent-indigo-600"><span><b>Gabung Baris (Append)</b> — semua baris ditumpuk jadi 1 Sheet Master; kolom disamakan dari header, plus kolom "Sumber File".</span></label><label class="flex gap-2 text-sm"><input type="radio" name="xmMode" value="sheets" class="mt-0.5 accent-indigo-600"><span><b>Gabung Sheet (Multi-Tab)</b> — tiap file jadi tab sheet sendiri dalam 1 workbook.</span></label>')
+    + '<button class="' + BTN + ' w-full" onclick="xmMerge()">🗂️ Gabungkan & Unduh .xlsx</button>';
+  document.getElementById("xmFiles").addEventListener("change", async (e) => {
+    window._xm = [];
+    const list = document.getElementById("xmList");
+    list.innerHTML = '<p class="text-sm text-slate-500">⏳ Membaca file…</p>';
+    for (const f of e.target.files) {
+      try { const { rows } = await mtReadExcelFile(f); window._xm.push({ name: f.name, rows }); }
+      catch (err) { toast("Gagal membaca " + f.name + ": " + err.message); }
+    }
+    list.innerHTML = window._xm.map((x) => '<div class="flex justify-between text-sm py-1.5 border-b border-slate-100 dark:border-slate-800"><span>📄 ' + esc(x.name) + '</span><b>' + x.rows.length + ' baris</b></div>').join("") || '<p class="text-sm text-slate-400">Belum ada file terbaca.</p>';
+  });
+};
+async function xmMerge() {
+  const files = window._xm;
+  if (!files.length) { toast("Pilih file dulu ya."); return; }
+  const mode = (document.querySelector("input[name=xmMode]:checked") || {}).value || "append";
+  if (mode === "sheets") {
+    const used = new Set();
+    const sheets = files.map((x) => {
+      let nm = x.name.replace(/\.[^.]+$/, "").replace(/[\\/*?:[\]]/g, " ").trim().slice(0, 28) || "Sheet";
+      let base = nm, k = 2; while (used.has(nm)) { nm = base.slice(0, 25) + " " + (k++); } used.add(nm);
+      return { name: nm, rows: x.rows };
+    });
+    await mtExportExcel(sheets, "Gabungan-Multi-Sheet");
+  } else {
+    const headers = [];
+    files.forEach((x) => { (x.rows[0] || []).forEach((h) => { const H = String(h); if (!headers.includes(H)) headers.push(H); }); });
+    const out = [[...headers, "Sumber File"]];
+    files.forEach((x) => {
+      const head = (x.rows[0] || []).map(String);
+      for (let r = 1; r < x.rows.length; r++) {
+        const row = headers.map((H) => { const ci = head.indexOf(H); return ci >= 0 ? x.rows[r][ci] : ""; });
+        row.push(x.name); out.push(row);
+      }
+    });
+    await mtExportExcel([{ name: "Master", rows: out }], "Gabungan-Baris");
+  }
+  toast("File gabungan terunduh 🗂️");
+}
+
+;
+/* ---------- 110. Excel ke PDF Fit-Page ---------- */
+UI.xls2pdf = function (b) {
+  window._xp = null;
+  b.innerHTML = head("🖨️", "Excel ke PDF — Pas 1 Halaman, Anti Terpotong", "Upload .xlsx: lebar semua kolom dihitung proporsional lalu diskalakan agar 100% muat selebar kertas A4/F4. Header tabel berulang di setiap halaman. Tidak ada lagi kolom kanan hilang saat dicetak.")
+    + field("File Excel", '<input type="file" id="xpFile" accept=".xlsx,.xls,.csv" class="' + IN + '">')
+    + '<div class="grid grid-cols-3 gap-2">' + field("Kertas", '<select id="xpPaper" class="' + IN + '"><option value="a4">A4 (210×297mm)</option><option value="f4">F4 / Folio (215×330mm)</option></select>') + field("Orientasi", '<select id="xpOri" class="' + IN + '"><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select>') + field("Judul Tabel", '<input id="xpTitle" class="' + IN + '" placeholder="mis. Rekap Data Responden">') + '</div>'
+    + '<button class="' + BTN + ' w-full" onclick="xpMake()">🖨️ Buat PDF Siap Cetak</button><div id="xpOut" class="mt-3"></div>';
+  document.getElementById("xpFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    try { const { rows } = await mtReadExcelFile(f); window._xp = { rows, name: f.name }; document.getElementById("xpOut").innerHTML = '<p class="text-sm">✅ Terbaca <b>' + rows.length + ' baris × ' + (rows[0] || []).length + ' kolom</b> dari ' + esc(f.name) + '. Klik Buat PDF.</p>'; }
+    catch (err) { toast("Gagal membaca: " + err.message); }
+  });
+};
+async function xpMake() {
+  const D = window._xp; const out = document.getElementById("xpOut");
+  if (!D) { toast("Upload file Excel dulu ya."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, rgb, StandardFonts } = PDFLib;
+  const rows = D.rows.map((r) => r.map((c) => String(c == null ? "" : c)));
+  const ncol = Math.max(...rows.map((r) => r.length));
+  const paper = document.getElementById("xpPaper").value, ori = document.getElementById("xpOri").value;
+  const dims = paper === "f4" ? [609, 935] : [595, 842];
+  const W = ori === "landscape" ? dims[1] : dims[0], H = ori === "landscape" ? dims[0] : dims[1];
+  const M = 36, usable = W - M * 2;
+  const weights = [];
+  for (let c = 0; c < ncol; c++) { let mx = 3; rows.forEach((r) => { mx = Math.max(mx, (r[c] || "").length); }); weights.push(Math.min(mx, 42)); }
+  const totW = weights.reduce((a, b2) => a + b2, 0);
+  let fontSize = 10;
+  const colW = weights.map((w) => usable * w / totW);
+  const charW = (fs) => fs * 0.52;
+  const needShrink = colW.some((w, c) => (weights[c] * charW(10)) > w);
+  if (needShrink) fontSize = Math.max(6.5, 10 * Math.min(...colW.map((w, c) => w / (weights[c] * charW(10)))));
+  const doc = await PDFDocument.create();
+  const font = await doc.embedFont(StandardFonts.Helvetica);
+  const bold = await doc.embedFont(StandardFonts.HelveticaBold);
+  const rowH = fontSize + 6;
+  const title = document.getElementById("xpTitle").value.trim();
+  let page = doc.addPage([W, H]), y = H - M;
+  let pageNo = 1;
+  const drawHeader = () => {
+    if (title && pageNo === 1) { page.drawText(title.slice(0, 90), { x: M, y, size: 13, font: bold, color: rgb(0.08, 0.1, 0.2) }); y -= 22; }
+    let x = M;
+    page.drawRectangle({ x: M, y: y - rowH + 4, width: usable, height: rowH, color: rgb(0.88, 0.9, 0.98) });
+    rows[0].forEach((c, ci) => { page.drawText(String(c).slice(0, 60), { x: x + 3, y: y - rowH + 8, size: fontSize, font: bold, color: rgb(0.1, 0.1, 0.2) }); x += colW[ci]; });
+    y -= rowH + 2;
+  };
+  drawHeader();
+  for (let r = 1; r < rows.length; r++) {
+    if (y - rowH < M + 14) { page.drawText("MahasiswaTools • hal. " + pageNo, { x: M, y: M - 16, size: 8, font, color: rgb(0.6, 0.62, 0.68) }); page = doc.addPage([W, H]); y = H - M; pageNo++; drawHeader(); }
+    let x = M;
+    rows[r].forEach((c, ci) => { const txt = String(c); const maxCh = Math.floor((colW[ci] - 5) / charW(fontSize)); page.drawText(txt.slice(0, Math.max(3, maxCh)), { x: x + 3, y: y - rowH + 8, size: fontSize, font, color: rgb(0.15, 0.16, 0.2) }); x += colW[ci]; });
+    page.drawLine({ start: { x: M, y: y - rowH + 3 }, end: { x: M + usable, y: y - rowH + 3 }, thickness: 0.4, color: rgb(0.85, 0.86, 0.9) });
+    y -= rowH;
+  }
+  page.drawText("MahasiswaTools • hal. " + pageNo, { x: M, y: M - 16, size: 8, font, color: rgb(0.6, 0.62, 0.68) });
+  const bytes = await doc.save();
+  download("Siap-Cetak_" + D.name.replace(/\.[^.]+$/, "") + ".pdf", new Blob([bytes], { type: "application/pdf" }));
+  out.innerHTML = '<div class="p-4 rounded-xl bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-sm">✅ <b>PDF selesai</b> — ' + pageNo + ' halaman, kertas ' + (paper === "f4" ? "F4" : "A4") + ' ' + ori + ', ukuran huruf ' + fontSize.toFixed(1) + 'pt (diskalakan agar semua ' + ncol + ' kolom muat selebar halaman).</div>';
+}
+
+;
+/* ---------- 111. Tanda Tangan & Stempel PDF ---------- */
+UI.pdfsign = function (b) {
+  window._ps = { bytes: null, page: 1, items: { ttd: null, stamp: null, materai: null }, pos: { ttd: { x: 0.68, y: 0.78 }, stamp: { x: 0.5, y: 0.8 }, materai: { x: 0.2, y: 0.78 } }, target: "ttd", scale: 130 };
+  b.innerHTML = head("✍️", "Tanda Tangani & Stempel PDF di Browser", "Upload PDF (surat izin, lembar pengesahan, kontrak magang): gambar tanda tanganmu, buat stempel teks, atau kotak materai — klik di pratinjau untuk meletakkannya, lalu unduh PDF final. Semua diproses lokal.")
+    + field("File PDF", '<input type="file" id="psFile" accept=".pdf" class="' + IN + '">')
+    + '<div class="grid sm:grid-cols-2 gap-3"><div>' + field("Halaman tujuan", '<select id="psPage" class="' + IN + '" onchange="psRenderPage()"></select>')
+    + field("Geser target penempatan", '<div class="flex gap-2"><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="ttd" checked onchange="window._ps.target=this.value"> ✍️ TTD</label><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="stamp" onchange="window._ps.target=this.value"> 🔵 Stempel</label><label class="text-[13px] flex items-center gap-1.5"><input type="radio" name="psTarget" value="materai" onchange="window._ps.target=this.value"> 🧾 Materai</label></div>', "Klik pada pratinjau halaman untuk memindahkan item terpilih ke titik itu.")
+    + field("Ukuran item (% lebar halaman)", '<input type="range" id="psScale" min="60" max="220" value="130" oninput="window._ps.scale=+this.value; psDrawOverlay()">')
+    + field("Teks stempel (nama organisasi/panitia)", '<input id="psStampText" class="' + IN + '" value="PANITIA KKN 2026" oninput="psMakeStamp()">')
+    + '<div class="flex flex-wrap gap-2 mt-1"><button class="' + BTN2 + '" onclick="psMakeStamp()">🔵 Buat/Perbarui Stempel</button><button class="' + BTN2 + '" onclick="psMakeMaterai()">🧾 Buat Kotak Materai</button></div>'
+    + '</div><div>' + field("Gambar Tanda Tangan di Sini", '<canvas id="psPad" width="340" height="150" class="w-full rounded-xl border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white touch-none cursor-crosshair"></canvas>')
+    + '<div class="flex gap-2 mt-2"><button class="' + BTN2 + '" onclick="psPadClear()">🧹 Hapus Coretan</button><button class="' + BTN2 + '" onclick="psPadSave()">✅ Pakai TTD Ini</button></div>'
+    + field("atau upload gambar TTD transparan", '<input type="file" id="psTtdFile" accept="image/*" class="' + IN + '">')
+    + '</div></div>'
+    + field("Pratinjau Halaman (klik untuk meletakkan item)", '<div id="psPreview" class="relative inline-block max-w-full border border-slate-300 dark:border-slate-600 rounded-lg overflow-hidden bg-white"><canvas id="psCanvas" class="max-w-full block"></canvas><div id="psOverlay" class="absolute inset-0 pointer-events-none"></div></div>')
+    + '<button class="' + BTN + ' w-full mt-2" onclick="psApply()">📥 Terapkan & Unduh PDF Bertanda Tangan</button>';
+  document.getElementById("psFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    window._ps.bytes = await f.arrayBuffer(); window._ps.name = f.name;
+    if (!await loadPdfJs()) { toast("PDF.js gagal dimuat."); return; }
+    const pdf = await pdfjsLib.getDocument({ data: window._ps.bytes.slice(0) }).promise;
+    window._ps.numPages = pdf.numPages;
+    document.getElementById("psPage").innerHTML = Array.from({ length: pdf.numPages }, (_, i) => '<option value="' + (i + 1) + '">Halaman ' + (i + 1) + '</option>').join("");
+    psPadInit(); psRenderPage();
+  });
+  document.getElementById("psTtdFile").addEventListener("change", (e) => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { window._ps.items.ttd = r.result; psDrawOverlay(); toast("Gambar TTD terpasang."); }; r.readAsDataURL(f); });
+  psPadInit();
+};
+async function psRenderPage() {
+  const S = window._ps; if (!S.bytes) return;
+  const pdf = await pdfjsLib.getDocument({ data: S.bytes.slice(0) }).promise;
+  const page = await pdf.getPage(+document.getElementById("psPage").value || 1);
+  const vp = page.getViewport({ scale: 1.25 });
+  const cv = document.getElementById("psCanvas"); cv.width = vp.width; cv.height = vp.height;
+  await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+  S.pageDims = { w: vp.width, h: vp.height };
+  const pv = document.getElementById("psPreview");
+  pv.onclick = (e) => { const r = pv.getBoundingClientRect(); const fx = (e.clientX - r.left) / r.width, fy = (e.clientY - r.top) / r.height; S.pos[S.target] = { x: fx, y: fy }; psDrawOverlay(); };
+  psDrawOverlay();
+}
+function psDrawOverlay() {
+  const S = window._ps, ov = document.getElementById("psOverlay"); if (!ov) return;
+  const mk = (key, border) => { const it = S.items[key]; if (!it) return ""; const p = S.pos[key]; const wPct = (key === "ttd" ? 0.20 : key === "stamp" ? 0.24 : 0.13) * (S.scale / 130); return '<img src="' + it + '" style="position:absolute;left:' + (p.x * 100) + '%;top:' + (p.y * 100) + '%;width:' + (wPct * 100) + '%;transform:translate(-50%,-50%);border:1.5px dashed ' + border + ';border-radius:6px">'; };
+  ov.innerHTML = mk("materai", "#94A3B8") + mk("stamp", "#2563EB") + mk("ttd", "#059669");
+}
+function psPadInit() {
+  const pad = document.getElementById("psPad"); if (!pad || pad.dataset.init) return; pad.dataset.init = "1";
+  const ctx = pad.getContext("2d"); ctx.lineWidth = 2.4; ctx.lineCap = "round"; ctx.strokeStyle = "#111827";
+  let drawing = false;
+  const pt = (e) => { const r = pad.getBoundingClientRect(); const src = e.touches ? e.touches[0] : e; return { x: (src.clientX - r.left) * pad.width / r.width, y: (src.clientY - r.top) * pad.height / r.height }; };
+  const start = (e) => { drawing = true; const p = pt(e); ctx.beginPath(); ctx.moveTo(p.x, p.y); e.preventDefault(); };
+  const move = (e) => { if (!drawing) return; const p = pt(e); ctx.lineTo(p.x, p.y); ctx.stroke(); e.preventDefault(); };
+  pad.addEventListener("mousedown", start); pad.addEventListener("mousemove", move); window.addEventListener("mouseup", () => drawing = false);
+  pad.addEventListener("touchstart", start, { passive: false }); pad.addEventListener("touchmove", move, { passive: false });
+}
+function psPadClear() { const pad = document.getElementById("psPad"); pad.getContext("2d").clearRect(0, 0, pad.width, pad.height); }
+function psPadSave() { window._ps.items.ttd = document.getElementById("psPad").toDataURL("image/png"); psDrawOverlay(); toast("Tanda tangan siap — klik pratinjau untuk meletakkannya."); }
+function psMakeStamp() {
+  const txt = (document.getElementById("psStampText").value || "STEMPEL").toUpperCase();
+  const cv = document.createElement("canvas"); cv.width = 420; cv.height = 420; const x = cv.getContext("2d");
+  x.strokeStyle = "#1D4ED8"; x.lineWidth = 10; x.beginPath(); x.arc(210, 210, 190, 0, Math.PI * 2); x.stroke();
+  x.lineWidth = 3; x.beginPath(); x.arc(210, 210, 160, 0, Math.PI * 2); x.stroke();
+  x.fillStyle = "#1D4ED8"; x.textAlign = "center"; x.textBaseline = "middle";
+  const words = txt.split(" "); let fs = 44; x.font = "bold " + fs + "px Arial";
+  while (x.measureText(txt).width > 280 && fs > 16) { fs -= 4; x.font = "bold " + fs + "px Arial"; }
+  if (words.length > 1 && x.measureText(txt).width > 280) { const mid = Math.ceil(words.length / 2); x.fillText(words.slice(0, mid).join(" "), 210, 185); x.fillText(words.slice(mid).join(" "), 210, 235); }
+  else x.fillText(txt, 210, 210);
+  x.font = "bold 30px Arial"; x.fillText("★ ★ ★", 210, 300);
+  window._ps.items.stamp = cv.toDataURL("image/png"); psDrawOverlay();
+}
+function psMakeMaterai() {
+  const cv = document.createElement("canvas"); cv.width = 220; cv.height = 300; const x = cv.getContext("2d");
+  x.strokeStyle = "#0F766E"; x.lineWidth = 5; x.strokeRect(8, 8, 204, 284);
+  x.fillStyle = "#0F766E"; x.textAlign = "center"; x.font = "bold 24px Arial";
+  x.fillText("MATERAI", 110, 110); x.fillText("TEMPEL", 110, 145);
+  x.font = "bold 20px Arial"; x.fillText("Rp10.000", 110, 195);
+  x.font = "13px Arial"; x.fillText("Tanda tangan di atas", 110, 245); x.fillText("materai", 110, 265);
+  window._ps.items.materai = cv.toDataURL("image/png"); psDrawOverlay(); toast("Kotak materai dibuat — klik pratinjau untuk meletakkannya.");
+}
+async function psApply() {
+  const S = window._ps;
+  if (!S.bytes) { toast("Upload PDF dulu ya."); return; }
+  if (!S.items.ttd && !S.items.stamp && !S.items.materai) { toast("Buat dulu minimal satu item: tanda tangan, stempel, atau materai."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument } = PDFLib;
+  const doc = await PDFDocument.load(S.bytes.slice(0));
+  const pageIdx = (+document.getElementById("psPage").value || 1) - 1;
+  const page = doc.getPages()[pageIdx];
+  const { width: W, height: H } = page.getSize();
+  const place = async (key, baseW) => {
+    const dataUrl = S.items[key]; if (!dataUrl) return;
+    const png = await doc.embedPng(dataUrl);
+    const w = baseW * (S.scale / 130), h = w * png.height / png.width;
+    const p = S.pos[key];
+    page.drawImage(png, { x: p.x * W - w / 2, y: H - p.y * H - h / 2, width: w, height: h });
+  };
+  await place("materai", W * 0.13); await place("stamp", W * 0.24); await place("ttd", W * 0.20);
+  const bytes = await doc.save();
+  download((S.name || "dokumen.pdf").replace(/\.pdf$/i, "") + "_berttd.pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("PDF bertanda tangan terunduh ✍️");
+}
+
+;
+/* ---------- 112. Pengatur Halaman PDF Visual ---------- */
+UI.pdforg = function (b) {
+  window._po = null;
+  b.innerHTML = head("📑", "Atur Ulang Halaman PDF Secara Visual", "Lihat semua halaman sebagai thumbnail: putar halaman scan yang miring, geser urutannya, hapus halaman kosong — lalu unduh PDF yang sudah rapi.")
+    + field("File PDF", '<input type="file" id="poFile" accept=".pdf" class="' + IN + '">')
+    + '<div id="poGrid" class="mt-2"></div>'
+    + '<button class="' + BTN + ' w-full mt-3" onclick="poApply()">📥 Unduh PDF Hasil Pengaturan</button>';
+  document.getElementById("poFile").addEventListener("change", async (e) => {
+    const f = e.target.files[0]; if (!f) return;
+    const grid = document.getElementById("poGrid");
+    grid.innerHTML = '<p class="text-sm text-slate-500">⏳ Membuat thumbnail semua halaman…</p>';
+    try {
+      const bytes = await f.arrayBuffer();
+      if (!await loadPdfJs()) throw new Error("PDF.js gagal dimuat.");
+      const pdf = await pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+      window._po = { bytes, name: f.name, order: [] };
+      for (let p = 1; p <= pdf.numPages; p++) {
+        const page = await pdf.getPage(p);
+        const vp = page.getViewport({ scale: 0.32 });
+        const cv = document.createElement("canvas"); cv.width = vp.width; cv.height = vp.height;
+        await page.render({ canvasContext: cv.getContext("2d"), viewport: vp }).promise;
+        window._po.order.push({ src: p - 1, rot: 0, del: false, thumb: cv.toDataURL("image/jpeg", 0.72) });
+      }
+      poRenderGrid();
+    } catch (err) { grid.innerHTML = '<p class="text-sm text-rose-500">❌ Gagal: ' + esc(err.message) + '</p>'; }
+  });
+};
+function poRenderGrid() {
+  const O = window._po; if (!O) return;
+  document.getElementById("poGrid").innerHTML = '<p class="text-sm mb-2">📄 <b>' + O.order.length + ' halaman</b> — ' + O.order.filter((x) => x.del).length + ' ditandai hapus.</p>'
+    + '<div class="grid grid-cols-3 sm:grid-cols-4 gap-2.5">' + O.order.map((pg, i) => '<div class="rounded-xl border ' + (pg.del ? "border-rose-300 opacity-50" : "border-slate-200 dark:border-slate-700") + ' bg-white dark:bg-slate-900 p-1.5 text-center">'
+      + '<div class="overflow-hidden rounded-md mb-1.5" style="height:110px;display:flex;align-items:center;justify-content:center;background:#F8FAFC"><img src="' + pg.thumb + '" style="max-height:110px;transform:rotate(' + pg.rot + 'deg);transition:transform .2s"></div>'
+      + '<div class="text-[11px] font-bold mb-1">Posisi ' + (i + 1) + ' • asal hal. ' + (pg.src + 1) + (pg.rot ? ' • ↻' + pg.rot + '°' : '') + '</div>'
+      + '<div class="flex justify-center gap-1"><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poMove(' + i + ',-1)">◀</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poMove(' + i + ',1)">▶</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poRot(' + i + ')">⟳ Putar</button><button class="' + BTN2 + ' !px-2 !py-1 !text-[11px]" onclick="poDel(' + i + ')">' + (pg.del ? "↩️ Urungkan" : "🗑️ Hapus") + '</button></div></div>').join("") + '</div>';
+}
+function poMove(i, d) { const O = window._po; const j = i + d; if (j < 0 || j >= O.order.length) return; [O.order[i], O.order[j]] = [O.order[j], O.order[i]]; poRenderGrid(); }
+function poRot(i) { window._po.order[i].rot = (window._po.order[i].rot + 90) % 360; poRenderGrid(); }
+function poDel(i) { window._po.order[i].del = !window._po.order[i].del; poRenderGrid(); }
+async function poApply() {
+  const O = window._po; if (!O) { toast("Upload PDF dulu ya."); return; }
+  const keep = O.order.filter((x) => !x.del);
+  if (!keep.length) { toast("Semua halaman dihapus — tidak ada yang bisa diunduh."); return; }
+  const ok = await loadLib("https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js", "PDFLib");
+  if (!ok) { toast("Library PDF gagal dimuat."); return; }
+  const { PDFDocument, degrees } = PDFLib;
+  const src = await PDFDocument.load(O.bytes.slice(0));
+  const out = await PDFDocument.create();
+  const pages = await out.copyPages(src, keep.map((k) => k.src));
+  pages.forEach((p, i) => { const add = keep[i].rot; if (add) p.setRotation(degrees(((p.getRotation().angle || 0) + add) % 360)); out.addPage(p); });
+  const bytes = await out.save();
+  download(O.name.replace(/\.pdf$/i, "") + "_rapi.pdf", new Blob([bytes], { type: "application/pdf" }));
+  toast("PDF rapi terunduh 📑 (" + keep.length + " halaman)");
+}
+

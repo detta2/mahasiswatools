@@ -175,7 +175,7 @@ const dirGroups = CATORDER.map((c) => {
 }).join("");
 const dirBlock = "<!-- MT-DIREKTORI -->"
   + '<section class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800"><div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">'
-  + '<nav aria-label="Direktori Lengkap 100 Tool Mahasiswa"><h2 class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mb-1">Direktori Lengkap ' + TOOLS.length + ' Tool MahasiswaTools</h2>'
+  + '<nav aria-label="Direktori Lengkap Tool Mahasiswa"><h2 class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mb-1">Direktori Lengkap ' + TOOLS.length + ' Tool MahasiswaTools</h2>'
   + '<p class="text-[13px] text-slate-400 dark:text-slate-500 mb-6">Semua tool gratis, tanpa login, dan berjalan 100% di browser. Klik nama tool untuk membukanya.</p>'
   + '<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8">' + dirGroups + "</div></nav></div></section>"
   + "<!-- /MT-DIREKTORI -->";
