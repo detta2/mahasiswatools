@@ -50,7 +50,7 @@
 
 ## 📚 Direktori 112 Tool
 
-### 🤖 Kit Anti-AI & Keaslian (7 tool)
+### 🤖 Cek AI & Jurnal (7 tool)
 
 - **[Pendeteksi Gaya Tulisan AI (Burstiness)](https://mahasiswatools.web.id/tools/pendeteksi-gaya-tulisan-ai-burstiness/)** — Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.
 - **[Humanizer & Editor Variasi Kalimat](https://mahasiswatools.web.id/tools/humanizer-dan-editor-variasi-kalimat/)** — Editor per kalimat + saran ritme + kamus klik-ganti 50+ kata klise AI.
@@ -60,7 +60,7 @@
 - **[Generator Deklarasi Penggunaan AI](https://mahasiswatools.web.id/tools/generator-deklarasi-penggunaan-ai/)** — Pernyataan etis penggunaan AI versi skripsi kampus & jurnal internasional.
 - **[Editor Bukti Ketikan Mandiri (Authorship Proof)](https://mahasiswatools.web.id/tools/editor-bukti-ketikan-mandiri-authorship-proof/)** — Rekam proses mengetikmu (ketukan, koreksi, paste) → sertifikat bukti penulisan.
 
-### 📝 Penulisan & Skripsi (25 tool)
+### 📝 Nulis & Skripsi (25 tool)
 
 - **[Daftar Pustaka Otomatis (APA/MLA/Harvard/Vancouver)](https://mahasiswatools.web.id/tools/daftar-pustaka-otomatis-apa-mla-harvard-vancouver/)** — Format sitasi instan, italic otomatis, urut A–Z, tersimpan.
 - **[Template Makalah & Skripsi (.docx)](https://mahasiswatools.web.id/tools/template-makalah-dan-skripsi-docx/)** — Dokumen Word asli margin 4-4-3-3 (OOXML via JSZip): cover sampai Bab V.
@@ -88,7 +88,7 @@
 - **[Kalkulator Target Kata & Deadline Skripsi](https://mahasiswatools.web.id/tools/kalkulator-target-kata-dan-deadline-skripsi/)** — Target kata per hari realistis + milestone tanggal per bab.
 - **[Kalkulator Waktu Baca Presentasi](https://mahasiswatools.web.id/tools/kalkulator-waktu-baca-presentasi/)** — Jumlah kata naskah → estimasi durasi bicara + saran potong kata.
 
-### 📊 Olah Data & Penelitian (20 tool)
+### 📊 Olah Data & Excel (20 tool)
 
 - **[Uji Validitas Pearson & Reliabilitas Alpha](https://mahasiswatools.web.id/tools/uji-validitas-pearson-dan-reliabilitas-alpha/)** — Korelasi butir + Cronbach's Alpha + narasi Bab 4 otomatis.
 - **[Kalkulator Sampel (Slovin, Isaac & Lemeshow)](https://mahasiswatools.web.id/tools/kalkulator-sampel-slovin-isaac-dan-lemeshow/)** — Ukuran sampel minimal lengkap dengan rincian rumus Bab 3.
@@ -111,7 +111,7 @@
 - **[Generator Rumus Excel Bahasa Manusia](https://mahasiswatools.web.id/tools/generator-rumus-excel-bahasa-manusia/)** — Pilih kasus (nilai ke huruf, VLOOKUP, COUNTIFS, kategorisasi) → rumus Excel jadi, pilihan pemisah ; atau , + simulasi uji.
 - **[Generator Template Excel Ber-Rumus Hidup](https://mahasiswatools.web.id/tools/generator-template-excel-ber-rumus-hidup/)** — Unduh .xlsx berisi rumus aktif: tabulasi kuesioner + r-hitung, kas UKM, amortisasi, rekap nilai kelas.
 
-### 🎤 Presentasi & Sidang (15 tool)
+### 🎤 Buat PPT & Sidang (15 tool)
 
 - **[Outline Makalah ke PowerPoint (.pptx)](https://mahasiswatools.web.id/tools/outline-makalah-ke-powerpoint-pptx/)** — Poin makalah → file presentasi .pptx asli per bab.
 - **[Teleprompter & Timer Sidang](https://mahasiswatools.web.id/tools/teleprompter-dan-timer-sidang/)** — Teks berjalan otomatis + estimasi kata per menit.
@@ -129,7 +129,7 @@
 - **[Konverter Data Excel ke Slide Grafik PPT](https://mahasiswatools.web.id/tools/konverter-data-excel-ke-slide-grafik-ppt/)** — Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.
 - **[Kompresor Ukuran File PowerPoint](https://mahasiswatools.web.id/tools/kompresor-ukuran-file-powerpoint/)** — Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.
 
-### 👥 Tugas Kelompok & KKN (13 tool)
+### ⛺ Tugas Kelompok & KKN (13 tool)
 
 - **[Generator Sertifikat Massal (ZIP)](https://mahasiswatools.web.id/tools/generator-sertifikat-massal-zip/)** — Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.
 - **[Logbook Harian Magang / KKN](https://mahasiswatools.web.id/tools/logbook-harian-magang-kkn/)** — Catatan harian formal, ekspor .doc berkop paraf & DPL.
@@ -145,7 +145,7 @@
 - **[Bagan Struktur Organisasi Posko KKN](https://mahasiswatools.web.id/tools/bagan-struktur-organisasi-posko-kkn/)** — Hierarki posko/desa dari pembina sampai divisi, PNG.
 - **[Desain Plang Jalan & Edukasi Desa (Bonus)](https://mahasiswatools.web.id/tools/desain-plang-jalan-dan-edukasi-desa-bonus/)** — Desain plang canvas 4 tema untuk program fisik KKN.
 
-### 📄 Dokumen, PDF & Gambar (18 tool)
+### 📄 Edit PDF & Foto (18 tool)
 
 - **[Konverter Sitasi BibTeX/RIS ↔ APA/IEEE](https://mahasiswatools.web.id/tools/konverter-sitasi-bibtex-ris-apa-ieee/)** — Ubah file sitasi BibTeX/RIS (Mendeley/Zotero) jadi daftar pustaka APA/IEEE/Vancouver — dan sebaliknya.
 - **[Pembuat Poster Ilmiah Seminar/PKM](https://mahasiswatools.web.id/tools/pembuat-poster-ilmiah-seminar-pkm/)** — Buat poster ilmiah seminar/PKM resolusi tinggi: abstrak, metode, temuan, QR code — unduh PNG siap cetak.
@@ -166,7 +166,7 @@
 - **[Penanda Tangan & Stempel PDF](https://mahasiswatools.web.id/tools/penanda-tangan-dan-stempel-pdf/)** — Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.
 - **[Pengatur Ulang, Pemutar & Penghapus Halaman PDF](https://mahasiswatools.web.id/tools/pengatur-ulang-pemutar-dan-penghapus-halaman-pdf/)** — Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.
 
-### 🎓 Akademik, Karir & Harian (14 tool)
+### 🎓 Nilai, CV & Kampus (14 tool)
 
 - **[CV ATS-Friendly Builder + Skor Struktural](https://mahasiswatools.web.id/tools/cv-ats-friendly-builder-skor-struktural/)** — CV 1 kolom aman ATS + skor cek struktur instan.
 - **[Pembuat Surat Resmi & Motivation Letter](https://mahasiswatools.web.id/tools/pembuat-surat-resmi-dan-motivation-letter/)** — 15 jenis surat: izin penelitian, UKT, cuti, sponsorship, undangan, rekomendasi, kuasa, dll.

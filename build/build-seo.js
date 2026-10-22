@@ -22,7 +22,7 @@ for (let j = i; j < appSrc.length; j++) {
   if (ch === "]") { depth--; if (depth === 0) { end = j; break; } }
 }
 const TOOLS = eval(appSrc.slice(i, end + 1));
-const CATNAME = { anti: "Kit Anti-AI & Keaslian", tulis: "Penulisan & Skripsi", data: "Olah Data & Penelitian", present: "Presentasi & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Dokumen, PDF & Gambar", karir: "Akademik, Karir & Harian" };
+const CATNAME = { anti: "Cek AI & Jurnal", tulis: "Nulis & Skripsi", data: "Olah Data & Excel", present: "Buat PPT & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Edit PDF & Foto", karir: "Nilai, CV & Kampus" };
 
 function slugify(n) {
   let s = n.toLowerCase().replace(/&/g, " dan ").replace(/['’]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");

@@ -5,17 +5,19 @@ try{if(localStorage.getItem("mt_theme")==="dark")document.documentElement.classL
    MahasiswaTools — katalog 55 tools + shell portal
    ============================================================ */
 const CATS = [
+  { k: "pop", n: "🔥 Populer" },
   { k: "fav", n: "⭐ Favorit Saya" },
-  { k: "all", n: "🔥 Semua Tools" },
-  { k: "anti", n: "🤖 Kit Anti-AI & Keaslian" },
-  { k: "tulis", n: "📝 Penulisan & Skripsi" },
-  { k: "data", n: "📊 Olah Data & Penelitian" },
-  { k: "present", n: "🎤 Presentasi & Sidang" },
-  { k: "kelompok", n: "👥 Tugas Kelompok & KKN" },
-  { k: "dokumen", n: "📄 Dokumen, PDF & Gambar" },
-  { k: "karir", n: "🎓 Akademik, Karir & Harian" }
+  { k: "anti", n: "🤖 Cek AI & Jurnal" },
+  { k: "tulis", n: "📝 Nulis & Skripsi" },
+  { k: "data", n: "📊 Olah Data & Excel" },
+  { k: "present", n: "🎤 Buat PPT & Sidang" },
+  { k: "kelompok", n: "⛺ Tugas Kelompok & KKN" },
+  { k: "dokumen", n: "📄 Edit PDF & Foto" },
+  { k: "karir", n: "🎓 Nilai, CV & Kampus" },
+  { k: "all", n: "📚 Lihat Semua" }
 ];
-const CATNAME = { anti: "Kit Anti-AI & Keaslian", tulis: "Penulisan & Skripsi", data: "Olah Data & Penelitian", present: "Presentasi & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Dokumen, PDF & Gambar", karir: "Akademik, Karir & Harian" };
+const POPULER = ["gformclean", "validitas", "regresi", "k16", "dapus", "aidetect", "decksidang", "pptxextract", "k37", "pdfsign", "k43", "pdfstamp", "targetnilai"];
+const CATNAME = { anti: "Cek AI & Jurnal", tulis: "Nulis & Skripsi", data: "Olah Data & Excel", present: "Buat PPT & Sidang", kelompok: "Tugas Kelompok & KKN", dokumen: "Edit PDF & Foto", karir: "Nilai, CV & Kampus" };
 
 const TOOLS = [
   { id: "aidetect", n: "Pendeteksi Gaya Tulisan AI (Burstiness)", c: "anti", i: "🤖", d: "Skor risiko deteksi AI lokal: variasi kalimat, kekayaan kosakata, klise LLM + heatmap.", aktif: 1 },
@@ -141,7 +143,7 @@ const store = {
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { if (typeof toast === "function") toast("⚠️ Penyimpanan browser penuh — data terakhir mungkin tidak tersimpan. Segera Backup Data di footer."); } }
 };
 let favs = new Set(store.get("mt_favs", []));
-let curCat = "all", curQuery = "", curTool = null;
+let curCat = "pop", curQuery = "", curTool = null;
 function saveFavs() { store.set("mt_favs", [...favs]); }
 function toast(msg) { const t = $("#toast"); t.textContent = msg; t.style.opacity = "1"; clearTimeout(t._h); t._h = setTimeout(() => t.style.opacity = "0", 2600); }
 async function copyText(txt, msg) {
@@ -179,7 +181,7 @@ function toggleTheme() {
 function renderTabs() {
   if (!$("#catTabs")) return;
   $("#catTabs").innerHTML = CATS.map((c) => {
-    const count = c.k === "fav" ? favs.size : c.k === "all" ? TOOLS.length : TOOLS.filter((t) => t.c === c.k).length;
+    const count = c.k === "fav" ? favs.size : c.k === "all" ? TOOLS.length : c.k === "pop" ? POPULER.length : TOOLS.filter((t) => t.c === c.k).length;
     const on = curCat === c.k;
     return '<button onclick="setCat(\'' + c.k + '\')" class="shrink-0 rounded-full px-4 py-2 text-[13px] font-semibold transition border ' + (on ? "bg-indigo-600 text-white border-indigo-600 shadow-sm" : "bg-white dark:bg-slate-900 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-600") + '">' + c.n + ' <span class="opacity-70 font-semibold">' + count + "</span></button>";
   }).join("");
@@ -320,16 +322,10 @@ function toolRow(t) {
     + '<button onclick="event.stopPropagation();toggleFav(\'' + t.id + '\')" title="Pin ke Favorit" class="shrink-0 w-7 h-7 grid place-items-center ' + (fav ? "text-amber-500" : "text-slate-300 dark:text-slate-600 hover:text-amber-500") + ' transition">' + (fav ? "★" : "☆") + "</button></article>";
 }
 const FMT_CLS = { XLSX: "text-emerald-700 bg-emerald-100 dark:text-emerald-300 dark:bg-emerald-900/40", PPTX: "text-orange-700 bg-orange-100 dark:text-orange-300 dark:bg-orange-900/40", PDF: "text-rose-700 bg-rose-100 dark:text-rose-300 dark:bg-rose-900/40", DOCX: "text-blue-700 bg-blue-100 dark:text-blue-300 dark:bg-blue-900/40" };
-function fmtBadge(t, big) { if (!t.fmt) return ""; return '<span class="font-extrabold tracking-wide rounded-md ' + (big ? "text-[11px] px-2 py-1" : "text-[9.5px] px-1.5 py-0.5") + " " + (FMT_CLS[t.fmt] || "") + '">' + t.fmt + "</span>"; }
-function setView(v) { viewMode = v; store.set("mt_view", v); syncViewBtns(); renderGrid(); }
-function syncViewBtns() {
-  const map = { bento: "#viewBentoBtn", periodik: "#viewPeriodikBtn", situasi: "#viewSituasiBtn" };
-  const base = "text-[11.5px] font-semibold px-2.5 py-1.5 rounded-lg border transition ";
-  const on = "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900 dark:border-white";
-  const off = "bg-white text-slate-500 border-slate-200 dark:bg-slate-900 dark:text-slate-400 dark:border-slate-700";
-  Object.entries(map).forEach(([k, sel]) => { const el = $(sel); if (el) el.className = base + (viewMode === k ? on : off); });
-  document.querySelectorAll("[data-dockmode]").forEach((el) => { el.classList.toggle("dock-on", el.dataset.dockmode === viewMode); });
-}
+const FMT_LABEL = { XLSX: "EXCEL", PPTX: "PPT", PDF: "PDF", DOCX: "WORD" };
+function fmtBadge(t, big) { if (!t.fmt) return ""; return '<span class="font-extrabold tracking-wide rounded-md ' + (big ? "text-[11px] px-2 py-1" : "text-[9.5px] px-1.5 py-0.5") + " " + (FMT_CLS[t.fmt] || "") + '">' + (FMT_LABEL[t.fmt] || t.fmt) + "</span>"; }
+function setView(v) { renderGrid(); }
+function syncViewBtns() {}
 function scrollToGrid() { const el = $("#catTabs"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }
 function quickSearch(q) { const inp = $("#searchInput"); if (inp) inp.value = q; curQuery = q; hideRoadmap(); renderGrid(); scrollToGrid(); }
 function pushRecent(id) {
@@ -356,6 +352,8 @@ function showRoadmap() {
   roadmapOn = true;
   v.innerHTML = '<div class="flex items-center gap-3 mb-4"><span class="text-[22px]">🧭</span><div><h2 class="font-extrabold text-lg leading-tight">Peta Jalan Skripsi</h2><p class="text-[12.5px] text-slate-500 dark:text-slate-400">Empat tahap dari Bab 1 sampai sidang — klik tool untuk langsung membukanya.</p></div><button onclick="hideRoadmap();renderGrid()" class="ml-auto text-[12px] font-semibold text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 shrink-0">✕ Tutup</button></div>'
     + ROADMAP.map((s, idx) => '<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-3.5"><div class="flex items-center gap-3"><span class="w-8 h-8 rounded-full bg-indigo-600 text-white grid place-items-center font-extrabold text-sm shrink-0">' + (idx + 1) + '</span><h3 class="font-bold text-[15px]">' + s.t + '</h3></div><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">' + s.d + '</p><div class="flex flex-wrap gap-2 mt-3.5">' + s.ids.map((id) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return '<button onclick="openTool(\'' + id + '\')" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition"><span class="tic tic-xs">' + iconOf(t) + "</span>" + esc(t.n) + "</button>"; }).join("") + "</div></div>").join("");
+  v.innerHTML += situasiHTML();
+  paintTics();
   v.classList.remove("hidden");
   const g = $("#grid"); if (g) g.classList.add("hidden");
   const gi = $("#gridInfo"); if (gi) gi.classList.add("hidden");
@@ -385,109 +383,46 @@ function toolCard(t) {
 function renderGrid() {
   if (!$("#grid")) return;
   let list = TOOLS.slice();
-  if (curCat === "fav") list = list.filter((t) => favs.has(t.id));
+  if (curQuery) { const q0 = curQuery.toLowerCase(); list = list.filter((t) => (t.n + " " + t.d + " " + CATNAME[t.c]).toLowerCase().includes(q0)); }
+  else if (curCat === "fav") list = list.filter((t) => favs.has(t.id));
+  else if (curCat === "pop") list = POPULER.map((id) => TOOLS.find((t) => t.id === id)).filter(Boolean);
   else if (curCat !== "all") list = list.filter((t) => t.c === curCat);
-  if (curQuery) { const q = curQuery.toLowerCase(); list = list.filter((t) => (t.n + " " + t.d + " " + CATNAME[t.c]).toLowerCase().includes(q)); }
-  list.sort((a, b) => (favs.has(b.id) - favs.has(a.id)) || ((b.aktif || 0) - (a.aktif || 0)));
-  const cardFn = viewMode === "list" ? toolRow : toolCard;
-  const wrapCls = viewMode === "list" ? "flex flex-col gap-2" : "grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5";
-  if (curCat === "all" && !curQuery && viewMode === "bento") { $("#grid").innerHTML = renderBento(list); }
-  else if (curCat === "all" && !curQuery && viewMode === "periodik") { $("#grid").innerHTML = renderPeriodik(list); }
-  else if (curCat === "all" && !curQuery && viewMode === "situasi") { $("#grid").innerHTML = renderSituasi(list); }
-  else if (curCat === "all" && !curQuery) {
-    $("#grid").innerHTML = CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => {
-      const items = list.filter((t) => t.c === c.k);
-      if (!items.length) return "";
-      return '<div class="mb-9"><div class="flex items-center gap-3 mb-3"><h2 class="text-[13px] font-bold tracking-wide text-slate-700 dark:text-slate-200">' + c.n + '</h2><span class="text-[11px] font-bold text-slate-400">' + items.length + ' tool</span><span class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></span></div><div class="' + wrapCls + '">' + items.map(cardFn).join("") + "</div></div>";
-    }).join("");
-  } else {
-    $("#grid").innerHTML = '<div class="' + wrapCls + '">' + list.map(cardFn).join("") + "</div>";
-  }
+  if (curCat !== "pop" || curQuery) list.sort((a, b) => (favs.has(b.id) - favs.has(a.id)) || ((b.aktif || 0) - (a.aktif || 0)));
+  const cardFn = toolCard;
+  const wrapCls = "grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5";
+  if (curCat === "all" && !curQuery) { $("#grid").innerHTML = renderAllAccordion(list); }
+  else { $("#grid").innerHTML = '<div class="' + wrapCls + '">' + list.map(cardFn).join("") + "</div>"; }
   $("#gridEmpty").classList.toggle("hidden", list.length > 0);
-  $("#gridInfo").textContent = curCat === "fav" && !favs.size ? "Belum ada favorit — klik ikon ☆ pada kartu tool untuk mem-pin di sini." : (curCat === "all" && !curQuery && viewMode === "bento" ? " 🧩 Mode Bento: 7 rak kategori — 3 flagship tampil besar, sisanya pill yang bisa digeser ↔ atau dibentangkan. Tanpa scroll panjang!" : curCat === "all" && !curQuery && viewMode === "periodik" ? " 🧪 Mode Tabel Periodik: " + TOOLS.length + " unsur dalam 1 layar — arahkan/ketuk unsur untuk inspeksi, klik ke-2 / tombol Buka untuk menjalankan." : curCat === "all" && !curQuery && viewMode === "situasi" ? " 🧭 Mode Meja Situasi: pilih situasimu, kerjakan tool-nya berurutan langkah demi langkah." : "Menampilkan " + list.length + " dari " + TOOLS.length + " tools" + (curQuery ? ' untuk pencarian "' + curQuery + '"' : "") + ". Semua tool berstatus AKTIF dan siap dipakai.");
+  $("#gridInfo").textContent = curCat === "fav" && !favs.size ? "Belum ada favorit — klik ikon ☆ pada kartu tool untuk mem-pin di sini." : (curCat === "pop" && !curQuery ? "🔥 Ini " + POPULER.length + " tool yang paling sering dipakai mahasiswa. Tool lainnya ada di tombol kategori di atas ya." : curCat === "all" && !curQuery ? "📚 Semua " + TOOLS.length + " tool dikelompokkan per kategori — ketuk judul kategori untuk membuka atau menutup isinya." : "Menampilkan " + list.length + " dari " + TOOLS.length + " tools" + (curQuery ? ' untuk pencarian "' + curQuery + '"' : "") + ". Semua tool berstatus AKTIF dan siap dipakai.");
 }
 
-/* ===== SMART ACADEMIC OS: Bento Swimlanes, Tabel Periodik, Meja Situasi, Dock, Dropzone ===== */
-const CAT_ACCENT = { anti: "#E11D48", tulis: "#2563EB", data: "#059669", present: "#D97706", kelompok: "#7C3AED", dokumen: "#0284C7", karir: "#4F46E5" };
-function pillHTML(t) {
-  return '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 flex items-center gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition snap-start"><span class="tic tic-xs">' + iconOf(t) + "</span>" + esc(t.n) + (t.fmt ? ' <span class="text-[8.5px] font-extrabold px-1 py-px rounded ' + (FMT_CLS[t.fmt] || "") + '">' + t.fmt + "</span>" : "") + "</button>";
-}
-function renderBento(list) {
-  return CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => {
+/* ===== Beranda sederhana: akordeon Lihat Semua + panduan gabungan ===== */
+let accOpen = new Set(["anti"]);
+function accToggle(k) { if (accOpen.has(k)) accOpen.delete(k); else accOpen.add(k); renderGrid(); paintTics(); }
+function renderAllAccordion(list) {
+  return CATS.filter((c) => !["fav", "all", "pop"].includes(c.k)).map((c) => {
     const items = list.filter((t) => t.c === c.k);
     if (!items.length) return "";
-    const flag = items.slice(0, 3), rest = items.slice(3);
-    return '<section class="mb-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 sm:p-5">'
-      + '<div class="flex items-center gap-2.5 mb-3.5"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:' + CAT_ACCENT[c.k] + '"></span><h2 class="text-[14px] font-extrabold tracking-wide text-slate-800 dark:text-slate-100">' + c.n + '</h2><span class="text-[11px] font-bold text-slate-400">' + items.length + ' tool</span><span class="flex-1 h-px bg-slate-200 dark:bg-slate-800"></span>'
-      + (rest.length ? '<button onclick="laneScroll(\'' + c.k + '\',-1)" class="w-7 h-7 grid place-items-center rounded-full border border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-white dark:hover:bg-slate-800 transition" title="Geser kiri">‹</button><button onclick="laneScroll(\'' + c.k + '\',1)" class="w-7 h-7 grid place-items-center rounded-full border border-slate-300 dark:border-slate-700 text-slate-500 hover:bg-white dark:hover:bg-slate-800 transition" title="Geser kanan">›</button>' : "")
-      + '</div>'
-      + '<div class="grid sm:grid-cols-3 gap-3.5">' + flag.map(toolCard).join("") + '</div>'
-      + (rest.length ? '<div id="lane-' + c.k + '" class="flex gap-2 overflow-x-auto pb-1.5 mt-3.5 noscroll snap-x">' + rest.map(pillHTML).join("") + '</div>'
-        + '<button id="laneBtn-' + c.k + '" onclick="laneExpand(\'' + c.k + '\')" class="mt-2 text-[12px] font-bold text-indigo-600 dark:text-indigo-400 hover:underline">▾ Bentangkan Semua ' + items.length + ' Tool ' + c.n.replace(/^[^A-Za-z]+/, "") + '</button>'
-        + '<div id="laneAll-' + c.k + '" class="hidden grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 mt-3.5">' + items.map(toolCard).join("") + '</div>' : "")
-      + '</section>';
+    const open = accOpen.has(c.k);
+    return '<div class="mb-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 overflow-hidden">'
+      + '<button onclick="accToggle(\'' + c.k + '\')" class="w-full flex items-center gap-2.5 px-4 sm:px-5 py-3.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 transition"><span class="w-2.5 h-2.5 rounded-full shrink-0" style="background:' + (CAT_ACCENT[c.k] || "#4F46E5") + '"></span><span class="font-extrabold text-[14.5px] text-slate-800 dark:text-slate-100">' + c.n + '</span><span class="text-[11.5px] font-bold text-slate-400">' + items.length + ' tool</span><span class="ml-auto text-slate-400 font-black">' + (open ? "▾" : "▸") + '</span></button>'
+      + (open ? '<div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-3.5 px-4 sm:px-5 pb-5">' + items.map(toolCard).join("") + "</div>" : "")
+      + "</div>";
   }).join("");
 }
-function laneScroll(cat, dir) { const el = document.getElementById("lane-" + cat); if (el) el.scrollBy({ left: dir * 340, behavior: "smooth" }); }
-function laneExpand(cat) {
-  const box = document.getElementById("laneAll-" + cat), btn = document.getElementById("laneBtn-" + cat);
-  if (!box) return;
-  const openNow = box.classList.toggle("hidden");
-  if (btn) btn.textContent = openNow ? btn.textContent.replace("▴ Tutup", "▾ Bentangkan") : btn.textContent.replace(/▾ Bentangkan Semua \d+ Tool/, "▴ Tutup");
-  if (!openNow) paintTics();
-}
-let ptSel = null;
-function ptInspectorHTML(t) {
-  if (!t) return '<p class="text-sm text-slate-400">Arahkan kursor / ketuk satu unsur untuk menginspeksinya di sini.</p>';
-  return '<div class="flex items-start gap-3.5"><span class="tic shrink-0">' + iconOf(t) + '</span><div class="min-w-0 flex-1"><div class="flex items-center gap-2 flex-wrap"><h3 class="font-extrabold text-[16px] text-slate-900 dark:text-white leading-tight">' + esc(t.n) + '</h3>' + fmtBadge(t, 1) + '</div>'
-    + '<p class="text-[11px] font-bold tracking-wide mt-0.5" style="color:' + CAT_ACCENT[t.c] + '">' + CATNAME[t.c].toUpperCase() + " • UNSUR #" + (TOOLS.indexOf(t) + 1) + '</p>'
-    + '<p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">' + esc(t.d) + '</p></div>'
-    + '<button onclick="openTool(\'' + t.id + '\')" class="shrink-0 bg-indigo-600 hover:bg-indigo-500 text-white text-[13px] font-bold px-4 py-2.5 rounded-xl transition">🚀 Buka Tool</button></div>';
-}
-function renderPeriodik(list) {
-  if (!ptSel || !list.some((t) => t.id === ptSel)) ptSel = list[0] ? list[0].id : null;
-  const sel = list.find((t) => t.id === ptSel);
-  return '<section class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4 sm:p-5">'
-    + '<div id="ptInspector" class="rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 px-4 py-3.5 mb-4 min-h-[86px]">' + ptInspectorHTML(sel) + '</div>'
-    + '<div class="pgrid">' + list.map((t) => { const n = TOOLS.indexOf(t) + 1; return '<button class="ptile pt-' + t.c + (t.id === ptSel ? " pt-on" : "") + '" data-pt="' + t.id + '" title="' + esc(t.n) + '" onmouseenter="ptHover(\'' + t.id + '\')" onclick="ptTap(\'' + t.id + '\')"><span class="pt-num">' + n + '</span><span class="pt-mono">' + monoOf(t) + '</span>' + (t.fmt ? '<span class="pt-fmt">' + t.fmt + '</span>' : "") + '</button>'; }).join("") + '</div>'
-    + '<div class="flex flex-wrap gap-x-3 gap-y-1.5 mt-3.5">' + CATS.filter((c) => c.k !== "fav" && c.k !== "all").map((c) => '<span class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-500 dark:text-slate-400"><span class="w-2.5 h-2.5 rounded" style="background:' + CAT_ACCENT[c.k] + '"></span>' + c.n.replace(/^[^A-Za-z]+/, "") + '</span>').join("") + '</div>'
-    + '</section>';
-}
-function ptHover(id) { const t = TOOLS.find((x) => x.id === id); const box = document.getElementById("ptInspector"); if (t && box) box.innerHTML = ptInspectorHTML(t); paintTic(box ? box.querySelector(".tic") : null, t); }
-function ptTap(id) { if (ptSel === id) { openTool(id); return; } ptSel = id; document.querySelectorAll(".ptile").forEach((el) => el.classList.toggle("pt-on", el.dataset.pt === id)); ptHover(id); }
+const CAT_ACCENT = { anti: "#E11D48", tulis: "#2563EB", data: "#059669", present: "#D97706", kelompok: "#7C3AED", dokumen: "#0284C7", karir: "#4F46E5" };
 const SITUATIONS = [
   { e: "🔥", n: "Kebut Bab 1–3 & Proposal", d: "Dari judul sampai proposal siap diajukan ke pembimbing.", ids: ["judul", "kisikisi", "proposal", "dapus", "k16"] },
-  { e: "📊", n: "Olah Data Kuesioner & Bab 4", d: "Alur SPSS killer: bersihkan → uji → regresi → mediasi → grafik.", ids: ["gformclean", "validitas", "regresi", "mediasi", "xls2chart"] },
-  { e: "🤖", n: "Sterilisasi AI & Cek Jurnal", d: "Pastikan naskahmu aman dari jejak AI dan sitasi halusinasi.", ids: ["aidetect", "humanizer", "scrubber", "sitasi", "similarity", "dapus"] },
+  { e: "📊", n: "Olah Data Kuesioner & Bab 4", d: "Bersihkan data → uji → regresi → mediasi → grafik.", ids: ["gformclean", "validitas", "regresi", "mediasi", "xls2chart"] },
+  { e: "🤖", n: "Sterilisasi AI & Cek Jurnal", d: "Pastikan naskah aman dari jejak AI dan sitasi palsu.", ids: ["aidetect", "humanizer", "scrubber", "sitasi", "similarity", "dapus"] },
   { e: "🎤", n: "Persiapan Sempro & Sidang", d: "Deck otomatis, latihan ditanya penguji, sampai revisi beres.", ids: ["decksidang", "tanyajawab", "teleprompter", "revisi", "k27"] },
-  { e: "📄", n: "Beresin File PDF, Excel & PPT", d: "Segitiga Emas: tanda tangan, atur halaman, ekstrak, konversi.", ids: ["pdfsign", "pdforg", "pptxextract", "xls2pdf", "pdftab2xls"] },
+  { e: "📄", n: "Beresin File PDF, Excel & PPT", d: "Tanda tangan, atur halaman, ekstrak isi, konversi format.", ids: ["pdfsign", "pdforg", "pptxextract", "xls2pdf", "pdftab2xls"] },
   { e: "⛺", n: "Urusan KKN, Kelompok & UKM", d: "Logbook, proposal & RAB, LPJ, kwitansi, sertifikat, absensi.", ids: ["k31", "proposal", "lpj", "k32", "k35", "hadir"] },
   { e: "🎓", n: "Persiapan Yudisium & Karir", d: "Pas foto, ceklis yudisium, IPK, CV ATS, sampai wawancara.", ids: ["k37", "k54", "transkrip", "k53", "k50", "k51"] }
 ];
-let sitIdx = 0;
-function setSituasi(i) { sitIdx = i; renderGrid(); }
-function renderSituasi() {
-  const sit = SITUATIONS[sitIdx];
-  const chips = '<div class="flex gap-2 overflow-x-auto pb-2 mb-4 noscroll">' + SITUATIONS.map((x2, i) => '<button onclick="setSituasi(' + i + ')" class="shrink-0 px-3.5 py-2 rounded-full text-[12.5px] font-bold border transition ' + (i === sitIdx ? "bg-slate-900 text-white border-slate-900 dark:bg-white dark:text-slate-900" : "bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:border-indigo-300") + '">' + x2.e + " " + x2.n + "</button>").join("") + "</div>";
-  const steps = sit.ids.map((id, i) => { const t = TOOLS.find((x) => x.id === id); if (!t) return ""; return (i ? '<div class="self-center text-slate-300 dark:text-slate-600 font-black text-lg shrink-0 px-0.5">→</div>' : "")
-    + '<button onclick="openTool(\'' + id + '\')" class="relative shrink-0 w-[218px] text-left bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 hover:border-indigo-300 dark:hover:border-indigo-500 hover:shadow-lg transition"><span class="absolute -top-2.5 left-3 text-[10px] font-extrabold tracking-wide bg-indigo-600 text-white rounded-full px-2 py-0.5">LANGKAH ' + (i + 1) + '</span><span class="tic tic-sm mb-2">' + iconOf(t) + '</span><span class="block font-bold text-[13.5px] leading-snug text-slate-900 dark:text-white">' + esc(t.n) + '</span><span class="block text-[12px] text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">' + esc(t.d) + "</span>" + (t.fmt ? '<span class="block mt-2">' + fmtBadge(t) + "</span>" : "") + "</button>"; }).join("");
-  return chips + '<section class="rounded-3xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/40 p-4 sm:p-5"><h3 class="font-extrabold text-[16px]">' + sit.e + " " + sit.n + '</h3><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1 mb-4">' + sit.d + ' Kerjakan berurutan dari Langkah 1 — klik kartu untuk membuka tool-nya.</p><div class="flex gap-2 overflow-x-auto pb-2 pt-2 noscroll">' + steps + "</div></section>";
-}
-function mtDockInit() {
-  if (document.getElementById("mtDock") || !document.getElementById("grid")) return;
-  const d = document.createElement("div");
-  d.id = "mtDock";
-  d.className = "fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-1 bg-slate-900/90 dark:bg-white/95 backdrop-blur-md rounded-full pl-2 pr-2 py-1.5 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.45)]";
-  const btn = "flex flex-col items-center gap-px px-3 py-1 rounded-full text-[15px] leading-none transition ";
-  const lbl = "text-[9px] font-bold tracking-wide";
-  d.innerHTML = '<button class="' + btn + 'text-slate-200 dark:text-slate-600" data-dockmode="bento" onclick="setView(\'bento\');window.scrollTo({top:0,behavior:\'smooth\'})">🏠<span class="' + lbl + '">Bento</span></button>'
-    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" data-dockmode="periodik" onclick="setView(\'periodik\');scrollToGrid()">🧪<span class="' + lbl + '">Periodik</span></button>'
-    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="showRoadmap()">🧭<span class="' + lbl + '">Peta</span></button>'
-    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="setCat(\'fav\');scrollToGrid()">⭐<span class="' + lbl + '">Favorit</span></button>'
-    + '<button class="' + btn + 'text-slate-200 dark:text-slate-600" onclick="focusSearch()">🔍<span class="' + lbl + '">Cari</span></button>';
-  document.body.appendChild(d);
-  document.body.style.paddingBottom = "84px";
-  syncViewBtns();
+function situasiHTML() {
+  return '<div class="flex items-center gap-3 mt-7 mb-4"><span class="text-[22px]">🧭</span><div><h2 class="font-extrabold text-lg leading-tight">Atau Pilih Kebutuhanmu</h2><p class="text-[12.5px] text-slate-500 dark:text-slate-400">Paket tool yang sudah diurutkan langkahnya — tinggal ikuti dari Langkah 1.</p></div></div>'
+    + SITUATIONS.map((x) => '<div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 mb-3.5"><div class="flex items-center gap-3"><span class="text-[20px]">' + x.e + '</span><h3 class="font-bold text-[15px]">' + x.n + '</h3></div><p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5 leading-relaxed">' + x.d + '</p><div class="flex flex-wrap gap-2 mt-3.5">' + x.ids.map((id, i) => { const t = TOOLS.find((y) => y.id === id); if (!t) return ""; return '<button onclick="openTool(\'' + id + '\')" class="flex items-center gap-2 bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 rounded-full pl-1.5 pr-3 py-1.5 text-[12.5px] font-semibold text-slate-700 dark:text-slate-200 hover:border-indigo-300 dark:hover:border-indigo-500 transition"><span class="tic tic-xs">' + iconOf(t) + '</span><span class="text-indigo-500 font-extrabold">' + (i + 1) + '.</span> ' + esc(t.n) + "</button>"; }).join("") + "</div></div>").join("");
 }
 function dzHandleFile(f) {
   if (!f) return;
@@ -495,24 +430,20 @@ function dzHandleFile(f) {
   const box = document.getElementById("dzResult");
   const act = (label, id) => '<button onclick="openTool(\'' + id + '\')" class="text-[12.5px] font-bold bg-indigo-600 hover:bg-indigo-500 text-white rounded-full px-3.5 py-2 transition">' + label + "</button>";
   let acts = null;
-  if (["xlsx", "xls", "csv"].includes(ext)) acts = [["🧹 Bersihkan GForm", "gformclean"], ["🖨️ Ubah ke PDF Anti-Potong", "xls2pdf"], ["📊 Buat Grafik PPT", "xls2chart"], ["🧪 Uji Validitas", "validitas"], ["📈 Regresi", "regresi"]];
-  else if (ext === "pptx") acts = [["📤 Ekstrak jadi Catatan/Kuis", "pptxextract"], ["🗜️ Kompres Ukuran PPTX", "pptxpress"], ["🎓 Buat Deck Sidang", "decksidang"]];
-  else if (ext === "pdf") acts = [["✍️ Tanda Tangan & Stempel", "pdfsign"], ["🧾 Ekstrak Tabel ke Excel", "pdftab2xls"], ["📑 Putar/Urutkan Halaman", "pdforg"], ["🔢 Nomor Halaman & Watermark", "pdfstamp"], ["🧩 Gabung PDF", "k43"]];
-  else if (["bib", "ris"].includes(ext)) { openTool("bibtex"); toast("File ." + ext + " terdeteksi — Konverter Sitasi BibTeX/RIS dibuka."); return; }
-  if (!acts) { toast("Format ." + ext + " belum didukung dropzone — coba .xlsx, .pptx, .pdf, atau .bib ya."); return; }
-  if (box) { box.classList.remove("hidden"); box.innerHTML = '<p class="text-[13px] text-slate-300 mb-2.5">📄 <b class="text-white">' + esc(f.name) + '</b> (' + ext.toUpperCase() + ') — mau diapakan? Klik aksi, lalu upload file-nya di dalam tool:</p><div class="flex flex-wrap gap-2">' + acts.map((a) => act(a[0], a[1])).join("") + "</div>"; box.scrollIntoView({ behavior: "smooth", block: "center" }); }
+  if (["xlsx", "xls", "csv"].includes(ext)) acts = [["🧹 Bersihkan Data Google Form", "gformclean"], ["🖨️ Ubah ke PDF Anti-Potong", "xls2pdf"], ["📊 Buat Grafik PPT", "xls2chart"], ["🧪 Uji Validitas", "validitas"], ["📈 Regresi", "regresi"]];
+  else if (ext === "pptx") acts = [["📤 Ekstrak jadi Catatan/Kuis", "pptxextract"], ["🗜️ Kecilkan Ukuran PPT", "pptxpress"], ["🎓 Buat Deck Sidang", "decksidang"]];
+  else if (ext === "pdf") acts = [["✍️ Tanda Tangan & Stempel", "pdfsign"], ["🧾 Ambil Tabelnya ke Excel", "pdftab2xls"], ["📑 Putar/Urutkan Halaman", "pdforg"], ["🔢 Nomor Halaman & Watermark", "pdfstamp"], ["🧩 Gabung PDF", "k43"]];
+  else if (["bib", "ris"].includes(ext)) { openTool("bibtex"); toast("File ." + ext + " terdeteksi — Konverter Sitasi dibuka."); return; }
+  if (!acts) { toast("Format ." + ext + " belum dikenal — coba .xlsx, .pptx, .pdf, atau .bib ya."); return; }
+  if (box) { box.classList.remove("hidden"); box.innerHTML = '<p class="text-[13px] text-slate-300 mb-2.5">📄 <b class="text-white">' + esc(f.name) + '</b> (' + ext.toUpperCase() + ') — mau diapakan? Klik tombolnya, lalu pilih lagi file-nya di dalam tool ya:</p><div class="flex flex-wrap gap-2">' + acts.map((a) => act(a[0], a[1])).join("") + "</div>"; box.scrollIntoView({ behavior: "smooth", block: "center" }); }
 }
 function dzInit() {
-  const z = document.getElementById("dropZone"); if (!z || z.dataset.init) return; z.dataset.init = "1";
-  const stop = (e) => { e.preventDefault(); e.stopPropagation(); };
-  ["dragenter", "dragover"].forEach((ev) => z.addEventListener(ev, (e) => { stop(e); z.classList.add("dz-on"); }));
-  ["dragleave", "drop"].forEach((ev) => z.addEventListener(ev, (e) => { stop(e); z.classList.remove("dz-on"); }));
-  z.addEventListener("drop", (e) => { const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; dzHandleFile(f); });
-  z.addEventListener("click", () => { const inp = document.getElementById("dzFile"); if (inp) inp.click(); });
-  const inp = document.getElementById("dzFile");
-  if (inp) inp.addEventListener("change", () => { dzHandleFile(inp.files[0]); inp.value = ""; });
+  const btn = document.getElementById("dzBtn"), inp = document.getElementById("dzFile");
+  if (!btn || !inp || btn.dataset.init) return; btn.dataset.init = "1";
+  btn.addEventListener("click", () => inp.click());
+  inp.addEventListener("change", () => { dzHandleFile(inp.files[0]); inp.value = ""; });
 }
-document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", () => { mtDockInit(); dzInit(); }) : (mtDockInit(), dzInit());
+document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", dzInit) : dzInit();
 
 function toggleFav(id) {
   if (favs.has(id)) { favs.delete(id); toast("Dihapus dari Favorit"); } else { favs.add(id); toast("Dipin ke Favorit ⭐"); }
