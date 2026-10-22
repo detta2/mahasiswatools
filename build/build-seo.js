@@ -110,6 +110,7 @@ function pageFor(t) {
 <meta property="og:title" content="${esc(judul)}">
 <meta property="og:description" content="${esc(desk)}">
 <meta property="og:url" content="${url}">
+<meta property="og:image" content="${BASE}/logo-512.png">
 <meta name="twitter:card" content="summary">
 <link rel="stylesheet" href="../../style.css">
 <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
@@ -143,6 +144,7 @@ function pageFor(t) {
     <ul class="list-disc ml-5 space-y-1">${terkait.map((x) => '<li><a class="underline font-semibold" href="../' + slugs[x.id] + '/">' + esc(x.n) + "</a> — " + esc(x.d) + "</li>").join("")}</ul>
   </article>
   <p class="text-center text-sm font-bold mt-7">MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa • <a class="underline" href="../../">Buka portal lengkap (${TOOLS.length} tool)</a></p>
+  <p class="text-center text-[13px] font-semibold text-emerald-600 dark:text-emerald-400 mt-2.5 px-4">🔒 100% Diproses di Browser HP/Laptopmu — File &amp; Naskah Skripsimu Tidak Pernah Dikirim ke Server Kami.</p>
 </main>
 <script>window.__MT_TOOL_ID__ = "${t.id}"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
