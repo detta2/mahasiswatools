@@ -167,4 +167,27 @@ fs.writeFileSync(path.join(ROOT, "sitemap.xml"),
   '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
   + urls.map((u) => "  <url><loc>" + u + "</loc><lastmod>" + today + "</lastmod></url>").join("\n") + "\n</urlset>\n");
 fs.writeFileSync(path.join(ROOT, "robots.txt"), "User-agent: *\nAllow: /\n\nSitemap: " + BASE + "/sitemap.xml\n");
+/* --- direktori statis di beranda: 100 <a href> asli untuk Googlebot (patch SEO atas putusan Argon, 2026-10-22) --- */
+const CATORDER = ["anti", "tulis", "data", "present", "kelompok", "dokumen", "karir"];
+const dirGroups = CATORDER.map((c) => {
+  const items = TOOLS.filter((t) => t.c === c).map((t) => '<li><a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition" href="/mahasiswatools/tools/' + slugs[t.id] + '/">' + esc(t.n) + "</a></li>").join("");
+  return '<div><h3 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2.5">' + CATNAME[c] + '</h3><ul class="space-y-1.5 text-[13px] leading-snug text-slate-500 dark:text-slate-400">' + items + "</ul></div>";
+}).join("");
+const dirBlock = "<!-- MT-DIREKTORI -->"
+  + '<section class="bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800"><div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">'
+  + '<nav aria-label="Direktori Lengkap 100 Tool Mahasiswa"><h2 class="text-sm font-extrabold text-slate-800 dark:text-slate-100 mb-1">Direktori Lengkap ' + TOOLS.length + ' Tool MahasiswaTools</h2>'
+  + '<p class="text-[13px] text-slate-400 dark:text-slate-500 mb-6">Semua tool gratis, tanpa login, dan berjalan 100% di browser. Klik nama tool untuk membukanya.</p>'
+  + '<div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-8">' + dirGroups + "</div></nav></div></section>"
+  + "<!-- /MT-DIREKTORI -->";
+const idxPath = path.join(ROOT, "index.html");
+let idxHtml = fs.readFileSync(idxPath, "utf8");
+if (idxHtml.includes("<!-- MT-DIREKTORI -->")) {
+  idxHtml = idxHtml.replace(/<!-- MT-DIREKTORI -->[\s\S]*?<!-- \/MT-DIREKTORI -->/, dirBlock);
+} else {
+  if (!idxHtml.includes("<footer")) throw new Error("penanda <footer> tidak ditemukan di index.html");
+  idxHtml = idxHtml.replace("<footer", dirBlock + "\n<footer");
+}
+fs.writeFileSync(idxPath, idxHtml);
+console.log("Direktori statis:", TOOLS.length, "tautan ditanam di index.html");
+
 console.log("SELESAI:", TOOLS.length, "halaman tool + slugs.js + sitemap.xml (" + urls.length + " URL) + robots.txt");
