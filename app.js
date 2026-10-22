@@ -543,11 +543,21 @@ const f3 = (x) => (Math.round(x * 1000) / 1000).toFixed(3).replace(".", ",");
    HELPER BERSAMA LINTAS KATEGORI (wajib di core, bukan partisi)
    ============================================================ */
 const _libs = {};
+const SRI_MAP = {
+  "https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js": "sha384-vtjasyidUo0kW94K5MXDXntzOJpQgBKXmE7e2Ga4LG0skTTLeBi97eFAXsqewJjw",
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js": "sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e",
+  "https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js": "sha384-weMABwrltA6jWR8DDe9Jp5blk+tZQh7ugpCsF3JwSA53WZM9/14PjS5LAJNHNjAI",
+  "https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js": "sha384-Cck14aA9cifjYolcnjebXRfWGkz5ltHMBiG4px/j8GS+xQcb7OhNQWZYyWjQ+UwQ",
+  "https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js": "sha384-+mbV2IY1Zk/X1p/nWllGySJSUN8uMs+gUAN10Or95UBH0fpj6GfKgPmgC5EXieXG",
+  "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js": "sha384-lQXOAyZwHXE55JFyrOMB7nY2Wv+m5ZWNtJcHrd1rceRQXAYNLak8ukN5TjBTcIwz",
+  "https://cdn.jsdelivr.net/npm/tesseract.js@5.0.5/dist/tesseract.min.js": "sha384-sZlPHqJ8Pk1GMyFXfg9vOgDjyUZZe7wE2c0NoPg2z1vs2fmI4wOC0O1ONVyr73qa"
+};
 function loadLib(url, globalName) {
   if (window[globalName]) return Promise.resolve(true);
   if (_libs[url]) return _libs[url];
   _libs[url] = new Promise((res) => {
     const s = document.createElement("script"); s.src = url;
+    if (SRI_MAP[url]) { s.integrity = SRI_MAP[url]; s.crossOrigin = "anonymous"; }
     s.onload = () => res(!!window[globalName]);
     s.onerror = () => res(false);
     document.head.appendChild(s);

@@ -102,6 +102,8 @@ function pageFor(t) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name=\"referrer\" content=\"strict-origin-when-cross-origin\">
+<meta http-equiv=\"Content-Security-Policy\" content=\"default-src \'self\'; script-src \'self\' \'unsafe-inline\' \'unsafe-eval\' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src \'self\' \'unsafe-inline\' https://fonts.googleapis.com; font-src \'self\' https://fonts.gstatic.com data:; img-src \'self\' data: blob:; media-src \'self\' blob: data:; worker-src \'self\' blob: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; connect-src \'self\' https://api.crossref.org https://api.openalex.org; object-src \'none\'; base-uri \'self\'; form-action \'self\'\">
 <title>${esc(judul)}</title>
 <meta name="description" content="${esc(desk)}">
 <meta name="google-site-verification" content="NwryzLwTbI3z3snM5yOTWtQFbcRExZVpm91PQWon30o">
