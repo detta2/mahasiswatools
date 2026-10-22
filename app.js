@@ -2224,7 +2224,7 @@ function buatOrg() {
     anggota.forEach((a, ai) => { svg += '<text x="' + (dx + dw / 2) + '" y="' + (402 + ai * 17) + '" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#475569">' + xe(a) + "</text>"; });
     dx += dw + 14;
   });
-  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 mahasiswatools.web.id</text>';
   svg += "</svg>";
   $("#ogOut").innerHTML = '<div class="' + OUT + '">' + svg
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'ogSvg\', \'Struktur_Organisasi.png\')">⬇️ Download Bagan (PNG)</button>'
@@ -2854,7 +2854,7 @@ function buatWallpaper() {
     if (y > H - 220) return;
   });
   ctx.textAlign = "center"; ctx.font = "600 26px sans-serif"; ctx.globalAlpha = 0.75; ctx.fillStyle = "#FFF";
-  ctx.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", W / 2, H - 60);
+  ctx.fillText("MahasiswaTools • mahasiswatools.web.id", W / 2, H - 60);
   ctx.globalAlpha = 1;
   const prev = $("#krCv"); prev.width = 540; prev.height = 960; prev.classList.remove("hidden");
   prev.getContext("2d").drawImage(cv, 0, 0, 540, 960);
@@ -2915,7 +2915,7 @@ function buatMindmap() {
   svg += '<ellipse cx="' + cx + '" cy="' + cy + '" rx="128" ry="58" fill="#122B78"/>';
   const pusat = mmData.pusat.length > 42 ? mmData.pusat.slice(0, 41) + "…" : mmData.pusat;
   svg += '<text x="' + cx + '" y="' + (cy + 6) + '" text-anchor="middle" font-family="sans-serif" font-size="15.5" font-weight="800" fill="#FFFFFF">' + xe(pusat) + "</text>";
-  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 mahasiswatools.web.id</text>';
   svg += "</svg>";
   window._mmOutline = mmData.pusat + "\n" + branches.map((b) => "├─ " + b.nama + (b.sub ? "\n│   " + b.sub.split(",").map((s) => "• " + s.trim()).join("\n│   ") : "")).join("\n");
   $("#mmOut").innerHTML = '<div class="' + OUT + '">' + svg
@@ -3597,7 +3597,7 @@ function unduhFlashTeks() {
   const st = document.getElementById("statTools");
   if (st) st.textContent = TOOLS.length + " Tools Akademik";
 })();
-function toolUrl(id) { const s = (window.TOOL_SLUGS || {})[id]; return s ? "https://detta2.github.io/mahasiswatools/tools/" + s + "/" : "https://detta2.github.io/mahasiswatools/"; }
+function toolUrl(id) { const s = (window.TOOL_SLUGS || {})[id]; return s ? "https://mahasiswatools.web.id/tools/" + s + "/" : "https://mahasiswatools.web.id/"; }
 async function shareText(title, text) {
   if (navigator.share) { try { await navigator.share({ title: title, text: text }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
   copyText(text, "Hasil disalin — tempel ke WhatsApp/tujuanmu 📋");
@@ -5044,7 +5044,7 @@ async function cariJurnal() {
   stat.textContent = "⏳ Mencari di OpenAlex…";
   box.innerHTML = "";
   try {
-    const r = await fetch("https://api.openalex.org/works?search=" + encodeURIComponent(q) + "&per-page=10&mailto=mahasiswatools@detta2.github.io");
+    const r = await fetch("https://api.openalex.org/works?search=" + encodeURIComponent(q) + "&per-page=10&mailto=mahasiswatools@mahasiswatools.web.id");
     if (!r.ok) throw new Error("HTTP " + r.status);
     const data = await r.json();
     const hasil = (data.results || []).map((w) => ({
@@ -5833,7 +5833,7 @@ function kartuTargetNilai() {
   x.fillText("nilai minimal di " + (h.komponen || "komponen terakhir"), 52, 352);
   x.font = "400 24px 'Plus Jakarta Sans', sans-serif";
   window._tnKomp.forEach((k, i) => { x.fillText("• " + k.nama + " (" + k.bobot + "%): " + (k.nilai === null ? "belum ada" : k.nilai), 52, 408 + i * 34); });
-  x.font = "italic 20px Georgia, serif"; x.fillStyle = "#64748B"; x.font = "600 19px 'Plus Jakarta Sans', sans-serif"; x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", 52, 524);
+  x.font = "italic 20px Georgia, serif"; x.fillStyle = "#64748B"; x.font = "600 19px 'Plus Jakarta Sans', sans-serif"; x.fillText("MahasiswaTools • mahasiswatools.web.id", 52, 524);
   cv.toBlob((b) => { const a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "MahasiswaTools_Kartu_Target_" + nama.replace(/\s+/g, "_") + ".png"; document.body.appendChild(a); a.click(); a.remove(); }, "image/png");
 }
 SHARE_GETTERS.targetnilai = function () { const h = window._tnHasil; if (!h || h.perlu == null) return ""; return "Target nilai " + ($("#tnNama").value || "mata kuliah") + ": saya butuh minimal " + fmtN(h.perlu, 1) + " di " + h.komponen + " untuk mencapai nilai akhir " + ($("#tnTarget").value || 80) + "."; };
@@ -6875,7 +6875,7 @@ function posGambar() {
   const sisaY = H - 300;
   if (y < sisaY) y += posSeksi(x, M, y, W - 2 * M, "Kesimpulan", g("posKesimpulan") || "(Kesimpulan)", tema, bodyFs, lh);
   x.fillStyle = "#64748B"; x.font = "600 32px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
-  x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", M, H - 56);
+  x.fillText("MahasiswaTools • mahasiswatools.web.id", M, H - 56);
   const qrTeks = g("posQr");
   if (qrTeks && typeof qrcode !== "undefined") {
     try {

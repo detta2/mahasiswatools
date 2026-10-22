@@ -721,7 +721,7 @@ function terbilangStr(n) {
   const st = document.getElementById("statTools");
   if (st) st.textContent = TOOLS.length + " Tools Akademik";
 })();
-function toolUrl(id) { const s = (window.TOOL_SLUGS || {})[id]; return s ? "https://detta2.github.io/mahasiswatools/tools/" + s + "/" : "https://detta2.github.io/mahasiswatools/"; }
+function toolUrl(id) { const s = (window.TOOL_SLUGS || {})[id]; return s ? "https://mahasiswatools.web.id/tools/" + s + "/" : "https://mahasiswatools.web.id/"; }
 async function shareText(title, text) {
   if (navigator.share) { try { await navigator.share({ title: title, text: text }); return; } catch (e) { if (e && e.name === "AbortError") return; } }
   copyText(text, "Hasil disalin — tempel ke WhatsApp/tujuanmu 📋");

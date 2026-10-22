@@ -754,7 +754,7 @@ function posGambar() {
   const sisaY = H - 300;
   if (y < sisaY) y += posSeksi(x, M, y, W - 2 * M, "Kesimpulan", g("posKesimpulan") || "(Kesimpulan)", tema, bodyFs, lh);
   x.fillStyle = "#64748B"; x.font = "600 32px 'Plus Jakarta Sans', sans-serif"; x.textAlign = "left";
-  x.fillText("MahasiswaTools • detta2.github.io/mahasiswatools", M, H - 56);
+  x.fillText("MahasiswaTools • mahasiswatools.web.id", M, H - 56);
   const qrTeks = g("posQr");
   if (qrTeks && typeof qrcode !== "undefined") {
     try {

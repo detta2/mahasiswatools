@@ -911,7 +911,7 @@ async function cariJurnal() {
   stat.textContent = "⏳ Mencari di OpenAlex…";
   box.innerHTML = "";
   try {
-    const r = await fetch("https://api.openalex.org/works?search=" + encodeURIComponent(q) + "&per-page=10&mailto=mahasiswatools@detta2.github.io");
+    const r = await fetch("https://api.openalex.org/works?search=" + encodeURIComponent(q) + "&per-page=10&mailto=mahasiswatools@mahasiswatools.web.id");
     if (!r.ok) throw new Error("HTTP " + r.status);
     const data = await r.json();
     const hasil = (data.results || []).map((w) => ({

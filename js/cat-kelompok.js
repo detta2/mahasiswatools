@@ -349,7 +349,7 @@ function buatOrg() {
     anggota.forEach((a, ai) => { svg += '<text x="' + (dx + dw / 2) + '" y="' + (402 + ai * 17) + '" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#475569">' + xe(a) + "</text>"; });
     dx += dw + 14;
   });
-  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 detta2.github.io/mahasiswatools</text>';
+  svg += '<text x="' + (W / 2) + '" y="' + (H - 10) + '" text-anchor="middle" font-family="sans-serif" font-size="13" fill="#94A3B8">MahasiswaTools \u2022 mahasiswatools.web.id</text>';
   svg += "</svg>";
   $("#ogOut").innerHTML = '<div class="' + OUT + '">' + svg
     + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN + '" onclick="unduhSvgPng(\'ogSvg\', \'Struktur_Organisasi.png\')">⬇️ Download Bagan (PNG)</button>'

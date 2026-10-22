@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://detta2.github.io/mahasiswatools/sitemap.xml
+Sitemap: https://mahasiswatools.web.id/sitemap.xml

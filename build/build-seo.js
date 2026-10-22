@@ -7,7 +7,7 @@
 const fs = require("fs");
 const path = require("path");
 const ROOT = path.join(__dirname, "..");
-const BASE = "https://detta2.github.io/mahasiswatools";
+const BASE = "https://mahasiswatools.web.id";
 
 /* --- ekstrak TOOLS dari app.js (scan kurung seimbang) --- */
 const appSrc = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
@@ -170,7 +170,7 @@ fs.writeFileSync(path.join(ROOT, "robots.txt"), "User-agent: *\nAllow: /\n\nSite
 /* --- direktori statis di beranda: 100 <a href> asli untuk Googlebot (patch SEO atas putusan Argon, 2026-10-22) --- */
 const CATORDER = ["anti", "tulis", "data", "present", "kelompok", "dokumen", "karir"];
 const dirGroups = CATORDER.map((c) => {
-  const items = TOOLS.filter((t) => t.c === c).map((t) => '<li><a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition" href="/mahasiswatools/tools/' + slugs[t.id] + '/">' + esc(t.n) + "</a></li>").join("");
+  const items = TOOLS.filter((t) => t.c === c).map((t) => '<li><a class="hover:text-indigo-600 dark:hover:text-indigo-400 transition" href="/tools/' + slugs[t.id] + '/">' + esc(t.n) + "</a></li>").join("");
   return '<div><h3 class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2.5">' + CATNAME[c] + '</h3><ul class="space-y-1.5 text-[13px] leading-snug text-slate-500 dark:text-slate-400">' + items + "</ul></div>";
 }).join("");
 const dirBlock = "<!-- MT-DIREKTORI -->"
