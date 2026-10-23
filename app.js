@@ -209,6 +209,9 @@ k24: '<rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 11a6.5 6
 koding: '<path d="M8 7l-5 5 5 5M16 7l5 5-5 5"/>',
 consent: '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4"/><path d="M9 15.5l2 2 4-4.2"/>',
 federer: '<path d="M10 2.5h4M10.6 2.5v5.3L5.2 17.7A2.3 2.3 0 0 0 7.3 21h9.4a2.3 2.3 0 0 0 2.1-3.3L13.4 7.8V2.5"/><path d="M7.6 14h8.8"/>',
+gformclean: '<rect x="3" y="5" width="14" height="15" rx="1.5"/><path d="M3 10h14M3 15h14M8.3 5v15"/><path d="M19.6 2.4c.3 1.9 1.1 2.7 3 3-1.9.3-2.7 1.1-3 3-.3-1.9-1.1-2.7-3-3 1.9-.3 2.7-1.1 3-3z"/>',
+formulabldr: '<path d="M14.5 5c-2.2-.6-3.7.7-3.7 2.9V20M8.2 9.8h5.2M8.4 20h4.6"/><path d="M16.2 14.2l4.4 4.4M20.6 14.2l-4.4 4.4"/>',
+xlstemplate: '<rect x="3" y="4" width="18" height="16" rx="1.5"/><path d="M3 9.5h18M8.5 9.5V20"/><path d="M15.2 12.6h-3.6l2.4 2.3-2.4 2.3h3.6"/>',
 /* tulis */
 dapus: '<path d="M12 6.5C10.6 4.8 8 4.3 4 4.3v13.9c4 0 6.6.5 8 2.2 1.4-1.7 4-2.2 8-2.2V4.3c-4 0-6.6.5-8 2.2v13.7"/>',
 k16: '<path d="M6 2h8l4 4v16H6z"/><path d="M14 2v4h4M9.5 12h5M9.5 16h5"/>',
@@ -272,6 +275,11 @@ k42: '<path d="M4 8V5.5A1.5 1.5 0 0 1 5.5 4H8M16 4h2.5A1.5 1.5 0 0 1 20 5.5V8M20
 k39: '<rect x="3.5" y="3.5" width="17" height="17" rx="2"/><path d="M12 3.5V12M3.5 12H12M12 12h8.5M12 12v8.5M3.5 12v8.5"/>',
 k40: '<path d="M4 7.5h2.8l2-2.5h6.4l2 2.5H20a1.5 1.5 0 0 1 1.5 1.5v9.5A1.5 1.5 0 0 1 20 20H4a1.5 1.5 0 0 1-1.5-1.5V9A1.5 1.5 0 0 1 4 7.5z"/><circle cx="12" cy="13.8" r="3.4"/>',
 k38: '<path d="M4 20l1.2-4.2L16.6 4.4a2.1 2.1 0 0 1 3 3L8.2 18.8z"/><path d="M14.6 6.4l3 3M3 21.5h18"/>',
+pdfsign: '<path d="M6 2.8h7.5L18 7.3V21H6z"/><path d="M13.5 2.8v4.5H18"/><path d="M8.6 16.9c1.1-2.7 1.9-4 2.5-4 .5 0 .3 1.6-.5 3-.6 1.1-1.2 1.9-.5 2 .8.2 1.9-1.6 2.8-1.5.7.1.4 1.3 1 1.3"/>',
+pdforg: '<rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><path d="M15.2 15.2l3.6 3.6M18.8 15.2l-3.6 3.6"/>',
+pdftab2xls: '<rect x="2.8" y="4" width="13.5" height="16" rx="1.5"/><path d="M2.8 9.3h13.5M2.8 14.6h13.5M9.5 4v16"/><path d="M18.3 12h3.2M19.6 9.7l2.3 2.3-2.3 2.3"/>',
+xlsmerger: '<circle cx="6" cy="5.5" r="2.4"/><circle cx="6" cy="18.5" r="2.4"/><circle cx="18" cy="8" r="2.4"/><path d="M6 7.9v8.2M18 10.4c0 4.8-6 3.8-9.2 5.9"/>',
+xls2pdf: '<rect x="4" y="3" width="16" height="11.5" rx="1.5"/><path d="M4 7.3h16M9.3 7.3v7.2M14.6 7.3v7.2"/><path d="M12 16.8v3.7M9.7 18.4L12 20.7l2.3-2.3"/>',
 /* present */
 k27: '<rect x="3" y="3.8" width="18" height="12.2" rx="1.5"/><path d="M12 16v2.8M8 21.2l4-2.4 4 2.4"/><path d="M7 12.2l3.2-3.2 2.4 2L16 7.8"/>',
 teleprompter: '<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M10.4 8.4l4.6 2.8-4.6 2.8z"/><path d="M9.5 20.8h5M12 17v3.8"/>',
@@ -284,6 +292,10 @@ k49: '<circle cx="12" cy="13" r="7.6"/><path d="M12 9.4V13l2.6 1.9M9.6 2.8h4.8M1
 k29: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="1.7"/><path d="M12 3v7.3M12 13.7V21M3 12h7.3M13.7 12H21"/>',
 k55: '<path d="M7 8V3.5h10V8"/><rect x="4" y="8" width="16" height="8" rx="2"/><path d="M7 13.5h10V21H7z"/>',
 cloze: '<path d="M5 6h14M5 12h5.5M16.8 12H19M5 18h14"/><rect x="11.6" y="9.6" width="4.2" height="4.8" rx="1"/>',
+decksidang: '<rect x="3" y="3.5" width="18" height="12" rx="1.5"/><circle cx="12" cy="9.5" r="2.3"/><path d="M10.8 11.4l-.8 2.6 2-1.1 2 1.1-.8-2.6M12 15.5v2.5M8.5 20.8L12 18l3.5 2.8"/>',
+pptxextract: '<path d="M12 14.5V4M7.8 7.5L12 3.3l4.2 4.2"/><path d="M4 14.5v4A1.5 1.5 0 0 0 5.5 20h13A1.5 1.5 0 0 0 20 18.5v-4"/>',
+xls2chart: '<rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M7.5 13.8v-3.2M12 13.8V8.2M16.5 13.8v-2.2M12 17v3.3M8.5 20.3h7"/>',
+pptxpress: '<path d="M9.5 3.5v5h-5M14.5 3.5v5h5M9.5 20.5v-5h-5M14.5 20.5v-5h5"/><rect x="10" y="10" width="4" height="4" rx="0.8"/>',
 /* kelompok */
 k35: '<circle cx="12" cy="9" r="5.5"/><path d="M8.8 13.4L7 21l5-2.6L17 21l-1.8-7.6"/><path d="M9.8 9l1.6 1.6L14.6 7.4"/>',
 k31: '<rect x="3.5" y="5" width="17" height="16" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M7 14h4.5M7 17.5h7"/>',
