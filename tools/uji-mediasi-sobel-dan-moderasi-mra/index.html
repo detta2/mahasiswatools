@@ -41,6 +41,10 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Uji Mediasi (Sobel) &amp; Moderasi (MRA)</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Untuk mediasi, buka 💧 Tab 1 — Sobel Test (Mediasi) dan beri nama variabelmu: X, mediator (Z), dan Y (misalnya Kualitas Layanan → Kepuasan → Loyalitas).</li><li>Masukkan koefisien jalur a (X→Z) dan b (Z→Y) beserta standard error-nya dari hasil regresimu — atau tekan Hitung Koefisien dari Data untuk memperolehnya dari data mentah.</li><li>Tekan 💧 Hitung Sobel Test dan baca nilai z, signifikansi, serta kesimpulan mediasi penuh atau parsialnya.</li><li>Untuk moderasi, buka 🎚️ Tab 2 — Moderasi (MRA), masukkan data X, moderator, dan Y, lalu tekan 🎚️ Jalankan Regresi Moderasi.</li><li>Tekan 📋 Copy Narasi untuk menyalin tafsir hasil tab yang aktif ke Bab 4 naskahmu.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">X = Kualitas Layanan, Z (mediator) = Kepuasan Pelanggan, Y = Loyalitas Pelanggan. Jalur a = 0,52 (SE 0,11), jalur b = 0,47 (SE 0,10), efek langsung c' = 0,18.</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Uji Sobel menghasilkan efek tidak langsung a×b = 0,2444 dengan z ≈ 3,33 (p ≈ 0,0009) — mediasi dinyatakan SIGNIFIKAN, dan karena efek langsung c' juga masih berarti, jenis mediasinya parsial. Tool menampilkan diagram jalur dan narasi hasil siap salin ke Bab IV.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +61,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "mediasi"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>

@@ -41,6 +41,16 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Regresi Berganda &amp; Uji Asumsi Klasik</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Pilih jumlah variabel bebas lewat pilihan ‘1 variabel (regresi sederhana)’ sampai ‘4 variabel (X1–X4)’.</li><li>Tempel data tiap variabel sesuai kolom yang muncul — satu baris untuk satu responden, urutan antar variabel harus sejajar.</li><li>Tekan 📈 Hitung Regresi + Uji Asumsi Klasik.</li><li>Baca hasilnya: persamaan regresi, koefisien dan signifikansi tiap X, R Square, lalu hasil VIF, Glejser, dan normalitas residual.</li><li>Tekan 📋 Copy Narasi Bab 4 untuk menyalin tafsir hasil dalam bentuk kalimat ke naskahmu.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">14 baris data — kolom pertama Y (Prestasi Belajar), lalu X1 (Motivasi Belajar) dan X2 (Disiplin Belajar):
+82 84 80
+78 76 74
+90 92 88
+74 70 72
+85 86 83
+… (14 baris)</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Tool menghitung persamaan regresi berganda Y = a + b1·Motivasi + b2·Disiplin, lengkap dengan R², uji F simultan, uji t parsial tiap variabel, dan interpretasi otomatis berbahasa Indonesia — motivasi dan disiplin pada contoh ini sama-sama berpengaruh positif terhadap prestasi.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +67,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "regresi"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>

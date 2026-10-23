@@ -41,6 +41,10 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Generator Rumus Excel Bahasa Manusia</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Pilih kasus yang kamu butuhkan: 🎓 Nilai Angka → Huruf Mutu, 🔎 Pencarian Data Antar-Tabel, 🧮 Rekap Bersyarat, atau 📊 Kategorisasi Skor.</li><li>Isi kolom yang muncul sesuai kasusnya — misalnya sel nilai, sel kunci (NIM), rentang tabel sumber, dan nomor kolom yang diambil.</li><li>Untuk VLOOKUP, pilih fungsi yang cocok dengan Excel-mu: VLOOKUP (semua versi), XLOOKUP (Excel 365), atau INDEX + MATCH (paling fleksibel).</li><li>Pilih pemisah rumus: titik koma (;) untuk Excel Indonesia atau koma (,) untuk Excel Inggris.</li><li>Periksa hasil simulasi ujinya, lalu tekan 📋 Salin Rumus dan tempel ke sel tujuan di lembar Excel-mu.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">Kasus yang dipilih: Konversi Nilai (Nilai → Huruf) — rumus disusun dari ambang A ≥ 85, B ≥ 75, C ≥ 65, D ≥ 55.</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Tool menghasilkan rumus Excel =IF(B2&gt;=85,&quot;A&quot;,IF(B2&gt;=75,&quot;B&quot;,IF(B2&gt;=65,&quot;C&quot;,IF(B2&gt;=55,&quot;D&quot;,&quot;E&quot;)))) yang bisa langsung disalin, plus pratinjau hasil simulasinya untuk nilai contoh seperti 85 → A. Tersedia juga kasus LOOKUP, Predikat Lulus, dan Kategori Teks.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +61,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "formulabldr"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>

@@ -8187,6 +8187,198 @@ async function poApply() {
   toast("PDF rapi terunduh 📑 (" + keep.length + " halaman)");
 }
 
+/* === MT-CORE-BEGIN === */
+/* ============================================================
+   CONTOH PENGGUNAAN (📝 Isi Contoh) — data: window.MT_CONTOH
+   (contoh-data.js, digenerate build-seo.js dari build/contoh-tool.js).
+   Tiap tool ber-contoh mendapat tombol di bagian atas workspace:
+   mengisi kolom/teks dengan data contoh realistis, atau membuat
+   berkas contoh (xlsx/pdf/png/pptx) dari Blob lalu memasangnya
+   ke input file tool lewat DataTransfer.
+   ============================================================ */
+function mtToastContoh(m) { try { toast(m); } catch (e) {} }
+function mtSetFieldContoh(sel, val) {
+  const el = document.querySelector(sel);
+  if (!el) return false;
+  if (el.type === "checkbox" || el.type === "radio") { el.checked = !!val; }
+  else if (el.tagName === "SELECT") {
+    let ok = false;
+    for (const o of el.options) { if (o.value === String(val)) { el.value = o.value; ok = true; break; } }
+    if (!ok) { const cari = String(val).toLowerCase(); for (const o of el.options) { if (o.textContent.toLowerCase().indexOf(cari) >= 0) { el.value = o.value; ok = true; break; } } }
+    if (!ok) return false;
+  } else { el.value = val; }
+  el.dispatchEvent(new Event("input", { bubbles: true }));
+  el.dispatchEvent(new Event("change", { bubbles: true }));
+  return true;
+}
+function mtPasangFileContoh(input, files) {
+  try {
+    const dt = new DataTransfer();
+    files.forEach((f) => dt.items.add(f));
+    input.files = dt.files;
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    return !!(input.files && input.files.length);
+  } catch (e) { return false; }
+}
+function mtAmanTeksPdf(s) {
+  return String(s == null ? "" : s).replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/—/g, "-").replace(/–/g, "-").replace(/…/g, "...").replace(/[^\x20-\x7E]/g, "");
+}
+async function mtBuatFileContoh(spec) {
+  try {
+    if (spec.jenis === "teks") return new File([spec.isi || ""], spec.nama, { type: "text/plain;charset=utf-8" });
+    if (spec.jenis === "xlsx") {
+      if (!(await loadXLSX())) return null;
+      const wb = XLSX.utils.book_new();
+      (spec.sheets || []).forEach((sh) => { XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(sh.baris || []), String(sh.nama || "Sheet1").slice(0, 31)); });
+      const out = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+      return new File([out], spec.nama, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+    }
+    if (spec.jenis === "pdf") {
+      if (!(await loadPdfLib())) return null;
+      const doc = await PDFLib.PDFDocument.create();
+      const fReg = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+      const fBold = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+      let page = doc.addPage([595.28, 841.89]);
+      let y = 786;
+      if (spec.judul) { page.drawText(mtAmanTeksPdf(spec.judul), { x: 56, y: y, size: 15.5, font: fBold, color: PDFLib.rgb(0.07, 0.09, 0.16) }); y -= 32; }
+      if (spec.tabel) {
+        const cols = spec.tabel.kepala.length, x0 = 56, lebar = (595.28 - 112) / cols;
+        spec.tabel.kepala.forEach((h, i) => page.drawText(mtAmanTeksPdf(h), { x: x0 + i * lebar, y: y, size: 11.5, font: fBold }));
+        y -= 8; page.drawLine({ start: { x: x0, y: y }, end: { x: 595.28 - 56, y: y }, thickness: 1, color: PDFLib.rgb(0.2, 0.2, 0.2) }); y -= 22;
+        (spec.tabel.baris || []).forEach((r) => { r.forEach((c, i) => page.drawText(mtAmanTeksPdf(c), { x: x0 + i * lebar, y: y, size: 11.5, font: fReg })); y -= 20; });
+      } else {
+        (spec.baris || []).forEach((line) => {
+          if (y < 70) { page = doc.addPage([595.28, 841.89]); y = 786; }
+          if (line) page.drawText(mtAmanTeksPdf(line), { x: 56, y: y, size: 11.5, font: fReg, color: PDFLib.rgb(0.1, 0.1, 0.12) });
+          y -= 18;
+        });
+      }
+      if (spec.halamanLanjutan) { const p2 = doc.addPage([595.28, 841.89]); p2.drawText(mtAmanTeksPdf(spec.halamanLanjutan), { x: 56, y: 786, size: 11.5, font: fReg, color: PDFLib.rgb(0.1, 0.1, 0.12) }); }
+      const bytes = await doc.save();
+      return new File([bytes], spec.nama, { type: "application/pdf" });
+    }
+    if (spec.jenis === "png") return await mtBuatPngContoh(spec);
+    if (spec.jenis === "pptx") return await mtBuatPptxContoh(spec);
+  } catch (e) {}
+  return null;
+}
+function mtBuatPngContoh(spec) {
+  return new Promise((resolve) => {
+    try {
+      const mode = spec.mode || "foto";
+      let W = 900, H = 1200;
+      if (mode === "teks") { W = 1100; H = 760; }
+      if (mode === "ttd") { W = 900; H = 420; }
+      if (mode === "foto") { W = 800; H = 1000; }
+      if (mode === "foto-besar") { W = 1600; H = 1200; }
+      const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      const g = cv.getContext("2d");
+      const teks = spec.teks || [];
+      if (mode === "dokumen") {
+        g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, W, H);
+        g.strokeStyle = "#334155"; g.lineWidth = 3; g.strokeRect(28, 28, W - 56, H - 56);
+        g.lineWidth = 1; g.strokeRect(40, 40, W - 80, H - 80);
+        g.fillStyle = "#0F172A"; g.textAlign = "center";
+        teks.forEach((t, i) => { g.font = (i === 0 ? "bold 46px Georgia, serif" : "30px Georgia, serif"); g.fillText(t, W / 2, 240 + i * 64); });
+        g.font = "26px Georgia, serif"; g.textAlign = "left";
+        g.fillText("Palembang, 12 Mei 2022", 90, H - 260);
+        g.fillText("Kepala Sekolah,", 90, H - 210);
+        g.fillText("( Nama Kepala Sekolah )", 90, H - 110);
+      } else if (mode === "teks") {
+        g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, W, H);
+        g.fillStyle = "#111827"; g.textAlign = "left";
+        teks.forEach((t, i) => { g.font = (i < 2 ? "bold 44px Georgia, serif" : "38px Georgia, serif"); g.fillText(t, 70, 130 + i * 68); });
+      } else if (mode === "ttd") {
+        g.fillStyle = "#FFFFFF"; g.fillRect(0, 0, W, H);
+        g.strokeStyle = "#1E3A8A"; g.lineWidth = 5; g.lineCap = "round";
+        g.beginPath(); g.moveTo(170, 270); g.bezierCurveTo(250, 110, 360, 350, 470, 180); g.bezierCurveTo(540, 80, 620, 260, 720, 170); g.stroke();
+        g.beginPath(); g.moveTo(210, 300); g.bezierCurveTo(380, 340, 560, 290, 700, 310); g.stroke();
+        g.fillStyle = "#475569"; g.font = "26px Arial, sans-serif"; g.textAlign = "center";
+        g.fillText("( Rani Puspita )", 450, 380);
+      } else if (mode === "foto-besar") {
+        const grad = g.createLinearGradient(0, 0, 0, H); grad.addColorStop(0, "#7FB2E5"); grad.addColorStop(0.62, "#DCEBF8"); grad.addColorStop(0.63, "#7A9A5B"); grad.addColorStop(1, "#5C7A43");
+        g.fillStyle = grad; g.fillRect(0, 0, W, H);
+        g.fillStyle = "#FDE68A"; g.beginPath(); g.arc(1330, 170, 90, 0, 7); g.fill();
+        for (let i = 0; i < 900; i++) { g.fillStyle = "hsla(" + (90 + (i * 29) % 60) + ",35%," + (26 + (i * 41) % 22) + "%,0.5)"; g.fillRect((i * 173) % W, H * 0.63 + ((i * 211) % (H * 0.36)), 22, 22); }
+      } else {
+        g.fillStyle = "#D7DEE6"; g.fillRect(0, 0, W, H);
+        const rg = g.createRadialGradient(W / 2, H * 0.42, 60, W / 2, H * 0.42, 560); rg.addColorStop(0, "rgba(255,255,255,0.55)"); rg.addColorStop(1, "rgba(255,255,255,0)");
+        g.fillStyle = rg; g.fillRect(0, 0, W, H);
+        g.fillStyle = "#5B6B7C";
+        g.beginPath(); g.arc(W / 2, 415, 112, 0, 7); g.fill();
+        g.beginPath(); g.ellipse(W / 2, 800, 235, 200, 0, Math.PI, 0); g.fill();
+        g.fillRect(W / 2 - 235, 800, 470, 200);
+      }
+      cv.toBlob((b) => resolve(b ? new File([b], spec.nama, { type: "image/png" }) : null), "image/png");
+    } catch (e) { resolve(null); }
+  });
+}
+async function mtBuatPptxContoh(spec) {
+  try {
+    const ok = await loadLib("https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", "PptxGenJS");
+    if (!ok || typeof PptxGenJS === "undefined") return null;
+    const pptx = new PptxGenJS();
+    (spec.slides || []).forEach((s) => {
+      const sl = pptx.addSlide();
+      sl.addText(s.judul || "", { x: 0.6, y: 0.4, w: 8.8, h: 0.9, fontSize: 28, bold: true, color: "1F3864" });
+      sl.addText((s.poin || []).map((p) => ({ text: p, options: { bullet: true } })), { x: 0.7, y: 1.5, w: 8.6, h: 3.6, fontSize: 16, color: "262626", lineSpacingMultiple: 1.25 });
+    });
+    if (spec.gambar) {
+      const cv = document.createElement("canvas"); cv.width = 1200; cv.height = 900;
+      const g = cv.getContext("2d");
+      for (let i = 0; i < 2600; i++) { g.fillStyle = "hsl(" + (200 + (i * 37) % 90) + ",45%," + (30 + (i * 53) % 45) + "%)"; g.fillRect((i * 197) % 1200, (i * 281) % 900, 26, 26); }
+      const sl = pptx.addSlide();
+      sl.addText("Foto Lapangan (gambar besar)", { x: 0.6, y: 0.3, w: 8.8, h: 0.7, fontSize: 22, bold: true, color: "1F3864" });
+      sl.addImage({ data: cv.toDataURL("image/png"), x: 0.5, y: 1.1, w: 9, h: 4.1 });
+    }
+    let blob = null;
+    try { blob = await pptx.write({ outputType: "blob" }); } catch (e) {}
+    if (!blob) { const b64 = await pptx.write({ outputType: "base64" }); const bin = atob(b64); const arr = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) arr[i] = bin.charCodeAt(i); blob = new Blob([arr], { type: "application/vnd.openxmlformats-officedocument.presentationml.presentation" }); }
+    return new File([blob], spec.nama, { type: "application/vnd.openxmlformats-officedocument.presentationml.presentation" });
+  } catch (e) { return null; }
+}
+async function mtSiapkanFileContoh(spec) {
+  const input = document.querySelector(spec.target);
+  const file = await mtBuatFileContoh(spec);
+  if (!file) { mtToastContoh("Berkas contoh gagal dibuat — cek koneksi lalu coba lagi ya."); return; }
+  if (!input) { try { download(spec.nama, file); } catch (e) {} mtToastContoh("Kolom unggah tidak ditemukan — berkas contoh terunduh, unggah manual ya."); return; }
+  const jumlah = spec.salin || 1;
+  const files = []; for (let i = 0; i < jumlah; i++) files.push(file);
+  if (mtPasangFileContoh(input, files)) mtToastContoh("📎 Berkas contoh \"" + spec.nama + "\" terpasang — tinggal tekan tombol proses tool-nya.");
+  else { try { download(spec.nama, file); } catch (e) {} mtToastContoh("Peramban tidak mengizinkan pemasangan otomatis — berkas contoh terunduh, unggah manual lewat kolom unggahnya ya."); }
+}
+window.mtIsiContoh = async function (id, btn) {
+  const spec = (window.MT_CONTOH || {})[id];
+  if (!spec) { mtToastContoh("Contoh untuk tool ini belum tersedia."); return; }
+  const labelAsli = btn ? btn.innerHTML : "";
+  try {
+    if (btn) { btn.disabled = true; btn.innerHTML = "⏳ Menyiapkan contoh…"; }
+    if (spec.fields) Object.keys(spec.fields).forEach((sel) => mtSetFieldContoh(sel, spec.fields[sel]));
+    if (spec.file) { const daftar = Array.isArray(spec.file) ? spec.file : [spec.file]; for (const f of daftar) await mtSiapkanFileContoh(f); }
+    if (spec.atur) Object.keys(spec.atur).forEach((k) => { window[k] = spec.atur[k]; });
+    if (spec.panggil) spec.panggil.forEach((n) => { if (typeof window[n] === "function") window[n](); });
+    mtToastContoh("📝 Contoh terisi — sekarang tekan tombol proses tool-nya dan lihat hasilnya.");
+  } catch (e) { mtToastContoh("Contoh gagal disiapkan — coba lagi ya."); }
+  finally { if (btn) { btn.disabled = false; btn.innerHTML = labelAsli; } }
+};
+(function () {
+  const DATA = (typeof window !== "undefined" && window.MT_CONTOH) || {};
+  Object.keys(DATA).forEach((cid) => {
+    const sp = DATA[cid]; if (!sp) return;
+    mtEnhanceUI(cid, function (_ui) {
+      return function (el) {
+        _ui(el);
+        if (!el.querySelector || el.querySelector("[data-mt-contoh]")) return;
+        const label = sp.file && !sp.fields ? "📝 Siapkan File Contoh" : "📝 Isi Contoh";
+        const hint = sp.file ? "Berkas contoh dibuat & terpasang otomatis — tinggal tekan tombol proses tool-nya. Isinya bebas kamu ubah." : "Kolom terisi data contoh nyata — tinggal tekan tombol proses tool-nya. Isinya bebas kamu ubah/hapus.";
+        el.insertAdjacentHTML("afterbegin", '<div class="mb-3 flex flex-wrap items-center gap-2" data-mt-contoh="1"><button type="button" class="' + BTN2 + '" onclick="mtIsiContoh(\'' + cid + '\', this)">' + label + '</button><span class="text-xs text-slate-500 dark:text-slate-400">' + hint + '</span></div>');
+      };
+    });
+  });
+})();
+/* === MT-CORE-END === */
+
 /* ============================================================
    ROUTER — deep-link hash & mode halaman tool (SEO)
    ============================================================ */

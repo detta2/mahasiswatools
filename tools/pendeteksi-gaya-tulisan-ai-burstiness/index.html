@@ -41,6 +41,10 @@
     <p class="mb-5">Kelompok tool ini dipakai sebelum naskah dikumpulkan: untuk memeriksa risiko tulisan terdeteksi sebagai hasil AI, membersihkan artefak teks dari hasil salin-tempel, memverifikasi keaslian sitasi, dan mendokumentasikan proses penulisan yang jujur. Di tengah ketatnya kebijakan integritas akademik kampus, bukti proses dan pemeriksaan mandiri menjadi pelindung penting bagi mahasiswa.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Pendeteksi Gaya Tulisan AI (Burstiness)</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Tempel teks yang ingin diperiksa pada area kerja di atas — satu bab penuh atau beberapa paragraf yang paling kamu khawatirkan.</li><li>Tekan tombol 🤖 Analisis Gaya Tulisan dan tunggu skor risiko beserta rinciannya muncul.</li><li>Perhatikan 🌡️ Sentence Heatmap: kalimat yang ditandai monoton atau penuh klise adalah prioritas untuk ditulis ulang dengan bahasamu sendiri.</li><li>Cek juga 📊 Grafik Panjang Kalimat — tulisan manusia biasanya bergelombang (campuran kalimat pendek dan panjang), bukan datar.</li><li>Bila perlu, tekan 📋 Copy Laporan untuk menyimpan hasilnya, atau lanjut ke tombol 🪶 Perbaiki di Humanizer untuk mengedit kalimat yang ditandai.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">Di era digital yang berkembang pesat, teknologi informasi telah membawa perubahan yang sangat signifikan dalam berbagai aspek kehidupan manusia. Tidak dapat dipungkiri bahwa media sosial berperan penting dalam membentuk pola komunikasi dan interaksi sosial di kalangan generasi muda. Secara keseluruhan, pemanfaatan media sosial secara bijak dapat memberikan dampak positif yang komprehensif bagi perkembangan peserta didik. […]</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Tool menampilkan skor risiko deteksi AI beserta rincian burstiness, kekayaan kosakata, jumlah frasa klise yang ditemukan, grafik panjang kalimat, dan sentence heatmap yang menandai kalimat paling monoton — pada contoh ini skor risiko cenderung tinggi karena kalimatnya seragam dan penuh frasa klise khas AI.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Pemeriksaan bersifat heuristik dan lokal — tidak ada teks yang dikirim ke server — sehingga hasilnya adalah bahan refleksi yang jujur untuk penulis, bukan alat mengakali detektor. Verifikasi sitasi pada kelompok ini benar-benar memeriksa basis data ilmiah publik, sehingga referensi palsu atau salah ketik dapat ditemukan sebelum dibaca penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +61,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "aidetect"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-anti.js"></script>
 </body>

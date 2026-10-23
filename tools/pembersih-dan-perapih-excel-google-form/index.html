@@ -41,6 +41,10 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Pembersih &amp; Perapih Excel Google Form</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Unggah berkas Excel hasil unduhan tanggapan Google Form-mu.</li><li>Tentukan pembagian variabelnya: ‘Semua item = 1 variabel (X1)’ atau ‘Bagi per jumlah item’ bila kuesionermu memuat beberapa variabel.</li><li>Aktifkan opsi ‘Buang kolom Timestamp &amp; Email’ bila dua kolom itu tidak dibutuhkan dalam analisis.</li><li>Periksa pemetaan kode kolomnya (pertanyaan panjang menjadi kode item seperti X1_1) pada pratinjau.</li><li>Tekan ✨ Bersihkan &amp; Unduh .xlsx Siap Olah — berkas hasilnya tinggal dibuka di Excel atau diimpor ke SPSS.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">Berkas Excel hasil Google Form berisi 8 responden dengan kolom pertanyaan yang panjang-panjang dan jawaban teks SS/S/RG/TS/STS (coba berkas contoh lewat tombol Siapkan File Contoh di dalam tool).</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Tool membaca struktur berkas, membuang kolom Timestamp, mengubah 5 pertanyaan panjang menjadi kode X1_1 sampai X1_5, mengonversi jawaban teks menjadi skor 1–5, lalu menyiapkan berkas .xlsx bersih berisi matriks skor dan kamus pertanyaan aslinya — siap diolah lanjut, misalnya di Uji Validitas &amp; Reliabilitas.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +61,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "gformclean"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>

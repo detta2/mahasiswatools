@@ -12,6 +12,10 @@ const BASE = "https://mahasiswatools.web.id";
    dari fungsi sebenarnya tiap tool di app.js. Mencegah halaman sekategori dinilai
    Google sebagai boilerplate duplikat: lihat build/konten-tool.js. */
 const KONTEN = require("./konten-tool");
+/* Dataset CONTOH terpusat (build/contoh-tool.js): bagian `isi` → contoh-data.js
+   (tombol 📝 Isi Contoh di aplikasi); bagian `tampil` → seksi "Contoh
+   Penggunaan" di halaman statis di bawah ini. Satu sumber untuk keduanya. */
+const CONTOH = require("./contoh-tool");
 
 /* --- ekstrak TOOLS dari app.js (scan kurung seimbang) --- */
 const appSrc = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
@@ -94,6 +98,8 @@ function pageFor(t) {
   const url = BASE + "/tools/" + slug + "/";
   const p = PANDUAN[t.c] || PANDUAN.tulis;
   const kk = KONTEN[t.id] || {};
+  const cx = (CONTOH[t.id] || {}).tampil;
+  const contohHtml = cx ? '<h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>\n    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>\n    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">' + esc(cx.input) + '</pre>\n    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> ' + esc(cx.hasil) + "</p>\n    " : "";
   const faqs = (kk.faq || []).concat(faqFor(t));
   const langkah = (kk.langkah && kk.langkah.length) ? kk.langkah : p.cara;
   const tentang = kk.buka ? '<h2 class="display-font text-xl font-black mb-2.5">Tentang ' + esc(t.n) + '</h2>\n    <p class="mb-5">' + esc(kk.buka) + "</p>\n    " : "";
@@ -145,7 +151,7 @@ function pageFor(t) {
     <p class="mb-5">${esc(p.kapan)}</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan ${esc(t.n)}</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5">${langkah.map((s) => "<li>" + esc(s) + "</li>").join("")}</ol>
-    <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
+    ${contohHtml}<h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">${esc(p.manfaat)}</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
     ${faqs.map(([q, a]) => "<h3 class=\"font-extrabold mt-3.5 mb-1\">" + esc(q) + "</h3><p>" + esc(a) + "</p>").join("\n    ")}
@@ -157,6 +163,7 @@ function pageFor(t) {
 </main>
 <script>window.__MT_TOOL_ID__ = "${t.id}"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-${t.c}.js"></script>
 </body>
@@ -172,6 +179,11 @@ TOOLS.forEach((t) => {
   fs.writeFileSync(path.join(dir, "index.html"), pageFor(t));
 });
 fs.writeFileSync(path.join(ROOT, "slugs.js"), "window.TOOL_SLUGS = " + JSON.stringify(slugs, null, 1) + ";\n");
+/* --- contoh-data.js: hanya bagian `isi` yang dibutuhkan aplikasi --- */
+const contohIsi = {};
+Object.keys(CONTOH).forEach((id) => { if (CONTOH[id].isi) contohIsi[id] = CONTOH[id].isi; });
+fs.writeFileSync(path.join(ROOT, "contoh-data.js"), "window.MT_CONTOH = " + JSON.stringify(contohIsi) + ";\n");
+console.log("contoh-data.js:", Object.keys(contohIsi).length, "tool dengan tombol contoh");
 const today = new Date().toISOString().slice(0, 10);
 const urls = [BASE + "/"].concat(TOOLS.map((t) => BASE + "/tools/" + slugs[t.id] + "/"));
 fs.writeFileSync(path.join(ROOT, "sitemap.xml"),

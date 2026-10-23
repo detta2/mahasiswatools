@@ -41,6 +41,16 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Uji Validitas Pearson &amp; Reliabilitas Alpha</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Tempel data skor kuesionermu: tiap baris satu responden, tiap kolom satu butir item, mengikuti format pada data contoh.</li><li>Bila belum yakin formatnya, tekan Isi Data Contoh dulu dan jalankan sekali untuk melihat bentuk keluarannya.</li><li>Tekan 🧮 Hitung Validitas &amp; Reliabilitas.</li><li>Baca tabel hasil: periksa r hitung dan status valid tiap butir, serta nilai Cronbach's Alpha dan kategorinya.</li><li>Tekan 📋 Copy Narasi untuk menyalin auto-narasi Bab 4, atau ⬇️ Download Hasil (.txt) untuk menyimpan seluruh laporannya.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">Matriks jawaban kuesioner 15 responden × 5 butir (skala Likert 1–5):
+B1 B2 B3 B4 B5
+5 5 4 5 4
+4 4 4 4 4
+5 4 5 5 5
+3 3 4 3 3
+… (15 baris)</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Kelima butir dinyatakan VALID — r hitung B1–B5 berkisar 0,88–0,98, semuanya di atas r tabel 0,514 (N = 15) — dan instrumennya reliabel dengan Cronbach's Alpha 0,952. Coba ubah beberapa angka menjadi acak untuk melihat butir berubah status menjadi TIDAK VALID.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +67,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "validitas"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>

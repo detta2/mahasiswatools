@@ -41,6 +41,10 @@
     <p class="mb-5">Tool ini dipakai pada tahap pengolahan dan analisis data penelitian, terutama saat menyusun Bab III (metode) dan Bab IV (hasil dan pembahasan) skripsi atau laporan penelitian. Mahasiswa program studi ekonomi, manajemen, psikologi, pendidikan, dan ilmu sosial umumnya wajib menyajikan hasil olah data yang dapat dipertanggungjawabkan secara metodologis di hadapan dosen pembimbing dan penguji.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan Generator Tabel Statistik Eksak (r, t, F, χ²)</h2>
     <ol class="list-decimal ml-5 space-y-1.5 mb-5"><li>Pilih distribusi yang kamu butuhkan: r — Korelasi Product Moment, t, F, atau χ² — Chi-Square.</li><li>Pilih mode: ‘Satu nilai + pembanding’ untuk keputusan cepat, atau ‘Rentang tabel (klasik)’ untuk membuat tabel berisi banyak baris.</li><li>Isi parameter yang diminta (misalnya N=137 untuk tabel r) dan nilai hitungmu (misalnya 0,31) bila memakai mode pembanding.</li><li>Tekan 📊 Hitung Nilai Kritis dan baca nilai kritis eksaknya beserta kesimpulan perbandingannya.</li><li>Tekan 📋 Copy Hasil atau 📋 Copy Tabel (TSV) untuk memindahkan hasilnya ke naskah atau Excel.</li></ol>
+    <h2 class="display-font text-xl font-black mb-2.5">Contoh Penggunaan</h2>
+    <p class="font-bold text-sm mb-1.5">📥 Contoh isian:</p>
+    <pre style="white-space:pre-wrap;font-family:ui-monospace,Menlo,Consolas,monospace" class="whitespace-pre-wrap font-mono text-[13px] leading-relaxed bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-xl p-3.5 mb-3">Jenis tabel: r product moment • N = 60 • r hitung yang dicek = 0,31</pre>
+    <p class="mb-5"><span class="font-bold">📤 Hasilnya:</span> Tool menampilkan r tabel untuk N = 60 pada taraf 5% (≈ 0,254) dan 1% (≈ 0,330), lalu menilai r hitungmu: 0,31 signifikan pada taraf 5% tetapi belum pada taraf 1%. Tabel t, F, dan chi-square juga tersedia, termasuk generator tabel lengkap per rentang df.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">Seluruh perhitungan berjalan lokal di browser dengan rumus statistik baku yang sama seperti yang dipakai perangkat lunak statistik pada umumnya, sehingga hasil dapat diverifikasi ulang secara manual. Narasi otomatis membantu mahasiswa yang baru pertama kali menulis interpretasi hasil penelitian, sekaligus menghemat waktu berjam-jam dibanding menghitung dan mengetik tabel satu per satu.</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
@@ -57,6 +61,7 @@
 </main>
 <script>window.__MT_TOOL_ID__ = "tabelstat"; window.__MT_BASE__ = "../../";</script>
 <script src="../../slugs.js"></script>
+<script src="../../contoh-data.js"></script>
 <script src="../../js/core.js"></script>
 <script src="../../js/cat-data.js"></script>
 </body>
