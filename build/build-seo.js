@@ -8,6 +8,10 @@ const fs = require("fs");
 const path = require("path");
 const ROOT = path.join(__dirname, "..");
 const BASE = "https://mahasiswatools.web.id";
+/* Konten KHAS per tool (paragraf pembuka, langkah nyata, FAQ spesifik) — ditulis
+   dari fungsi sebenarnya tiap tool di app.js. Mencegah halaman sekategori dinilai
+   Google sebagai boilerplate duplikat: lihat build/konten-tool.js. */
+const KONTEN = require("./konten-tool");
 
 /* --- ekstrak TOOLS dari app.js (scan kurung seimbang) --- */
 const appSrc = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
@@ -89,7 +93,10 @@ function pageFor(t) {
   const slug = slugs[t.id];
   const url = BASE + "/tools/" + slug + "/";
   const p = PANDUAN[t.c] || PANDUAN.tulis;
-  const faqs = faqFor(t);
+  const kk = KONTEN[t.id] || {};
+  const faqs = (kk.faq || []).concat(faqFor(t));
+  const langkah = (kk.langkah && kk.langkah.length) ? kk.langkah : p.cara;
+  const tentang = kk.buka ? '<h2 class="display-font text-xl font-black mb-2.5">Tentang ' + esc(t.n) + '</h2>\n    <p class="mb-5">' + esc(kk.buka) + "</p>\n    " : "";
   const terkait = TOOLS.filter((x) => x.c === t.c && x.id !== t.id).slice(0, 5);
   const judul = t.n + " Online Gratis — MahasiswaTools";
   const desk = t.d + " Gratis, tanpa login dan tanpa watermark, langsung dari browser. Bagian dari MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa.";
@@ -134,10 +141,10 @@ function pageFor(t) {
     <div id="toolRoot"><p class="font-bold">⏳ Memuat tool… pastikan JavaScript aktif. Bila tool tidak muncul, buka melalui <a class="underline" href="../../#${t.id}">aplikasi utama MahasiswaTools</a>.</p></div>
   </section>
   <article class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-5 sm:p-7 leading-relaxed text-[15px]">
-    <h2 class="display-font text-xl font-black mb-2.5">Kapan Tool Ini Digunakan?</h2>
+    ${tentang}<h2 class="display-font text-xl font-black mb-2.5">Kapan Tool Ini Digunakan?</h2>
     <p class="mb-5">${esc(p.kapan)}</p>
     <h2 class="display-font text-xl font-black mb-2.5">Cara Menggunakan ${esc(t.n)}</h2>
-    <ol class="list-decimal ml-5 space-y-1.5 mb-5">${p.cara.map((s) => "<li>" + esc(s) + "</li>").join("")}</ol>
+    <ol class="list-decimal ml-5 space-y-1.5 mb-5">${langkah.map((s) => "<li>" + esc(s) + "</li>").join("")}</ol>
     <h2 class="display-font text-xl font-black mb-2.5">Manfaat & Keunggulan</h2>
     <p class="mb-5">${esc(p.manfaat)}</p>
     <h2 class="display-font text-xl font-black mb-2.5">Pertanyaan yang Sering Diajukan</h2>
