@@ -514,6 +514,832 @@ function buatPlang() {
    TOOLS 37–40 (Dokumen & Foto)
    ============================================================ */
 ;
+/* ---------- 113. PEMBUAT TWIBBON ---------- */
+UI.twibbon = function (el) {
+  window._twb = { img: null, frame: null, tpl: "pita", x: 540, y: 540, zoom: 1 };
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Template Bingkai", '<select id="twTpl" class="' + IN + '" onchange="twbGantiTpl()"><option value="pita">🎀 Pita Sudut & Band Bawah</option><option value="blok">🟦 Blok Bawah Besar</option><option value="lingkaran">⭕ Cincin Lingkaran</option><option value="klasik">🖼️ Bingkai Penuh Klasik</option><option value="diagonal">↗️ Pita Diagonal</option><option value="custom">🖼️ Bingkai Sendiri (Upload PNG Transparan)</option></select>')
+    + field("Warna Tema Bingkai", '<input id="twWarna" type="color" value="#7C3AED" class="w-full h-[42px]">')
+    + field("Teks Utama di Bingkai", '<input id="twTeks" class="' + IN + '" value="SAYA SIAP MENGIKUTI PKKMB 2026">')
+    + field("Teks Kecil (label pita/blok)", '<input id="twTeks2" class="' + IN + '" value="Universitas Cendekia Nusantara">')
+    + '</div>'
+    + '<div id="twCustomBox" class="hidden">' + field("Upload Bingkai PNG Transparan (persegi, mis. 1080×1080)", '<input id="twFrame" type="file" accept="image/png,image/*" class="' + IN + '" onchange="twbMuatFrame(this)">') + '</div>'
+    + field("Upload Fotomu", '<input id="twFoto" type="file" accept="image/*" class="' + IN + '" onchange="twbMuatFoto(this)">')
+    + field("Zoom Foto", '<input id="twZoom" type="range" min="40" max="250" value="100" class="w-full" oninput="twbZoom()">', "Geser foto langsung di atas kanvas dengan tetikus/jari untuk mengatur posisinya.")
+    + '<div class="mt-2 overflow-x-auto text-center"><canvas id="twCv" width="1080" height="1080" class="hidden w-full max-w-[520px] rounded-lg shadow border border-slate-200" style="touch-action:none;cursor:grab"></canvas></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="twbUnduh()">⬇️ Download Twibbon (PNG)</button></div>'
+    + outBox("twOut") + "</div>";
+  twbGambar();
+  const cv = $("#twCv");
+  let drag = null;
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; };
+  cv.addEventListener("pointerdown", (e) => { if (!window._twb.img) return; drag = { p: pos(e), x: window._twb.x, y: window._twb.y }; cv.setPointerCapture(e.pointerId); cv.style.cursor = "grabbing"; });
+  cv.addEventListener("pointermove", (e) => { if (!drag) return; const p = pos(e); window._twb.x = drag.x + (p.x - drag.p.x); window._twb.y = drag.y + (p.y - drag.p.y); twbGambar(); });
+  const akhiri = () => { drag = null; cv.style.cursor = "grab"; };
+  cv.addEventListener("pointerup", akhiri); cv.addEventListener("pointercancel", akhiri);
+  el.addEventListener("input", () => { if (window._twb) twbGambar(); });
+};
+function twbGantiTpl() { window._twb.tpl = $("#twTpl").value; $("#twCustomBox").classList.toggle("hidden", window._twb.tpl !== "custom"); twbGambar(); }
+function twbZoom() { window._twb.zoom = Number($("#twZoom").value || 100) / 100; twbGambar(); }
+function twbMuatFoto(inp) {
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const im = new Image();
+  im.onload = () => { window._twb.img = im; window._twb.x = 540; window._twb.y = 540; URL.revokeObjectURL(im.src); twbGambar(); };
+  im.src = URL.createObjectURL(f);
+}
+function twbMuatFrame(inp) {
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const im = new Image();
+  im.onload = () => { window._twb.frame = im; URL.revokeObjectURL(im.src); twbGambar(); };
+  im.src = URL.createObjectURL(f);
+}
+function twbTeksFit(ctx, teks, maksLebar, ukuran, fontBerat) {
+  let u = ukuran;
+  ctx.font = fontBerat + " " + u + "px 'Plus Jakarta Sans', sans-serif";
+  while (ctx.measureText(teks).width > maksLebar && u > 18) { u -= 4; ctx.font = fontBerat + " " + u + "px 'Plus Jakarta Sans', sans-serif"; }
+  return u;
+}
+function twbGambar() {
+  const cv = $("#twCv"); if (!cv) return;
+  cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  const S = window._twb;
+  const warna = ($("#twWarna") || {}).value || "#7C3AED";
+  const teks = (($("#twTeks") || {}).value || "").trim();
+  const teks2 = (($("#twTeks2") || {}).value || "").trim();
+  ctx.clearRect(0, 0, 1080, 1080);
+  if (S.img) {
+    const sc = Math.max(1080 / S.img.width, 1080 / S.img.height) * (S.zoom || 1);
+    ctx.drawImage(S.img, S.x - S.img.width * sc / 2, S.y - S.img.height * sc / 2, S.img.width * sc, S.img.height * sc);
+  } else {
+    const gr = ctx.createLinearGradient(0, 0, 1080, 1080); gr.addColorStop(0, "#CBD5E1"); gr.addColorStop(1, "#94A3B8");
+    ctx.fillStyle = gr; ctx.fillRect(0, 0, 1080, 1080);
+    ctx.fillStyle = "rgba(255,255,255,.75)"; ctx.beginPath(); ctx.arc(540, 430, 130, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(540, 760, 250, 190, 0, Math.PI, 0); ctx.fill(); ctx.fillRect(290, 760, 500, 190);
+    ctx.fillStyle = "#475569"; ctx.font = "700 44px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center";
+    ctx.fillText("Unggah fotomu di atas", 540, 120);
+    ctx.font = "500 32px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillText("lalu geser & zoom sampai pas di bingkai", 540, 170);
+  }
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  if (S.tpl === "custom") {
+    if (S.frame) ctx.drawImage(S.frame, 0, 0, 1080, 1080);
+    else { ctx.fillStyle = "rgba(15,23,42,.55)"; ctx.fillRect(0, 500, 1080, 80); ctx.fillStyle = "#FFF"; ctx.font = "600 30px sans-serif"; ctx.fillText("Upload bingkai PNG transparanmu pada kolom di atas", 540, 540); }
+  } else if (S.tpl === "pita") {
+    ctx.fillStyle = warna; ctx.fillRect(0, 930, 1080, 150);
+    ctx.fillStyle = "#FFFFFF"; twbTeksFit(ctx, teks, 980, 56, "800"); ctx.fillText(teks, 540, 1005);
+    ctx.save(); ctx.translate(0, 0); ctx.rotate(0);
+    ctx.fillStyle = warna; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(430, 0); ctx.lineTo(0, 250); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#FFFFFF"; ctx.save(); ctx.translate(86, 62); ctx.rotate(-0.53); ctx.font = "800 34px 'Plus Jakarta Sans', sans-serif"; twbTeksFit(ctx, teks2, 300, 34, "800"); ctx.fillText(teks2, 60, 0); ctx.restore(); ctx.restore();
+  } else if (S.tpl === "blok") {
+    ctx.fillStyle = warna; ctx.fillRect(0, 800, 1080, 280);
+    ctx.fillStyle = "rgba(255,255,255,.35)"; ctx.fillRect(0, 788, 1080, 12);
+    ctx.fillStyle = "#FFFFFF"; twbTeksFit(ctx, teks, 980, 72, "800"); ctx.fillText(teks, 540, 905);
+    ctx.font = "500 38px 'Plus Jakarta Sans', sans-serif"; ctx.globalAlpha = .9; ctx.fillText(teks2, 540, 985); ctx.globalAlpha = 1;
+  } else if (S.tpl === "lingkaran") {
+    ctx.strokeStyle = warna; ctx.lineWidth = 108; ctx.beginPath(); ctx.arc(540, 540, 428, 0, 7); ctx.stroke();
+    ctx.fillStyle = warna; roundRect(ctx, 240, 952, 600, 96, 48); ctx.fill();
+    ctx.fillStyle = "#FFFFFF"; twbTeksFit(ctx, teks, 540, 44, "800"); ctx.fillText(teks, 540, 1000);
+  } else if (S.tpl === "klasik") {
+    ctx.strokeStyle = warna; ctx.lineWidth = 34; ctx.strokeRect(17, 17, 1046, 1046);
+    ctx.lineWidth = 5; ctx.strokeRect(64, 64, 952, 952);
+    ctx.fillStyle = warna; roundRect(ctx, 190, 946, 700, 92, 14); ctx.fill();
+    ctx.fillStyle = "#FFFFFF"; twbTeksFit(ctx, teks, 640, 46, "800"); ctx.fillText(teks, 540, 992);
+  } else if (S.tpl === "diagonal") {
+    ctx.save(); ctx.translate(540, 950); ctx.rotate(-0.21);
+    ctx.fillStyle = warna; ctx.fillRect(-760, -95, 1520, 190);
+    ctx.fillStyle = "#FFFFFF"; twbTeksFit(ctx, teks, 1300, 62, "800"); ctx.fillText(teks, 0, 4);
+    ctx.restore();
+  }
+  ctx.fillStyle = "rgba(255,255,255,.85)"; ctx.font = "500 20px sans-serif"; ctx.textAlign = "right"; ctx.fillText("MahasiswaTools", 1052, 40); ctx.textAlign = "center";
+  return cv;
+}
+async function twbUnduh() {
+  const cv = twbGambar(); if (!cv) return;
+  const blob = await canvasBlob(cv);
+  download("Twibbon.png", blob);
+}
+
+;
+/* ---------- 114. ID CARD & NAME TAG PANITIA MASSAL ---------- */
+UI.idcard = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Acara", '<input id="idcAcara" class="' + IN + '" value="Seminar Nasional Kewirausahaan Mahasiswa 2026">')
+    + field("Organisasi / Penyelenggara", '<input id="idcOrg" class="' + IN + '" value="HIMA Pendidikan Ekonomi — Universitas Cendekia Nusantara">')
+    + field("Tema Kartu", '<select id="idcTema" class="' + IN + '"><option value="klasik">🏆 Klasik Emas</option><option value="biru">🔵 Biru Korporat</option><option value="hijau">🟢 Hijau Alam</option></select>')
+    + '</div>'
+    + field("Daftar Nama (satu per baris, format: Nama | Jabatan)", '<textarea id="idcNama" rows="6" class="' + IN + '" placeholder="Satu nama per baris — kartu dibuat untuk SEMUA nama sekaligus">Andini Prameswari | Ketua Panitia&#10;Bima Aditya Nugraha | Sekretaris&#10;Citra Dewi Lestari | Bendahara</textarea>', "Jabatan boleh dikosongkan (otomatis tertulis Peserta). Pratinjau di bawah menampilkan kartu pertama dari daftar.")
+    + '<div class="flex flex-wrap gap-2"><button class="' + BTN + '" style="background:#059669" onclick="idcUnduhZip()">⬇️ Download Semua (ZIP PNG)</button>'
+    + '<button class="' + BTN2 + '" onclick="idcUnduhPdf()">⬇️ Download PDF A4 Siap Cetak</button></div>'
+    + '<div class="mt-4 text-center"><canvas id="idcCv" width="640" height="1012" class="hidden w-full max-w-[300px] rounded-lg shadow border border-slate-200"></canvas></div>'
+    + outBox("idcOut") + "</div>";
+  idcGambar();
+  el.addEventListener("input", () => { if ($("#idcCv")) idcGambar(); });
+};
+function idcData() {
+  const g = (id) => ($("#" + id) ? $("#" + id).value.trim() : "");
+  const baris = g("idcNama").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => { const p = l.split("|").map((x) => x.trim()); return { nama: p[0] || "Tanpa Nama", jabatan: p[1] || "Peserta" }; });
+  return { acara: g("idcAcara"), org: g("idcOrg"), tema: ($("#idcTema") || {}).value || "klasik", baris: baris.length ? baris : [{ nama: "Nama Peserta", jabatan: "Jabatan" }] };
+}
+function idcPalet(tema) {
+  return {
+    klasik: { bg1: "#FDFBF5", bg2: "#F5EFE0", utama: "#B8860B", teks: "#122B78", aksen: "#B8860B" },
+    biru: { bg1: "#F5F9FF", bg2: "#DCE9FF", utama: "#1D49C8", teks: "#122B78", aksen: "#1D49C8" },
+    hijau: { bg1: "#F3FBF6", bg2: "#DFF3E6", utama: "#047857", teks: "#065F46", aksen: "#059669" }
+  }[tema] || { bg1: "#FDFBF5", bg2: "#F5EFE0", utama: "#B8860B", teks: "#122B78", aksen: "#B8860B" };
+}
+function idcGambarKartu(entri, meta) {
+  const cv = document.createElement("canvas"); cv.width = 640; cv.height = 1012;
+  const ctx = cv.getContext("2d");
+  const P = idcPalet(meta.tema);
+  const grd = ctx.createLinearGradient(0, 0, 0, 1012); grd.addColorStop(0, P.bg1); grd.addColorStop(1, P.bg2);
+  ctx.fillStyle = grd; ctx.fillRect(0, 0, 640, 1012);
+  ctx.strokeStyle = P.aksen; ctx.lineWidth = 8; ctx.strokeRect(14, 14, 612, 984);
+  ctx.fillStyle = P.utama; ctx.fillRect(14, 14, 612, 218);
+  ctx.fillStyle = "rgba(255,255,255,.9)"; roundRect(ctx, 260, 34, 120, 20, 10); ctx.fill();
+  ctx.fillStyle = "#FFFFFF"; ctx.textAlign = "center";
+  ctx.font = "800 27px 'Plus Jakarta Sans', sans-serif";
+  const orgKata = String(meta.org || "").split(" ");
+  let orgBaris = [], orgLine = "";
+  orgKata.forEach((w) => { const t = orgLine ? orgLine + " " + w : w; if (ctx.measureText(t).width > 540 && orgLine) { orgBaris.push(orgLine); orgLine = w; } else orgLine = t; });
+  if (orgLine) orgBaris.push(orgLine);
+  orgBaris.slice(0, 2).forEach((l, i) => ctx.fillText(l, 320, 108 + i * 34));
+  ctx.font = "600 21px 'Plus Jakarta Sans', sans-serif"; ctx.globalAlpha = .88;
+  ctx.fillText(String(meta.acara || "").slice(0, 44), 320, 108 + Math.min(2, orgBaris.length) * 34 + 8); ctx.globalAlpha = 1;
+  ctx.fillStyle = "#E2E8F0"; ctx.beginPath(); ctx.arc(320, 420, 118, 0, 7); ctx.fill();
+  ctx.strokeStyle = P.aksen; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(320, 420, 118, 0, 7); ctx.stroke();
+  const inisial = entri.nama.split(/\s+/).filter(Boolean).slice(0, 2).map((w) => w[0].toUpperCase()).join("") || "?";
+  ctx.fillStyle = P.teks; ctx.font = "800 74px 'Plus Jakarta Sans', sans-serif"; ctx.fillText(inisial, 320, 446);
+  ctx.fillStyle = P.teks; ctx.font = "800 40px 'Plus Jakarta Sans', sans-serif";
+  const namaKata = entri.nama.split(" ");
+  let namaBaris = [], namaLine = "";
+  namaKata.forEach((w) => { const t = namaLine ? namaLine + " " + w : w; if (ctx.measureText(t).width > 520 && namaLine) { namaBaris.push(namaLine); namaLine = w; } else namaLine = t; });
+  if (namaLine) namaBaris.push(namaLine);
+  namaBaris.slice(0, 2).forEach((l, i) => ctx.fillText(l, 320, 618 + i * 50));
+  const jab = entri.jabatan || "Peserta";
+  ctx.font = "700 27px 'Plus Jakarta Sans', sans-serif";
+  const jw = Math.min(520, ctx.measureText(jab).width + 56);
+  ctx.fillStyle = P.utama; roundRect(ctx, 320 - jw / 2, 724, jw, 58, 29); ctx.fill();
+  ctx.fillStyle = "#FFFFFF"; ctx.fillText(jab, 320, 763);
+  ctx.strokeStyle = P.aksen; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(170, 852); ctx.lineTo(470, 852); ctx.stroke();
+  ctx.fillStyle = "#64748B"; ctx.font = "500 20px 'Plus Jakarta Sans', sans-serif";
+  ctx.fillText("Kartu ini wajib dikenakan selama kegiatan", 320, 900);
+  ctx.font = "600 19px 'Plus Jakarta Sans', sans-serif"; ctx.fillStyle = "#94A3B8";
+  ctx.fillText("MahasiswaTools • mahasiswatools.web.id", 320, 962);
+  return cv;
+}
+function idcGambar() {
+  const cv = $("#idcCv"); if (!cv) return;
+  cv.classList.remove("hidden");
+  const d = idcData();
+  const satu = idcGambarKartu(d.baris[0], d);
+  const ctx = cv.getContext("2d");
+  ctx.clearRect(0, 0, cv.width, cv.height);
+  ctx.drawImage(satu, 0, 0);
+  return cv;
+}
+async function idcUnduhZip() {
+  const out = $("#idcOut");
+  const ok = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+  if (!ok) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library ZIP gagal dimuat — cek koneksi internet lalu coba lagi.</div>'; return; }
+  const d = idcData();
+  out.innerHTML = '<div class="' + OUT + '">⏳ Membuat ' + d.baris.length + " kartu…</div>";
+  const zip = new JSZip();
+  for (let i = 0; i < d.baris.length; i++) {
+    const cv = idcGambarKartu(d.baris[i], d);
+    const blob = await canvasBlob(cv);
+    zip.file("IDCard_" + String(i + 1).padStart(2, "0") + "_" + d.baris[i].nama.replace(/[^\w]+/g, "_") + ".png", blob);
+  }
+  const zipBlob = await zip.generateAsync({ type: "blob" });
+  window._idcZip = zipBlob;
+  out.innerHTML = '<div class="' + OUT + '">✅ ' + d.baris.length + ' kartu selesai dibuat dalam satu file ZIP (PNG 640×1012 per kartu, rasio 54×85,6 mm).</div>';
+  download("IDCard_Panitia.zip", zipBlob);
+}
+async function idcUnduhPdf() {
+  const out = $("#idcOut");
+  const ok = await loadPdfLib();
+  if (!ok) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library PDF gagal dimuat — cek koneksi internet lalu coba lagi.</div>'; return; }
+  const d = idcData();
+  out.innerHTML = '<div class="' + OUT + '">⏳ Menyusun PDF A4…</div>';
+  const doc = await PDFLib.PDFDocument.create();
+  const KW = 153.07, KH = 242.65, GAP = 10;
+  const perHalaman = 9;
+  for (let mula = 0; mula < d.baris.length; mula += perHalaman) {
+    const page = doc.addPage([595.28, 841.89]);
+    const grup = d.baris.slice(mula, mula + perHalaman);
+    for (let j = 0; j < grup.length; j++) {
+      const cv = idcGambarKartu(grup[j], d);
+      const blob = await canvasBlob(cv);
+      const emb = await doc.embedPng(await blob.arrayBuffer());
+      const kol = j % 3, brs = Math.floor(j / 3);
+      const x = (595.28 - (3 * KW + 2 * GAP)) / 2 + kol * (KW + GAP);
+      const y = 841.89 - ((841.89 - (3 * KH + 2 * GAP)) / 2) - (brs + 1) * KH - brs * GAP;
+      page.drawImage(emb, { x: x, y: y, width: KW, height: KH });
+    }
+  }
+  const bytes = await doc.save();
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  window._idcPdf = blob;
+  out.innerHTML = '<div class="' + OUT + '">✅ PDF A4 selesai: ' + d.baris.length + ' kartu tersusun 3×3 per halaman, ukuran kartu asli 54×85,6 mm — cetak pada kertas A4 tanpa penskalaan (100%).</div>';
+  download("IDCard_Panitia_A4.pdf", blob);
+}
+
+;
+/* ---------- 115. DESAINER SERTIFIKAT SATUAN ---------- */
+UI.sertsatuan = function (el) {
+  window._ssa = {
+    bg: "klasik", bgImg: null, sel: "nama",
+    els: {
+      nama: { x: 700, y: 468, size: 62, color: "#122B78" },
+      peran: { x: 700, y: 548, size: 24, color: "#334155" },
+      acara: { x: 700, y: 590, size: 24, color: "#334155" },
+      tgl: { x: 1040, y: 726, size: 21, color: "#0F172A" },
+      ttd: { x: 1040, y: 758, size: 21, color: "#0F172A" }
+    },
+    box: {}
+  };
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Penerima", '<input id="ssaNama" class="' + IN + '" value="Andini Prameswari">')
+    + field("Peran", '<input id="ssaPeran" class="' + IN + '" value="Peserta">')
+    + field("Nama Acara", '<input id="ssaAcara" class="' + IN + '" value="Seminar Nasional Kewirausahaan Mahasiswa 2026">')
+    + field("Kota & Tanggal", '<input id="ssaTgl" class="' + IN + '" value="Palembang, 21 Oktober 2026">')
+    + field("Nama Penandatangan", '<input id="ssaTtd" class="' + IN + '" value="Rani Puspita">')
+    + field("Jabatan Penandatangan", '<input id="ssaTtdJab" class="' + IN + '" value="Ketua Panitia">')
+    + field("Latar Sertifikat", '<select id="ssaBg" class="' + IN + '" onchange="ssaGantiBg()"><option value="klasik">🏆 Tema Klasik Emas</option><option value="biru">🔵 Tema Biru Korporat</option><option value="hijau">🟢 Tema Hijau Alam</option><option value="custom">🖼️ Latar Sendiri (Upload Gambar)</option></select>')
+    + '<div id="ssaBgBox" class="hidden">' + field("Upload Gambar Latar (landscape, mis. 1400×990)", '<input id="ssaBgFile" type="file" accept="image/*" class="' + IN + '" onchange="ssaMuatBg(this)">') + '</div>'
+    + '</div>'
+    + '<div class="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 p-3 mb-3"><p class="text-sm font-extrabold mb-2">🎛️ Atur Elemen Teks (atau klik & geser langsung di sertifikat)</p><div class="grid sm:grid-cols-3 gap-3">'
+    + '<label class="block"><span class="block text-xs font-bold mb-1">Elemen yang Diatur</span><select id="ssaSel" class="' + IN + '" onchange="ssaPilih()"><option value="nama">Nama Penerima</option><option value="peran">Peran</option><option value="acara">Nama Acara</option><option value="tgl">Kota & Tanggal</option><option value="ttd">Penandatangan</option></select></label>'
+    + '<label class="block"><span class="block text-xs font-bold mb-1">Ukuran Huruf</span><input id="ssaSize" type="range" min="14" max="110" value="62" class="w-full" oninput="ssaAtur()"></label>'
+    + '<label class="block"><span class="block text-xs font-bold mb-1">Warna Teks</span><input id="ssaColor" type="color" value="#122B78" class="w-full h-[42px]" oninput="ssaAtur()"></label>'
+    + '</div></div>'
+    + '<div class="overflow-x-auto"><canvas id="ssaCv" width="1400" height="990" class="hidden w-full rounded-lg shadow border border-slate-200" style="touch-action:none;cursor:grab"></canvas></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="ssaUnduhPng()">⬇️ Download PNG</button>'
+    + '<button class="' + BTN2 + '" onclick="ssaUnduhPdf()">⬇️ Download PDF (A4)</button></div>'
+    + outBox("ssaOut") + "</div>";
+  ssaGambar(false);
+  const cv = $("#ssaCv");
+  let drag = null;
+  const pos = (e) => { const r = cv.getBoundingClientRect(); return { x: (e.clientX - r.left) * cv.width / r.width, y: (e.clientY - r.top) * cv.height / r.height }; };
+  cv.addEventListener("pointerdown", (e) => {
+    const p = pos(e); const S = window._ssa;
+    const kunci = Object.keys(S.box).find((k) => { const b = S.box[k]; return p.x >= b.x1 && p.x <= b.x2 && p.y >= b.y1 && p.y <= b.y2; });
+    if (kunci) { S.sel = kunci; $("#ssaSel").value = kunci; ssaSyncPanel(); drag = { k: kunci, p: p, x: S.els[kunci].x, y: S.els[kunci].y }; cv.setPointerCapture(e.pointerId); }
+  });
+  cv.addEventListener("pointermove", (e) => { if (!drag) return; const p = pos(e); const elx = window._ssa.els[drag.k]; elx.x = Math.round(drag.x + (p.x - drag.p.x)); elx.y = Math.round(drag.y + (p.y - drag.p.y)); ssaGambar(false); });
+  const akhiri = () => { drag = null; };
+  cv.addEventListener("pointerup", akhiri); cv.addEventListener("pointercancel", akhiri);
+  el.addEventListener("input", (e) => { if (["ssaSize", "ssaColor"].includes(e.target.id)) return; if (window._ssa) ssaGambar(false); });
+};
+function ssaVal(id) { return ($("#" + id) ? $("#" + id).value.trim() : ""); }
+function ssaGantiBg() { window._ssa.bg = $("#ssaBg").value; $("#ssaBgBox").classList.toggle("hidden", window._ssa.bg !== "custom"); ssaGambar(false); }
+function ssaMuatBg(inp) {
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const im = new Image();
+  im.onload = () => { window._ssa.bgImg = im; URL.revokeObjectURL(im.src); ssaGambar(false); };
+  im.src = URL.createObjectURL(f);
+}
+function ssaPilih() { window._ssa.sel = $("#ssaSel").value; ssaSyncPanel(); ssaGambar(false); }
+function ssaSyncPanel() { const e = window._ssa.els[window._ssa.sel]; if (!e) return; $("#ssaSize").value = e.size; $("#ssaColor").value = e.color; }
+function ssaAtur() { const e = window._ssa.els[window._ssa.sel]; if (!e) return; e.size = Number($("#ssaSize").value || e.size); e.color = $("#ssaColor").value || e.color; ssaGambar(false); }
+function ssaBungkus(ctx, teks, maks) {
+  const kata = String(teks || "").split(" "); const baris = []; let line = "";
+  kata.forEach((w) => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maks && line) { baris.push(line); line = w; } else line = t; });
+  if (line) baris.push(line);
+  return baris.length ? baris : [""];
+}
+function ssaGambar(untukEkspor) {
+  const cv = $("#ssaCv"); if (!cv) return null;
+  cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  const S = window._ssa; if (!S) return cv;
+  const TPLS = {
+    klasik: { bg1: "#FDFBF5", bg2: "#F5EFE0", frame: "#B8860B", inner: "#122B78", title: "#8A6508", band: null },
+    biru: { bg1: "#F5F9FF", bg2: "#DCE9FF", frame: "#1D49C8", inner: "#1D49C8", title: "#122B78", band: "#1D49C8" },
+    hijau: { bg1: "#F3FBF6", bg2: "#DFF3E6", frame: "#047857", inner: "#047857", title: "#065F46", band: null }
+  };
+  if (S.bg === "custom") {
+    if (S.bgImg) { const im = S.bgImg; const sc = Math.max(1400 / im.width, 990 / im.height); ctx.drawImage(im, (1400 - im.width * sc) / 2, (990 - im.height * sc) / 2, im.width * sc, im.height * sc); }
+    else { ctx.fillStyle = "#F8FAFC"; ctx.fillRect(0, 0, 1400, 990); ctx.strokeStyle = "#94A3B8"; ctx.lineWidth = 4; ctx.setLineDash([18, 12]); ctx.strokeRect(30, 30, 1340, 930); ctx.setLineDash([]); ctx.fillStyle = "#64748B"; ctx.font = "600 30px sans-serif"; ctx.textAlign = "center"; ctx.fillText("Upload gambar latar sertifikatmu pada kolom di atas", 700, 200); }
+  } else {
+    const P = TPLS[S.bg] || TPLS.klasik;
+    const grd = ctx.createLinearGradient(0, 0, 1400, 990); grd.addColorStop(0, P.bg1); grd.addColorStop(1, P.bg2);
+    ctx.fillStyle = grd; ctx.fillRect(0, 0, 1400, 990);
+    if (P.band) { ctx.fillStyle = P.band; ctx.fillRect(0, 0, 1400, 104); ctx.fillStyle = "#FFFFFF"; ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.textAlign = "center"; ctx.fillText("🎓 MahasiswaTools", 700, 66); }
+    ctx.strokeStyle = P.frame; ctx.lineWidth = 10; ctx.strokeRect(28, 28, 1344, 934);
+    ctx.lineWidth = 2; ctx.strokeRect(52, 52, 1296, 886);
+    ctx.strokeStyle = P.inner; ctx.lineWidth = 3; ctx.strokeRect(66, 66, 1268, 858);
+    ctx.textAlign = "center"; ctx.fillStyle = P.inner;
+    if (!P.band) { ctx.font = "800 30px 'Plus Jakarta Sans', sans-serif"; ctx.fillText("🎓 MahasiswaTools", 700, 140); }
+    ctx.font = "800 74px Georgia, serif"; ctx.fillStyle = P.title;
+    ctx.fillText("SERTIFIKAT", 700, P.band ? 268 : 250);
+    ctx.font = "22px sans-serif"; ctx.fillStyle = "#475569"; ctx.fillText("Diberikan dengan bangga kepada:", 700, 380);
+  }
+  const isi = {
+    nama: ssaVal("ssaNama") || "Nama Penerima",
+    peran: "Atas partisipasinya sebagai " + (ssaVal("ssaPeran") || "Peserta"),
+    acara: "dalam kegiatan \u201C" + (ssaVal("ssaAcara") || "Nama Acara") + "\u201D",
+    tgl: ssaVal("ssaTgl"),
+    ttd: ssaVal("ssaTtdJab") || "Ketua Panitia"
+  };
+  S.box = {};
+  const gambarElemen = (kunci, teks, font, perataan) => {
+    const e = S.els[kunci]; if (!e) return;
+    ctx.font = font(e.size); ctx.fillStyle = e.color; ctx.textAlign = perataan || "center"; ctx.textBaseline = "alphabetic";
+    const baris = ssaBungkus(ctx, teks, 1120);
+    baris.forEach((l, i) => ctx.fillText(l, e.x, e.y + i * e.size * 1.25));
+    const lebar = Math.max.apply(null, baris.map((l) => ctx.measureText(l).width).concat([10]));
+    const kiri = (perataan === "center") ? e.x - lebar / 2 : e.x;
+    S.box[kunci] = { x1: kiri - 14, y1: e.y - e.size - 10, x2: kiri + lebar + 14, y2: e.y + (baris.length - 1) * e.size * 1.25 + 16 };
+  };
+  gambarElemen("nama", isi.nama, (s) => "800 " + s + "px Georgia, serif");
+  gambarElemen("peran", isi.peran, (s) => s + "px 'Plus Jakarta Sans', sans-serif");
+  gambarElemen("acara", isi.acara, (s) => s + "px 'Plus Jakarta Sans', sans-serif");
+  gambarElemen("tgl", isi.tgl, (s) => s + "px 'Plus Jakarta Sans', sans-serif");
+  (function () {
+    const e = S.els.ttd; if (!e) return;
+    ctx.textAlign = "center"; ctx.fillStyle = e.color;
+    ctx.font = e.size + "px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillText(isi.ttd + ",", e.x, e.y);
+    ctx.font = "italic " + Math.round(e.size * 1.45) + "px Georgia, serif";
+    ctx.fillText(ssaVal("ssaTtd") || "Panitia", e.x, e.y + e.size * 2.6);
+    ctx.strokeStyle = e.color; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(e.x - 170, e.y + e.size * 2.6 + 16); ctx.lineTo(e.x + 170, e.y + e.size * 2.6 + 16); ctx.stroke();
+    ctx.font = "700 " + Math.round(e.size * 0.95) + "px 'Plus Jakarta Sans', sans-serif";
+    ctx.fillText(ssaVal("ssaTtd") || "....................", e.x, e.y + e.size * 2.6 + 50);
+    const lebar = 360;
+    S.box.ttd = { x1: e.x - lebar / 2, y1: e.y - e.size - 10, x2: e.x + lebar / 2, y2: e.y + e.size * 2.6 + 62 };
+  })();
+  ctx.font = "13px sans-serif"; ctx.fillStyle = "rgba(100,116,139,.75)"; ctx.textAlign = "center";
+  ctx.fillText("Dibuat dengan MahasiswaTools • Dari Mahasiswa, Untuk Mahasiswa", 700, 950);
+  if (!untukEkspor && S.sel && S.box[S.sel]) {
+    const b = S.box[S.sel];
+    ctx.strokeStyle = "#4F46E5"; ctx.lineWidth = 2.5; ctx.setLineDash([10, 7]);
+    ctx.strokeRect(b.x1, b.y1, b.x2 - b.x1, b.y2 - b.y1); ctx.setLineDash([]);
+  }
+  return cv;
+}
+async function ssaUnduhPng() { const cv = ssaGambar(true); if (!cv) return; download("Sertifikat_Satuan.png", await canvasBlob(cv)); }
+async function ssaUnduhPdf() {
+  const out = $("#ssaOut");
+  const ok = await loadPdfLib();
+  if (!ok) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library PDF gagal dimuat — cek koneksi internet lalu coba lagi.</div>'; return; }
+  const cv = ssaGambar(true); if (!cv) return;
+  const pngBlob = await canvasBlob(cv);
+  const doc = await PDFLib.PDFDocument.create();
+  const page = doc.addPage([841.89, 595.28]);
+  const emb = await doc.embedPng(await pngBlob.arrayBuffer());
+  page.drawImage(emb, { x: 0, y: 0, width: 841.89, height: 595.28 });
+  const bytes = await doc.save();
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  window._ssaPdf = blob;
+  download("Sertifikat_Satuan.pdf", blob);
+}
+
+;
+/* ---------- 116. RUNDOWN, KATA SAMBUTAN & NASKAH MC ---------- */
+UI.rundown = function (el) {
+  if (!Array.isArray(window._rdwRows)) window._rdwRows = [
+    { jam: "08.00–08.30", keg: "Registrasi & Daftar Ulang Peserta", pj: "Sie Acara" },
+    { jam: "08.30–08.45", keg: "Pembukaan oleh MC", pj: "MC" },
+    { jam: "08.45–09.00", keg: "Kata Sambutan Ketua Panitia", pj: "Ketua Panitia" },
+    { jam: "09.00–11.00", keg: "Penyampaian Materi oleh Narasumber", pj: "Moderator" },
+    { jam: "11.00–11.15", keg: "Sesi Tanya Jawab", pj: "Moderator" },
+    { jam: "11.15–11.30", keg: "Penutupan & Foto Bersama", pj: "MC" }
+  ];
+  el.innerHTML = '<div class="fadein">'
+    + '<p class="text-base font-extrabold mb-3">📋 A. Rundown Acara</p><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Acara", '<input id="rdwAcara" class="' + IN + '" value="Seminar Nasional Kewirausahaan Mahasiswa 2026">')
+    + field("Tema Acara", '<input id="rdwTema" class="' + IN + '" value="Membangun Jiwa Wirausaha Muda di Era Digital">')
+    + field("Hari, Tanggal", '<input id="rdwTgl" class="' + IN + '" value="Sabtu, 14 November 2026">')
+    + field("Tempat", '<input id="rdwTempat" class="' + IN + '" value="Aula Universitas Cendekia Nusantara">')
+    + field("Penyelenggara", '<input id="rdwPeny" class="' + IN + '" value="HIMA Pendidikan Ekonomi">')
+    + '</div>'
+    + '<div id="rdwRows" class="space-y-2 mb-3"></div>'
+    + '<button class="' + BTN2 + '" onclick="rdwTambah()">➕ Tambah Baris Rundown</button>'
+    + '<div class="mt-4"><p class="text-sm font-extrabold mb-2">👁 Pratinjau Rundown</p><div id="rdwPrev"></div></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="rdwUnduhDocx()">⬇️ Download Rundown (.docx)</button>'
+    + '<button class="' + BTN2 + '" onclick="rdwCetak()">🖨️ Cetak Rundown</button></div>'
+    + '<hr class="my-6 border-slate-200 dark:border-slate-700">'
+    + '<p class="text-base font-extrabold mb-3">🎤 B. Kata Sambutan</p><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Jenis Sambutan", '<select id="smbJenis" class="' + IN + '"><option value="ketua">Sambutan Ketua Panitia</option><option value="organisasi">Sambutan Ketua Organisasi / Himpunan</option><option value="pembina">Sambutan Pembina / Dosen Pendamping</option></select>')
+    + field("Nama Pemberi Sambutan", '<input id="smbNama" class="' + IN + '" value="Andini Prameswari">')
+    + field("Jabatan (tertulis di bawah nama)", '<input id="smbJab" class="' + IN + '" value="Ketua Panitia Pelaksana">')
+    + '</div>'
+    + field("Poin Ucapan Terima Kasih (satu per baris, boleh dikosongkan)", '<textarea id="smbTerima" rows="3" class="' + IN + '" placeholder="Satu poin per baris">Pimpinan universitas yang telah memberikan izin dan fasilitas kegiatan\nPara narasumber yang telah berkenan berbagi ilmu dan pengalaman\nSeluruh peserta yang hadir dari berbagai perguruan tinggi</textarea>')
+    + '<button class="' + BTN + '" onclick="smbBuat()">🎤 Buat Kata Sambutan</button>'
+    + outBox("smbOut")
+    + '<hr class="my-6 border-slate-200 dark:border-slate-700">'
+    + '<p class="text-base font-extrabold mb-3">🎙️ C. Naskah MC</p><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Gaya MC", '<select id="mcGaya" class="' + IN + '"><option value="formal">Formal (resmi, baku)</option><option value="semiformal">Semiformal (hangat, akrab)</option></select>')
+    + field("Nama MC (opsional)", '<input id="mcNama" class="' + IN + '" placeholder="cth: Saya, Citra, selaku MC">')
+    + '</div>'
+    + '<button class="' + BTN + '" onclick="mcBuat()">🎙️ Buat Naskah MC</button>'
+    + outBox("mcOut")
+    + "</div>";
+  rdwRender();
+};
+function rdwVal(id) { return ($("#" + id) ? $("#" + id).value.trim() : ""); }
+function rdwRender() {
+  const box = $("#rdwRows"); if (!box) return;
+  box.innerHTML = window._rdwRows.map((r, i) =>
+    '<div class="flex flex-wrap sm:flex-nowrap gap-2 items-center">'
+    + '<input class="' + IN + ' sm:w-36" value="' + esc(r.jam) + '" placeholder="Jam" onchange="window._rdwRows[' + i + '].jam=this.value;rdwPrev()">'
+    + '<input class="' + IN + ' flex-1" value="' + esc(r.keg) + '" placeholder="Kegiatan" onchange="window._rdwRows[' + i + '].keg=this.value;rdwPrev()">'
+    + '<input class="' + IN + ' sm:w-48" value="' + esc(r.pj) + '" placeholder="Penanggung Jawab" onchange="window._rdwRows[' + i + '].pj=this.value;rdwPrev()">'
+    + '<button class="text-rose-500 font-bold px-2" title="Hapus baris" onclick="window._rdwRows.splice(' + i + ',1);rdwRender()">✕</button></div>'
+  ).join("");
+  rdwPrev();
+}
+function rdwPrev() {
+  const box = $("#rdwPrev"); if (!box) return;
+  const rows = window._rdwRows || [];
+  box.innerHTML = '<div class="bg-white text-slate-900 p-5 border border-slate-200 dark:border-slate-700 overflow-x-auto" style="font-family:Georgia,serif">'
+    + '<p class="text-center font-extrabold text-sm">RUNDOWN ACARA</p>'
+    + '<p class="text-center font-bold text-[13px]">' + esc(rdwVal("rdwAcara") || "Nama Acara") + '</p>'
+    + '<p class="text-center text-xs mb-3">' + esc(rdwVal("rdwTgl")) + (rdwVal("rdwTempat") ? " • " + esc(rdwVal("rdwTempat")) : "") + '</p>'
+    + '<table class="w-full text-[12.5px]" style="border-collapse:collapse"><tr><th class="border border-slate-400 px-2 py-1">No</th><th class="border border-slate-400 px-2 py-1 text-left">Waktu</th><th class="border border-slate-400 px-2 py-1 text-left">Kegiatan</th><th class="border border-slate-400 px-2 py-1 text-left">Penanggung Jawab</th></tr>'
+    + rows.map((r, i) => '<tr><td class="border border-slate-300 px-2 py-1 text-center">' + (i + 1) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(r.jam) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(r.keg) + '</td><td class="border border-slate-300 px-2 py-1">' + esc(r.pj) + '</td></tr>').join("")
+    + '</table></div>';
+}
+function rdwTambah() { window._rdwRows.push({ jam: "", keg: "", pj: "" }); rdwRender(); }
+function rdwDocHtml() {
+  const rows = window._rdwRows || [];
+  return "<html><body style='font-family:serif;font-size:12pt'>"
+    + "<h3 style='text-align:center'>RUNDOWN ACARA</h3><p style='text-align:center'><b>" + esc(rdwVal("rdwAcara")) + "</b><br>" + esc(rdwVal("rdwTgl")) + (rdwVal("rdwTempat") ? " • " + esc(rdwVal("rdwTempat")) : "") + "<br>Penyelenggara: " + esc(rdwVal("rdwPeny")) + "</p>"
+    + "<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse;width:100%'><tr><th>No</th><th>Waktu</th><th>Kegiatan</th><th>Penanggung Jawab</th></tr>"
+    + rows.map((r, i) => "<tr><td>" + (i + 1) + "</td><td>" + esc(r.jam) + "</td><td>" + esc(r.keg) + "</td><td>" + esc(r.pj) + "</td></tr>").join("")
+    + "</table><p style='font-size:9pt;color:#888'>Dibuat dengan MahasiswaTools</p></body></html>";
+}
+async function rdwUnduhDocx() {
+  const ok = await loadLib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", "JSZip");
+  if (!ok) { toast("Library ZIP gagal dimuat — cek koneksi lalu coba lagi."); return; }
+  const rows = window._rdwRows || [];
+  const x = xe;
+  const p = (teks, gaya) => '<w:p><w:pPr><w:jc w:val="' + (gaya && gaya.tengah ? "center" : "left") + '"/>' + (gaya && gaya.bawah ? '<w:spacing w:after="160"/>' : '<w:spacing w:after="60"/>') + '</w:pPr><w:r><w:rPr>' + (gaya && gaya.tebal ? "<w:b/>" : "") + '<w:sz w:val="' + ((gaya && gaya.uk) || 22) + '"/></w:rPr><w:t xml:space="preserve">' + x(teks) + "</w:t></w:r></w:p>";
+  const sel = (teks, kepala) => '<w:tc><w:tcPr><w:tcW w:w="0" w:type="auto"/>' + (kepala ? '<w:shd w:fill="D9E2F3"/>' : "") + '</w:tcPr><w:p><w:r><w:rPr>' + (kepala ? "<w:b/>" : "") + '<w:sz w:val="21"/></w:rPr><w:t xml:space="preserve">' + x(teks) + "</w:t></w:r></w:p></w:tc>";
+  const baris = (cells, kepala) => "<w:tr>" + cells.map((c) => sel(c, kepala)).join("") + "</w:tr>";
+  const tabel = '<w:tbl><w:tblPr><w:tblW w:w="0" w:type="auto"/><w:tblBorders>'
+    + ["top", "left", "bottom", "right", "insideH", "insideV"].map((s) => '<w:' + s + ' w:val="single" w:sz="6" w:space="0" w:color="808080"/>').join("")
+    + '</w:tblBorders></w:tblPr><w:tblGrid><w:gridCol w:w="1500"/><w:gridCol w:w="6200"/><w:gridCol w:w="2766"/></w:tblGrid>'
+    + baris(["Waktu", "Kegiatan", "Penanggung Jawab"], true)
+    + rows.map((r) => baris([r.jam, r.keg, r.pj], false)).join("") + "</w:tbl>";
+  const docXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>'
+    + p("RUNDOWN ACARA", { tengah: 1, tebal: 1, uk: 32 })
+    + p(rdwVal("rdwAcara"), { tengah: 1, tebal: 1, uk: 26 })
+    + p(rdwVal("rdwTgl") + (rdwVal("rdwTempat") ? " • " + rdwVal("rdwTempat") : ""), { tengah: 1, uk: 22 })
+    + p("Penyelenggara: " + rdwVal("rdwPeny"), { tengah: 1, uk: 22, bawah: 1 })
+    + tabel
+    + p("Dibuat dengan MahasiswaTools • mahasiswatools.web.id", { uk: 16 })
+    + '<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="720" w:right="720" w:bottom="720" w:left="720"/></w:sectPr></w:body></w:document>';
+  const ct = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/></Types>';
+  const rels = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>';
+  const zip = new JSZip();
+  zip.file("[Content_Types].xml", ct);
+  zip.folder("_rels").file(".rels", rels);
+  zip.folder("word").file("document.xml", docXml);
+  const blob = await zip.generateAsync({ type: "blob", mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+  window._rdwDocx = blob;
+  download("Rundown_Acara.docx", blob);
+}
+function rdwCetak() {
+  try {
+    const w = window.open("", "_blank");
+    if (!w) { toast("Popup diblokir browser — pakai tombol Download .docx ya."); return; }
+    w.document.write(rdwDocHtml()); w.document.close(); w.focus();
+    setTimeout(() => { try { w.print(); } catch (e) {} }, 350);
+  } catch (e) { toast("Cetak gagal — pakai tombol Download .docx ya."); }
+}
+function smbBuat() {
+  const jenis = ($("#smbJenis") || {}).value || "ketua";
+  const nama = rdwVal("smbNama") || "…………………";
+  const jab = rdwVal("smbJab") || "Ketua Panitia";
+  const acara = rdwVal("rdwAcara") || "kegiatan ini";
+  const tema = rdwVal("rdwTema");
+  const peny = rdwVal("rdwPeny") || "panitia penyelenggara";
+  const terima = rdwVal("smbTerima").split(/\n/).map((s) => s.trim()).filter(Boolean);
+  const peran = { ketua: "ketua panitia pelaksana", organisasi: "ketua organisasi penyelenggara", pembina: "pembina kegiatan" }[jenis] || "ketua panitia pelaksana";
+  const par = [];
+  par.push("Assalamu'alaikum warahmatullahi wabarakatuh, salam sejahtera untuk kita semua, om swastiastu, namo buddhaya, salam kebajikan.");
+  par.push("Puji syukur marilah kita panjatkan ke hadirat Tuhan Yang Maha Esa, karena atas rahmat dan karunia-Nya kita dapat berkumpul pada hari ini dalam keadaan sehat untuk mengikuti " + acara + (tema ? " yang mengangkat tema \u201C" + tema + "\u201D" : "") + ".");
+  if (terima.length) {
+    par.push("Pada kesempatan yang berbahagia ini, perkenankan saya selaku " + peran + " menyampaikan ucapan terima kasih yang sebesar-besarnya kepada:");
+    terima.forEach((t, i) => par.push((i + 1) + ". " + t.charAt(0).toUpperCase() + t.slice(1) + ";"));
+    par.push("serta seluruh panitia dari " + peny + " yang telah bekerja keras mempersiapkan kegiatan ini sejak jauh-jauh hari.");
+  } else {
+    par.push("Pada kesempatan ini, perkenankan saya selaku " + peran + " menyampaikan terima kasih kepada seluruh pihak yang telah mendukung terselenggaranya kegiatan ini: pimpinan institusi, para narasumber, serta seluruh panitia dari " + peny + " yang telah bekerja keras mempersiapkannya.");
+  }
+  par.push("Kegiatan ini kami selenggarakan sebagai wadah untuk menambah wawasan, memperluas jejaring, dan menumbuhkan semangat berkarya di kalangan mahasiswa. Kami berharap seluruh peserta dapat mengikuti rangkaian acara dengan sungguh-sungguh dan membawa pulang ilmu yang bermanfaat, baik untuk pengembangan diri maupun untuk masyarakat.");
+  par.push("Kami menyadari bahwa dalam penyelenggaraan kegiatan ini masih terdapat banyak kekurangan. Untuk itu, kami mohon maaf yang sebesar-besarnya, dan dengan senang hati kami menerima kritik serta saran yang membangun demi perbaikan kegiatan berikutnya.");
+  par.push("Akhir kata, dengan mengucap bismillahirrahmanirrahim, kegiatan " + acara + " secara resmi saya nyatakan dibuka. Selamat mengikuti kegiatan, semoga berjalan lancar hingga selesai.");
+  par.push("Wassalamu'alaikum warahmatullahi wabarakatuh.");
+  const teks = par.join("\n\n");
+  window._smbTeks = teks;
+  window._smbPar = par;
+  $("#smbOut").innerHTML = '<div class="' + OUT + '"><div class="whitespace-pre-wrap leading-relaxed" style="font-family:Georgia,serif">' + esc(teks) + '</div>'
+    + '<p class="text-center mt-5" style="font-family:Georgia,serif">' + esc(jab) + ',<br><br><br><b>' + esc(nama) + '</b></p>'
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN2 + '" onclick="copyText(window._smbTeks)">📋 Salin Sambutan</button>'
+    + '<button class="' + BTN2 + '" onclick="smbUnduh()">⬇️ Download .doc</button></div></div>';
+}
+function smbUnduh() {
+  const nama = rdwVal("smbNama"), jab = rdwVal("smbJab");
+  const html = "<html><body style='font-family:serif;font-size:12pt'><h3 style='text-align:center'>KATA SAMBUTAN</h3>"
+    + (window._smbPar || []).map((p) => "<p style='text-align:justify'>" + esc(p) + "</p>").join("")
+    + "<p style='text-align:center'>" + esc(jab) + ",<br><br><br><b>" + esc(nama) + "</b></p></body></html>";
+  download("Kata_Sambutan.doc", html, "application/msword");
+}
+function mcBuat() {
+  const gaya = ($("#mcGaya") || {}).value || "formal";
+  const mc = rdwVal("mcNama");
+  const acara = rdwVal("rdwAcara") || "kegiatan ini";
+  const tema = rdwVal("rdwTema");
+  const tgl = rdwVal("rdwTgl");
+  const tempat = rdwVal("rdwTempat");
+  const rows = (window._rdwRows || []).filter((r) => r.keg);
+  const semi = gaya === "semiformal";
+  const par = [];
+  par.push("[Musik pembuka diputar. MC naik ke panggung setelah musik selesai.]");
+  par.push(semi
+    ? "Assalamu'alaikum warahmatullahi wabarakatuh, salam sejahtera untuk kita semua. Selamat datang dan terima kasih sudah hadir di " + acara + "!"
+    : "Assalamu'alaikum warahmatullahi wabarakatuh, salam sejahtera untuk kita semua, om swastiastu, namo buddhaya, salam kebajikan.");
+  par.push("Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa atas rahmat-Nya kita dapat berkumpul " + (tempat ? "di " + tempat + " " : "") + "pada " + (tgl || "hari ini") + " dalam rangka " + acara + (tema ? " dengan tema \u201C" + tema + "\u201D" : "") + ".");
+  par.push(mc ? "Perkenalkan, saya " + mc + " yang akan memandu jalannya acara dari awal hingga selesai." : "Saya selaku pembawa acara akan memandu jalannya kegiatan dari awal hingga selesai.");
+  if (semi) par.push("Sebelum mulai, yuk kita beri tepuk tangan dulu untuk semua peserta yang sudah hadir hari ini! 👏");
+  if (rows.length) {
+    par.push("Adapun susunan acara kita " + (semi ? "hari ini" : "pada hari ini") + " adalah sebagai berikut:");
+    rows.forEach((r, i) => par.push((i + 1) + ". " + r.keg + (r.jam ? " (" + r.jam + ")" : "") + (r.pj ? " — " + r.pj : "")));
+    par.push("[MC membacakan susunan acara di atas, lalu melanjutkan:]");
+    par.push("Untuk mempersingkat waktu, marilah kita mulai acara yang pertama" + (rows[0] ? ": " + rows[0].keg + "." : "."));
+    rows.slice(1).forEach((r) => {
+      par.push("[Setelah sesi sebelumnya selesai] Terima kasih. Memasuki acara berikutnya, yaitu " + r.keg + (r.pj ? ", yang akan dipandu/dilaksanakan oleh " + r.pj : "") + ". Kepada yang bertugas, waktu dan tempat kami persilakan.");
+    });
+  }
+  par.push("[Menjelang akhir acara] Tidak terasa rangkaian acara telah kita lalui bersama. " + (semi ? "Seru sekali, ya!" : "Semoga seluruh rangkaian acara memberikan manfaat bagi kita semua."));
+  par.push("Saya selaku pembawa acara mengucapkan terima kasih atas kehadiran dan partisipasi seluruh peserta, serta mohon maaf apabila terdapat kesalahan selama memandu acara. " + (semi ? "Sampai jumpa di kegiatan berikutnya!" : "Akhir kata, wassalamu'alaikum warahmatullahi wabarakatuh."));
+  const teks = par.join("\n\n");
+  window._mcTeks = teks;
+  window._mcPar = par;
+  $("#mcOut").innerHTML = '<div class="' + OUT + '"><div class="whitespace-pre-wrap leading-relaxed" style="font-family:Georgia,serif">' + esc(teks) + '</div>'
+    + '<div class="flex flex-wrap gap-2 mt-4"><button class="' + BTN2 + '" onclick="copyText(window._mcTeks)">📋 Salin Naskah MC</button>'
+    + '<button class="' + BTN2 + '" onclick="mcUnduh()">⬇️ Download .doc</button></div></div>';
+}
+function mcUnduh() {
+  const html = "<html><body style='font-family:serif;font-size:12pt'><h3 style='text-align:center'>NASKAH MC</h3><p style='text-align:center'><b>" + esc(rdwVal("rdwAcara")) + "</b></p>"
+    + (window._mcPar || []).map((p) => "<p style='text-align:justify'>" + esc(p) + "</p>").join("") + "</body></html>";
+  download("Naskah_MC.doc", html, "application/msword");
+}
+
+;
+/* ---------- 117. PEMBUAT BANNER / BACKDROP ACARA ---------- */
+UI.banneracara = function (el) {
+  window._bna = { logo: null, logoAda: false };
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Ukuran Banner", '<select id="bnaUkuran" class="' + IN + '"><option value="2|1">2 × 1 meter (landscape lebar)</option><option value="3|1">3 × 1 meter (sangat lebar)</option><option value="4|1">4 × 1 meter (backdrop panggung)</option><option value="1|1">1 × 1 meter (persegi)</option></select>')
+    + field("Tema Warna", '<select id="bnaTema" class="' + IN + '"><option value="indigo">Indigo Modern</option><option value="emerald">Hijau Emerald</option><option value="marun">Marun Elegan</option><option value="emas">Emas Premium</option><option value="slate">Slate Netral</option><option value="teal">Teal Segar</option></select>')
+    + field("Gaya Latar", '<select id="bnaGaya" class="' + IN + '"><option value="gradasi">Gradasi miring + aksen lingkaran</option><option value="polos">Polos bersih</option></select>')
+    + field("Judul Acara", '<input id="bnaJudul" class="' + IN + '" value="SEMINAR NASIONAL KEWIRAUSAHAAN">')
+    + field("Subjudul / Tema", '<input id="bnaSub" class="' + IN + '" value="Membangun Jiwa Wirausaha Muda di Era Digital">')
+    + field("Tanggal & Tempat", '<input id="bnaInfo" class="' + IN + '" value="Sabtu, 14 November 2026 • Aula Universitas Cendekia Nusantara">')
+    + field("Penyelenggara (baris bawah)", '<input id="bnaPeny" class="' + IN + '" value="HIMA Pendidikan Ekonomi — Universitas Cendekia Nusantara">')
+    + field("Logo / Lambang (opsional, tampil di pojok kiri atas)", '<input id="bnaLogo" type="file" accept="image/*" class="' + IN + '" onchange="bnaMuatLogo(this)">')
+    + '</div>'
+    + '<div class="overflow-x-auto"><canvas id="bnaCv" width="3000" height="1500" class="hidden w-full rounded-lg shadow border border-slate-200"></canvas></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="bnaUnduhPng()">⬇️ Download PNG</button>'
+    + '<button class="' + BTN2 + '" onclick="bnaUnduhPdf()">⬇️ Download PDF</button></div>'
+    + outBox("bnaOut") + "</div>";
+  bnaGambar();
+  el.addEventListener("input", () => bnaGambar());
+  el.addEventListener("change", () => bnaGambar());
+};
+function bnaVal(id) { return ($("#" + id) ? $("#" + id).value.trim() : ""); }
+function bnaMuatLogo(inp) {
+  const f = inp.files && inp.files[0]; if (!f) return;
+  const im = new Image();
+  im.onload = () => { window._bna.logo = im; window._bna.logoAda = true; URL.revokeObjectURL(im.src); bnaGambar(); };
+  im.src = URL.createObjectURL(f);
+}
+function bnaBungkus(ctx, teks, maks) {
+  const kata = String(teks || "").split(" "); const baris = []; let line = "";
+  kata.forEach((w) => { const t = line ? line + " " + w : w; if (ctx.measureText(t).width > maks && line) { baris.push(line); line = w; } else line = t; });
+  if (line) baris.push(line);
+  return baris.length ? baris : [""];
+}
+function bnaGambar() {
+  const cv = $("#bnaCv"); if (!cv) return null;
+  const parts = (($("#bnaUkuran") || {}).value || "2|1").split("|");
+  const rasio = Number(parts[0]) / Number(parts[1]);
+  const W = rasio >= 1 ? 3000 : Math.round(3000 * rasio);
+  const H = rasio >= 1 ? Math.round(3000 / rasio) : 3000;
+  if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+  cv.classList.remove("hidden");
+  const ctx = cv.getContext("2d");
+  const PALET = {
+    indigo: ["#312E81", "#4F46E5", "#FACC15"],
+    emerald: ["#064E3B", "#059669", "#A7F3D0"],
+    marun: ["#450A0A", "#991B1B", "#FDE68A"],
+    emas: ["#1C1917", "#44403C", "#FACC15"],
+    slate: ["#0F172A", "#334155", "#38BDF8"],
+    teal: ["#042F2E", "#0D9488", "#FDE68A"]
+  };
+  const P = PALET[(($("#bnaTema") || {}).value) || "indigo"] || PALET.indigo;
+  const gaya = ($("#bnaGaya") || {}).value || "gradasi";
+  if (gaya === "gradasi") {
+    const g = ctx.createLinearGradient(0, 0, W, H); g.addColorStop(0, P[0]); g.addColorStop(1, P[1]);
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.globalAlpha = 0.13; ctx.fillStyle = "#FFFFFF";
+    ctx.beginPath(); ctx.arc(W * 0.88, H * 0.08, H * 0.55, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.arc(W * 0.97, H * 0.95, H * 0.42, 0, 7); ctx.fill();
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = P[2]; ctx.fillRect(0, H * 0.9, W, H * 0.1);
+  } else { ctx.fillStyle = P[1]; ctx.fillRect(0, 0, W, H); }
+  const mrg = W * 0.06;
+  const tengah = !window._bna.logoAda;
+  ctx.textAlign = tengah ? "center" : "left";
+  const cx = tengah ? W / 2 : mrg + H * 0.34;
+  const maksW = W - (tengah ? mrg * 2 : mrg * 2 + H * 0.34);
+  if (window._bna.logoAda && window._bna.logo) {
+    const im = window._bna.logo, s = H * 0.3;
+    const sc = Math.min(s / im.width, s / im.height);
+    ctx.drawImage(im, mrg, H * 0.08, im.width * sc, im.height * sc);
+  }
+  let y = H * 0.3;
+  ctx.fillStyle = "#FFFFFF";
+  let fs = H * 0.16;
+  ctx.font = "800 " + fs + "px 'Plus Jakarta Sans', sans-serif";
+  let judul = bnaBungkus(ctx, bnaVal("bnaJudul") || "JUDUL ACARA", maksW);
+  while (judul.length > 3 && fs > H * 0.07) { fs *= 0.88; ctx.font = "800 " + fs + "px 'Plus Jakarta Sans', sans-serif"; judul = bnaBungkus(ctx, bnaVal("bnaJudul") || "JUDUL ACARA", maksW); }
+  judul.forEach((l) => { y += fs * 1.12; ctx.fillText(l, cx, y); });
+  ctx.fillStyle = P[2];
+  let fs2 = H * 0.062; ctx.font = "600 " + fs2 + "px 'Plus Jakarta Sans', sans-serif";
+  bnaBungkus(ctx, bnaVal("bnaSub"), maksW).slice(0, 2).forEach((l) => { y += fs2 * 1.5; ctx.fillText(l, cx, y); });
+  ctx.fillStyle = "#FFFFFF";
+  let fs3 = H * 0.05; ctx.font = "700 " + fs3 + "px 'Plus Jakarta Sans', sans-serif";
+  bnaBungkus(ctx, bnaVal("bnaInfo"), maksW).slice(0, 2).forEach((l) => { y += fs3 * 1.7; ctx.fillText(l, cx, y); });
+  ctx.font = "600 " + H * 0.036 + "px 'Plus Jakarta Sans', sans-serif";
+  ctx.fillStyle = gaya === "gradasi" ? "#1F2937" : "#FFFFFF";
+  if (gaya === "gradasi") { ctx.fillStyle = "#FFFFFF"; ctx.globalAlpha = 0.92; }
+  ctx.fillText(bnaVal("bnaPeny"), tengah ? W / 2 : cx, H * 0.965);
+  ctx.globalAlpha = 1;
+  return cv;
+}
+async function bnaUnduhPng() {
+  const cv = bnaGambar(); if (!cv) return;
+  window._bnaPngOk = false;
+  const blob = await canvasBlob(cv);
+  window._bnaPngOk = !!blob;
+  download("Banner_Acara.png", blob);
+}
+async function bnaUnduhPdf() {
+  const out = $("#bnaOut");
+  const ok = await loadPdfLib();
+  if (!ok) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library PDF gagal dimuat — cek koneksi internet lalu coba lagi.</div>'; return; }
+  const cv = bnaGambar(); if (!cv) return;
+  const parts = (($("#bnaUkuran") || {}).value || "2|1").split("|");
+  const lebarMm = Number(parts[0]) * 1000;
+  const ptPerMm = 72 / 25.4;
+  const wPt = Math.min(lebarMm * ptPerMm, 14400);
+  const hPt = wPt * cv.height / cv.width;
+  const pngBlob = await canvasBlob(cv);
+  const doc = await PDFLib.PDFDocument.create();
+  const page = doc.addPage([wPt, hPt]);
+  const emb = await doc.embedPng(await pngBlob.arrayBuffer());
+  page.drawImage(emb, { x: 0, y: 0, width: wPt, height: hPt });
+  const bytes = await doc.save();
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  window._bnaPdf = blob;
+  download("Banner_Acara.pdf", blob);
+}
+
+;
+/* ---------- 118. GENERATOR LEMBAR PRESENSI ---------- */
+UI.presensi = function (el) {
+  el.innerHTML = '<div class="fadein"><div class="grid sm:grid-cols-2 gap-x-4">'
+    + field("Nama Kegiatan", '<input id="prsKeg" class="' + IN + '" value="Seminar Nasional Kewirausahaan Mahasiswa 2026">')
+    + field("Instansi / Organisasi", '<input id="prsInst" class="' + IN + '" value="HIMA Pendidikan Ekonomi — Universitas Cendekia Nusantara">')
+    + field("Hari, Tanggal", '<input id="prsTgl" class="' + IN + '" value="Sabtu, 14 November 2026">')
+    + field("Tempat (opsional)", '<input id="prsTempat" class="' + IN + '" value="Aula Universitas Cendekia Nusantara">')
+    + field("Judul Kolom Identitas", '<select id="prsKolomId" class="' + IN + '"><option value="NIM">NIM</option><option value="Kelas">Kelas</option><option value="Instansi">Instansi</option><option value="kosong">Tanpa kolom identitas</option></select>')
+    + field("Baris Kosong Tambahan (untuk peserta yang belum terdaftar)", '<input id="prsKosong" type="number" min="0" max="60" value="5" class="' + IN + '">')
+    + '</div>'
+    + field("Daftar Nama Peserta (satu per baris, format: Nama | NIM — NIM opsional)", '<textarea id="prsDaftar" rows="6" class="' + IN + '" placeholder="Satu nama per baris">Andini Prameswari | 220101001\nBima Aditya | 220101002\nCitra Lestari | 220101003\nDimas Prasetyo | 220101004\nEka Nurhaliza | 220101005</textarea>')
+    + '<div class="mt-2"><p class="text-sm font-extrabold mb-2">👁 Pratinjau Lembar Presensi</p><div id="prsPrev"></div></div>'
+    + '<div class="flex flex-wrap gap-2 mt-3"><button class="' + BTN + '" onclick="prsUnduhPdf()">⬇️ Download PDF (A4)</button>'
+    + '<button class="' + BTN2 + '" onclick="prsCetak()">🖨️ Cetak</button></div>'
+    + outBox("prsOut") + "</div>";
+  const upd = () => prsPrev();
+  ["prsKeg", "prsInst", "prsTgl", "prsTempat", "prsKolomId", "prsKosong", "prsDaftar"].forEach((id) => { const n = $("#" + id); if (n) { n.addEventListener("input", upd); n.addEventListener("change", upd); } });
+  prsPrev();
+};
+function prsVal(id) { return ($("#" + id) ? $("#" + id).value.trim() : ""); }
+function prsData() {
+  const kolom = ($("#prsKolomId") || {}).value || "NIM";
+  const daftar = prsVal("prsDaftar").split(/\n/).map((s) => s.trim()).filter(Boolean).map((l) => {
+    const p = l.split("|").map((s) => s.trim());
+    return { nama: p[0] || "", idn: p[1] || "" };
+  });
+  const kosong = Math.max(0, Math.min(60, Number(($("#prsKosong") || {}).value) || 0));
+  return { kolom: kolom, daftar: daftar, kosong: kosong, total: daftar.length + kosong };
+}
+function prsHtml() {
+  const d = prsData();
+  const kepala = '<tr><th style="border:1px solid #334155;padding:5px 6px;width:34px">No</th><th style="border:1px solid #334155;padding:5px 6px;text-align:left">Nama</th>'
+    + (d.kolom !== "kosong" ? '<th style="border:1px solid #334155;padding:5px 6px;text-align:left;width:130px">' + esc(d.kolom) + '</th>' : "")
+    + '<th colspan="2" style="border:1px solid #334155;padding:5px 6px">Tanda Tangan</th></tr>';
+  let baris = "";
+  for (let i = 0; i < d.total; i++) {
+    const p = d.daftar[i] || { nama: "", idn: "" };
+    baris += '<tr><td style="border:1px solid #334155;padding:5px 6px;text-align:center">' + (i + 1) + '</td>'
+      + '<td style="border:1px solid #334155;padding:5px 6px">' + esc(p.nama) + '</td>'
+      + (d.kolom !== "kosong" ? '<td style="border:1px solid #334155;padding:5px 6px">' + esc(p.idn) + '</td>' : "")
+      + '<td style="border:1px solid #334155;padding:5px 6px;width:88px;height:26px">' + (i % 2 === 0 ? (i + 1) + "." : "") + '</td>'
+      + '<td style="border:1px solid #334155;padding:5px 6px;width:88px;height:26px">' + (i % 2 === 1 ? (i + 1) + "." : "") + '</td></tr>';
+  }
+  return '<div style="font-family:Georgia,serif;color:#0F172A">'
+    + '<p style="text-align:center;font-weight:800;font-size:14px;margin:0">DAFTAR HADIR / PRESENSI</p>'
+    + '<p style="text-align:center;font-weight:700;font-size:13px;margin:2px 0">' + esc(prsVal("prsKeg") || "Nama Kegiatan") + '</p>'
+    + '<p style="text-align:center;font-size:11.5px;margin:0">' + esc(prsVal("prsInst")) + '</p>'
+    + '<p style="text-align:center;font-size:11.5px;margin:2px 0 10px">' + esc(prsVal("prsTgl")) + (prsVal("prsTempat") ? " • " + esc(prsVal("prsTempat")) : "") + '</p>'
+    + '<table style="width:100%;border-collapse:collapse;font-size:12px">' + kepala + baris + '</table>'
+    + '<p style="font-size:9.5px;color:#64748B;margin-top:8px">Dibuat dengan MahasiswaTools • mahasiswatools.web.id</p></div>';
+}
+function prsPrev() {
+  const box = $("#prsPrev"); if (!box) return;
+  box.innerHTML = '<div class="bg-white p-5 border border-slate-200 dark:border-slate-700 overflow-x-auto rounded-lg">' + prsHtml() + '</div>';
+  const d = prsData();
+  window._prsBaris = d.total;
+  window._prsNama = d.daftar.length;
+}
+async function prsUnduhPdf() {
+  const out = $("#prsOut");
+  const ok = await loadPdfLib();
+  if (!ok) { out.innerHTML = '<div class="' + OUT + ' text-rose-600 font-semibold">❌ Library PDF gagal dimuat — cek koneksi internet lalu coba lagi.</div>'; return; }
+  out.innerHTML = '<div class="' + OUT + '">⏳ Menyusun PDF presensi…</div>';
+  const d = prsData();
+  const doc = await PDFLib.PDFDocument.create();
+  const font = await doc.embedFont(PDFLib.StandardFonts.Helvetica);
+  const fontB = await doc.embedFont(PDFLib.StandardFonts.HelveticaBold);
+  const A4 = [595.28, 841.89], M = 42;
+  const hitam = PDFLib.rgb(0.06, 0.09, 0.16), abu = PDFLib.rgb(0.39, 0.45, 0.55);
+  let page = doc.addPage(A4);
+  let y = A4[1] - M;
+  const tengah = (teks, ukuran, f, yy, warna) => { const w = f.widthOfTextAtSize(teks, ukuran); page.drawText(teks, { x: (A4[0] - w) / 2, y: yy, size: ukuran, font: f, color: warna || hitam }); };
+  tengah("DAFTAR HADIR / PRESENSI", 15, fontB, y); y -= 20;
+  tengah(mtAmanTeksPdf(prsVal("prsKeg") || "Nama Kegiatan"), 12.5, fontB, y); y -= 16;
+  tengah(mtAmanTeksPdf(prsVal("prsInst")), 10.5, font, y, abu); y -= 14;
+  tengah(mtAmanTeksPdf(prsVal("prsTgl") + (prsVal("prsTempat") ? "  -  " + prsVal("prsTempat") : "")), 10.5, font, y, abu); y -= 24;
+  const pakaiId = d.kolom !== "kosong";
+  const lebarId = pakaiId ? 105 : 0;
+  const kolomDef = [
+    { j: "No", w: 30, tengah: true },
+    { j: "Nama", w: A4[0] - M * 2 - 30 - lebarId - 150 },
+    ...(pakaiId ? [{ j: d.kolom, w: lebarId }] : []),
+    { j: "Tanda Tangan", w: 75, tengah: true },
+    { j: "", w: 75, tengah: true }
+  ];
+  const gambarBaris = (sel, kepala, yy) => {
+    let x = M;
+    sel.forEach((s, ci) => {
+      const kd = kolomDef[ci];
+      page.drawRectangle({ x: x, y: yy - 18, width: kd.w, height: 18, borderColor: hitam, borderWidth: 0.8, color: kepala ? PDFLib.rgb(0.9, 0.92, 0.96) : undefined });
+      const teks = mtAmanTeksPdf(String(s || ""));
+      const f = kepala ? fontB : font;
+      const tw = f.widthOfTextAtSize(teks, 9.5);
+      page.drawText(teks, { x: kd.tengah ? x + (kd.w - tw) / 2 : x + 5, y: yy - 12.5, size: 9.5, font: f, color: hitam });
+      x += kd.w;
+    });
+  };
+  gambarBaris(kolomDef.map((k) => k.j), true, y); y -= 18;
+  for (let i = 0; i < d.total; i++) {
+    if (y < M + 40) {
+      page = doc.addPage(A4); y = A4[1] - M;
+      gambarBaris(kolomDef.map((k) => k.j), true, y); y -= 18;
+    }
+    const p = d.daftar[i] || { nama: "", idn: "" };
+    const sel = [String(i + 1), p.nama];
+    if (pakaiId) sel.push(p.idn);
+    sel.push(i % 2 === 0 ? (i + 1) + "." : "", i % 2 === 1 ? (i + 1) + "." : "");
+    gambarBaris(sel, false, y); y -= 18;
+  }
+  page.drawText("Dibuat dengan MahasiswaTools - mahasiswatools.web.id", { x: M, y: M - 16, size: 8, font: font, color: abu });
+  const bytes = await doc.save();
+  const blob = new Blob([bytes], { type: "application/pdf" });
+  window._prsPdf = blob;
+  out.innerHTML = '<div class="' + OUT + '">✅ PDF presensi dibuat: <b>' + d.total + ' baris</b> (' + d.daftar.length + ' nama terdaftar + ' + d.kosong + ' baris kosong). File otomatis terunduh.</div>';
+  download("Lembar_Presensi.pdf", blob);
+}
+function prsCetak() {
+  try {
+    const w = window.open("", "_blank");
+    if (!w) { toast("Popup diblokir browser — pakai tombol Download PDF ya."); return; }
+    w.document.write("<html><head><title>Lembar Presensi</title></head><body style='margin:24px'>" + prsHtml() + "</body></html>");
+    w.document.close(); w.focus();
+    setTimeout(() => { try { w.print(); } catch (e) {} }, 350);
+  } catch (e) { toast("Cetak gagal — pakai tombol Download PDF ya."); }
+}
+
+/* ============================================================
+   TOOL BARU MANDIRI: Word Frequency, Waktu Baca, Kerangka Bab
+   ============================================================ */
+;
 UI.hadir = function (el) {
   el.innerHTML = '<div class="fadein">'
     + field("Jenis Dokumen", '<select id="hdMode" class="' + IN + '" onchange="renderHadir()"><option value="hadir">📋 Daftar Hadir Kegiatan</option><option value="berita">📰 Berita Acara Kegiatan</option></select>')

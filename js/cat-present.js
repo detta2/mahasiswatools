@@ -569,9 +569,6 @@ function unduhFlashTeks() {
 
 ;
 
-/* ============================================================
-   TOOL BARU MANDIRI: Word Frequency, Waktu Baca, Kerangka Bab
-   ============================================================ */
 ;
 /* ============================================================
    TOOL 76 — GENERATOR SOAL RUMPANG (CLOZE)

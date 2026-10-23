@@ -1578,5 +1578,91 @@ k51: {
     ["Apa itu metode STAR dan mengapa rekruter menyukainya?", "STAR adalah kerangka jawaban pertanyaan perilaku: Situation (konteksnya), Task (tanggung jawabmu), Action (tindakan spesifik yang kamu ambil), Result (hasil terukurnya). Kerangka ini membuat jawabanmu konkret dan bisa dinilai, berbeda dengan jawaban umum seperti ‘saya pekerja keras’ tanpa bukti cerita."],
     ["Mengapa dibatasi 90 detik per jawaban?", "Karena jawaban wawancara yang efektif memang singkat: lebih dari dua menit tanpa struktur membuat pewawancara kehilangan inti ceritamu. Pewaktu 90 detik melatihmu menyampaikan satu cerita STAR secara padat dan berhenti pada hasil."]
   ]
+},
+/* ================= PAKET ACARA KAMPUS ================= */
+twibbon: {
+  buka: "Twibbon adalah bingkai foto khas kampanye dan acara kampus: foto peserta dibingkai desain resmi kegiatan, lalu dibagikan ke media sosial sebagai tanda dukungan. Tool ini menggambar bingkainya langsung di canvas 1080×1080: pilih satu dari lima template bawaan (Pita Sudut, Blok Bawah, Lingkaran Tengah, Klasik Pita, atau Diagonal) lalu ganti warna temanya, atau unggah bingkai PNG transparan buatan desainer acaramu sendiri. Setelah foto dimuat, geser dengan mouse atau jari dan atur zoom-nya sampai pas, lalu unduh hasil akhir sebagai PNG resolusi penuh yang siap diunggah ke Instagram, WhatsApp, atau TikTok.",
+  langkah: [
+    "Pilih bingkai dari daftar Template Bingkai, atau pilih Upload PNG Transparan lalu muat berkas bingkai dari desainer acaramu.",
+    "Bila memakai template, sesuaikan Warna Tema — nama acara pada template ikut berganti saat kamu mengetik kolom Nama Acara.",
+    "Tekan kolom Upload Foto Peserta dan pilih foto yang akan dipasang ke bingkai.",
+    "Geser foto dengan mouse/jari untuk mengatur posisi wajah, lalu pakai slider Zoom Foto sampai komposisinya pas di dalam bingkai.",
+    "Tekan tombol Download Twibbon (PNG 1080×1080) — berkas hasil akhir langsung tersimpan dan siap dibagikan."
+  ],
+  faq: [
+    ["Bingkai dari desainer acara saya formatnya apa?", "Gunakan PNG berukuran 1080×1080 dengan bagian tengah transparan (alpha). Tool menggambar fotomu di bawah bingkai itu persis seperti aplikasi twibbon pada umumnya, dan hasil unduhannya PNG 1080×1080 penuh."],
+    ["Foto saya terpotong atau terlalu kecil di dalam bingkai?", "Itu wajar karena foto menutupi seluruh kanvas (mode cover). Geser foto untuk memilih bagian yang tampil dan naikkan Zoom Foto untuk memperbesar; untuk twibbon, pastikan wajah berada di area tengah yang tidak tertutup ornamen bingkai."]
+  ]
+},
+idcard: {
+  buka: "Menjelang acara, ID card panitia selalu jadi pekerjaan mendesak: puluhan nama harus masuk kartu satu per satu. Tool ini membalik prosesnya — kamu cukup mengetik daftar nama beserta jabatan dalam format ‘Nama | Jabatan’, memilih tema (Klasik Emas, Biru Korporat, atau Hijau Alam, selaras dengan Generator Sertifikat Massal), lalu seluruh kartu ukuran standar 85,6×54 mm orientasi tegak digambar otomatis lengkap dengan lingkaran inisial nama. Kartu pertama dari daftarmu tampil sebagai pratinjau langsung. Hasilnya bisa diunduh sebagai ZIP berisi PNG per kartu, atau PDF A4 berisi banyak kartu yang tinggal dicetak, digunting, dan dimasukkan ke holder.",
+  langkah: [
+    "Isi Nama Acara dan Organisasi / Kepanitiaan yang akan tercetak di kepala setiap kartu.",
+    "Pilih salah satu dari tiga Tema Kartu — pratinjau Kartu Pertama langsung berubah mengikuti pilihanmu.",
+    "Ketik daftar panitia pada kolom Daftar Nama & Jabatan, satu orang per baris dengan format Nama | Jabatan (jabatan boleh dikosongkan).",
+    "Periksa pratinjau kartu pertama; bila daftar berubah, pratinjau ikut diperbarui seketika.",
+    "Tekan Download ZIP (PNG per kartu) untuk dibagikan digital, atau Download PDF A4 untuk dicetak — kartu tersusun rapi beberapa per halaman."
+  ],
+  faq: [
+    ["Ukuran kartunya sesuai holder ID card standar?", "Ya, kartu digambar mengikuti rasio kartu standar 85,6×54 mm (seukuran kartu ATM) dalam orientasi tegak, dan pada PDF A4 ukurannya dicetak pada skala sebenarnya — gunakan pengaturan cetak 100% / ukuran aktual agar tidak menyusut."],
+    ["Bisakah memakai foto asli tiap panitia, bukan inisial?", "Versi ini sengaja memakai lingkaran inisial nama agar pembuatan massal tetap satu langkah untuk puluhan orang. Bila acaramu mewajibkan foto asli, kumpulkan foto terpisah dan pasangkan manual — kebanyakan kepanitiaan kampus menerima kartu berinisial untuk keperluan identifikasi di lokasi."]
+  ]
+},
+sertsatuan: {
+  buka: "Generator Sertifikat Massal unggul untuk ratusan penerima, tetapi kadang kamu hanya butuh SATU sertifikat istimewa — untuk pemateri, juri, atau pembicara tamu — yang tata letaknya ingin kamu atur sendiri. Desainer ini adalah editor canvas lanskap rasio A4: pilih latar dari tiga tema yang sama dengan sertifikat massal (Klasik Emas, Biru Korporat, Hijau Alam) atau unggah gambar latar rancanganmu sendiri, lalu atur lima elemen teksnya — nama penerima, peran, nama acara, kota & tanggal, dan blok penandatangan. Setiap elemen bisa diklik dan digeser bebas di atas kanvas, dan ukuran serta warna hurufnya diatur dari panel. Hasil akhir diekspor sebagai PNG resolusi tinggi atau PDF A4 siap cetak.",
+  langkah: [
+    "Isi Nama Penerima, Peran, Nama Acara, Kota & Tanggal, serta Nama dan Jabatan Penandatangan pada kolom-kolomnya — kanvas langsung berubah.",
+    "Pilih Latar Sertifikat: salah satu dari tiga tema bawaan, atau Upload Gambar Latar rancanganmu sendiri (gunakan gambar landscape sekitar 1400×990 piksel).",
+    "Klik elemen teks mana pun langsung di atas sertifikat untuk memilihnya — elemen terpilih tampil dengan garis putus-putus — lalu geser ke posisi yang kamu inginkan.",
+    "Atur Ukuran Huruf dengan slider dan Warna Teks dengan pemilih warna pada panel Atur Elemen Teks sampai komposisinya seimbang.",
+    "Tekan Download PNG untuk berkas gambar, atau Download PDF (A4) untuk berkas siap cetak."
+  ],
+  faq: [
+    ["Apa bedanya dengan Generator Sertifikat Massal?", "Sertifikat Massal mengolah daftar banyak penerima menjadi ZIP sertifikat bertema tetap. Desainer Satuan mengolah satu sertifikat dengan kebebasan penuh: latar gambar sendiri dan posisi tiap teks bisa digeser manual — cocok untuk sertifikat khusus seperti narasumber atau juri."],
+    ["Saya mengunggah latar sendiri, mengapa judul SERTIFIKAT tidak muncul?", "Memang disengaja: pada latar unggahan sendiri, tool hanya menggambar elemen teks (nama, peran, acara, tanggal, penandatangan) di atas gambarmu, karena judul dan ornamen biasanya sudah menjadi bagian dari rancangan latar itu sendiri. Bila latar polos, pakai salah satu tema bawaan yang sudah lengkap dengan bingkai dan judul."]
+  ]
+},
+rundown: {
+  buka: "Satu tool untuk tiga dokumen yang selalu diminta setiap acara kampus. Bagian Rundown menyusun susunan acara dari baris-baris Jam–Kegiatan–Penanggung Jawab yang bisa ditambah dan dihapus bebas, lengkap dengan pratinjau tabel dan unduhan .docx. Bagian Kata Sambutan menulis naskah sambutan utuh berbahasa Indonesia yang baik untuk tiga jenis pemberi sambutan — Ketua Panitia, Ketua Organisasi, atau Pembina/Dosen — dari data acara yang sama, termasuk poin ucapan terima kasih yang kamu daftar sendiri. Bagian Naskah MC menghasilkan naskah pembawa acara dari pembuka sampai penutup, mengikuti susunan rundown-mu, dalam gaya formal atau semiformal. Ketiganya berbagi satu isian data acara, jadi kamu tidak mengetik nama acara berulang kali.",
+  langkah: [
+    "Isi data acara sekali di bagian atas: Nama Acara, Tema Acara, Hari/Tanggal, Tempat, dan Penyelenggara — ketiga bagian memakai data ini.",
+    "Susun rundown: ubah isi tiap baris Jam, Kegiatan, dan Penanggung Jawab, tambah baris dengan tombol Tambah Baris Rundown atau hapus dengan tanda ✕; pratinjau tabel di bawahnya selalu mutakhir.",
+    "Unduh rundown sebagai .docx untuk dibagikan ke panitia, atau cetak langsung dari tombol Cetak Rundown.",
+    "Di bagian Kata Sambutan, pilih Jenis Sambutan dan isi nama serta jabatan pemberi sambutan dan poin ucapan terima kasih (satu per baris), lalu tekan Buat Kata Sambutan — salin atau unduh hasilnya.",
+    "Di bagian Naskah MC, pilih gaya Formal atau Semiformal lalu tekan Buat Naskah MC — naskahnya menyusun kalimat peralihan mengikuti urutan rundown yang kamu buat."
+  ],
+  faq: [
+    ["Apakah naskah sambutan dan MC-nya boleh diubah lagi?", "Tentu — keluaran tool ini adalah naskah awal yang rapi, bukan teks saklek. Setelah disalin atau diunduh sebagai dokumen, sesuaikan dengan gaya bicara pemberi sambutan dan MC-mu: tambah sapaan untuk tamu khusus, selipkan pantun, atau ubah nama yang disebut."],
+    ["Mengapa rundown diunduh sebagai .docx, bukan .doc seperti tool lain?", "Rundown berisi tabel Jam–Kegiatan–Penanggung Jawab; format .docx menjaga tabel itu tetap rapi saat dibuka di Word, WPS, maupun Google Docs, termasuk saat panitia lain perlu mengedit susunannya menjelang hari-H."]
+  ]
+},
+banneracara: {
+  buka: "Banner adalah wajah pertama sebuah acara: terbentang di gerbang, panggung, dan latar foto peserta. Tool ini menggambar desain bannermu di canvas mengikuti ukuran cetak yang kamu pilih — 2×1, 3×1, 4×1, atau 1×1 meter — dengan enam tema warna dan dua gaya latar (gradasi miring beraksen lingkaran atau polos bersih). Ketik judul acara, subjudul/tema, tanggal dan tempat, serta penyelenggara; semua teks tersusun otomatis dengan ukuran huruf yang menyesuaikan panjang teks, dan logo organisasimu bisa ditempatkan di pojok bila diunggah. Ekspor PNG-nya selebar 3000 piksel — cukup tajam untuk diserahkan ke percetakan — atau sebagai PDF vektor-berbasis-gambar untuk dicetak pada ukuran sebenarnya.",
+  langkah: [
+    "Pilih Ukuran Banner sesuai kebutuhan cetakmu: 2×1 atau 3×1 meter untuk spanduk umum, 4×1 meter untuk backdrop panggung, 1×1 meter untuk X-banner mini atau umbul persegi.",
+    "Tentukan Tema Warna dan Gaya Latar — pratinjau canvas berubah seketika setiap pilihan diganti.",
+    "Isi Judul Acara (usahakan singkat dan terbaca dari jauh), Subjudul/Tema, Tanggal & Tempat, dan Penyelenggara.",
+    "Bila punya logo organisasi, unggah pada kolom Logo — logo tampil di pojok kiri atas dan teks bergeser menyesuaikan.",
+    "Tekan Download PNG untuk berkas gambar lebar 3000 piksel, atau Download PDF sesuai ukuran meter pilihanmu, lalu serahkan ke percetakan."
+  ],
+  faq: [
+    ["Apakah PNG 3000 piksel cukup tajam untuk banner 4 meter?", "Untuk banner yang dilihat dari jarak beberapa meter, 3000 piksel pada sisi lebar adalah standar praktis yang diterima percetakan digital printing (setara ±19 DPI pada 4 meter) dan hasilnya tajam untuk jarak pandang normal. Bila percetakanmu meminta berkas vektor murni, gunakan desain ini sebagai acuan final untuk didesain ulang — posisikan ekspektasi sejak awal."],
+    ["Judul acara saya panjang, apakah teksnya muat?", "Tool membungkus judul menjadi beberapa baris dan otomatis mengecilkan ukuran huruf bila barisnya terlalu banyak, dan subjudul serta info dibatasi dua baris. Tetap usahakan judul sesingkat mungkin — banner yang baik terbaca dalam tiga detik dari kejauhan."]
+  ]
+},
+presensi: {
+  buka: "Daftar hadir adalah bukti administratif yang selalu dilampirkan di LPJ dan laporan pertanggungjawaban acara — dan yang paling sering dibuat asal-asalan menjelang acara dimulai. Generator ini menyusun lembar presensi A4 resmi: kop berisi nama kegiatan, instansi, hari/tanggal, dan tempat; tabel bernomor berisi nama peserta beserta kolom identitas (NIM, Kelas, atau Instansi); dan kolom Tanda Tangan ganda yang diisi berselang-seling (zig-zag) persis seperti format presensi yang lazim dipakai di Indonesia, supaya peserta tidak menandatangani baris yang salah. Daftarkan nama peserta bila sudah ada, atau hasilkan lembar berisi baris kosong sejumlah yang kamu butuhkan untuk dicetak dan diisi tulis tangan di lokasi.",
+  langkah: [
+    "Isi Nama Kegiatan, Instansi/Organisasi, Hari/Tanggal, dan Tempat — keempatnya menjadi kop lembar presensimu.",
+    "Pilih Judul Kolom Identitas: NIM untuk peserta mahasiswa, Kelas, Instansi, atau tanpa kolom identitas sama sekali.",
+    "Ketik Daftar Nama Peserta satu per baris dengan format Nama | NIM bila daftarnya sudah ada; kosongkan bila ingin lembar kosong.",
+    "Tentukan jumlah Baris Kosong Tambahan untuk peserta susulan yang mendaftar di tempat — pratinjau lembar langsung menunjukkan hasil akhirnya.",
+    "Tekan Download PDF (A4) untuk berkas siap cetak (tabel panjang otomatis berlanjut ke halaman berikutnya), atau Cetak untuk mencetak langsung."
+  ],
+  faq: [
+    ["Mengapa kolom tanda tangannya ada dua dan terisi bergantian?", "Itu format presensi standar Indonesia: nomor ganjil menandatangani kolom kiri, nomor genap kolom kanan. Pola zig-zag ini menghemat lebar kertas dan mengurangi salah baris saat peserta menandatangani dengan cepat di meja registrasi."],
+    ["Apa bedanya dengan Daftar Hadir pada tool Generator Surat & Dokumen Kegiatan?", "Tool lama itu menghasilkan daftar hadir sederhana sebagai berkas .doc yang menyatu dengan berita acara. Generator ini khusus presensi siap cetak format A4/PDF dengan kolom tanda tangan zig-zag, pilihan kolom NIM/Kelas/Instansi, dan mode baris kosong terukur untuk dicetak sebelum nama peserta final."]
+  ]
 }
+
 };

@@ -101,6 +101,12 @@ const TOOLS = [
   { id: "k33", n: "Gantt Chart & Matriks Proker KKN", c: "kelompok", i: "📅", d: "Linimasa program kerja mingguan, ekspor PNG.", aktif: 1 },
   { id: "k34", n: "Bagan Struktur Organisasi Posko KKN", c: "kelompok", i: "🏛️", d: "Hierarki posko/desa dari pembina sampai divisi, PNG.", aktif: 1 },
   { id: "k36", n: "Desain Plang Jalan & Edukasi Desa (Bonus)", c: "kelompok", i: "🪧", d: "Desain plang canvas 4 tema untuk program fisik KKN.", aktif: 1 },
+  { id: "twibbon", n: "Pembuat Twibbon", c: "kelompok", i: "🖼️", d: "Pasang foto ke bingkai twibbon acara: 5 template siap pakai atau upload bingkai PNG sendiri, geser & zoom, unduh PNG 1080×1080.", aktif: 1 },
+  { id: "idcard", n: "ID Card & Name Tag Panitia Massal", c: "kelompok", i: "🪪", d: "Buat ID card panitia satu per satu dari daftar nama: 3 tema, ekspor ZIP PNG per kartu + PDF A4 siap cetak.", aktif: 1 },
+  { id: "sertsatuan", n: "Desainer Sertifikat Satuan", c: "kelompok", i: "🏆", d: "Rancang satu sertifikat bebas: latar tema atau gambar sendiri, geser tiap teks sesukamu, ekspor PNG & PDF A4.", aktif: 1 },
+  { id: "rundown", n: "Generator Rundown, Sambutan & Naskah MC", c: "kelompok", i: "🎤", d: "Satu paket acara: susun rundown (unduh DOCX), buat kata sambutan 3 jenis, dan naskah MC formal/semiformal.", aktif: 1 },
+  { id: "banneracara", n: "Pembuat Banner / Backdrop Acara", c: "kelompok", i: "🎪", d: "Desain banner acara ukuran 2×1, 3×1, 4×1, atau 1×1 meter dengan tema warna & logo — ekspor PNG besar + PDF.", aktif: 1 },
+  { id: "presensi", n: "Generator Lembar Presensi", c: "kelompok", i: "📝", d: "Lembar daftar hadir A4 berkop kegiatan: daftar nama + NIM, kolom tanda tangan zig-zag dua kolom, ekspor PDF.", aktif: 1 },
   { id: "pdfsign", n: "Penanda Tangan & Stempel PDF", c: "dokumen", i: "✍️", d: "Gambar tanda tangan di layar, tambah stempel/materai, letakkan di halaman PDF yang dipilih, unduh PDF final.", fmt: "PDF", aktif: 1 },
   { id: "pdforg", n: "Pengatur Ulang, Pemutar & Penghapus Halaman PDF", c: "dokumen", i: "📑", d: "Lihat thumbnail semua halaman: putar yang miring, geser urutan, hapus yang kosong — unduh PDF rapi.", fmt: "PDF", aktif: 1 },
   { id: "pdftab2xls", n: "Ekstraktor Tabel PDF ke Excel", c: "dokumen", i: "🧾", d: "Tarik tabel dari PDF (laporan BEI, publikasi BPS) jadi .xlsx; angka format Indonesia/akuntansi dibersihkan jadi numerik asli.", fmt: "PDF", aktif: 1 },
@@ -310,7 +316,13 @@ prorata: '<path d="M12 3.5V21M8 21h8"/><path d="M12 3.5L5.8 5.9M12 3.5l6.2 2.4"/
 hadir: '<rect x="5" y="4" width="14" height="18" rx="2"/><path d="M9 4a3 3 0 0 1 6 0"/><circle cx="12" cy="12.3" r="2"/><path d="M8.7 18.4c.7-1.5 1.9-2.2 3.3-2.2s2.6.7 3.3 2.2"/>',
 k33: '<path d="M4 3.5V20.5h16.5"/><path d="M7.5 7.5h6.5M10.5 11.8h8M8 16.2h5"/>',
 k34: '<rect x="9" y="2.8" width="6" height="4.6" rx="1"/><rect x="2.8" y="16.6" width="6" height="4.6" rx="1"/><rect x="9" y="16.6" width="6" height="4.6" rx="1"/><rect x="15.2" y="16.6" width="6" height="4.6" rx="1"/><path d="M12 7.4v3.1M5.8 10.5h12.4M5.8 10.5v6.1M12 10.5v6.1M18.2 10.5v6.1"/>',
-k36: '<path d="M12 21V9.5"/><path d="M5 3.8h13.2L15.6 6.4l2.6 2.6H5z"/><path d="M3.8 21h16.4"/>'
+k36: '<path d="M12 21V9.5"/><path d="M5 3.8h13.2L15.6 6.4l2.6 2.6H5z"/><path d="M3.8 21h16.4"/>',
+twibbon: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="11" r="3.4"/><path d="M5.5 20a6.8 6.8 0 0 1 13 0"/><path d="M3 7.2h18"/>',
+idcard: '<rect x="6.5" y="2.8" width="11" height="18.4" rx="2"/><path d="M9.8 2.8a2.2 2.2 0 0 1 4.4 0"/><circle cx="12" cy="10" r="2.2"/><path d="M8.4 17.6a3.8 3.8 0 0 1 7.2 0"/><path d="M8.6 20.4h6.8"/>',
+sertsatuan: '<circle cx="12" cy="9.5" r="5.8"/><path d="M8.8 14v6.8l3.2-2.2 3.2 2.2V14"/><path d="M9.7 9.5l1.7 1.7 3-3.2"/>',
+rundown: '<path d="M9.5 3.5h10M9.5 12h10M9.5 20.5h10"/><circle cx="5" cy="3.5" r="1.3"/><circle cx="5" cy="12" r="1.3"/><rect x="2.8" y="17.8" width="4.4" height="5.4" rx="1.4"/><path d="M5 15.6v2.2"/>',
+banneracara: '<path d="M4 21V4"/><path d="M4 5.2c2.8-1.6 5.2 1.4 8 .2 2.4-1 4.8-1.2 8-.4v6.2c-3.2-.8-5.6-.6-8 .4-2.8 1.2-5.2-1.8-8-.2"/><path d="M6.8 16.8h10.4M6.8 20h7"/>',
+presensi: '<path d="M6 3h9l4 4v14H6z"/><path d="M14.5 3.2V7.5H19"/><path d="M9 12.2l1.8 1.8 3.4-3.6M9 18.4h6.5"/>'
 };
 console.log(Object.keys(ICONS).length);
 function iconOf(t) { const p = ICONS[t.id]; if (!p) return '<span style="font-weight:800;font-size:13px">' + monoOf(t) + "</span>"; return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + p + "</svg>"; }

@@ -1,15 +1,15 @@
 <p align="center">
-  <img src="docs/banner.png" alt="MahasiswaTools — 112 Tool Gratis untuk Mahasiswa & Pejuang Skripsi" width="100%">
+  <img src="docs/banner.png" alt="MahasiswaTools — 118 Tool Gratis untuk Mahasiswa & Pejuang Skripsi" width="100%">
 </p>
 
 <p align="center">
   <a href="https://mahasiswatools.web.id"><img src="https://img.shields.io/badge/Live-mahasiswatools.web.id-4F46E5?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Site"></a>
-  <img src="https://img.shields.io/badge/Tool_Aktif-112-059669?style=for-the-badge" alt="100 Tool">
+  <img src="https://img.shields.io/badge/Tool_Aktif-118-059669?style=for-the-badge" alt="100 Tool">
   <img src="https://img.shields.io/badge/100%25_Client--Side-JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="Client-Side">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-0B0F19?style=for-the-badge" alt="MIT License"></a>
 </p>
 
-<p align="center"><b>Dari Mahasiswa, Untuk Mahasiswa.</b> Satu portal berisi 112 alat bantu kuliah & skripsi — gratis, tanpa login, tanpa watermark, dan berjalan 100% di browser. Tidak ada data yang dikirim ke server mana pun.</p>
+<p align="center"><b>Dari Mahasiswa, Untuk Mahasiswa.</b> Satu portal berisi 118 alat bantu kuliah & skripsi — gratis, tanpa login, tanpa watermark, dan berjalan 100% di browser. Tidak ada data yang dikirim ke server mana pun.</p>
 
 <p align="center">
   <a href="https://mahasiswatools.web.id"><b>🌐 Buka Situsnya</b></a> •
@@ -22,7 +22,7 @@
 
 ## ✨ Kenapa MahasiswaTools?
 
-- **Gratis total** — 112 tool, tanpa paywall, tanpa watermark di hasil unduhan.
+- **Gratis total** — 118 tool, tanpa paywall, tanpa watermark di hasil unduhan.
 - **Privasi mutlak** — semua perhitungan & dokumen dibuat di perangkatmu. Matikan internet setelah halaman terbuka, tool tetap bekerja.
 - **Bahasa manusia** — antarmuka Bahasa Indonesia sederhana + tombol "Isi Data Contoh" di tool-tool utama.
 - **Cepat** — arsitektur partisi lazy per kategori: muatan JavaScript awal hanya ±73 KB, tool dimuat saat dibutuhkan.
@@ -48,7 +48,7 @@
 - **📄 Ekspor nyata** — .docx asli (OOXML), PDF (pdf-lib), PPTX, PNG, CSV, dan .txt — bukan sekadar pratinjau.
 - **🎓 Statistik terverifikasi** — nilai kritis r/t/F/χ² dihitung dari fungsi distribusi (beta & gamma inkomplet) dan terverifikasi terhadap tabel resmi & hitungan manual.
 
-## 📚 Direktori 112 Tool
+## 📚 Direktori 118 Tool
 
 ### 🤖 Cek AI & Jurnal (7 tool)
 
@@ -129,7 +129,7 @@
 - **[Konverter Data Excel ke Slide Grafik PPT](https://mahasiswatools.web.id/tools/konverter-data-excel-ke-slide-grafik-ppt/)** — Tempel/upload tabel → pilih grafik (batang/garis/lingkaran) → slide .pptx dengan grafik vektor asli + tabel data.
 - **[Kompresor Ukuran File PowerPoint](https://mahasiswatools.web.id/tools/kompresor-ukuran-file-powerpoint/)** — Kecilkan .pptx bengkak: gambar di-downscale & dikompresi ulang via canvas, teks & animasi utuh — siap upload SIAKAD/LMS.
 
-### ⛺ Tugas Kelompok & KKN (13 tool)
+### ⛺ Tugas Kelompok & KKN (19 tool)
 
 - **[Generator Sertifikat Massal (ZIP)](https://mahasiswatools.web.id/tools/generator-sertifikat-massal-zip/)** — Sertifikat untuk banyak nama sekaligus: ZIP PNG atau PDF.
 - **[Logbook Harian Magang / KKN](https://mahasiswatools.web.id/tools/logbook-harian-magang-kkn/)** — Catatan harian formal, ekspor .doc berkop paraf & DPL.
@@ -144,6 +144,12 @@
 - **[Gantt Chart & Matriks Proker KKN](https://mahasiswatools.web.id/tools/gantt-chart-dan-matriks-proker-kkn/)** — Linimasa program kerja mingguan, ekspor PNG.
 - **[Bagan Struktur Organisasi Posko KKN](https://mahasiswatools.web.id/tools/bagan-struktur-organisasi-posko-kkn/)** — Hierarki posko/desa dari pembina sampai divisi, PNG.
 - **[Desain Plang Jalan & Edukasi Desa (Bonus)](https://mahasiswatools.web.id/tools/desain-plang-jalan-dan-edukasi-desa-bonus/)** — Desain plang canvas 4 tema untuk program fisik KKN.
+- **[Pembuat Twibbon](https://mahasiswatools.web.id/tools/pembuat-twibbon/)** — Pasang foto ke bingkai twibbon acara: 5 template atau upload bingkai PNG sendiri, geser & zoom, unduh PNG 1080×1080.
+- **[ID Card & Name Tag Panitia Massal](https://mahasiswatools.web.id/tools/id-card-dan-name-tag-panitia-massal/)** — ID card panitia massal dari daftar nama: 3 tema, ZIP PNG per kartu + PDF A4 siap cetak.
+- **[Desainer Sertifikat Satuan](https://mahasiswatools.web.id/tools/desainer-sertifikat-satuan/)** — Editor sertifikat satuan bebas geser teks, latar tema atau gambar sendiri, ekspor PNG & PDF A4.
+- **[Generator Rundown, Sambutan & Naskah MC](https://mahasiswatools.web.id/tools/generator-rundown-sambutan-dan-naskah-mc/)** — Paket acara: rundown (DOCX), kata sambutan 3 jenis, naskah MC formal/semiformal.
+- **[Pembuat Banner / Backdrop Acara](https://mahasiswatools.web.id/tools/pembuat-banner-backdrop-acara/)** — Banner 2×1, 3×1, 4×1, 1×1 meter dengan tema warna & logo, ekspor PNG 3000px + PDF.
+- **[Generator Lembar Presensi](https://mahasiswatools.web.id/tools/generator-lembar-presensi/)** — Lembar daftar hadir A4 berkop, kolom tanda tangan zig-zag dua kolom, ekspor PDF.
 
 ### 📄 Edit PDF & Foto (18 tool)
 
@@ -217,6 +223,7 @@ node build/build-seo.js    # halaman tool + sitemap + direktori beranda
 
 - **21 Okt 2026** — Rilis & **Milestone 100 Tool** tercapai dalam satu hari (arsitektur partisi, tema Slate Pro, ikon SVG per tool, SEO 101 URL).
 - **22 Okt 2026 (sore)** — **Segitiga Emas PPT ↔ Excel ↔ PDF**: 12 tool baru (total 112) + SheetJS & PDF.js lazy-load + enhancer Upload/Export Excel & PPT di tool statistik dan keuangan.
+- **23 Okt 2026** — **Paket Acara Kampus**: 6 tool baru (total 118) — Twibbon, ID Card Panitia Massal, Desainer Sertifikat Satuan, Rundown/Sambutan/Naskah MC, Banner Acara, Lembar Presensi.
 - **22 Okt 2026** — Migrasi ke domain kustom **mahasiswatools.web.id** + direktori tautan statis untuk perayapan Google.
 
 ## 📄 Lisensi

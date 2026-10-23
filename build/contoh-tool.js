@@ -1062,5 +1062,78 @@ sks: {
     hasil: "Tool menghitung total jam belajarmu (960 jam) dan membandingkannya dengan beban ideal 20 SKS menurut aturan 1 SKS = 170 menit per minggu — kesimpulannya menunjukkan apakah rencana ambil SKS-mu realistis dengan waktu yang kamu punya."
   }
 }
+,
+/* ================= PAKET ACARA KAMPUS ================= */
+twibbon: {
+  tampil: {
+    input: "Tool desain dengan pratinjau langsung: pilih template Pita Sudut warna indigo dan unggah foto — foto tampil di dalam bingkai pada kanvas 1080×1080 begitu dimuat, itulah contohnya.",
+    hasil: "Dengan menggeser foto dan mengatur slider zoom, wajah peserta pas di tengah bingkai; tombol Download menghasilkan PNG 1080×1080 berisi foto + bingkai + nama acara yang siap diunggah ke media sosial."
+  }
+},
+idcard: {
+  tampil: {
+    input: "Tool desain massal dengan pratinjau langsung: kartu pertama dari daftar namamu (mis. ‘Andini Prameswari | Ketua Pelaksana’) tergambar seketika di pratinjau mengikuti tema yang dipilih, itulah contohnya.",
+    hasil: "Seluruh daftar nama menjadi kartu 85,6×54 mm bertema sama; Download ZIP menghasilkan satu PNG per panitia dan Download PDF menyusun banyak kartu dalam lembar A4 siap cetak dan gunting."
+  }
+},
+sertsatuan: {
+  tampil: {
+    input: "Tool desain dengan pratinjau langsung: kanvas sertifikat lanskap A4 bertema Klasik Emas langsung menampilkan nama penerima, peran, dan acara dari isian awal — klik dan geser elemen teksnya untuk melihat contoh penataannya.",
+    hasil: "Satu sertifikat satuan dengan posisi teks yang diatur bebas (nama besar di tengah, blok penandatangan di kanan bawah) diekspor sebagai PNG resolusi tinggi dan PDF A4 siap cetak atau dibagikan."
+  }
+},
+banneracara: {
+  tampil: {
+    input: "Tool desain dengan pratinjau langsung: ubah judul acara, subjudul, dan tanggal pada isian — banner pada canvas langsung tergambar ulang dengan teks barumu, itulah contohnya.",
+    hasil: "Banner ukuran pilihan (mis. 3×1 meter) bertema gradasi dengan judul terbaca dari jauh, info tanggal–tempat, dan baris penyelenggara; diekspor sebagai PNG selebar 3000 piksel dan PDF untuk percetakan."
+  }
+},
+rundown: {
+  isi: {
+    fields: {
+      "#rdwAcara": "Pelatihan Karya Tulis Ilmiah 2026",
+      "#rdwTema": "Menulis Ilmiah yang Jujur dan Berdampak",
+      "#rdwTgl": "Sabtu, 21 November 2026",
+      "#rdwTempat": "Aula Kampus Universitas Cendekia Nusantara",
+      "#rdwPeny": "UKM Penalaran dan Keilmuan",
+      "#smbJenis": "ketua",
+      "#smbNama": "Andini Prameswari",
+      "#smbJab": "Ketua Panitia Pelaksana",
+      "#smbTerima": "Pimpinan universitas yang telah memberikan izin dan fasilitas kegiatan\nPara pemateri yang telah berkenan berbagi ilmu dan pengalaman",
+      "#mcGaya": "formal",
+      "#mcNama": "Citra Lestari"
+    },
+    atur: { _rdwRows: [
+      { jam: "08.00–08.30", keg: "Registrasi & Daftar Ulang Peserta", pj: "Sie Acara" },
+      { jam: "08.30–08.45", keg: "Pembukaan oleh MC", pj: "MC" },
+      { jam: "08.45–09.00", keg: "Kata Sambutan Ketua Panitia", pj: "Ketua Panitia" },
+      { jam: "09.00–11.30", keg: "Penyampaian Materi Inti", pj: "Moderator" },
+      { jam: "11.30–11.45", keg: "Penutupan & Foto Bersama", pj: "MC" }
+    ] },
+    panggil: ["rdwRender", "smbBuat", "mcBuat"]
+  },
+  tampil: {
+    input: "Acara ‘Pelatihan Karya Tulis Ilmiah 2026’ bertema ‘Menulis Ilmiah yang Jujur dan Berdampak’ pada Sabtu, 21 November 2026, dengan rundown lima baris dari registrasi sampai penutupan dan sambutan atas nama Ketua Panitia.",
+    hasil: "Pratinjau rundown menampilkan tabel Jam–Kegiatan–Penanggung Jawab yang siap diunduh .docx; kata sambutan utuh tersusun dari salam pembuka sampai penutup beserta ucapan terima kasih kepada pimpinan universitas dan pemateri; naskah MC formal memandu acara mengikuti urutan rundown yang sama."
+  }
+},
+presensi: {
+  isi: {
+    fields: {
+      "#prsKeg": "Pelatihan Karya Tulis Ilmiah 2026",
+      "#prsInst": "UKM Penalaran dan Keilmuan — Universitas Cendekia Nusantara",
+      "#prsTgl": "Sabtu, 21 November 2026",
+      "#prsTempat": "Aula Kampus",
+      "#prsKolomId": "NIM",
+      "#prsKosong": "5",
+      "#prsDaftar": "Andini Prameswari | 220101001\nBima Aditya | 220101002\nCitra Lestari | 220101003\nDimas Prasetyo | 220101004\nEka Nurhaliza | 220101005"
+    },
+    panggil: ["prsPrev"]
+  },
+  tampil: {
+    input: "Kegiatan ‘Pelatihan Karya Tulis Ilmiah 2026’ oleh UKM Penalaran dan Keilmuan pada Sabtu, 21 November 2026, dengan daftar lima peserta beserta NIM dan lima baris kosong tambahan.",
+    hasil: "Pratinjau menampilkan lembar A4 berkop kegiatan dengan tabel sepuluh baris: lima nama peserta lengkap dengan NIM dan lima baris kosong, masing-masing dengan kolom tanda tangan zig-zag dua kolom — siap diunduh sebagai PDF dan dicetak."
+  }
+}
 
 };
