@@ -772,7 +772,7 @@ function posUnduh() { const cv = $("#posCv"); if (cv) cv.toBlob((b) => { if (b) 
 SHARE_GETTERS.poster = function () { return "Poster ilmiah untuk seminar/PKM saya sudah jadi (resolusi tinggi, lengkap dengan QR) — dibuat dengan Pembuat Poster Ilmiah MahasiswaTools."; };
 
 ;
-/* ---------- 104. Ekstraktor Tabel PDF ke Excel ---------- */
+/* ---------- 104. Ambil Tabel dari PDF Jadi File Excel ---------- */
 UI.pdftab2xls = function (b) {
   window._pt = null;
   b.innerHTML = head("🧾", "Tarik Tabel dari PDF Jadi Excel", "Upload PDF berisi tabel (laporan keuangan, publikasi BPS, jurnal): teks dibaca per koordinat, dikelompokkan jadi baris & kolom, lalu diunduh sebagai .xlsx. Angka format Indonesia — (12.500.000), titik ribuan — dibersihkan jadi angka numerik asli yang bisa di-SUM.")

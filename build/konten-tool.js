@@ -76,7 +76,7 @@ ceksitasi: {
   ],
   faq: [
     ["Format sitasi seperti apa yang bisa dikenali tool ini?", "Sitasi kurung seperti (Pranata, 2024), sitasi naratif seperti Pranata (2024), dan bentuk et al. seperti (Pranata et al., 2024). Pencocokan dilakukan berdasarkan nama belakang penulis dan tahun terbit, lalu dibandingkan dengan entri di daftar pustakamu."],
-    ["Apakah tool ini mengecek kebenaran isi jurnalnya juga?", "Tidak — tugas itu ada di tool Verifikator Keaslian Daftar Pustaka (Crossref). Tool ini khusus memeriksa konsistensi dua arah antara yang kamu kutip di teks dan yang kamu daftarkan di daftar pustaka."]
+    ["Apakah tool ini mengecek kebenaran isi jurnalnya juga?", "Tidak — tugas itu ada di tool Cek Daftar Pustaka Asli atau Palsu. Tool ini khusus memeriksa konsistensi dua arah antara yang kamu kutip di teks dan yang kamu daftarkan di daftar pustaka."]
   ]
 },
 deklarasi: {
@@ -314,7 +314,7 @@ pdffix: {
     "Tekan 📋 Copy Teks Rapi untuk menempelnya ke dokumenmu, atau ⬇️ Download (.txt) untuk menyimpannya sebagai berkas."
   ],
   faq: [
-    ["Apa beda tool ini dengan Pembersih Jejak & Karakter Tersembunyi AI?", "Pembersih ini khusus memperbaiki kerusakan salin-tempel dari PDF: enter terpotong dan spasi ganda. Pembersih Jejak AI menangani karakter tak kasatmata (zero-width, NBSP) dan sisa markdown dari teks hasil chatbot. Teks dari PDF yang juga penuh artefak bisa dilewatkan ke keduanya berurutan."],
+    ["Apa beda tool ini dengan Pembersih Karakter Tersembunyi di Teks AI?", "Pembersih ini khusus memperbaiki kerusakan salin-tempel dari PDF: enter terpotong dan spasi ganda. Pembersih Karakter Tersembunyi menangani karakter tak kasatmata (zero-width, NBSP) dan sisa markdown dari teks hasil chatbot. Teks dari PDF yang juga penuh artefak bisa dilewatkan ke keduanya berurutan."],
     ["Apakah angka dan sitasi di dalam teks ikut berubah?", "Tidak. Perapiannya hanya menyangkut pemotongan baris dan spasi; kata, angka, tahun, dan tanda baca di teksmu dipertahankan apa adanya."]
   ]
 },
@@ -567,7 +567,7 @@ kuesioner: {
   ],
   faq: [
     ["Apa beda keluaran .doc dan teks Google Form?", "Berkas .doc adalah kuesioner cetak yang sudah terformat untuk dibagikan langsung atau dilampirkan di skripsi. Teks untuk Google Form adalah susunan item dalam format teks yang memudahkanmu menyalin bagian demi bagian ke formulir daring tanpa mengetik ulang."],
-    ["Apakah item dari kisi-kisi instrumen saya bisa langsung dipakai di sini?", "Bisa — susun item mengikuti kisi-kisimu (gunakan tool Generator Kisi-Kisi & Operasionalisasi Variabel bila belum punya), lalu masukkan pernyataan favorable dan unfavorable sesuai nomor butir di kisi-kisi agar pengujian validitasnya nyambung."]
+    ["Apakah item dari kisi-kisi instrumen saya bisa langsung dipakai di sini?", "Bisa — susun item mengikuti kisi-kisimu (gunakan tool Buat Kisi-Kisi Instrumen & Operasionalisasi Variabel bila belum punya), lalu masukkan pernyataan favorable dan unfavorable sesuai nomor butir di kisi-kisi agar pengujian validitasnya nyambung."]
   ]
 },
 inferens: {
@@ -1378,7 +1378,7 @@ k38: {
   ],
   faq: [
     ["Mengapa foto kertas putih yang rata sangat menentukan hasil?", "Pemisahan latar bekerja dengan kecerahan: piksel terang dianggap kertas, piksel gelap dianggap tinta. Bayangan, lipatan, atau kertas kekuningan membuat sebagian latar ikut terbaca sebagai tinta sehingga tepi tanda tangan tampak kotor."],
-    ["Apa beda PNG ini dengan menggambar tanda tangan di tool Penanda Tangan PDF?", "Tool ini menyiapkan aset tanda tangannya saja (PNG transparan) untuk ditempel berulang kali di banyak dokumen. Tool Penanda Tangan & Stempel PDF adalah alur lengkapnya: menggambar atau memakai tanda tangan lalu membubuhkannya ke halaman PDF tertentu."]
+    ["Apa beda PNG ini dengan menggambar tanda tangan di tool Tanda Tangan & Stempel di PDF?", "Tool ini menyiapkan aset tanda tangannya saja (PNG transparan) untuk ditempel berulang kali di banyak dokumen. Tool Tanda Tangan & Stempel di PDF adalah alur lengkapnya: menggambar atau memakai tanda tangan lalu membubuhkannya ke halaman PDF tertentu."]
   ]
 },
 

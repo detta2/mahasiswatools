@@ -1421,7 +1421,7 @@ UI.lpj = function (el) {
     + field("Tanggal Pelaksanaan", '<input id="lpTgl" class="' + IN + '" placeholder="cth: 14 November 2026">')
     + field("Total Dana Diterima (Rp)", '<input id="lpDana" type="number" class="' + IN + '" value="500000">')
     + "</div>"
-    + field("Rencana Anggaran (RAB) — format sama seperti Generator Proposal: Item | Jumlah | Harga Satuan", '<textarea id="lpRab" rows="4" class="' + IN + '">Konsumsi peserta | 50 | 15000\nATK & cetak proposal | 1 | 250000\nSpanduk & backdrop | 1 | 300000</textarea>')
+    + field("Rencana Anggaran (RAB) — format sama seperti di tool Buat Proposal: Item | Jumlah | Harga Satuan", '<textarea id="lpRab" rows="4" class="' + IN + '">Konsumsi peserta | 50 | 15000\nATK & cetak proposal | 1 | 250000\nSpanduk & backdrop | 1 | 300000</textarea>')
     + '<button class="' + BTN2 + '" onclick="lpjMuatRab()">📥 Muat RAB ke Tabel Realisasi</button>'
     + '<div id="lpTabel" class="my-4"></div>'
     + field("Pengeluaran Lain di Luar RAB (format: Uraian | Jumlah)", '<textarea id="lpLain" rows="2" class="' + IN + '" placeholder="Transport narasumber | 100000"></textarea>')

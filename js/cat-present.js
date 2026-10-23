@@ -743,7 +743,7 @@ async function dsGenerate() {
 }
 
 ;
-/* ---------- 107. Pengekstrak Materi PPT Dosen ---------- */
+/* ---------- 107. Ekstrak Materi PPT Dosen Jadi Rangkuman & Kuis ---------- */
 UI.pptxextract = function (b) {
   window._px = null;
   b.innerHTML = head("📤", "Sulap PPT Dosen Jadi Rangkuman & Kuis", "Upload file .pptx materi kuliah: seluruh judul, poin, dan catatan dosen diekstrak. Unduh sebagai rangkuman Word, handout PDF berkollom catatan tangan, atau langsung jadi kuis latihan.")

@@ -16,6 +16,8 @@ const KONTEN = require("./konten-tool");
    (tombol 📝 Isi Contoh di aplikasi); bagian `tampil` → seksi "Contoh
    Penggunaan" di halaman statis di bawah ini. Satu sumber untuk keduanya. */
 const CONTOH = require("./contoh-tool");
+/* Judul <title> per tool (frasa pencarian nyata) — lihat build/judul-seo.js. */
+const JUDUL = require("./judul-seo");
 
 /* --- ekstrak TOOLS dari app.js (scan kurung seimbang) --- */
 const appSrc = fs.readFileSync(path.join(ROOT, "app.js"), "utf8");
@@ -43,6 +45,23 @@ TOOLS.forEach((t) => {
   if (used.has(s)) { let k = 2; while (used.has(s + "-" + k)) k++; s = s + "-" + k; }
   used.add(s); slugs[t.id] = s;
 });
+/* --- PIN SLUG (2026-10-23): URL TIDAK BOLEH berubah walau nama tampilan tool
+   diganti ke bahasa awam. Slug resmi = slugs.js yang sudah live; slugify dari
+   nama hanya jadi fallback untuk tool yang benar-benar baru. --- */
+const slugsPath = path.join(ROOT, "slugs.js");
+if (fs.existsSync(slugsPath)) {
+  const pinned = JSON.parse(fs.readFileSync(slugsPath, "utf8").replace(/^window\.TOOL_SLUGS = /, "").replace(/;\s*$/, ""));
+  TOOLS.forEach((t) => { if (pinned[t.id]) slugs[t.id] = pinned[t.id]; });
+}
+/* Penjaga keras: daftar URL hasil build HARUS identik dengan sitemap.xml yang
+   sedang live; beda satu URL saja, build dibatalkan sebelum menulis apa pun. */
+const sitemapPath = path.join(ROOT, "sitemap.xml");
+if (fs.existsSync(sitemapPath)) {
+  const locsLive = new Set([...fs.readFileSync(sitemapPath, "utf8").matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
+  const locsBaru = new Set([BASE + "/"].concat(TOOLS.map((t) => BASE + "/tools/" + slugs[t.id] + "/")));
+  const beda = [...locsLive].filter((u) => !locsBaru.has(u)).concat([...locsBaru].filter((u) => !locsLive.has(u)));
+  if (beda.length) throw new Error("URL berubah! Build dibatalkan. Beda: " + beda.join(" ; "));
+}
 
 const esc = (s) => String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -104,7 +123,7 @@ function pageFor(t) {
   const langkah = (kk.langkah && kk.langkah.length) ? kk.langkah : p.cara;
   const tentang = kk.buka ? '<h2 class="display-font text-xl font-black mb-2.5">Tentang ' + esc(t.n) + '</h2>\n    <p class="mb-5">' + esc(kk.buka) + "</p>\n    " : "";
   const terkait = TOOLS.filter((x) => x.c === t.c && x.id !== t.id).slice(0, 5);
-  const judul = t.n + " Online Gratis — MahasiswaTools";
+  const judul = JUDUL[t.id] || (t.n + " Online Gratis — MahasiswaTools");
   const desk = t.d + " Gratis, tanpa login dan tanpa watermark, langsung dari browser. Bagian dari MahasiswaTools — Dari Mahasiswa, Untuk Mahasiswa.";
   const jsonLd = [
     { "@context": "https://schema.org", "@type": "SoftwareApplication", name: t.n + " — MahasiswaTools", applicationCategory: "EducationalApplication", operatingSystem: "Web Browser", offers: { "@type": "Offer", price: "0", priceCurrency: "IDR" }, url, description: t.d },
